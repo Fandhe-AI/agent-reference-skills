@@ -823,11 +823,13 @@ ARRAY<STRUCT<action STRING, html_url STRING, page_name STRING, ...>>
 To correct the error and return an array of `page_name`s in the result, use an
 `ARRAY` subquery instead. For example:
 
+Adapted (not in the official docs): excluded `NULL` page names, because a query result can't contain an array with `NULL` elements.
+
 ```sql
 #GoogleSQL
 SELECT
   repository.url,
-  ARRAY(SELECT page_name FROM UNNEST(payload.pages)) AS page_names
+  ARRAY(SELECT page_name FROM UNNEST(payload.pages) WHERE page_name IS NOT NULL) AS page_names
 FROM
   `bigquery-public-data.samples.github_nested`
 LIMIT 5;
@@ -872,6 +874,8 @@ if you unset the **Flatten Results** option and execute the legacy SQL query,
 same semantics in GoogleSQL and return an array for the `title` column, use
 an `ARRAY` subquery instead:
 
+Adapted (not in the official docs): excluded `NULL` titles, because a query result can't contain an array with `NULL` elements.
+
 ```sql
 #GoogleSQL
 SELECT
@@ -879,7 +883,8 @@ SELECT
 FROM (
   SELECT
     ARRAY(SELECT title FROM UNNEST(payload.pages)
-          WHERE page_name IN ('db_jobskill', 'Profession')) AS title
+          WHERE page_name IN ('db_jobskill', 'Profession')
+            AND title IS NOT NULL) AS title
   FROM
     `bigquery-public-data.samples.github_nested`)
 WHERE ARRAY_LENGTH(title) > 0;
@@ -1320,7 +1325,12 @@ FROM
 In GoogleSQL, an equivalent query uses a table wildcard and the `BETWEEN`
 clause. A wildcard table query can't reference a view, so this example and the
 `TABLE_DATE_RANGE_STRICT` examples that follow assume that no view in
-`mydataset` has a name that starts with `sea_weather_`.
+`mydataset` has a name that starts with `sea_weather_`. They also assume that
+every table whose name starts with `sea_weather_` has a compatible schema:
+BigQuery uses the schema of the most recently created table that matches the
+wildcard, even when a `_TABLE_SUFFIX` filter excludes that table. If either
+assumption is not met, list the tables for the dates explicitly and combine
+them with `UNION ALL`.
 
 Adapted (not in the official docs): required an 8-character suffix, so that only the tables for the dates in the range are read.
 
@@ -1473,7 +1483,12 @@ ORDER BY
 ```
 
 In GoogleSQL, an equivalent query uses a table wildcard and places the
-regular expression function, `REGEXP_CONTAINS`, in the `WHERE` clause:
+regular expression function, `REGEXP_CONTAINS`, in the `WHERE` clause. A filter on
+`_TABLE_SUFFIX` limits the tables scanned only when its condition is a constant
+expression, and the official docs don't say whether a `REGEXP_CONTAINS` condition
+qualifies. To make sure that only the matching tables are read in this example and
+the next one, list the suffixes in a literal `IN` condition instead, for example
+`_TABLE_SUFFIX IN ('1930', '1940', '1950')`. The example with `REGEXP_CONTAINS`:
 
 ```sql
 #GoogleSQL
@@ -1568,6 +1583,8 @@ view instead.
 
 To migrate a query that uses `__PARTITIONS_SUMMARY__` and keep the output schema and error handling consistent, use the following GoogleSQL query. Unlike the meta-table, this query returns no rows instead of an error when the table doesn't exist, so if you need that error, check first that the table exists in `INFORMATION_SCHEMA.TABLES`:
 
+Adapted (not in the official docs): grouped the rows by partition and took the latest `last_modified_time`, because the view can return two rows for the `__UNPARTITIONED__` partition.
+
 ```googlesql
 #GoogleSQL
 SELECT
@@ -1576,11 +1593,12 @@ SELECT
   table_schema AS dataset_id,
   table_name AS table_id,
   NULL AS creation_time, -- Partition creation time not available
-  UNIX_MILLIS(last_modified_time) AS last_modified_time
+  UNIX_MILLIS(MAX(last_modified_time)) AS last_modified_time
 FROM
   `DATASET_ID.INFORMATION_SCHEMA.PARTITIONS`
 WHERE
-  table_name = 'TABLE_NAME';
+  table_name = 'TABLE_NAME'
+GROUP BY 1, 2, 3, 4;
 ```
 
 > [!WARNING]
@@ -1611,7 +1629,10 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the GoogleSQL examples that replace `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` filter the wildcard table with `_TABLE_SUFFIX BETWEEN '20160501' AND '20160509'`. That is a string comparison, so a table such as `sea_weather_20160501_backup` (suffix `20160501_backup`) is also read, while the legacy SQL functions read only the tables for the dates in the range. The three examples now also require `LENGTH(_TABLE_SUFFIX) = 8`, which with these bounds leaves only the suffixes `20160501` to `20160509`, and the note after the first example no longer names the `BETWEEN` filter alone.
 - Corrected from the official docs: the function comparison table mapped legacy SQL `COUNT(DISTINCT x)` only to `APPROX_COUNT_DISTINCT(x)`, and the `COUNT` comparison said that the legacy SQL function returns an approximate count. In legacy-sql/legacy-sql-1.md, legacy SQL `COUNT(DISTINCT)` is exact below a threshold, 1,000 by default or the second parameter `n`. The row now gives GoogleSQL `COUNT(DISTINCT x)` for an exact count and `APPROX_COUNT_DISTINCT(x)` for an approximate count, and the comparison states the threshold.
 - Corrected from the official docs: the function comparison table translated `PARSE_IP(addr_string)` as `NET.IPV4_TO_INT64(NET.IP_FROM_STRING(addr_string))` and `PARSE_PACKED_IP(addr_string)` as `NET.IP_FROM_STRING(addr_string)`. The legacy SQL functions return `NULL` for an invalid address (legacy-sql/legacy-sql-1.md), while `NET.IP_FROM_STRING` produces an error and `NET.IPV4_TO_INT64` throws an error when the input length isn't 4 (googlesql-functions/net_functions.md). The rows now use `NET.SAFE_IP_FROM_STRING`, and the `PARSE_IP` row calls `NET.IPV4_TO_INT64` only for a 4-byte address inside `IF`, whose unchosen branch is not evaluated (googlesql-functions/conditional_expressions.md).
-- Corrected from the official docs: the `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` examples query the wildcard table `mydataset.sea_weather_*`, and a wildcard table query cannot reference a view (tables-schemas-views/views-intro.md), so the query fails if a view such as `sea_weather_20160501_backup` shares the prefix, even when the `WHERE` filter excludes its suffix. A sentence that states this assumption is added before the first example.
+- Corrected from the official docs: the `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` examples query the wildcard table `mydataset.sea_weather_*`, and a wildcard table query cannot reference a view (tables-schemas-views/views-intro.md), so the query fails if a view such as `sea_weather_20160501_backup` shares the prefix, even when the `WHERE` filter excludes its suffix. The wildcard table also takes the schema of the most recently created matching table even when a `_TABLE_SUFFIX` filter excludes that table (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20), so a matching backup table that lacks a selected column or gives it another type makes the query fail. Sentences that state both assumptions, and the `UNION ALL` alternative, are added before the first example.
+- Corrected from the official docs: the two `ARRAY` subquery examples that return `page_names` and `title` could put `NULL` elements in an array of the query result, and GoogleSQL raises an error if the query result has an array which contains `NULL` elements (googlesql-syntax/data-types.md). Both examples now exclude `NULL` values in the subquery, so the arrays hold only the non-`NULL` values.
+- Corrected from the official docs: `TABLE_QUERY` selects the tables before reading them, while the GoogleSQL examples filter `_TABLE_SUFFIX` with `REGEXP_CONTAINS`. The official docs say that a `_TABLE_SUFFIX` filter limits the tables scanned only when its condition is a constant expression (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20) and don't say whether a `REGEXP_CONTAINS` condition qualifies, so a sentence that suggests a literal `IN` condition on the suffixes is added; the examples are kept as in the official docs.
+- Corrected from the official docs: `INFORMATION_SCHEMA.PARTITIONS` returns two rows for the `__UNPARTITIONED__` partition when it has both long-term and active storage tier data, one for each storage tier (information-schema/partitions.md), so the migrated `__PARTITIONS_SUMMARY__` query could return that partition twice. The query now groups the rows by partition and returns the latest `last_modified_time` of the tiers.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related

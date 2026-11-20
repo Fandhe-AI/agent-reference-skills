@@ -26,6 +26,7 @@ Base URL: `https://biglake.googleapis.com`. Methods are listed by `id`; the `Ver
 - Versions: v1
 - `GET https://biglake.googleapis.com/v1/{+resource}:getIamPolicy`
 - Gets the IAM policy for the specified Catalog.
+- Correction (see Notes): Gets the IAM policy of the namespace that `resource` names (`projects/{project}/catalogs/{catalog}/namespaces/{namespace}`, from the path pattern), not of the catalog. For the catalog itself, use `biglake.projects.catalogs.getIamPolicy`.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `Policy`
 
@@ -39,6 +40,7 @@ Base URL: `https://biglake.googleapis.com`. Methods are listed by `id`; the `Ver
 - Versions: v1
 - `POST https://biglake.googleapis.com/v1/{+resource}:setIamPolicy`
 - Sets the IAM policy for the specified catalog.
+- Correction (see Notes): Sets the IAM policy of the namespace that `resource` names (`projects/{project}/catalogs/{catalog}/namespaces/{namespace}`, from the path pattern), not of the catalog. For the catalog itself, use `biglake.projects.catalogs.setIamPolicy`.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SetIamPolicyRequest`; Response: `Policy`
 
@@ -51,6 +53,7 @@ Base URL: `https://biglake.googleapis.com`. Methods are listed by `id`; the `Ver
 - Versions: v1
 - `GET https://biglake.googleapis.com/v1/{+resource}:getIamPolicy`
 - Gets the IAM policy for the specified Catalog.
+- Correction (see Notes): Gets the IAM policy of the table that `resource` names (`projects/{project}/catalogs/{catalog}/namespaces/{namespace}/tables/{table}`, from the path pattern), not of the catalog. For the catalog itself, use `biglake.projects.catalogs.getIamPolicy`.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: —; Response: `Policy`
 
@@ -64,6 +67,7 @@ Base URL: `https://biglake.googleapis.com`. Methods are listed by `id`; the `Ver
 - Versions: v1
 - `POST https://biglake.googleapis.com/v1/{+resource}:setIamPolicy`
 - Sets the IAM policy for the specified catalog.
+- Correction (see Notes): Sets the IAM policy of the table that `resource` names (`projects/{project}/catalogs/{catalog}/namespaces/{namespace}/tables/{table}`, from the path pattern), not of the catalog. For the catalog itself, use `biglake.projects.catalogs.setIamPolicy`.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SetIamPolicyRequest`; Response: `Policy`
 

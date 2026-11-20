@@ -209,6 +209,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Versions: v1, v1beta1
 - `POST https://analyticshub.googleapis.com/v1/{+name}:subscribe`
 - Subscribes to a listing. Currently, with Analytics Hub, you can create listings that reference only BigQuery datasets. Upon subscription to a listing for a BigQuery dataset, Analytics Hub creates a linked dataset in the subscriber's project.
+- Correction (see Notes): A listing can reference a BigQuery dataset or a Pub/Sub topic. Subscribing to a listing for a BigQuery dataset creates a linked dataset (`destinationDataset` in `SubscribeListingRequest`); subscribing to a listing for a Pub/Sub topic creates a linked Pub/Sub subscription (`destinationPubsubSubscription`).
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SubscribeListingRequest`; Response: `SubscribeListingResponse`
 
