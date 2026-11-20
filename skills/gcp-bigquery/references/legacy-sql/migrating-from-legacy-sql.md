@@ -823,13 +823,14 @@ ARRAY<STRUCT<action STRING, html_url STRING, page_name STRING, ...>>
 To correct the error and return an array of `page_name`s in the result, use an
 `ARRAY` subquery instead. For example:
 
-Adapted (not in the official docs): excluded `NULL` page names, because a query result can't contain an array with `NULL` elements.
+Adapted (not in the official docs): excluded `NULL` page names, because a query result can't contain an array with `NULL` elements, and kept the order of the pages with `WITH OFFSET`.
 
 ```sql
 #GoogleSQL
 SELECT
   repository.url,
-  ARRAY(SELECT page_name FROM UNNEST(payload.pages) WHERE page_name IS NOT NULL) AS page_names
+  ARRAY(SELECT page_name FROM UNNEST(payload.pages) WITH OFFSET AS pos
+        WHERE page_name IS NOT NULL ORDER BY pos) AS page_names
 FROM
   `bigquery-public-data.samples.github_nested`
 LIMIT 5;
@@ -874,7 +875,7 @@ if you unset the **Flatten Results** option and execute the legacy SQL query,
 same semantics in GoogleSQL and return an array for the `title` column, use
 an `ARRAY` subquery instead:
 
-Adapted (not in the official docs): excluded `NULL` titles, because a query result can't contain an array with `NULL` elements.
+Adapted (not in the official docs): excluded `NULL` titles, because a query result can't contain an array with `NULL` elements, kept the order of the pages with `WITH OFFSET`, and kept the rows with an `EXISTS` test on `page_name`.
 
 ```sql
 #GoogleSQL
@@ -882,17 +883,21 @@ SELECT
   title
 FROM (
   SELECT
-    ARRAY(SELECT title FROM UNNEST(payload.pages)
+    ARRAY(SELECT title FROM UNNEST(payload.pages) WITH OFFSET AS pos
           WHERE page_name IN ('db_jobskill', 'Profession')
-            AND title IS NOT NULL) AS title
+            AND title IS NOT NULL
+          ORDER BY pos) AS title,
+    EXISTS(SELECT 1 FROM UNNEST(payload.pages)
+           WHERE page_name IN ('db_jobskill', 'Profession')) AS has_page
   FROM
     `bigquery-public-data.samples.github_nested`)
-WHERE ARRAY_LENGTH(title) > 0;
+WHERE has_page;
 ```
 
 This query creates an array of `title`s where the `page_name` is either
-`'db_jobskill'` or `'Profession'`, then filters any rows where the array did not
-match that condition using `ARRAY_LENGTH(title) > 0`.
+`'db_jobskill'` or `'Profession'`, in the order of the pages, then keeps only the
+rows that have such a page, using `EXISTS`. `NULL` titles are left out of the
+array, so a row whose matching pages all have a `NULL` title has an empty array.
 
 For more information about arrays, see [Working with arrays](https://docs.cloud.google.com/bigquery/docs/arrays).
 
@@ -1630,7 +1635,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the function comparison table mapped legacy SQL `COUNT(DISTINCT x)` only to `APPROX_COUNT_DISTINCT(x)`, and the `COUNT` comparison said that the legacy SQL function returns an approximate count. In legacy-sql/legacy-sql-1.md, legacy SQL `COUNT(DISTINCT)` is exact below a threshold, 1,000 by default or the second parameter `n`. The row now gives GoogleSQL `COUNT(DISTINCT x)` for an exact count and `APPROX_COUNT_DISTINCT(x)` for an approximate count, and the comparison states the threshold.
 - Corrected from the official docs: the function comparison table translated `PARSE_IP(addr_string)` as `NET.IPV4_TO_INT64(NET.IP_FROM_STRING(addr_string))` and `PARSE_PACKED_IP(addr_string)` as `NET.IP_FROM_STRING(addr_string)`. The legacy SQL functions return `NULL` for an invalid address (legacy-sql/legacy-sql-1.md), while `NET.IP_FROM_STRING` produces an error and `NET.IPV4_TO_INT64` throws an error when the input length isn't 4 (googlesql-functions/net_functions.md). The rows now use `NET.SAFE_IP_FROM_STRING`, and the `PARSE_IP` row calls `NET.IPV4_TO_INT64` only for a 4-byte address inside `IF`, whose unchosen branch is not evaluated (googlesql-functions/conditional_expressions.md).
 - Corrected from the official docs: the `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` examples query the wildcard table `mydataset.sea_weather_*`, and a wildcard table query cannot reference a view (tables-schemas-views/views-intro.md), so the query fails if a view such as `sea_weather_20160501_backup` shares the prefix, even when the `WHERE` filter excludes its suffix. The wildcard table also takes the schema of the most recently created matching table even when a `_TABLE_SUFFIX` filter excludes that table (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20), so a matching backup table that lacks a selected column or gives it another type makes the query fail. Sentences that state both assumptions, and the `UNION ALL` alternative, are added before the first example.
-- Corrected from the official docs: the two `ARRAY` subquery examples that return `page_names` and `title` could put `NULL` elements in an array of the query result, and GoogleSQL raises an error if the query result has an array which contains `NULL` elements (googlesql-syntax/data-types.md). Both examples now exclude `NULL` values in the subquery, so the arrays hold only the non-`NULL` values.
+- Corrected from the official docs: the two `ARRAY` subquery examples that return `page_names` and `title` could put `NULL` elements in an array of the query result, and GoogleSQL raises an error if the query result has an array which contains `NULL` elements (googlesql-syntax/data-types.md). Both examples now exclude `NULL` values in the subquery, so the arrays hold only the non-`NULL` values. Because `UNNEST` destroys the order of elements in the input array (googlesql-syntax/query-syntax-1.md, `WITH OFFSET`), both subqueries also take the offset with `WITH OFFSET` and order by it, so the arrays keep the order of the repeated field. In the `title` example, the rows are kept with an `EXISTS` test on `page_name` instead of `ARRAY_LENGTH(title) > 0`, so a row whose matching pages all have a `NULL` title is not dropped; the sentence after the example says so.
 - Corrected from the official docs: `TABLE_QUERY` selects the tables before reading them, while the GoogleSQL examples filter `_TABLE_SUFFIX` with `REGEXP_CONTAINS`. The official docs say that a `_TABLE_SUFFIX` filter limits the tables scanned only when its condition is a constant expression (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20) and don't say whether a `REGEXP_CONTAINS` condition qualifies, so a sentence that suggests a literal `IN` condition on the suffixes is added; the examples are kept as in the official docs.
 - Corrected from the official docs: `INFORMATION_SCHEMA.PARTITIONS` returns two rows for the `__UNPARTITIONED__` partition when it has both long-term and active storage tier data, one for each storage tier (information-schema/partitions.md), so the migrated `__PARTITIONS_SUMMARY__` query could return that partition twice. The query now groups the rows by partition and returns the latest `last_modified_time` of the tiers.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
