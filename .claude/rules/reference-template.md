@@ -45,7 +45,7 @@ functionName(param: Type): ReturnType
 
 ## README 索引の書式
 
-カテゴリ直下の `README.md` はカテゴリ名の H1 見出しと索引表のみで構成する。前置きの説明文は書かない。`samples/` `scripts/` 直下の README.md も同じ書式に従う。
+カテゴリ直下の `README.md` はカテゴリ名の H1 見出しと索引表のみで構成する。新たに作る README には前置きの説明文を書かない。`samples/` `scripts/` 直下の README.md も同じ書式に従う。既存の README にある H1 と索引表以外の内容（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線）は削除しない。索引を再生成するときもそれらを残し、索引表の行だけを更新する。
 
 ```markdown
 # <category>
@@ -56,7 +56,7 @@ functionName(param: Type): ReturnType
 ```
 
 - Path のリンクは README.md と同じディレクトリ内の相対パス（`./<file>.md`）にする。`samples/<file>` `scripts/<file>` のようにディレクトリ名を重ねない
-- 例外として、`references/` 配下でページを子ディレクトリに分けた階層型カテゴリ（`gcp-*` の `references/rest/<api>/`、`storybook` の `references/api/`、`nvidia-cuda` の `references/cutlass/` 等）では、どの階層の README でも、Path に (1) 同じディレクトリの個別ページ `./<file>.md`、(2) 直下の子ディレクトリの索引 `./<subdir>/README.md`、(3) 直下の子ディレクトリのページ `./<subdir>/<file>.md`（子ディレクトリに README を置かず親で集約する形。`chakra-ui` の `references/components/` 等） を置いてよく、1 つの表に混在してよい。子ディレクトリに README があるときは (2) で指すのを基本とし、README が無い子ディレクトリのページは親の README から (3) で指す。子ディレクトリの README も同じ書式（H1 と索引表のみ）に従う。孫以下のディレクトリのページを直接指さない。子索引の行はリンク先で判定し、表示名は問わない（`[doc-blocks/](./doc-blocks/README.md)` のような既存の表記も可）。`samples/` `scripts/` の README には適用しない
+- 例外として、`references/` 配下でページを子ディレクトリに分けた階層型カテゴリ（`gcp-*` の `references/rest/<api>/`、`storybook` の `references/api/`、`nvidia-cuda` の `references/cutlass/` 等）では、どの階層の README でも、Path に (1) 同じディレクトリの個別ページ `./<file>.md`、(2) 直下の子ディレクトリの索引 `./<subdir>/README.md`、(3) 直下の子ディレクトリのページ `./<subdir>/<file>.md`（子ディレクトリに README を置かず親で集約する形。`chakra-ui` の `references/components/` 等） を置いてよく、1 つの表に混在してよい。子ディレクトリに README があるときは (2) で指すのを基本とし、README が無い子ディレクトリのページは親の README から (3) で指す。子ディレクトリの README も上記の README の書式に従う（既存の説明文の扱いも同じ）。孫以下のディレクトリのページを直接指さない。子索引の行はリンク先で判定し、表示名は問わない（`[doc-blocks/](./doc-blocks/README.md)` のような既存の表記も可）。`samples/` `scripts/` の README には適用しない
 - Path セルのリンクは 1 行に 1 つにする。個別ページと子索引の両方を載せるときは行を分ける
 
 ## 関連

@@ -55,7 +55,7 @@ tools:
 2. 最初の `# 見出し`（H1）をファイルの **Name** として抽出する
 3. H1 の直後の空行をスキップし、最初の非空行を **Description**（概要1行）として抽出する
 4. H1 が存在しない場合はファイル名（拡張子除く）を Name とし、Description は空欄とする
-5. 子ディレクトリの索引（`<subdir>/README.md`）は H1 を Name とする。README は H1 と索引表のみで概要行を持たないため、既存の `{category_dir}README.md` にその子索引の行があればその Description とリンクの表示名を引き継ぎ（例: 既存の `[doc-blocks/](./doc-blocks/README.md)` はそのまま）、無ければ Description は空欄、表示名は `<subdir>/README.md` とする
+5. 子ディレクトリの索引（`<subdir>/README.md`）は H1 を Name とする。README の H1 の直後は概要行とは限らない（索引表や既存の説明文が続く）ため、既存の `{category_dir}README.md` にその子索引の行があればその Description とリンクの表示名を引き継ぎ（例: 既存の `[doc-blocks/](./doc-blocks/README.md)` はそのまま）、無ければ Description は空欄、表示名は `<subdir>/README.md` とする
 
 ### Step 3: 索引表の構築
 
@@ -73,7 +73,7 @@ tools:
 
 ### Step 4: README.md の生成
 
-以下のフォーマット全体を Write で `{category_dir}README.md` に書き出す:
+`{category_dir}README.md` が無いとき、または既存の README が H1 と索引表 1 つだけのときは、以下のフォーマット全体を Write で書き出す。既存の README に H1 と索引表以外の内容（前置きの説明文、`##` 節、`| Name | Description | Path |` 以外の表、複数の索引表）があるときは、それらを一字一句残したまま、索引表の行だけを更新した全文を Write で書き出す（実在しないページの行を除き、足りない行は最後の索引表の末尾に加える。reference-template の既存 README の扱いに従う）:
 
 ```markdown
 # {カテゴリ名}
@@ -83,7 +83,7 @@ tools:
 | {Name} | {Description} | [{file}.md](./{file}.md) |
 ```
 
-- H1 は、既存の `{category_dir}README.md` があればその H1 を引き継ぎ（例: `nextjs-app` の `metadata/README.md` の `# Metadata Files`）、無ければカテゴリディレクトリ名（元の表記）とする。前置きの説明文は書かない（reference-template 準拠）。親の索引の子索引の行の Name は子 README の H1（Step 2 の 5）なので、子 README を再生成しても親の Name は変わらない
+- H1 は、既存の `{category_dir}README.md` があればその H1 を引き継ぎ（例: `nextjs-app` の `metadata/README.md` の `# Metadata Files`）、無ければカテゴリディレクトリ名（元の表記）とする。新たに作る README には前置きの説明文を書かない（reference-template 準拠）。親の索引の子索引の行の Name は子 README の H1（Step 2 の 5）なので、子 README を再生成しても親の Name は変わらない
 
 ## 完了条件
 
