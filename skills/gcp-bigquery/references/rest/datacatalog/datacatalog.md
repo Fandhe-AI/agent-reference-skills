@@ -1,12 +1,14 @@
 ---
-source: https://datacatalog.googleapis.com/$discovery/rest?version=v1
+source:
+  - https://datacatalog.googleapis.com/$discovery/rest?version=v1
+  - https://datacatalog.googleapis.com/$discovery/rest?version=v1beta1
 ---
 
 # Google Cloud Data Catalog API REST API (datacatalog)
 
 ## Signature / Usage
 
-Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL, parameters and request / response types shown for a method come from the first version on its `Versions` line; for another version, see the Discovery document of that version under Source in Notes.
+Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, a type marked "same fields in ..." has one definition for those versions, but the types it references differ by version, and an unmarked type is the same in every listed version, including the types it references. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
 
 ### `datacatalog.catalog.search`
 
@@ -16,7 +18,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - Deprecated: `deprecated: true` in the Discovery document
 - Shut down: Data Catalog metadata search has the shutdown date June 1, 2026 on the Data Catalog deprecations page (https://docs.cloud.google.com/data-catalog/docs/deprecations, retrieved 2026-11-19; quoted in Notes), which has passed; for metadata search, the page points to Knowledge Catalog (formerly Dataplex Universal Catalog): https://docs.cloud.google.com/dataplex/docs/transition-to-dataplex-catalog.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: `GoogleCloudDatacatalogV1SearchCatalogRequest`; Response: `GoogleCloudDatacatalogV1SearchCatalogResponse`
+- Request: [`GoogleCloudDatacatalogV1SearchCatalogRequest` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1searchcatalogrequest), [`GoogleCloudDatacatalogV1beta1SearchCatalogRequest` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1searchcatalogrequest); Response: [`GoogleCloudDatacatalogV1SearchCatalogResponse` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1searchcatalogresponse), [`GoogleCloudDatacatalogV1beta1SearchCatalogResponse` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1searchcatalogresponse)
 
 ### `datacatalog.organizations.locations.retrieveConfig`
 
@@ -101,7 +103,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - `POST https://datacatalog.googleapis.com/v1/{+parent}/taxonomies`
 - Creates a taxonomy in the parent `projects/{projectsId}/locations/{locationsId}`. The taxonomy is initially empty, that is, it doesn't contain policy tags. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: `GoogleCloudDatacatalogV1Taxonomy`; Response: `GoogleCloudDatacatalogV1Taxonomy`
+- Request: [`GoogleCloudDatacatalogV1Taxonomy` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1taxonomy), [`GoogleCloudDatacatalogV1beta1Taxonomy` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1taxonomy); Response: [`GoogleCloudDatacatalogV1Taxonomy` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1taxonomy), [`GoogleCloudDatacatalogV1beta1Taxonomy` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1taxonomy)
 
 ### `datacatalog.projects.locations.taxonomies.delete`
 
@@ -117,7 +119,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - `GET https://datacatalog.googleapis.com/v1/{+parent}/taxonomies:export`
 - Exports taxonomies in the requested type and returns them, including their policy tags. The requested taxonomies must belong to the same project. This method generates `SerializedTaxonomy` protocol buffers with nested policy tags that can be used as input for `ImportTaxonomies` calls.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `GoogleCloudDatacatalogV1ExportTaxonomiesResponse`
+- Request: —; Response: [`GoogleCloudDatacatalogV1ExportTaxonomiesResponse` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1exporttaxonomiesresponse), [`GoogleCloudDatacatalogV1beta1ExportTaxonomiesResponse` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1exporttaxonomiesresponse)
 
 ### `datacatalog.projects.locations.taxonomies.get`
 
@@ -125,7 +127,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - `GET https://datacatalog.googleapis.com/v1/{+name}`
 - Gets a taxonomy.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `GoogleCloudDatacatalogV1Taxonomy`
+- Request: —; Response: [`GoogleCloudDatacatalogV1Taxonomy` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1taxonomy), [`GoogleCloudDatacatalogV1beta1Taxonomy` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1taxonomy)
 
 ### `datacatalog.projects.locations.taxonomies.getIamPolicy`
 
@@ -141,7 +143,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - `POST https://datacatalog.googleapis.com/v1/{+parent}/taxonomies:import`
 - Creates new taxonomies (including their policy tags) in a given project by importing from inlined or cross-regional sources. For a cross-regional source, new taxonomies are created by copying from a source in another region. For an inlined source, taxonomies and policy tags are created in bulk using nested protocol buffer structures.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: `GoogleCloudDatacatalogV1ImportTaxonomiesRequest`; Response: `GoogleCloudDatacatalogV1ImportTaxonomiesResponse`
+- Request: [`GoogleCloudDatacatalogV1ImportTaxonomiesRequest` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1importtaxonomiesrequest), [`GoogleCloudDatacatalogV1beta1ImportTaxonomiesRequest` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1importtaxonomiesrequest); Response: [`GoogleCloudDatacatalogV1ImportTaxonomiesResponse` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1importtaxonomiesresponse), [`GoogleCloudDatacatalogV1beta1ImportTaxonomiesResponse` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1importtaxonomiesresponse)
 
 ### `datacatalog.projects.locations.taxonomies.list`
 
@@ -149,7 +151,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - `GET https://datacatalog.googleapis.com/v1/{+parent}/taxonomies`
 - Lists all taxonomies in a project in a particular location that you have a permission to view.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `GoogleCloudDatacatalogV1ListTaxonomiesResponse`
+- Request: —; Response: [`GoogleCloudDatacatalogV1ListTaxonomiesResponse` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1listtaxonomiesresponse), [`GoogleCloudDatacatalogV1beta1ListTaxonomiesResponse` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1listtaxonomiesresponse)
 
 ### `datacatalog.projects.locations.taxonomies.patch`
 
@@ -157,7 +159,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - `PATCH https://datacatalog.googleapis.com/v1/{+name}`
 - Updates a taxonomy, including its display name, description, and activated policy types.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: `GoogleCloudDatacatalogV1Taxonomy`; Response: `GoogleCloudDatacatalogV1Taxonomy`
+- Request: [`GoogleCloudDatacatalogV1Taxonomy` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1taxonomy), [`GoogleCloudDatacatalogV1beta1Taxonomy` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1taxonomy); Response: [`GoogleCloudDatacatalogV1Taxonomy` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1taxonomy), [`GoogleCloudDatacatalogV1beta1Taxonomy` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1taxonomy)
 
 ### `datacatalog.projects.locations.taxonomies.policyTags.create`
 
@@ -165,7 +167,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - `POST https://datacatalog.googleapis.com/v1/{+parent}/policyTags`
 - Creates a policy tag in a taxonomy.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: `GoogleCloudDatacatalogV1PolicyTag`; Response: `GoogleCloudDatacatalogV1PolicyTag`
+- Request: [`GoogleCloudDatacatalogV1PolicyTag` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1policytag), [`GoogleCloudDatacatalogV1beta1PolicyTag` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1policytag); Response: [`GoogleCloudDatacatalogV1PolicyTag` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1policytag), [`GoogleCloudDatacatalogV1beta1PolicyTag` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1policytag)
 
 ### `datacatalog.projects.locations.taxonomies.policyTags.delete`
 
@@ -181,7 +183,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - `GET https://datacatalog.googleapis.com/v1/{+name}`
 - Gets a policy tag.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `GoogleCloudDatacatalogV1PolicyTag`
+- Request: —; Response: [`GoogleCloudDatacatalogV1PolicyTag` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1policytag), [`GoogleCloudDatacatalogV1beta1PolicyTag` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1policytag)
 
 ### `datacatalog.projects.locations.taxonomies.policyTags.getIamPolicy`
 
@@ -197,7 +199,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - `GET https://datacatalog.googleapis.com/v1/{+parent}/policyTags`
 - Lists all policy tags in a taxonomy.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `GoogleCloudDatacatalogV1ListPolicyTagsResponse`
+- Request: —; Response: [`GoogleCloudDatacatalogV1ListPolicyTagsResponse` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1listpolicytagsresponse), [`GoogleCloudDatacatalogV1beta1ListPolicyTagsResponse` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1listpolicytagsresponse)
 
 ### `datacatalog.projects.locations.taxonomies.policyTags.patch`
 
@@ -205,7 +207,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 - `PATCH https://datacatalog.googleapis.com/v1/{+name}`
 - Updates a policy tag, including its display name, description, and parent policy tag.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
-- Request: `GoogleCloudDatacatalogV1PolicyTag`; Response: `GoogleCloudDatacatalogV1PolicyTag`
+- Request: [`GoogleCloudDatacatalogV1PolicyTag` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1policytag), [`GoogleCloudDatacatalogV1beta1PolicyTag` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1policytag); Response: [`GoogleCloudDatacatalogV1PolicyTag` (v1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1policytag), [`GoogleCloudDatacatalogV1beta1PolicyTag` (v1beta1)](../../rest-schemas/datacatalog/datacatalog.md#googleclouddatacatalogv1beta1policytag)
 
 ### `datacatalog.projects.locations.taxonomies.policyTags.setIamPolicy`
 
@@ -444,7 +446,7 @@ Authorization: Bearer ACCESS_TOKEN
 
 - Generated from the Discovery document(s) v1, v1beta1 of `datacatalog` (retrieved 2026-11-14). Resources on this page: catalog, organizations, projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when the description says that some requests must specify it (for example, `options.requestedPolicyVersion` must be 3 to get a policy with conditional role bindings). Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/datacatalog/`; they are the `schemas` section of the Discovery documents in Source.
 - Deprecated methods (`deprecated: true` in Discovery): `datacatalog.catalog.search`, `datacatalog.organizations.locations.retrieveConfig`, `datacatalog.organizations.locations.retrieveEffectiveConfig`, `datacatalog.organizations.locations.setConfig`, `datacatalog.projects.locations.retrieveEffectiveConfig`, `datacatalog.projects.locations.setConfig`. Avoid them in new code.
 - Corrected from the Discovery document: the description of `datacatalog.projects.locations.taxonomies.create` is "Creates a taxonomy in a specified project. The taxonomy is initially empty, that is, it doesn't contain policy tags.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Deprecated (partly): the Data Catalog deprecations page lists Data Catalog with deprecated date "February 3, 2025" and shutdown date "June 1, 2026", and says "This deprecation applies to Data Catalog metadata search and cataloging features (such as custom entries, entry groups, and tag templates). The Policy Tag Manager service (taxonomies and policy tags), which is used for column-level access control and dynamic data masking in BigQuery, isn't deprecated and continues to be served under the `datacatalog.googleapis.com` API endpoint. The `datacatalog.googleapis.com` API must remain enabled for projects that use BigQuery policy tags."; for metadata search and cataloging it points to Knowledge Catalog (https://docs.cloud.google.com/dataplex/docs/transition-to-dataplex-catalog) (https://docs.cloud.google.com/data-catalog/docs/deprecations, retrieved 2026-11-19). The Discovery documents used here (`datacatalog` v1 and v1beta1, retrieved 2026-11-14) contain `catalog.search`, the organization and project config methods, the v1 long-running operations and the Policy Tag Manager methods (taxonomies, policy tags); they contain no entry group, entry, tag or tag template methods, so this skill does not list those (they belong to the shut-down cataloging features).
