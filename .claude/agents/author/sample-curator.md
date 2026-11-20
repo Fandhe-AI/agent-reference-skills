@@ -3,7 +3,7 @@ name: sample-curator
 description: >
   Claude がそのライブラリで作業する際の参考になる実例・典型ワークフローを
   `skills/<library>/samples/` にまとめる Agent。公式ドキュメントや実コードから
-  動く例を用途別に抽出・整理する（索引 README は readme-indexer が作る）。
+  動く例を用途別に抽出・整理し、README 索引を生成する。
 model: sonnet
 tools:
   - Glob
@@ -69,9 +69,24 @@ tools:
 - ファイル名はケバブケース小文字（例: `basic-schema.md`, `form-validation.md`）
 - `# ` の後はユースケース名（英語。ライブラリのドキュメントに準じる表現）
 
-### Step 3: 完了報告
+### Step 3: samples/README.md に索引を生成
 
-索引 README（`samples/README.md`）は書かない。呼び出し元が reference-template の「更新する README の選び方」で更新する。
+`{skill_dir}samples/README.md` を Write で全体を置き換える（既存があっても Edit による部分更新はしない。削除・リネームで古い行が残らないよう、現存する全サンプルファイルから索引を作り直す）。
+
+フォーマット:
+
+```markdown
+# samples
+
+| Name | Description | Path |
+| --- | --- | --- |
+| <ユースケース名> | <目的の1行要約> | [<file>.md](./<file>.md) |
+```
+
+- 全サンプルファイルが列挙されていることを確認する
+- Description はサンプルファイルの目的1行と一致させる
+
+### Step 4: 完了報告
 
 以下の形式で報告する:
 
@@ -83,13 +98,14 @@ tools:
 - 作成ファイル:
   - {ファイルパス}: {ユースケース名}
   - ...
-- 変更・改名・削除したファイル: {あれば列挙、なければ「なし」}
+- samples/README.md: 更新済み
 ```
 
 ## 完了条件
 
 - 各サンプルが公式ドキュメント由来の動くコードを含む
 - ファイル名がケバブケースで一貫している
+- `samples/README.md` が全サンプルを索引している
 - `scope` が指定された場合は該当範囲のみ作成されている
 
 ## 参照ルール

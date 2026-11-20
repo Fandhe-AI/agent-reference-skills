@@ -28,7 +28,7 @@ tools:
 - **skill_dir**: 対象スキルのディレクトリパス（例: `skills/zod/`）、または
 - **target_files**: 対象ファイルのパスリスト（個別ファイル指定の場合）
 
-どちらも指定がない場合は `skills/` 配下を広範囲に走査する（索引表検査の対象は Step 3 の「指定なし」に従う）。
+どちらも指定がない場合は `skills/` 配下を広範囲に走査する。
 
 ## 行動原則
 
@@ -83,19 +83,12 @@ samples 本文の不備は sample-curator、scripts 本文の不備は script-co
 
 ### Step 3: README.md 索引表のフォーマット確認
 
-次の各 `README.md` について:
-
-- `skill_dir` 指定時: `{skill_dir}references/**/README.md` を Glob で再帰的に列挙した各 README（カテゴリの README と階層型カテゴリの各階層の子索引。途中のディレクトリに README.md が無くても、その下の README.md を含む）と、Step 1 で加えた `samples/README.md` `scripts/README.md`
-- `target_files` 指定時: そのリストに含まれる `README.md` のうち、スキルの `references/` 配下にあるもの（`skills/<name>/references/**/README.md`）と `skills/<name>/samples/README.md` `skills/<name>/scripts/README.md`。リポジトリルートの README や `samples/` の下の個別ディレクトリにある README などは対象外
-- 指定なし: `skills/*/references/**/README.md` を Glob で再帰的に列挙した各 README と、存在する `skills/*/samples/README.md` `skills/*/scripts/README.md`
-
-索引表・列の分割・適合行は reference-template の「索引表と適合行の定義」に従う。ヘッダーが `| Name | Description | Path |` でない表（`syncpack` の `update-groups/README.md` の 2 列の共通プロパティ表など、手で保守する README に残す表）の行は 1〜3・5 と 4 の書式の判定をしない（4 のリンクの実在確認だけを行う）。
+各カテゴリの `README.md`、および存在する `samples/README.md` `scripts/README.md` について:
 
 1. `| Name | Description | Path |` ヘッダー行が存在するか
-2. 各ヘッダー行で始まる表が索引表として成立しているか（空行を挟まない次の行が 3 列の区切り行で、データ行が 1 行以上あるか）。成立していない表は違反とし、その表の行には 3・5 と 4 の書式の判定を行わない（4 のリンク切れの確認は行う）
-3. 索引表の各データ行が定義の適合行の条件 1（`|` で始まり、3 列である）を満たすか。満たさない行は違反とし、4 の書式の判定には進めない（4 のリンク切れの確認は行う）（生成ツールが出力する README では、この判定を行わない）
-4. 索引表の各データ行が、定義の適合行の条件 2〜4（Path セルのリンクがちょうど 1 つ、`./` で始まり README 自身ではない、同じディレクトリのページは `[{filename}.md](./{filename}.md)`、子ディレクトリを指す行は `references/` 配下の README の直下の子ディレクトリだけ）を満たすか（生成ツールが出力する README（reference-template の「既存 README の扱い」）では、この書式の判定を行わない（リンク切れの確認は行う））。加えて、README の中のすべてのリンク（索引表の行に限らない。成立していない表の行・3 列でない行・補足の表やリストを含む）のうちファイルを指すもの（`#notes` のようなフラグメントだけのリンク、`https:` `mailto:` などの URI スキーム付きのリンク、`/` で始まる絶対パスを除いたもの）の実在を、reference-template の正規化（先頭の `./` と `#` 以降のフラグメントを除く）をしたパスで確認し、リンク先が実在しないリンク（とその行）を違反とする
-5. 索引表のヘッダー以外の行が空でないか
+2. 3カラムの区切り行（`| --- | --- | --- |` 等。ダッシュ数や前後の空白の差異は許容する）が存在するか
+3. 各行の `Path` セルが `[{filename}.md](./{filename}.md)` 形式のリンクになっているか（`references/` 配下の README では、reference-template の階層型カテゴリの例外に当たる `./<subdir>/README.md`・`./<subdir>/<file>.md` へのリンクも可）
+4. ヘッダー以外の行が空でないか
 
 ### Step 4: SKILL.md frontmatter の YAML 妥当性確認
 

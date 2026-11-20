@@ -59,7 +59,7 @@ Step 1 で scope が確定しなかった場合は、計画の scope 分割を�
 
 ### Step 3: references を並列生成する
 
-Step 1・Step 2 で確定した scope 分割に従い、各 scope に対して **reference-researcher（subagent_type: reference-researcher、model: sonnet）**を**並列**起動し、対象カテゴリの references（個別ページ .md）を生成させる（`README.md` 索引は Step 4 の後に readme-indexer が作る）。各 reference-researcher が自身で公式ドキュメントのナビゲーションを取得してページ一覧を確定する（main は公式ドキュメントを読まない）。
+Step 1・Step 2 で確定した scope 分割に従い、各 scope に対して **reference-researcher（subagent_type: reference-researcher、model: sonnet）**を**並列**起動し、対象カテゴリの references（個別ページ .md）と `README.md` インデックスを生成させる。各 reference-researcher が自身で公式ドキュメントのナビゲーションを取得してページ一覧を確定する（main は公式ドキュメントを読まない）。
 
 scope が未確定の場合は、先に reference-researcher を `mode=survey` で1つ起動してサイト構造の調査だけを行わせる（survey モードはファイルを書き出さずカテゴリ候補のみ報告する。この起動では `scope`・`output_dir` を渡さない）。その結果（カテゴリ一覧）をもとに scope を分割してから、各 scope を `mode=full`（既定）で並列起動する。カテゴリ数が多い場合は 1 Agent = 1 カテゴリを目安に分割する。
 
@@ -82,11 +82,9 @@ references の生成と並行、または完了後に以下を並列起動する
 
 ライブラリの性質上 samples または scripts が不要と判断される場合（例: ガイドライン型スキル）はスキップしてよい。
 
-Step 3・Step 4 の完了後、main は索引を置くディレクトリ（各 `references/<category>/`（ページを `references/` 直下に置くスキルでは `references/`）、階層型カテゴリで索引を置くと決めた子ディレクトリ、作成した `samples/`・`scripts/`）を決め、**readme-indexer（subagent_type: readme-indexer、model: haiku）**を 1 ディレクトリずつ、子を先に起動する（reference-template の「更新する README の選び方」）。階層型カテゴリでは、索引を置く子ディレクトリからカテゴリまでの間の各ディレクトリにも索引を置く（カテゴリの索引から各ページへたどれるようにするため）。生成ツールが出力するディレクトリは渡さない（README は生成ツールが出力する）。CLAUDE.md が README レベルの距離線を定めるファミリー（`anthropic-*`・`openai-*` 等）では、readme-indexer の後に main が距離線の前置きを README に加える。生成ツールの出力を含むスキルでは、Step 5 で skill-author に `generated_dirs` を渡し、SKILL.md のツリーの該当ディレクトリへ `機械生成` または `機械変換` と注記させる。
-
 ### Step 5: SKILL.md を作成する
 
-Step 3（references）と **Step 4 で実際に起動した Agent**（samples / scripts）、Step 4 の後の readme-indexer の完了を確認後、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。Step 4 で samples / scripts を不要と判断してスキップした場合は、その分の完了を待たずに Step 3 と readme-indexer の完了で先へ進む（起動していない Agent の完了は待たない）。samples / scripts を先に確定させることで、SKILL.md のツリー・マッピング表に確実に反映される。
+Step 3（references）と **Step 4 で実際に起動した Agent**（samples / scripts）の完了を確認後、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。Step 4 で samples / scripts を不要と判断してスキップした場合は、その分の完了を待たずに Step 3 の完了のみで先へ進む（起動していない Agent の完了は待たない）。samples / scripts を先に確定させることで、SKILL.md のツリー・マッピング表に確実に反映される。
 
 渡すパラメータ:
 
@@ -95,7 +93,6 @@ Step 3（references）と **Step 4 で実際に起動した Agent**（samples / 
 | `library` | ライブラリ名 |
 | `skill_dir` | `skills/<library>/` |
 | `user-invocable` | 配布スキルは通常 `false`（skill-anatomy 準拠） |
-| `generated_dirs` | 生成ツールが出力するディレクトリ（ある場合のみ） |
 
 skill-author が生成する内容:
 
@@ -118,8 +115,7 @@ skill-author は自身で description を最適化せず、最適化が必要な
 - references 本文の不備 → **reference-researcher**
 - samples 本文の不備 → **sample-curator**
 - scripts 本文の不備 → **script-collector**
-- 各カテゴリ `README.md` 索引の不備 → **readme-indexer**（H1 または概要行を変更したファイルは `changed_files` として渡す。手で保守する README と生成ツールが出力する README は、reference-template の「既存 README の扱い」に従う）
-- 差し戻しの修正でページの H1・概要行・パスが変わったときは、再検証の前に reference-template の「更新する README の選び方」で README を選び直して更新する
+- 各カテゴリ `README.md` 索引の不備 → **readme-indexer**
 - SKILL.md の `description`（ヒット率・長さ・YAML の `#` 起因の不備）→ **description-optimizer**
 - SKILL.md のツリー・マッピング表・`description` 以外の frontmatter の不備 → **skill-author**
 
@@ -149,7 +145,7 @@ skill-author は自身で description を最適化せず、最適化が必要な
 
 ## 関連
 
-**Agents**: reference-researcher, sample-curator, script-collector, readme-indexer, skill-author, description-optimizer, reference-linter, skill-structure-validator, skill-coverage-analyzer
+**Agents**: reference-researcher, sample-curator, script-collector, skill-author, description-optimizer, reference-linter, skill-structure-validator, skill-coverage-analyzer
 
 **Rules**: delegation, skill-anatomy, reference-template, description-style
 
