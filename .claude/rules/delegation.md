@@ -16,7 +16,7 @@ token を消費する実作業（ドキュメント調査、references 作成、
 - サブエージェントへの委譲指示の発行
 - 完了後のサマリー報告（ファイルパス・変更点の箇条書き）
 - 軽微な frontmatter 修正（1行以内の誤字訂正など）
-- 手で保守する README（reference-template の「既存 README の扱い」）への、今回追加・改名・削除したページや子索引の行と、見出し（Name）や概要（Description）が変わった既存ページの行の反映と、lint・構造検証の索引の指摘の修正（readme-indexer は書き込まないため）
+- 手で保守する README（reference-template の「既存 README の扱い」）の索引表の行の修正（ページ・子索引の変更の反映と、lint・構造検証の指摘の修正。readme-indexer は書き込まないため）
 
 ## やってはいけないこと
 

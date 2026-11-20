@@ -46,7 +46,7 @@ tools:
    - いずれの場合も、既存の `{category_dir}README.md` の行のリンクのうち、正規化したリンク先が `<subdir>/<file>.md` で実在するもの（表示名や `./` の有無は問わない）
 4. 1〜3 の候補を、正規化したリンク先（`{category_dir}` からの相対パス。先頭の `./` を除く）をキーに統合し、重複を 1 行にする
 5. Path（`<file>.md`・`<subdir>/README.md`・`<subdir>/<file>.md`）の昇順でソートする
-6. 候補が 0 件なら書き込まず、Step 5 に従って返す（データ行の無い索引表は reference-template の書式違反のため。原則 4 の判定は候補数より先に行う）
+6. 候補が 0 件なら書き込まず、Step 5 に従って返す（データ行の無い索引表は reference-template の書式違反のため）
 
 ### Step 2: 各ファイルの情報抽出
 
@@ -88,7 +88,7 @@ tools:
 
 ### Step 5: 書き込まなかったときの返却
 
-再生成する README に当たらないときは書き込まず、当たらなかった条件（生成ツールが出力する README である、前置きの説明文や複数の索引表がある、アンカー付きの行・同じページを指す行の重複・載せない先へのリンク・Name や Description のセルの中のリンクがある等）を返す。このとき Step 1 の候補数も返す。再生成する README に当たり、Step 1 の候補が 0 件のときは、その旨と、reference-template の「索引候補が 0 件になったディレクトリ」に従った整理が必要であることを返す。違反の一覧や修正案は返さない（検出は reference-linter と skill-structure-validator が行う）
+再生成する README に当たらないときは書き込まず、当たらなかった条件（生成ツールが出力する README である、前置きの説明文や複数の索引表がある、アンカー付きの行・同じページを指す行の重複・載せない先へのリンク・Name や Description のセルの中のリンクがある等）を返す。Step 1 の候補が 0 件のときも書き込まず、その旨を返す（README の扱いは reference-template の「ページの無いディレクトリ」）。違反の一覧や修正案は返さない（検出は reference-linter と skill-structure-validator が行う）
 
 ## 完了条件
 

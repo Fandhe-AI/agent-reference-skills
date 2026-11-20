@@ -59,7 +59,7 @@ Step 1 で scope が確定しなかった場合は、計画の scope 分割を�
 
 ### Step 3: references を並列生成する
 
-Step 1・Step 2 で確定した scope 分割に従い、各 scope に対して **reference-researcher（subagent_type: reference-researcher、model: sonnet）**を**並列**起動し、対象カテゴリの references（個別ページ .md）と `README.md` インデックスを生成させる。各 reference-researcher が自身で公式ドキュメントのナビゲーションを取得してページ一覧を確定する（main は公式ドキュメントを読まない）。
+Step 1・Step 2 で確定した scope 分割に従い、各 scope に対して **reference-researcher（subagent_type: reference-researcher、model: sonnet）**を**並列**起動し、対象カテゴリの references（個別ページ .md）を生成させる（`README.md` 索引は Step 4 の後に readme-indexer が作る）。各 reference-researcher が自身で公式ドキュメントのナビゲーションを取得してページ一覧を確定する（main は公式ドキュメントを読まない）。
 
 scope が未確定の場合は、先に reference-researcher を `mode=survey` で1つ起動してサイト構造の調査だけを行わせる（survey モードはファイルを書き出さずカテゴリ候補のみ報告する。この起動では `scope`・`output_dir` を渡さない）。その結果（カテゴリ一覧）をもとに scope を分割してから、各 scope を `mode=full`（既定）で並列起動する。カテゴリ数が多い場合は 1 Agent = 1 カテゴリを目安に分割する。
 
@@ -81,6 +81,8 @@ references の生成と並行、または完了後に以下を並列起動する
 - **script-collector（subagent_type: script-collector、model: sonnet）** — `skills/<library>/scripts/` にコピペ可能なコマンド集を生成させる。渡すパラメータ: `library`, `skill_dir`（`skills/<library>/`）, `base_url`（Step 1〜2 で確定したもの）
 
 ライブラリの性質上 samples または scripts が不要と判断される場合（例: ガイドライン型スキル）はスキップしてよい。
+
+Step 3・Step 4 の完了後、main は索引を置くディレクトリ（各 `references/<category>/`、階層型カテゴリで索引を置くと決めた子ディレクトリ、作成した `samples/`・`scripts/`）を決め、**readme-indexer（subagent_type: readme-indexer、model: haiku）**を 1 ディレクトリずつ、子を先に起動する（reference-template の「更新する README の選び方」）。
 
 ### Step 5: SKILL.md を作成する
 

@@ -78,11 +78,14 @@ reference-linter・skill-structure-validator・readme-indexer はこの定義を
 - **再生成する README**: 次の両方を満たすもの。readme-indexer がページから再生成する（Name・Description はページから抽出し直す。既存の子索引の行の Description と表示名は引き継ぐ）
   - 下記の生成ツールが出力する README ではない
   - README が無い、または H1 と索引表 1 つだけで、再生成で失われる行が無い。つまり、アンカー付きの行（`./<file>.md#<anchor>`）、同じページを指す行の重複、readme-indexer が載せない先（孫以下・ディレクトリ外、`samples/` `scripts/` の README から子ディレクトリ）を指すリンク、Name・Description のセルの中のリンク（再生成では引き継がれない）のいずれも無い（表示名・`./` の有無・列数・1 行のリンク数の違反は再生成で直るので妨げない）
-- **手で保守する README**: 生成ツールが出力する README でも再生成する README でもない README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、関数ごとのアンカー付きの行などを持つもの）。readme-indexer は書き込まない。呼び出し元（main）が、今回追加・改名・削除したページや子索引の行と、見出し（Name）や概要（Description）が変わった既存ページの行を該当する表へ直接反映し、reference-linter と skill-structure-validator の指摘もこの定義を満たすように直す。これは delegation.md の「README 索引表の再生成」には当たらない。既存の内容は削除しない
+- **手で保守する README**: 生成ツールが出力する README でも再生成する README でもない README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、関数ごとのアンカー付きの行などを持つもの）。readme-indexer は書き込まない。下記「更新する README の選び方」で対象になったとき、呼び出し元（main）が、変更したページ・子索引に合わせて該当する表の行を直接直し（行の追加・改名・削除と Name・Description の更新）、reference-linter と skill-structure-validator の指摘もこの定義を満たすように直す。これは delegation.md の「README 索引表の再生成」には当たらない。既存の内容は削除しない
 - **生成ツールが出力する README**: スキルの SKILL.md のディレクトリツリーで、そのカテゴリまたは祖先のディレクトリに `機械生成` または `機械変換` と注記されたもの（`gcp-*` の `gcloud/` `rest/` `iam/` 等、`gcp-bigquery` の `googlesql-syntax/` `legacy-sql/` 等）と、`gcp-services-index` のすべての README。readme-indexer は書き込まず、README を直接編集もしない。生成ツール（`_/tools/gcp/` 等）を直して再生成する。生成ツールは `.gitignore` の対象の `_/` にあり、メンテナーの作業ツリーにしか無い。生成ツールが無いチェックアウトでは、対象の README と未解消の指摘を報告して終える
-- **呼び出し元が渡すカテゴリ**: 作業の後に README があるべきディレクトリだけを readme-indexer に渡す（廃止した子索引のディレクトリは渡さない）。子ディレクトリの README やページの増減・改名のほか、子索引（`<subdir>/README.md`）の H1 や、親の索引が直接指している子ディレクトリのページの見出しや概要が変わったときも、親のカテゴリを渡し、子を先に処理する
-- **README を書く Agent の共通規則**: readme-indexer・reference-researcher・sample-curator・script-collector は、既存の README が再生成する README に当たらないときは書き込まず、作成・改名・削除したページを呼び出し元へ返す。索引への反映は main が手で保守する README の手順で行う
-- **索引候補が 0 件になったディレクトリ**: 再生成する README なら、main が README を削除し、親の索引からその行を外し、SKILL.md の参照は skill-author に更新させる。手で保守する README は main が索引表の行を外し、残す内容があるかを見て扱いを決める。生成ツールが出力する README は生成ツールで扱う
+- **更新する README の選び方**: README を書くのは readme-indexer と、手で保守する README を直す main だけ（reference-researcher・sample-curator・script-collector はページだけを書き、作成・改名・削除したファイルを返す）。作業の後、次の README を対象にし、深い階層から処理する。対象は `references/<category>/` 以下・`samples/`・`scripts/` の README に限る
+  - 作成・変更・改名・削除したファイル（子索引を含む）にリンクしている既存の README
+  - 新しいファイルについては、新しいページならそのページのディレクトリから、新しい子索引なら親ディレクトリから上へたどって最初に見つかる既存の README（`references/<category>/`・`samples/`・`scripts/` より上には上がらない）
+  - README の無いディレクトリは、今回そこに索引を新設すると決めたときだけ対象にする（新しいスキルのカテゴリ・`samples/`・`scripts/` を含む）
+  - 対象のうち、再生成する README は readme-indexer に `category_dir` として渡し、手で保守する README は main が直し、生成ツールが出力する README は生成ツールで再生成する
+- **ページの無いディレクトリ**: README を置かない。最後のページを削除したら、main が README を削除し、親の索引からその行を外し、SKILL.md の参照は skill-author に更新させる（生成ツールが出力する README は生成ツールで扱う）
 - **ページから取る Name・Description**: Name はページの H1、Description は H1 の後の最初の本文の行（空行・見出し・メタデータ行・引用・コードフェンス・表・HTML コメント・フロントマターを飛ばす）。Description に含まれる Markdown のリンク（`[text](url)`）は表示テキスト `text` だけにする（相対リンクは README を起点に解決され、子ディレクトリのページから取ると別のページを指すため）。readme-indexer の再生成でも、main が手で保守する README に反映するときも同じにする。ただし main が手で保守する README の既存の行を更新するときは、既存の Name・Description のセルにあるリンクのうち README から正しく解決されるもの（`https:` などの URL と、README を起点に実在するページを指す相対リンク）を残す。子索引の行の Name は子索引の H1 に合わせる
 
 ## 関連
