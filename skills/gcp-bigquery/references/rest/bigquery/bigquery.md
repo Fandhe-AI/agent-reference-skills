@@ -20,6 +20,7 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 - Versions: v2
 - `GET https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{+datasetId}`
 - Returns the dataset specified by datasetID. # IAM Permissions Requires the `bigquery.datasets.get` permission on the dataset.
+- Fine-grained dataset ACL permissions (when the `enable_fine_grained_dataset_acls_option` configuration setting is `TRUE`, from https://docs.cloud.google.com/bigquery/docs/dataset-access-control; see `references/access-control-iam/dataset-access-control.md`): `datasetView` unspecified or `FULL` needs `bigquery.datasets.get` and `bigquery.datasets.getIamPolicy`; `METADATA` needs `bigquery.datasets.get`; `ACL` needs `bigquery.datasets.getIamPolicy`. Without the opt-in, `FULL` and unspecified keep the previous behavior (`bigquery.datasets.get` returns both metadata and access controls).
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`, `https://www.googleapis.com/auth/cloud-platform.read-only`
 - Request: —; Response: `Dataset`
 
@@ -28,6 +29,7 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 - Versions: v2
 - `POST https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets`
 - Creates a new empty dataset. # IAM Permissions Requires the `bigquery.datasets.create` permission on the project.
+- Fine-grained dataset ACL permissions (when the `enable_fine_grained_dataset_acls_option` configuration setting is `TRUE`, from https://docs.cloud.google.com/bigquery/docs/dataset-access-control; see `references/access-control-iam/dataset-access-control.md`): creating a dataset with access controls (the `access` field) needs `bigquery.datasets.create` and `bigquery.datasets.setIamPolicy`; without access controls, `bigquery.datasets.create` only.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `Dataset`; Response: `Dataset`
 
@@ -44,6 +46,7 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 - Versions: v2
 - `PATCH https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{+datasetId}`
 - Updates information in an existing dataset. The update method replaces the entire dataset resource, whereas the patch method only replaces fields that are provided in the submitted dataset resource. This method supports RFC5789 patch semantics. # IAM Permissions Requires the following IAM permission(s) to use this method: - `bigquery.datasets.update` on the dataset. - `bigquery.datasets.get` on the dataset.
+- Fine-grained dataset ACL permissions (when the `enable_fine_grained_dataset_acls_option` configuration setting is `TRUE`, from https://docs.cloud.google.com/bigquery/docs/dataset-access-control; see `references/access-control-iam/dataset-access-control.md`): `updateMode` unspecified or `UPDATE_FULL` needs `bigquery.datasets.update` and `bigquery.datasets.setIamPolicy`; `UPDATE_METADATA` needs `bigquery.datasets.update`; `UPDATE_ACL` needs `bigquery.datasets.setIamPolicy`. Without the opt-in, BigQuery keeps the previous behavior (`bigquery.datasets.update` updates both metadata and access controls).
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `Dataset`; Response: `Dataset`
 
@@ -60,6 +63,7 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 - Versions: v2
 - `PUT https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{+datasetId}`
 - Updates information in an existing dataset. The update method replaces the entire dataset resource, whereas the patch method only replaces fields that are provided in the submitted dataset resource. # IAM Permissions Requires the `bigquery.datasets.update` permission on the dataset.
+- Fine-grained dataset ACL permissions (when the `enable_fine_grained_dataset_acls_option` configuration setting is `TRUE`, from https://docs.cloud.google.com/bigquery/docs/dataset-access-control; see `references/access-control-iam/dataset-access-control.md`): `updateMode` unspecified, `UPDATE_ACL` or `UPDATE_FULL` needs `bigquery.datasets.update` and `bigquery.datasets.setIamPolicy`; `UPDATE_METADATA` needs `bigquery.datasets.update`. Without the opt-in, BigQuery keeps the previous behavior (`bigquery.datasets.update` updates both metadata and access controls).
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `Dataset`; Response: `Dataset`
 
@@ -385,10 +389,10 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 
 ### Example request line
 
-Generated from the Discovery entry of `bigquery.datasets.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
+Generated from the Discovery entry of `bigquery.datasets.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `datasetView=METADATA` reads only metadata, which needs only `bigquery.datasets.get` when fine-grained dataset ACL permissions are enabled. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://bigquery.googleapis.com/bigquery/v2/projects/PROJECT/datasets/DATASET
+GET https://bigquery.googleapis.com/bigquery/v2/projects/PROJECT/datasets/DATASET?datasetView=METADATA
 Authorization: Bearer ACCESS_TOKEN
 ```
 
@@ -409,7 +413,7 @@ Authorization: Bearer ACCESS_TOKEN
 | `projectId` | path | string | yes | Required. Project ID of the requested dataset |
 | `datasetId` | path | string | yes | Required. Dataset ID of the requested dataset |
 | `accessPolicyVersion` | query | integer (int32) | conditional | Optional. The version of the access policy schema to fetch. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. Requests for conditional access policy binding in datasets must specify version 3. Dataset with no conditional role bindings in access policy may specify any valid value or leave the field unset. This field will be mapped to IAM Policy version (https://cloud.google.com/iam/docs/policies#versions) and will be used to fetch policy from IAM. If unset or if 0 or 1 value is used for dataset with conditional bindings, access entry with condition will have role string appended by 'withcond' string followed by a hash value. For example : { "access": \[ { "role": "roles/bigquery.dataViewer_with_conditionalbinding_7a34awqsda", "userByEmail": "user@example.com", } \] } Please refer https://cloud.google.com/iam/docs/troubleshooting-withcond for more details. |
-| `datasetView` | query | string enum | no | Optional. Specifies the view that determines which dataset information is returned. By default, metadata and ACL information are returned. Values: `DATASET_VIEW_UNSPECIFIED`, `METADATA`, `ACL`, `FULL`. |
+| `datasetView` | query | string enum | no | Optional. Specifies the view that determines which dataset information is returned. By default, metadata and ACL information are returned. Required permissions depend on this value when fine-grained dataset ACL permissions are enabled; see the method summary above. Values: `DATASET_VIEW_UNSPECIFIED`, `METADATA`, `ACL`, `FULL`. |
 
 ### `bigquery.datasets.insert` parameters
 
@@ -435,7 +439,7 @@ Authorization: Bearer ACCESS_TOKEN
 | `projectId` | path | string | yes | Required. Project ID of the dataset being updated |
 | `datasetId` | path | string | yes | Required. Dataset ID of the dataset being updated |
 | `accessPolicyVersion` | query | integer (int32) | conditional | Optional. The version of the provided access policy schema. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. This version refers to the schema version of the access policy and not the version of access policy. This field's value can be equal or more than the access policy schema provided in the request. For example, \* Operations updating conditional access policy binding in datasets must specify version 3. Some of the operations are : - Adding a new access policy entry with condition. - Removing an access policy entry with condition. - Updating an access policy entry with condition. \* But dataset with no conditional role bindings in access policy may specify any valid value or leave the field unset. If unset or if 0 or 1 value is used for dataset with conditional bindings, request will be rejected. This field will be mapped to IAM Policy version (https://cloud.google.com/iam/docs/policies#versions) and will be used to set policy in IAM. |
-| `updateMode` | query | string enum | no | Optional. Specifies the fields of dataset that update/patch operation is targeting By default, both metadata and ACL fields are updated. Values: `UPDATE_MODE_UNSPECIFIED`, `UPDATE_METADATA`, `UPDATE_ACL`, `UPDATE_FULL`. |
+| `updateMode` | query | string enum | no | Optional. Specifies the fields of dataset that update/patch operation is targeting By default, both metadata and ACL fields are updated. Required permissions depend on this value when fine-grained dataset ACL permissions are enabled; see the method summary above. Values: `UPDATE_MODE_UNSPECIFIED`, `UPDATE_METADATA`, `UPDATE_ACL`, `UPDATE_FULL`. |
 
 ### `bigquery.datasets.undelete` parameters
 
@@ -451,7 +455,7 @@ Authorization: Bearer ACCESS_TOKEN
 | `projectId` | path | string | yes | Required. Project ID of the dataset being updated |
 | `datasetId` | path | string | yes | Required. Dataset ID of the dataset being updated |
 | `accessPolicyVersion` | query | integer (int32) | conditional | Optional. The version of the provided access policy schema. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. This version refers to the schema version of the access policy and not the version of access policy. This field's value can be equal or more than the access policy schema provided in the request. For example, \* Operations updating conditional access policy binding in datasets must specify version 3. Some of the operations are : - Adding a new access policy entry with condition. - Removing an access policy entry with condition. - Updating an access policy entry with condition. \* But dataset with no conditional role bindings in access policy may specify any valid value or leave the field unset. If unset or if 0 or 1 value is used for dataset with conditional bindings, request will be rejected. This field will be mapped to IAM Policy version (https://cloud.google.com/iam/docs/policies#versions) and will be used to set policy in IAM. |
-| `updateMode` | query | string enum | no | Optional. Specifies the fields of dataset that update/patch operation is targeting By default, both metadata and ACL fields are updated. Values: `UPDATE_MODE_UNSPECIFIED`, `UPDATE_METADATA`, `UPDATE_ACL`, `UPDATE_FULL`. |
+| `updateMode` | query | string enum | no | Optional. Specifies the fields of dataset that update/patch operation is targeting By default, both metadata and ACL fields are updated. Required permissions depend on this value when fine-grained dataset ACL permissions are enabled; see the method summary above. Values: `UPDATE_MODE_UNSPECIFIED`, `UPDATE_METADATA`, `UPDATE_ACL`, `UPDATE_FULL`. |
 
 ### `bigquery.jobs.cancel` parameters
 
