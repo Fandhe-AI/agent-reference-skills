@@ -87,6 +87,8 @@ Message types referenced by the methods listed under `references/rest/bigqueryda
 
 JSON example from the Discovery description (as a JSON block; the trailing comma after the `condition.expression` value is removed; see Notes):
 
+Adapted (not in the official docs): the trailing comma after the `condition.expression` value of the Discovery example is removed so that the block is valid JSON.
+
 ```json
 {
   "bindings": [
