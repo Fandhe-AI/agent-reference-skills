@@ -715,7 +715,7 @@ equivalents.
 | `PARSE_IP(addr_string)` | `IF(BYTE_LENGTH(`[`NET.SAFE_IP_FROM_STRING`](../googlesql-functions/net_functions.md#netsafe_ip_from_string)`(addr_string)) = 4, `[`NET.IPV4_TO_INT64`](../googlesql-functions/net_functions.md#netipv4_to_int64)`(NET.SAFE_IP_FROM_STRING(addr_string)), NULL)` | returns `NULL` for an input that is not a valid IPv4 address, as `PARSE_IP` does |
 | `FORMAT_IP(addr_int64)` | [`NET.IP_TO_STRING`](../googlesql-functions/net_functions.md#netip_to_string)`(`[`NET.IPV4_FROM_INT64`](../googlesql-functions/net_functions.md#netipv4_from_int64)`(addr_int64 & 0xFFFFFFFF))` |   |
 | `PARSE_PACKED_IP(addr_string)` | [`NET.SAFE_IP_FROM_STRING(addr_string)`](../googlesql-functions/net_functions.md#netsafe_ip_from_string) | returns `NULL` for an invalid address, as `PARSE_PACKED_IP` does |
-| `FORMAT_PACKED_IP(addr_bytes)` | [`NET.IP_TO_STRING(addr_bytes)`](../googlesql-functions/net_functions.md#netip_to_string) | `NET.IP_TO_STRING` takes a `BYTES` value; for a `STRING` input, as in the legacy SQL example `FORMAT_PACKED_IP('0123')`, convert it first, with a bytes literal such as `B'0123'` or with [`CAST(packed_string AS BYTES)`](../googlesql-functions/conversion_functions.md#cast-as-bytes), which encodes the string as UTF-8 |
+| `FORMAT_PACKED_IP(addr_bytes)` | [`NET.IP_TO_STRING(addr_bytes)`](../googlesql-functions/net_functions.md#netip_to_string) | `NET.IP_TO_STRING` takes the packed address as `BYTES` in network byte order (4 bytes for IPv4, 16 bytes for IPv6), so pass a `BYTES` value, such as one returned by `NET.SAFE_IP_FROM_STRING`, as is. The legacy SQL examples write the octets as a string, such as `FORMAT_PACKED_IP('0123')`; in GoogleSQL, write them as a bytes literal, such as `B'0123'`. Don't convert octets kept as characters with [`CAST(... AS BYTES)`](../googlesql-functions/conversion_functions.md#cast-as-bytes): it encodes the string as UTF-8, so a character above U+007F, such as U+00C0 for the octet `0xC0`, becomes 2 bytes (`C3 80`) and the address changes or has the wrong length. If the octets are stored as hexadecimal text, convert them with [`FROM_HEX`](../googlesql-functions/string_functions-1.md#from_hex), for example `NET.IP_TO_STRING(FROM_HEX('c0a80001'))` |
 | `NVL(expr, null_default)` | [`IFNULL(expr, null_default)`](../googlesql-functions/conditional_expressions.md#ifnull) |   |
 
 For more information about GoogleSQL functions, see
@@ -1357,7 +1357,7 @@ wildcard, even when a `_TABLE_SUFFIX` filter excludes that table. If either
 assumption is not met, list the tables for the dates explicitly and combine
 them with `UNION ALL`.
 
-Adapted (not in the official docs): required an 8-character suffix, so that only the tables for the dates in the range are read.
+Adapted (not in the official docs): listed the suffixes of the dates in the range in a literal `IN` condition, so that only the tables for those dates are read.
 
 ```sql
 #GoogleSQL
@@ -1366,8 +1366,8 @@ SELECT
 FROM
   `mydataset.sea_weather_*`
 WHERE
-  _TABLE_SUFFIX BETWEEN '20160501' AND '20160509'
-  AND LENGTH(_TABLE_SUFFIX) = 8
+  _TABLE_SUFFIX IN ('20160501', '20160502', '20160503', '20160504', '20160505',
+    '20160506', '20160507', '20160508', '20160509')
 ```
 
 #### The TABLE_DATE_RANGE_STRICT function
@@ -1401,7 +1401,7 @@ Translated query using [`WITH` clause](#composability-using-with-clauses) and co
 [Required permissions](../information-schema/tables.md#required-permissions) of that view lists, such as `bigquery.tables.list` on the dataset
 (for example, from `roles/bigquery.metadataViewer`):
 
-Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, counted only base tables, and required an 8-character suffix in the wildcard filter.
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, counted only base tables, and listed the suffixes of the dates in a literal `IN` condition in the wildcard filter.
 
 ```sql
 #GoogleSQL
@@ -1424,8 +1424,8 @@ SELECT
     (
       SELECT ROUND(AVG(TemperatureF),1)
       FROM `mydataset.sea_weather_*`
-      WHERE _TABLE_SUFFIX BETWEEN '20160501' AND '20160509'
-        AND LENGTH(_TABLE_SUFFIX) = 8
+      WHERE _TABLE_SUFFIX IN ('20160501', '20160502', '20160503', '20160504', '20160505',
+          '20160506', '20160507', '20160508', '20160509')
     )
   ) AS AVG_TEMP_F
 FROM MissingTables
@@ -1433,7 +1433,7 @@ FROM MissingTables
 
 And using [BigQuery Scripting (procedural SQL)](../googlesql-syntax/procedural-language.md):
 
-Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, counted only base tables, and required an 8-character suffix in the wildcard filter.
+Adapted (not in the official docs): checked which tables exist with the `table_name` column of `INFORMATION_SCHEMA.TABLES`, instead of the `_TABLE_SUFFIX` values of the rows that the wildcard table returns, counted only base tables, and listed the suffixes of the dates in a literal `IN` condition in the wildcard filter.
 
 ```sql
 #GoogleSQL
@@ -1460,8 +1460,8 @@ BEGIN
     FROM
       `mydataset.sea_weather_*`
     WHERE
-      _TABLE_SUFFIX BETWEEN '20160501' AND '20160509'
-      AND LENGTH(_TABLE_SUFFIX) = 8;
+      _TABLE_SUFFIX IN ('20160501', '20160502', '20160503', '20160504', '20160505',
+        '20160506', '20160507', '20160508', '20160509');
   END IF;
 END;
 ```
@@ -1668,10 +1668,10 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the function comparison table maps `INTEGER(x)` to `SAFE_CAST(x AS INT64)` with no note. Legacy SQL `INTEGER` returns the number of microseconds since the Unix epoch for a timestamp (legacy-sql/legacy-sql-1.md), while GoogleSQL cannot cast `TIMESTAMP` to `INT64` (googlesql-syntax/conversion_rules.md). A note that points to `UNIX_MICROS` for a `TIMESTAMP` input is added to the row.
 - Corrected from the official docs: the text said that GoogleSQL `NOT IN` returns `NULL` if any value on the right hand side is `NULL`. In googlesql-syntax/operators.md, `NOT IN` returns `FALSE` first when the value set contains an equal value, so `1 NOT IN (1, NULL)` is `FALSE`; it returns `NULL` only when no value matches and a comparison produces `NULL`. The sentence is changed to that condition.
 - Corrected from the official docs: the `TABLE_DATE_RANGE_STRICT` example that uses a `WITH` clause references the wildcard table `mydataset.sea_weather_*` in the same query as the check. If no table matches the wildcard, that reference can fail before the `IF` is evaluated, so the query may not return the `Not found suffixes` error. A sentence that says so and points to the scripting example, which runs the wildcard query only in the `ELSE` branch after the check, is added before the example. Because the existence check of both versions reads `INFORMATION_SCHEMA.TABLES`, the sentence also says that they need the permissions of that view (information-schema/tables.md), such as `bigquery.tables.list`, which access granted on the tables alone does not give.
-- Corrected from the official docs: the GoogleSQL examples that replace `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` filter the wildcard table with `_TABLE_SUFFIX BETWEEN '20160501' AND '20160509'`. That is a string comparison, so a table such as `sea_weather_20160501_backup` (suffix `20160501_backup`) is also read, while the legacy SQL functions read only the tables for the dates in the range. The three examples now also require `LENGTH(_TABLE_SUFFIX) = 8`, which with these bounds leaves only the suffixes `20160501` to `20160509`, and the note after the first example no longer names the `BETWEEN` filter alone.
+- Corrected from the official docs: the GoogleSQL examples that replace `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` filter the wildcard table with `_TABLE_SUFFIX BETWEEN '20160501' AND '20160509'`. That is a string comparison, so a table such as `sea_weather_20160501_backup` (suffix `20160501_backup`) is also read, while the legacy SQL functions read only the tables for the dates in the range. The three examples now list the nine suffixes `20160501` to `20160509` in a literal `IN` condition instead. A condition such as `LENGTH(_TABLE_SUFFIX) = 8` added to `BETWEEN` would remove the other rows from the result, but the official docs say that a `_TABLE_SUFFIX` filter limits the tables scanned only when its condition is a constant expression (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20), so it would not keep `sea_weather_20160501_backup` from being read; a literal `IN` list is a constant expression. The note after the first example no longer names the `BETWEEN` filter alone.
 - Corrected from the official docs: the function comparison table mapped legacy SQL `COUNT(DISTINCT x)` only to `APPROX_COUNT_DISTINCT(x)`, and the `COUNT` comparison said that the legacy SQL function returns an approximate count. In legacy-sql/legacy-sql-1.md, legacy SQL `COUNT(DISTINCT)` is exact up to a threshold, 1,000 by default or the second parameter `n` (that page calls `n` the threshold below which exact results are guaranteed and also says that results are exact up to that value; the comparison follows the second statement, which includes `n`). The row now gives GoogleSQL `COUNT(DISTINCT x)` for an exact count and `APPROX_COUNT_DISTINCT(x)` for an approximate count, and the comparison states the threshold.
 - Corrected from the official docs: the function comparison table translated `PARSE_IP(addr_string)` as `NET.IPV4_TO_INT64(NET.IP_FROM_STRING(addr_string))` and `PARSE_PACKED_IP(addr_string)` as `NET.IP_FROM_STRING(addr_string)`. The legacy SQL functions return `NULL` for an invalid address (legacy-sql/legacy-sql-1.md), while `NET.IP_FROM_STRING` produces an error and `NET.IPV4_TO_INT64` throws an error when the input length isn't 4 (googlesql-functions/net_functions.md). The rows now use `NET.SAFE_IP_FROM_STRING`, and the `PARSE_IP` row calls `NET.IPV4_TO_INT64` only for a 4-byte address inside `IF`, whose unchosen branch is not evaluated (googlesql-functions/conditional_expressions.md).
-- Corrected from the official docs: the function comparison table maps `FORMAT_PACKED_IP(addr_bytes)` to `NET.IP_TO_STRING(addr_bytes)` with no note, while the legacy SQL reference gives string inputs such as `FORMAT_PACKED_IP('0123')` (legacy-sql/legacy-sql-1.md) and `NET.IP_TO_STRING` takes `BYTES` (googlesql-functions/net_functions.md). A note on converting a `STRING` input with a bytes literal or `CAST(... AS BYTES)`, which uses UTF-8 encoding (googlesql-functions/conversion_functions.md), is added to the row.
+- Corrected from the official docs: the function comparison table maps `FORMAT_PACKED_IP(addr_bytes)` to `NET.IP_TO_STRING(addr_bytes)` with no note, while the legacy SQL reference gives string inputs such as `FORMAT_PACKED_IP('0123')` (legacy-sql/legacy-sql-1.md) and `NET.IP_TO_STRING` takes `BYTES` (googlesql-functions/net_functions.md). A note is added to the row: pass a `BYTES` value as is, write the string octets of the legacy examples as a bytes literal, convert hexadecimal text with `FROM_HEX` (googlesql-functions/string_functions-1.md), and don't use `CAST(... AS BYTES)`, which encodes the string as UTF-8 (googlesql-functions/conversion_functions.md) and so changes every octet above `0x7F`.
 - Corrected from the official docs: the `TABLE_DATE_RANGE` and `TABLE_DATE_RANGE_STRICT` examples query the wildcard table `mydataset.sea_weather_*`, and a wildcard table query cannot reference a view (tables-schemas-views/views-intro.md) or an external table (external-tables-federated-queries/external-tables.md), so the query fails if a view or an external table such as `sea_weather_20160501_backup` shares the prefix, even when the `WHERE` filter excludes its suffix. The wildcard table also takes the schema of the most recently created matching table even when a `_TABLE_SUFFIX` filter excludes that table (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20), so a matching backup table that lacks a selected column or gives it another type makes the query fail. Sentences that state both assumptions, and the `UNION ALL` alternative, are added before the first example.
 - Corrected from the official docs: the two `ARRAY` subquery examples that return `page_names` and `title` could put `NULL` elements in an array of the query result, and GoogleSQL raises an error if the query result has an array which contains `NULL` elements (googlesql-syntax/data-types.md). Both examples now exclude `NULL` values in the subquery, so the arrays hold only the non-`NULL` values. Because `UNNEST` destroys the order of elements in the input array (googlesql-syntax/query-syntax-1.md, `WITH OFFSET`), both subqueries also take the offset with `WITH OFFSET` and order by it, so the arrays keep the order of the repeated field. In the `title` example, the rows are kept with an `EXISTS` test on `page_name` instead of `ARRAY_LENGTH(title) > 0`, so a row whose matching pages all have a `NULL` title is not dropped; the sentence after the example says so.
 - Corrected from the official docs: `TABLE_QUERY` selects the tables before reading them, while the GoogleSQL examples filter `_TABLE_SUFFIX` with `REGEXP_CONTAINS`. The official docs say that a `_TABLE_SUFFIX` filter limits the tables scanned only when its condition is a constant expression (https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20) and don't say that a `REGEXP_CONTAINS` condition qualifies (the page has no mention of `REGEXP_CONTAINS`), so a sentence is added that says the examples can scan every table that matches the prefix, and so read more data than `TABLE_QUERY`, and that suggests a literal `IN` condition listing every needed suffix; the examples are kept as in the official docs. The same paragraph repeats the view, external table and schema constraints of the `TABLE_DATE_RANGE` examples, because a wildcard table matches the names that the `_TABLE_SUFFIX` filter excludes, while `TABLE_QUERY` selects the tables first.
