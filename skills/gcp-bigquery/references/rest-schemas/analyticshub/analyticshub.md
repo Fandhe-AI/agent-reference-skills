@@ -939,7 +939,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `encryptionConfiguration` | EncryptionConfig | Optional. Encryption configuration for the query template. If set, the customer-managed KMS key is used to encrypt the query template definition body. |
 | `name` | string | Output only. The resource name of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/456` |
 | `primaryContact` | string | Optional. Email or URL of the primary point of contact of the QueryTemplate. Max Length: 1000 bytes. |
-| `proposer` | string | Optional. Deprecated: Use `primary_contact` instead. Email or URL of the primary point of contact of the QueryTemplate. Max Length: 1000 bytes. |
+| `proposer` | string | Optional. Deprecated: Use `primary_contact` instead. Email or URL of the primary point of contact of the QueryTemplate. Max Length: 1000 bytes. REST JSON field name: `primaryContact` (`primary_contact` in the description). |
 | `routine` | Routine | Optional. The routine associated with the QueryTemplate. |
 | `state` | string enum | Output only. The QueryTemplate lifecycle state. Values: `STATE_UNSPECIFIED`, `DRAFTED`, `PENDING`, `DELETED`, `APPROVED`. |
 | `updateTime` | string (google-datetime) | Output only. Timestamp when the QueryTemplate was last modified. |
@@ -1132,7 +1132,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 - Corrected from the Discovery document: the `TestIamPermissionsResponse.permissions` description reads "A subset of `TestPermissionsRequest.permissions` that the caller is allowed."; the same text is in the `google.iam.v1` proto, where the request message of `TestIamPermissions` is `TestIamPermissionsRequest` (`google/iam/v1/iam_policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/iam_policy.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global` (likewise `"@.iam.gserviceaccount.com"` lost the account ID before `@`, and a name format ending in a collection such as `projects/*/locations/*/registrations/` lost its last ID), and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.
 - Deprecated: `MessageTransform.enabled` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "This field is deprecated, use the `disabled` field to disable transforms."
-- Deprecated: `QueryTemplate.proposer` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "Deprecated: Use `primary_contact` instead."
+- Deprecated: `QueryTemplate.proposer` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "Deprecated: Use `primary_contact` instead." REST JSON field name: `primaryContact` (`primary_contact` in the description).
 - Source: https://analyticshub.googleapis.com/$discovery/rest?version=v1, https://analyticshub.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related
