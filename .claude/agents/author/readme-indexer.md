@@ -44,7 +44,8 @@ tools:
    - `{category_dir}<subdir>/README.md` がある → その子索引
    - 無い → `{category_dir}<subdir>/*.md` の各ページ
    - いずれの場合も、既存の `{category_dir}README.md` にある `./<subdir>/<file>.md` の行で、リンク先が実在するもの
-4. Path（`<file>.md`・`<subdir>/README.md`・`<subdir>/<file>.md`）の昇順でソートする
+4. 1〜3 の候補を、正規化したリンク先（`{category_dir}` からの相対パス。先頭の `./` を除く）をキーに統合し、重複を 1 行にする。既存の行と同じリンク先の候補は、既存の行の表示名と Description を引き継ぐ
+5. Path（`<file>.md`・`<subdir>/README.md`・`<subdir>/<file>.md`）の昇順でソートする
 
 ### Step 2: 各ファイルの情報抽出
 
@@ -85,7 +86,7 @@ tools:
 
 ## 完了条件
 
-- 表の行数が、実 `.md` ファイル数（README.md 除く）に一致している。`category_dir` が `references/` 配下のときは、Step 1 の 3 で加えた子索引・子ディレクトリのページの数を加えた和に一致している
+- 表の行数が、実 `.md` ファイル数（README.md 除く）に一致している。`category_dir` が `references/` 配下のときは、Step 1 の 3 で加えた子索引・子ディレクトリのページのうち、Step 1 の 4 で統合した後の数を加えた和に一致している。表に同じリンク先の行が 2 つ以上ない
 - Path の相対リンクが実在するファイルを指している
 - README.md が Path の昇順で並んでいる
 - README.md 自身が索引に含まれていない（直下の子ディレクトリの `README.md` は含む）

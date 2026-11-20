@@ -63,7 +63,7 @@ tools:
 4. **書式適合**: 2 の各リンク先が reference-template の索引書式に合うかを確認する。同じディレクトリの `<file>.md` は常に可。`references/` 配下の README では、階層型カテゴリの例外に従い、直下の子ディレクトリの `<subdir>/README.md` と `<subdir>/<file>.md` も可。孫以下のページ、ディレクトリ外、`samples/` `scripts/` の README で子ディレクトリを指すものは、実在していてもページテンプレート準拠の問題（⚠️）として記録する（❌ にはしない）
 5. **索引漏れ**: 同じディレクトリの実 `.md` ファイル（README.md 除く）のうち、2 に無いもの（⚠️）を記録する
 6. **子ディレクトリの索引状況**（`references/` 配下の README のみ）: 直下の子ディレクトリごとに、`README.md` があればその `<subdir>/README.md`、無ければその各 `<subdir>/<file>.md` が 2 にあるかを確認し、無いものを ℹ️（情報）として記録する。親から子ディレクトリを指さない構成の既存スキルがあるため ⚠️ / ❌ にはしない（readme-indexer は再生成時にこれらの行を加える）
-7. 子ディレクトリに `README.md` があれば、その README にもこの Step 3 を同じ手順で適用する
+7. `references/` 配下の README で、子ディレクトリに `README.md` があれば、その README にもこの Step 3 を同じ手順で適用する（`samples/` `scripts/` の README では再帰しない）
 
 ### Step 4: 相対リンクの到達性確認
 
