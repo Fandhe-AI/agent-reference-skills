@@ -55,7 +55,7 @@ tools:
 
 ### Step 3: README 索引と実ファイルの突合
 
-各カテゴリの README.md、および存在する `samples/README.md` `scripts/README.md` について:
+各カテゴリの README.md、その配下の子ディレクトリの README.md（`{skill_dir}references/**/README.md`。reference-template の階層型カテゴリの例外）、および存在する `samples/README.md` `scripts/README.md` について:
 
 1. Read して `| Name | Description | Path |` 形式の表を抽出する
 2. 表に記載された Path（ファイル名。reference-template の階層型カテゴリの例外に当たる `./<subdir>/...` のリンクは README からの相対パス）を一覧化する
