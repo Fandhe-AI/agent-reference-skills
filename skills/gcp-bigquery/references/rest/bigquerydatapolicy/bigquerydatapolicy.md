@@ -1,12 +1,14 @@
 ---
-source: https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v2
+source:
+  - https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v2
+  - https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v1
 ---
 
 # BigQuery Data Policy API REST API (bigquerydatapolicy)
 
 ## Signature / Usage
 
-Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v2). The URL, parameters and request / response types shown for a method come from the first version on its `Versions` line; for another version, see the Discovery document of that version under Source in Notes.
+Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v2). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, and an unmarked type is the same in every listed version. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.addGrantees`
 
@@ -22,7 +24,7 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 - `POST https://bigquerydatapolicy.googleapis.com/v2/{+parent}/dataPolicies`
 - Creates a new data policy in the parent `projects/{projectsId}/locations/{locationsId}` with the given `data_policy_id` (used as the display name), and data policy type. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `CreateDataPolicyRequest`; Response: `DataPolicy`
+- Request: [`CreateDataPolicyRequest` (v2)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#createdatapolicyrequest), [`DataPolicy` (v1)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#datapolicy-v1); Response: [`DataPolicy` (v2)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#datapolicy), [`DataPolicy` (v1)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#datapolicy-v1)
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.delete`
 
@@ -38,7 +40,7 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 - `GET https://bigquerydatapolicy.googleapis.com/v2/{+name}`
 - Gets the data policy specified by its resource name.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `DataPolicy`
+- Request: —; Response: [`DataPolicy` (v2)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#datapolicy), [`DataPolicy` (v1)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#datapolicy-v1)
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.getIamPolicy`
 
@@ -62,7 +64,7 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 - `PATCH https://bigquerydatapolicy.googleapis.com/v2/{+name}`
 - Updates the metadata for an existing data policy. The target data policy can be specified by the resource name.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `DataPolicy`; Response: `DataPolicy`
+- Request: [`DataPolicy` (v2)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#datapolicy), [`DataPolicy` (v1)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#datapolicy-v1); Response: [`DataPolicy` (v2)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#datapolicy), [`DataPolicy` (v1)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#datapolicy-v1)
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.removeGrantees`
 
@@ -183,7 +185,7 @@ Authorization: Bearer ACCESS_TOKEN
 
 - Generated from the Discovery document(s) v2, v1 of `bigquerydatapolicy` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when the description says that some requests must specify it (for example, `options.requestedPolicyVersion` must be 3 to get a policy with conditional role bindings). Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/bigquerydatapolicy/`; they are the `schemas` section of the Discovery documents in Source.
 - Corrected from the Discovery document: the description of `bigquerydatapolicy.projects.locations.dataPolicies.create` is "Creates a new data policy under a project with the given `data_policy_id` (used as the display name), and data policy type.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Corrected from the Discovery document: the description of `bigquerydatapolicy.projects.locations.dataPolicies.list` is "List all of the data policies in the specified parent project.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Source: https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v2, https://bigquerydatapolicy.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)

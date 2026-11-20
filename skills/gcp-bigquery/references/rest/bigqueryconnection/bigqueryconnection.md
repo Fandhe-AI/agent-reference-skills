@@ -1,12 +1,14 @@
 ---
-source: https://bigqueryconnection.googleapis.com/$discovery/rest?version=v1
+source:
+  - https://bigqueryconnection.googleapis.com/$discovery/rest?version=v1
+  - https://bigqueryconnection.googleapis.com/$discovery/rest?version=v1beta1
 ---
 
 # BigQuery Connection API REST API (bigqueryconnection)
 
 ## Signature / Usage
 
-Base URL: `https://bigqueryconnection.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL, parameters and request / response types shown for a method come from the first version on its `Versions` line; for another version, see the Discovery document of that version under Source in Notes.
+Base URL: `https://bigqueryconnection.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, and an unmarked type is the same in every listed version. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
 
 ### `bigqueryconnection.projects.locations.connections.create`
 
@@ -14,7 +16,7 @@ Base URL: `https://bigqueryconnection.googleapis.com`. Methods are listed by `id
 - `POST https://bigqueryconnection.googleapis.com/v1/{+parent}/connections`
 - Creates a new connection.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `Connection`; Response: `Connection`
+- Request: [`Connection` (v1)](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#connection), [`Connection` (v1beta1)](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#connection-v1beta1); Response: [`Connection` (v1)](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#connection), [`Connection` (v1beta1)](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#connection-v1beta1)
 
 ### `bigqueryconnection.projects.locations.connections.delete`
 
@@ -30,7 +32,7 @@ Base URL: `https://bigqueryconnection.googleapis.com`. Methods are listed by `id
 - `GET https://bigqueryconnection.googleapis.com/v1/{+name}`
 - Returns specified connection.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `Connection`
+- Request: —; Response: [`Connection` (v1)](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#connection), [`Connection` (v1beta1)](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#connection-v1beta1)
 
 ### `bigqueryconnection.projects.locations.connections.getIamPolicy`
 
@@ -54,7 +56,7 @@ Base URL: `https://bigqueryconnection.googleapis.com`. Methods are listed by `id
 - `PATCH https://bigqueryconnection.googleapis.com/v1/{+name}`
 - Updates the specified connection. For security reasons, also resets credential if connection properties are in the update field mask.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `Connection`; Response: `Connection`
+- Request: [`Connection` (v1)](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#connection), [`Connection` (v1beta1)](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#connection-v1beta1); Response: [`Connection` (v1)](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#connection), [`Connection` (v1beta1)](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#connection-v1beta1)
 
 ### `bigqueryconnection.projects.locations.connections.setIamPolicy`
 
@@ -154,7 +156,7 @@ Authorization: Bearer ACCESS_TOKEN
 
 - Generated from the Discovery document(s) v1, v1beta1 of `bigqueryconnection` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when the description says that some requests must specify it (for example, `options.requestedPolicyVersion` must be 3 to get a policy with conditional role bindings). Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/bigqueryconnection/`; they are the `schemas` section of the Discovery documents in Source.
 - Corrected from the Discovery document: the description of `bigqueryconnection.projects.locations.connections.list` is "Returns a list of connections in the given project.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Source: https://bigqueryconnection.googleapis.com/$discovery/rest?version=v1, https://bigqueryconnection.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
