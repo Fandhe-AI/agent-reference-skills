@@ -235,7 +235,7 @@ skills/gcp-bigquery/
 | REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/bigquery.*` / `roles/analyticshub.*` / `roles/biglake.*` / `roles/dataform.*` / `roles/datacatalog.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/dataform`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/dataform` / `rest-schemas/bigqueryconnection` / `rest-schemas/bigquerydatapolicy` / `rest-schemas/bigquerydatatransfer` / `rest-schemas/bigqueryreservation` / `rest-schemas/datacatalog`。一部だけ収録済み: `legacy-sql`（1 / 3 ページ） / `rest-schemas/bigquery`（1 / 2 ページ）。収録済みのページは各カテゴリの README.md の索引で確認する
 
 ## 他スキルとの使い分け
 
