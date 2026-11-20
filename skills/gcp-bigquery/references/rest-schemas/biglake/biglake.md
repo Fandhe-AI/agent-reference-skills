@@ -265,11 +265,12 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `permissions` | `array<string>` | A subset of `TestPermissionsRequest.permissions` that the caller is allowed. |
+| `permissions` | `array<string>` | A subset of `TestIamPermissionsRequest.permissions` that the caller is allowed (request type name corrected; see Notes). |
 
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `biglake` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Corrected from the Discovery document: the `TestIamPermissionsResponse.permissions` description reads "A subset of `TestPermissionsRequest.permissions` that the caller is allowed."; the same text is in the `google.iam.v1` proto, where the request message of `TestIamPermissions` is `TestIamPermissionsRequest` (`google/iam/v1/iam_policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/iam_policy.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Source: https://biglake.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related

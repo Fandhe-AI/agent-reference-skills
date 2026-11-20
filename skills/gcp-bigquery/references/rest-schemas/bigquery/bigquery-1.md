@@ -682,12 +682,12 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 | Field | Type | Description |
 |---|---|---|
-| `arimaFittingMetrics` | `array<ArimaFittingMetrics>` | Arima model fitting metrics. |
+| `arimaFittingMetrics` | `array<ArimaFittingMetrics>` | Arima model fitting metrics. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
 | `arimaSingleModelForecastingMetrics` | `array<ArimaSingleModelForecastingMetrics>` | Repeated as there can be many metric sets (one for each model) in auto-arima and the large-scale case. |
-| `hasDrift` | `array<boolean>` | Whether Arima model fitted with drift or not. It is always false when d is not 1. |
-| `nonSeasonalOrder` | `array<ArimaOrder>` | Non-seasonal order. |
-| `seasonalPeriods` | `array<string>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
-| `timeSeriesId` | `array<string>` | Id to differentiate different time series for the large-scale case. |
+| `hasDrift` | `array<boolean>` | Whether Arima model fitted with drift or not. It is always false when d is not 1. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
+| `nonSeasonalOrder` | `array<ArimaOrder>` | Non-seasonal order. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
+| `seasonalPeriods` | `array<string>` | Seasonal periods. Repeated because multiple periods are supported for one time series. Deprecated (`deprecated: true` in the Discovery document; see Notes). Values: `SEASONAL_PERIOD_TYPE_UNSPECIFIED`, `NO_SEASONALITY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `YEARLY`, `HOURLY`. |
+| `timeSeriesId` | `array<string>` | Id to differentiate different time series for the large-scale case. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
 
 ### `ArimaModelInfo` fields
 
@@ -1044,7 +1044,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `satisfiesPzs` | boolean | Output only. Reserved for future use. |
 | `selfLink` | string | Output only. A URL that can be used to access the resource again. You can use this URL in Get or Update requests to the resource. |
 | `storageBillingModel` | string enum | Optional. Updates storage_billing_model for the dataset. Values: `STORAGE_BILLING_MODEL_UNSPECIFIED`, `LOGICAL`, `PHYSICAL`. |
-| `tags` | `array<object>` | Output only. Tags for the dataset. To provide tags as inputs, use the `resourceTags` field. |
+| `tags` | `array<object>` | Output only. Tags for the dataset. To provide tags as inputs, use the `resourceTags` field. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
 | `type` | string | Output only. Same as `type` in `ListFormatDataset`. The type of the dataset, one of: \* DEFAULT - only accessible by owner and authorized accounts, \* PUBLIC - accessible by everyone, \* LINKED - linked dataset, \* EXTERNAL - dataset with definition in external metadata catalog, \* BIGLAKE_ICEBERG - a Biglake dataset accessible through the Iceberg API, \* BIGLAKE_HIVE - a Biglake dataset accessible through the Hive API. |
 
 ### `DatasetAccessEntry` fields
@@ -1780,7 +1780,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `query` | JobStatistics2 | Output only. Statistics for a query job. |
 | `quotaDeferments` | `array<string>` | Output only. Quotas which delayed this job's start time. |
 | `reservationGroupPath` | `array<string>` | Output only. The reservation group path of the reservation assigned to this job. This field has a limit of 10 nested reservation groups. This is to maintain consistency between reservations info schema and jobs info schema. The first reservation group is the root reservation group and the last is the leaf or lowest level reservation group. |
-| `reservationUsage` | `array<object>` | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. |
+| `reservationUsage` | `array<object>` | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
 | `reservation_id` | string | Output only. Name of the primary reservation assigned to this job. Note that this could be different than reservations reported in the reservation usage field if parent reservations were used to execute this job. |
 | `rowLevelSecurityStatistics` | RowLevelSecurityStatistics | Output only. Statistics for row-level security. Present only for query and extract jobs. |
 | `scriptStatistics` | ScriptStatistics | Output only. If this a child job of a script, specifies information about the context of this job within the script. |
@@ -1829,7 +1829,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 | `referencedPropertyGraphs` | `array<PropertyGraphReference>` | Output only. Referenced property graphs for the job. Queries that reference more than 50 property graphs will not have a complete list. |
 | `referencedRoutines` | `array<RoutineReference>` | Output only. Referenced routines for the job. |
 | `referencedTables` | `array<TableReference>` | Output only. Referenced tables for the job. |
-| `reservationUsage` | `array<object>` | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. |
+| `reservationUsage` | `array<object>` | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
 | `schema` | TableSchema | Output only. The schema of the results. Present only for successful dry run of non-legacy SQL queries. |
 | `searchStatistics` | SearchStatistics | Output only. Search query specific statistics. |
 | `sparkStatistics` | SparkStatistics | Output only. Statistics of a Spark procedure job. |
@@ -1893,6 +1893,32 @@ Generated from the Discovery schema (not in the official docs); values show each
 - Corrected from the source proto: the two `connectionId` formats of `ExternalCatalogTableOptions` (`..` and `projects//locations//connections/`) lost their placeholders in the Discovery document; the proto comment reads "The connection_id format must be either `<project_id>.<location_id>.<connection_id>` or `projects/<project_id>/locations/<location_id>/connections/<connection_id>`." (`google/cloud/bigquery/v2/external_catalog_table_options.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/external_catalog_table_options.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the source proto: in the `BigtableColumn` and `BigtableColumnFamily` descriptions the Discovery document lost the family field name placeholders (shown as `.` and `.Column`) and the bracket expressions of the identifier pattern (shown as `a-zA-Z*`); the proto comments read "exposed as `<family field name>.<column field name>` field" (`BigtableColumn.qualifier_encoded`), "can be accessed as `<family field name>.<column field name>`" and "the `<family field name>.Column` field" (`BigtableColumnFamily.columns`, where Discovery shows `.Column`) and "does not match `[a-zA-Z][a-zA-Z0-9_]*`" (`qualifier_encoded` and `field_name`; backticks added) (`google/cloud/bigquery/v2/external_data_config.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/external_data_config.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the source proto: the feature name format `.` in the `featureName` description of `Explanation` lost its placeholders in the Discovery document; the proto comment reads "For non-numerical features, will be formatted like `<column_name>.<encoded_feature_name>`." (`google/cloud/bigquery/v2/model.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/model.proto, commit `5ce0245`, retrieved 2026-11-19).
+- Deprecated: `ArimaForecastingMetrics.arimaFittingMetrics` (`deprecated: true` in the Discovery document). The Discovery document states no replacement.
+- Deprecated: `ArimaForecastingMetrics.hasDrift` (`deprecated: true` in the Discovery document). The Discovery document states no replacement.
+- Deprecated: `ArimaForecastingMetrics.nonSeasonalOrder` (`deprecated: true` in the Discovery document). The Discovery document states no replacement.
+- Deprecated: `ArimaForecastingMetrics.seasonalPeriods` (`deprecated: true` in the Discovery document). The Discovery document states no replacement.
+- Deprecated: `ArimaForecastingMetrics.timeSeriesId` (`deprecated: true` in the Discovery document). The Discovery document states no replacement.
+- Deprecated: `BigQueryModelTraining.currentIteration` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `BigQueryModelTraining.expectedTotalIterations` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `BqmlIterationResult.durationMs` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `BqmlIterationResult.evalLoss` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `BqmlIterationResult.index` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `BqmlIterationResult.learnRate` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `BqmlIterationResult.trainingLoss` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `BqmlTrainingRun.iterationResults` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `BqmlTrainingRun.startTime` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `BqmlTrainingRun.state` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `BqmlTrainingRun.trainingOptions` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `Dataset.tags` (`deprecated: true` in the Discovery document). Replacement or status stated in the description: "To provide tags as inputs, use the `resourceTags` field."
+- Deprecated: `JobConfigurationExtract.destinationUri` (its Discovery description). Replacement or status stated in the description: "\[Pick one\] DEPRECATED: Use destinationUris instead, passing only one URI as necessary."
+- Deprecated: `JobConfigurationLoad.schemaInline` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `JobConfigurationLoad.schemaInlineFormat` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `JobConfigurationQuery.preserveNulls` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `JobStatistics.reservationUsage` (`deprecated: true` in the Discovery document). Replacement or status stated in the description: "This field reported misleading information and will no longer be populated."
+- Deprecated: `JobStatistics2.modelTraining` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `JobStatistics2.modelTrainingCurrentIteration` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `JobStatistics2.modelTrainingExpectedTotalIteration` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `JobStatistics2.reservationUsage` (`deprecated: true` in the Discovery document). Replacement or status stated in the description: "This field reported misleading information and will no longer be populated."
 - Source: https://bigquery.googleapis.com/$discovery/rest?version=v2 (https://developers.google.com/discovery)
 
 ## Related
