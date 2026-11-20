@@ -98,10 +98,11 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 
 ### Example request line
 
-Generated from the Discovery entry of `bigquerydatapolicy.projects.locations.dataPolicies.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The request needs an OAuth 2.0 access token in an `Authorization: Bearer` header; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
+Generated from the Discovery entry of `bigquerydatapolicy.projects.locations.dataPolicies.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://bigquerydatapolicy.googleapis.com/v2/{+name}
+GET https://bigquerydatapolicy.googleapis.com/v2/projects/PROJECT/locations/LOCATION/dataPolicies/DATA_POLICY
+Authorization: Bearer ACCESS_TOKEN
 ```
 
 ## Options / Props

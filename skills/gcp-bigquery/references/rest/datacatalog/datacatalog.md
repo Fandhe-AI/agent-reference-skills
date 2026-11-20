@@ -12,7 +12,7 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 
 - Versions: v1, v1beta1
 - `POST https://datacatalog.googleapis.com/v1/catalog:search`
-- Searches Data Catalog for multiple resources like entries and tags that match a query. This is a \[Custom Method\] (https://cloud.google.com/apis/design/custom_methods) that doesn't return all information on a resource, only its ID and high level fields. To get more information, you can subsequently call specific get methods. Note: Data Catalog search queries don't guarantee full recall. Results that match your query might not be returned, even in subsequent result pages. Additionally, returned (and not returned) results can vary if you repeat search queries. For more information, see \[Data Catalog search syntax\] (https://cloud.google.com/data-catalog/docs/how-to/search-reference).
+- Searches Data Catalog for multiple resources like entries and tags that match a query. This is a Custom Method (https://cloud.google.com/apis/design/custom_methods) that doesn't return all information on a resource, only its ID and high level fields. To get more information, you can subsequently call specific get methods. Note: Data Catalog search queries don't guarantee full recall. Results that match your query might not be returned, even in subsequent result pages. Additionally, returned (and not returned) results can vary if you repeat search queries. For more information, see Data Catalog search syntax (https://cloud.google.com/data-catalog/docs/how-to/search-reference).
 - Deprecated: `deprecated: true` in the Discovery document
 - Shut down: Data Catalog metadata search has the shutdown date June 1, 2026 on the Data Catalog deprecations page (https://docs.cloud.google.com/data-catalog/docs/deprecations, retrieved 2026-11-19; quoted in Notes), which has passed; for metadata search, the page points to Knowledge Catalog (formerly Dataplex Universal Catalog): https://docs.cloud.google.com/dataplex/docs/transition-to-dataplex-catalog.
 - Scopes: `https://www.googleapis.com/auth/cloud-platform`
@@ -249,10 +249,11 @@ Base URL: `https://datacatalog.googleapis.com`. Methods are listed by `id`; the 
 
 ### Example request line
 
-Generated from the Discovery entry of `datacatalog.projects.locations.operations.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The request needs an OAuth 2.0 access token in an `Authorization: Bearer` header; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
+Generated from the Discovery entry of `datacatalog.projects.locations.operations.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://datacatalog.googleapis.com/v1/{+name}
+GET https://datacatalog.googleapis.com/v1/projects/PROJECT/locations/LOCATION/operations/OPERATION
+Authorization: Bearer ACCESS_TOKEN
 ```
 
 ## Options / Props
@@ -367,7 +368,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Identifier. Resource name of this taxonomy in URL format. Note: Policy tag manager generates unique taxonomy IDs. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/taxonomies/{taxonomiesId}`. |
-| `updateMask` | query | string (google-fieldmask) | no | Specifies fields to update. If not set, defaults to all fields you can update. For more information, see \[FieldMask\] (https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask). |
+| `updateMask` | query | string (google-fieldmask) | no | Specifies fields to update. If not set, defaults to all fields you can update. For more information, see FieldMask (https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask). |
 
 ### `datacatalog.projects.locations.taxonomies.policyTags.create` parameters
 
@@ -406,7 +407,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
 | `name` | path | string | yes | Identifier. Resource name of this policy tag in the URL format. The policy tag manager generates unique taxonomy IDs and policy tag IDs. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/taxonomies/{taxonomiesId}/policyTags/{policyTagsId}`. |
-| `updateMask` | query | string (google-fieldmask) | no | Specifies the fields to update. You can update only display name, description, and parent policy tag. If not set, defaults to all updatable fields. For more information, see \[FieldMask\] (https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask). |
+| `updateMask` | query | string (google-fieldmask) | no | Specifies the fields to update. You can update only display name, description, and parent policy tag. If not set, defaults to all updatable fields. For more information, see FieldMask (https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask). |
 
 ### `datacatalog.projects.locations.taxonomies.policyTags.setIamPolicy` parameters
 

@@ -385,10 +385,11 @@ Base URL: `https://bigquery.googleapis.com/bigquery/v2`. Methods are listed by `
 
 ### Example request line
 
-Generated from the Discovery entry of `bigquery.datasets.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The request needs an OAuth 2.0 access token in an `Authorization: Bearer` header; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
+Generated from the Discovery entry of `bigquery.datasets.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{+datasetId}
+GET https://bigquery.googleapis.com/bigquery/v2/projects/PROJECT/datasets/DATASET
+Authorization: Bearer ACCESS_TOKEN
 ```
 
 ## Options / Props
@@ -407,7 +408,7 @@ GET https://bigquery.googleapis.com/bigquery/v2/projects/{+projectId}/datasets/{
 |---|---|---|---|---|
 | `projectId` | path | string | yes | Required. Project ID of the requested dataset |
 | `datasetId` | path | string | yes | Required. Dataset ID of the requested dataset |
-| `accessPolicyVersion` | query | integer (int32) | conditional | Optional. The version of the access policy schema to fetch. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. Requests for conditional access policy binding in datasets must specify version 3. Dataset with no conditional role bindings in access policy may specify any valid value or leave the field unset. This field will be mapped to \[IAM Policy version\] (https://cloud.google.com/iam/docs/policies#versions) and will be used to fetch policy from IAM. If unset or if 0 or 1 value is used for dataset with conditional bindings, access entry with condition will have role string appended by 'withcond' string followed by a hash value. For example : { "access": \[ { "role": "roles/bigquery.dataViewer_with_conditionalbinding_7a34awqsda", "userByEmail": "user@example.com", } \] } Please refer https://cloud.google.com/iam/docs/troubleshooting-withcond for more details. |
+| `accessPolicyVersion` | query | integer (int32) | conditional | Optional. The version of the access policy schema to fetch. Valid values are 0, 1, and 3. Requests specifying an invalid value will be rejected. Requests for conditional access policy binding in datasets must specify version 3. Dataset with no conditional role bindings in access policy may specify any valid value or leave the field unset. This field will be mapped to IAM Policy version (https://cloud.google.com/iam/docs/policies#versions) and will be used to fetch policy from IAM. If unset or if 0 or 1 value is used for dataset with conditional bindings, access entry with condition will have role string appended by 'withcond' string followed by a hash value. For example : { "access": \[ { "role": "roles/bigquery.dataViewer_with_conditionalbinding_7a34awqsda", "userByEmail": "user@example.com", } \] } Please refer https://cloud.google.com/iam/docs/troubleshooting-withcond for more details. |
 | `datasetView` | query | string enum | no | Optional. Specifies the view that determines which dataset information is returned. By default, metadata and ACL information are returned. Values: `DATASET_VIEW_UNSPECIFIED`, `METADATA`, `ACL`, `FULL`. |
 
 ### `bigquery.datasets.insert` parameters

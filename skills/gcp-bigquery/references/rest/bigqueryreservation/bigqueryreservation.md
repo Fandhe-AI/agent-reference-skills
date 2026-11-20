@@ -283,10 +283,11 @@ Base URL: `https://bigqueryreservation.googleapis.com`. Methods are listed by `i
 
 ### Example request line
 
-Generated from the Discovery entry of `bigqueryreservation.projects.locations.capacityCommitments.get` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The request needs an OAuth 2.0 access token in an `Authorization: Bearer` header; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
+Generated from the Discovery entry of `bigqueryreservation.projects.locations.capacityCommitments.get` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://bigqueryreservation.googleapis.com/v1/{+name}
+GET https://bigqueryreservation.googleapis.com/v1/projects/PROJECT/locations/LOCATION/capacityCommitments/CAPACITY_COMMITMENT
+Authorization: Bearer ACCESS_TOKEN
 ```
 
 ## Options / Props
