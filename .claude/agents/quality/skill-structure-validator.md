@@ -58,11 +58,11 @@ tools:
 `{skill_dir}references/**/README.md` を Glob で再帰的に列挙した各 README（カテゴリの README と各階層の子索引。途中のディレクトリに README.md が無くても、その下の README.md を含む。例: `references/primitives/` に README.md が無くても `references/primitives/collections/README.md` は対象）、および存在する `samples/README.md` `scripts/README.md`（その配下の子ディレクトリの README は対象外）について:
 
 1. Read して `| Name | Description | Path |` 形式の表を抽出する
-2. 表に記載された Path のリンク先（1 つのセルに複数のリンクがあればそれぞれ。README からの相対パス。例: `foo.md`、`doc-blocks/README.md`、`buttons/button.md`）を一覧化する。リンクの表示名は比較に使わない
+2. 表に記載された Path のリンク先（README からの相対パス。1 つのセルに複数のリンクがあればそれぞれを一覧化し、その行は 4 の書式不適合としても記録する。例: `foo.md`、`doc-blocks/README.md`、`buttons/button.md`）を一覧化する。リンクの表示名は比較に使わない
 3. **実在確認**: 2 の各リンク先が実在するかを Glob で確認し、実在しないもの（❌）を記録する
 4. **書式適合**: 2 の各リンク先が reference-template の索引書式に合うかを確認する。同じディレクトリの `<file>.md` は常に可（ただし検査中の README 自身を指す `README.md` は除く）。`references/` 配下の README では、階層型カテゴリの例外に従い、直下の子ディレクトリの `<subdir>/README.md` と `<subdir>/<file>.md` も可。検査中の README 自身、孫以下のページ、ディレクトリ外、`samples/` `scripts/` の README で子ディレクトリを指すものは、実在していてもページテンプレート準拠の問題（⚠️）として記録する（❌ にはしない）
 5. **索引漏れ**: 同じディレクトリの実 `.md` ファイル（README.md 除く）のうち、2 に無いもの（⚠️）を記録する
-6. **子ディレクトリの索引状況**（`references/` 配下の README のみ）: 直下の子ディレクトリごとに、`README.md` があればその `<subdir>/README.md`、無ければその各 `<subdir>/<file>.md` が 2 にあるかを確認し、無いものを ℹ️（情報）として記録する。親から子ディレクトリを指さない構成の既存スキルがあるため ⚠️ / ❌ にはしない（readme-indexer は再生成時にこれらの行を加える）
+6. **子ディレクトリの索引状況**（`references/` 配下の README のみ）: 直下の子ディレクトリごとに、`README.md` があればその `<subdir>/README.md`、無ければその各 `<subdir>/<file>.md` が 2 にあるかを確認し、無いものを ℹ️（情報）として記録する。親から子ディレクトリを指さない構成の既存スキルがあるため ⚠️ / ❌ にはしない（readme-indexer は再生成時にこれらの行を加える）。直下に `README.md` も `.md` ファイルも無い中間ディレクトリで、その配下のどこかに `README.md` があるものは、親から子索引へたどれないため「中間索引の欠落」として ℹ️ で記録する
 
 ### Step 4: 相対リンクの到達性確認
 

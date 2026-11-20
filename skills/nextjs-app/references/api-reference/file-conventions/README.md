@@ -22,5 +22,7 @@
 | src folder | Move `app`/`pages` under `src/` | [src-folder.md](./src-folder.md) |
 | template.js | Layout-like wrapper that remounts on navigation | [template.md](./template.md) |
 | unauthorized.js (experimental) | 401 UI rendered by the `unauthorized()` function | [unauthorized.md](./unauthorized.md) |
-| Metadata Files (overview) | Static/dynamic metadata file conventions | [metadata.md](./metadata.md) / [metadata/README.md](./metadata/README.md) |
-| Route Segment Config (overview) | `dynamicParams`, `runtime`, `preferredRegion`, `maxDuration` | [route-segment-config.md](./route-segment-config.md) / [route-segment-config/README.md](./route-segment-config/README.md) |
+| Metadata Files (overview) | Static/dynamic metadata file conventions | [metadata.md](./metadata.md) |
+| Metadata Files | Index of the individual metadata file convention pages | [metadata/README.md](./metadata/README.md) |
+| Route Segment Config (overview) | `dynamicParams`, `runtime`, `preferredRegion`, `maxDuration` | [route-segment-config.md](./route-segment-config.md) |
+| Route Segment Config Options | Index of the individual route segment config option pages | [route-segment-config/README.md](./route-segment-config/README.md) |
