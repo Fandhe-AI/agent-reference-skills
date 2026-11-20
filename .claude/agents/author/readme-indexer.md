@@ -32,6 +32,7 @@ tools:
 2. **README.md 自身は索引に含めない** — `{category_dir}README.md` を除いた `.md` ファイル（と、Step 1 の 3 の子ディレクトリの候補）のみ処理する
 3. **Path 昇順** — 表の行は `{category_dir}` からの相対パスの昇順で並べる
 4. **既存 README.md がある場合は上書き** — Write で完全に置き換える（Edit による部分更新はしない。削除・リネームで古い索引行が残らないようにするため）
+   - ただし、既存 README.md に `| Name | Description | Path |` の表が 2 つ以上ある、または表の前後に `##` 以下の見出しがあるときは、見出しと行の分類が失われるため書き込まず、その旨と追加・削除が必要な行を呼び出し元へ返す
 5. **category_dir は末尾 `/` を補って扱う** — 末尾にスラッシュが無いパス（例: `.../schemas`）を受け取った場合も `.../schemas/` に正規化してから Glob する（`{category_dir}*.md` が隣接ディレクトリに誤マッチしないように）
 
 ## 手順
@@ -61,6 +62,8 @@ tools:
 | Name | Description | Path |
 |------|-------------|------|
 | {H1 見出し} | {概要1行} | [{ファイル名}.md](./{ファイル名}.md) |
+| {H1 見出し} | {概要1行} | [{ファイル名}.md](./{subdir}/{ファイル名}.md) |
+| {子索引の H1} | {引き継いだ説明} | [{subdir}/README.md](./{subdir}/README.md) |
 ```
 
 - Path の相対リンクは `./` を先頭に付ける（例: `[foo.md](./foo.md)`）。子ディレクトリのページは `[foo.md](./<subdir>/foo.md)`、子索引は `[<subdir>/README.md](./<subdir>/README.md)` とする
@@ -75,7 +78,7 @@ tools:
 
 | Name | Description | Path |
 |------|-------------|------|
-| {Name} | {Description} | [{file}.md](./{file}.md) |
+| {Name} | {Description} | {Step 3 の Path} |
 ```
 
 - H1 はカテゴリディレクトリ名（元の表記）のみとし、前置きの説明文は書かない（reference-template 準拠）
