@@ -168,14 +168,14 @@ anywhere else in the query that expects an expression. For example, consider the
 following GoogleSQL query that computes the fraction of warm days in Seattle
 in 2015:
 
-Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that the warm days and the total both count only the days with a reading, and used `SAFE_DIVIDE`, so that the query returns `NULL` instead of failing when no day has a reading. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
+Adapted (not in the official docs): left out the days whose `max` is the missing-data code `9999.9`, so that the warm days and the total both count only the days with a reading, and used `SAFE_DIVIDE`, so that the query returns `NULL` instead of failing when no day has a reading. Filtered the station by both its USAF number (`stn`) and its WBAN number (`wban`), which together identify a GSOD station. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
 ```sql
 #standardSQL
 WITH SeattleWeather AS (
   SELECT *
   FROM `bigquery-public-data.noaa_gsod.gsod2015`
-  WHERE stn = '994014'
+  WHERE stn = '994014' AND wban = '99999'
     AND max != 9999.9
 )
 SELECT
@@ -184,7 +184,7 @@ SELECT
 FROM SeattleWeather;
 ```
 
-The Seattle weather station has an ID of `'994014'`. The query computes the
+The Seattle weather station has the USAF ID `'994014'` and the WBAN ID `'99999'`. The query computes the
 number of warm days based on those where the temperature reached 70 degrees
 Fahrenheit, or approximately 21 degrees Celsius, divided by the total number of
 recorded days for that station in 2015.
@@ -1242,8 +1242,8 @@ For more information about arrays and `ARRAY` subqueries, see
 
 Legacy SQL does not comply with the SQL standard in its handling of `NULL` with
 `NOT IN` conditions, whereas GoogleSQL does. Consider the following legacy
-SQL query, which finds the number of words that don't appear in the GitHub
-sample table as locations:
+SQL query, which counts the rows of the `shakespeare` table whose word doesn't
+appear in the GitHub sample table as a location:
 
 ```sql
 #legacySQL
@@ -1255,10 +1255,10 @@ WHERE word NOT IN (
 );
 ```
 
-This query returns 163,716 as the count, indicating that there are 163,716 words
-that don't appear as locations in the GitHub table. `COUNT(*)` counts the
-matching rows of the `shakespeare` table, not distinct words: the same word can
-appear in more than one row, for example once for each corpus that contains it. Now consider the following
+This query returns 163,716 as the count, indicating that 163,716 rows of the `shakespeare` table have a word
+that doesn't appear as a location in the GitHub table. `COUNT(*)` counts the
+matching rows, not distinct words: the same word can appear in more than one
+row, for example once for each corpus that contains it. Now consider the following
 GoogleSQL query:
 
 Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
@@ -1763,7 +1763,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Corrected from the official docs: the function comparison table mapped legacy SQL `COUNT(DISTINCT x)` only to `APPROX_COUNT_DISTINCT(x)`, and the `COUNT` comparison said that the legacy SQL function returns an approximate count. In legacy-sql/legacy-sql-1.md, legacy SQL `COUNT(DISTINCT)` is exact up to a threshold, 1,000 by default or the second parameter `n` (that page calls `n` the threshold below which exact results are guaranteed and also says that results are exact up to that value; the comparison follows the second statement, which includes `n`). The row now gives GoogleSQL `COUNT(DISTINCT x)` for an exact count and `APPROX_COUNT_DISTINCT(x)` for an approximate count, and the comparison states the threshold.
 - Corrected from the official docs: the function comparison table translated `PARSE_IP(addr_string)` as `NET.IPV4_TO_INT64(NET.IP_FROM_STRING(addr_string))` and `PARSE_PACKED_IP(addr_string)` as `NET.IP_FROM_STRING(addr_string)`. The legacy SQL functions return `NULL` for an invalid address (legacy-sql/legacy-sql-1.md), while `NET.IP_FROM_STRING` produces an error and `NET.IPV4_TO_INT64` throws an error when the input length isn't 4 (googlesql-functions/net_functions.md). The rows now use `NET.SAFE_IP_FROM_STRING`, and the `PARSE_IP` row calls `NET.IPV4_TO_INT64` only for a 4-byte address inside `IF`, whose unchosen branch is not evaluated (googlesql-functions/conditional_expressions.md).
 - Corrected from the official docs: the function comparison table maps `FORMAT_PACKED_IP(addr_bytes)` to `NET.IP_TO_STRING(addr_bytes)` with no note, while the legacy SQL reference gives string inputs such as `FORMAT_PACKED_IP('0123')` (legacy-sql/legacy-sql-1.md) and `NET.IP_TO_STRING` takes `BYTES` (googlesql-functions/net_functions.md). A note is added to the row: pass a `BYTES` value as is, write the string octets of the legacy examples as a bytes literal (`b"..."`, with `\x` escapes for octets above `0x7F`, as in the `NET.IP_TO_STRING` example of googlesql-functions/net_functions.md; bytes literal syntax: googlesql-syntax/lexical.md), convert hexadecimal text with `FROM_HEX` (googlesql-functions/string_functions-1.md), and don't use `CAST(... AS BYTES)`, which encodes the string as UTF-8 (googlesql-functions/conversion_functions.md) and so changes every octet above `0x7F`.
-- Corrected from the official docs: the `NOT IN` example says that the count 163,716 is the number of words that don't appear as locations, but `COUNT(*)` counts the matching rows of the `shakespeare` table, and the same word can be in more than one row, for example once for each `corpus` (the window function examples in legacy-sql/legacy-sql-2.md partition the same table by `corpus`). A sentence that says so is added after the count; the queries and the count are kept.
+- Corrected from the official docs: the `NOT IN` example says that the count 163,716 is the number of words that don't appear as locations, but `COUNT(*)` counts the matching rows of the `shakespeare` table, and the same word can be in more than one row, for example once for each `corpus` (the window function examples in legacy-sql/legacy-sql-2.md partition the same table by `corpus`). The sentence with the count and the introduction of the example are changed to describe the count as the number of matching rows; the queries and the count are kept.
 - Corrected from the official docs: the two `TABLE_QUERY` examples (Filter in the WHERE clause; Differences between table_id and _TABLE_SUFFIX) are described as finding the maximum temperatures across all years that end in `0`, but the legacy SQL queries and their GoogleSQL equivalents keep only the readings with `max > 100`, do not group by year and sort by `max DESC`, so they return individual readings. Both introductions are changed to say so; the queries are kept, except for the regular expressions corrected below.
 - Corrected from the official docs: the `TABLE_DATE_RANGE`, `TABLE_DATE_RANGE_STRICT` and `TABLE_QUERY` examples query wildcard tables, and every table that matches the wildcard is matched even when the `_TABLE_SUFFIX` filter excludes it ("All tables are matched even if you are using the equality operator `=`", in the Limitations section of https://docs.cloud.google.com/bigquery/docs/querying-wildcard-tables , retrieved 2026-11-20). That section also says that wildcard tables do not support views, external tables or tables protected by CMEK, that the tables need compatible partitioning and identical clustering specifications and the same set of tag keys and values, and that a column with the same name and a different type makes the query fail; the Schema used for query evaluation section of the same page says that the schema of the most recently created matching table is used (views: tables-schemas-views/views-intro.md; external tables: external-tables-federated-queries/external-tables.md). A paragraph that lists these limitations once, with the `UNION ALL` alternative, is added before the first example, and the `TABLE_QUERY` section points to it.
 - Corrected from the official docs: the two `ARRAY` subquery examples that return `page_names` and `title` could put `NULL` elements in an array of the query result, and GoogleSQL raises an error if the query result has an array which contains `NULL` elements (googlesql-syntax/data-types.md). Both examples now exclude `NULL` values in the subquery, so the arrays hold only the non-`NULL` values. Because `UNNEST` destroys the order of elements in the input array (googlesql-syntax/query-syntax-1.md, `WITH OFFSET`), both subqueries also take the offset with `WITH OFFSET` and order by it, so the arrays keep the order of the repeated field. In the `title` example, the rows are kept with an `EXISTS` test on `page_name` instead of `ARRAY_LENGTH(title) > 0`, so a row whose matching pages all have a `NULL` title is not dropped; the sentence after the example says so.
@@ -1786,6 +1786,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Adapted (not in the official docs): the two `TABLE_DATE_RANGE_STRICT` migration examples assume that the daily tables are standard tables. `INFORMATION_SCHEMA.TABLES` gives other table types, such as `CLONE` and `SNAPSHOT`, their own `table_type` values (information-schema/tables.md), so the examples join the dates to all the tables of the dataset and report a missing table ("Not found suffixes") and a table of another type ("Not base tables") in separate errors, instead of reporting both as missing.
 - Added (not in the official docs): a paragraph under Enabling GoogleSQL says that the `#GoogleSQL` first line of the GoogleSQL examples is not one of the query prefixes that https://docs.cloud.google.com/bigquery/docs/introduction-sql lists in its SQL section (`#standardSQL` and `#legacySQL`, "not case-sensitive, must precede the query, and must be separated from the query by a newline character"; fetched 2026-11-21), and that GoogleSQL can also be selected with `--use_legacy_sql=false`, whose `bq query` default is `true` when the configuration setting is not specified (bq-cli/bq-cli-reference-2.md). The first line of every GoogleSQL example on this page is changed from `#GoogleSQL` to `#standardSQL`, with an Adapted line before each example; the rest of each example is as in the official docs or as noted.
 - Corrected from the official docs: the correlated subquery example identifies the Washington stations by `usaf` / `stn` only: it joins `stations` to `gsod2015` on `station.usaf = weather.stn`, groups by that ID and counts the warm days with `washington_stations.station_id = weather.stn`. GSOD stations are identified by the pair of USAF and WBAN numbers (both tables have a `wban` column), so the days of other stations with the same USAF number could be counted under one name. The join, the `GROUP BY` and the correlated condition now also compare `wban`.
+- Corrected from the official docs: the Seattle warm-days example filters the station by `stn = '994014'` only, while a GSOD station is identified by the pair of its USAF and WBAN numbers. The NOAA NCEI station history (https://www.ncei.noaa.gov/pub/data/noaa/isd-history.csv, fetched 2026-11-21) lists USAF `994014` with WBAN `99999` ("SEATTLE", WA), so the filter is changed to `stn = '994014' AND wban = '99999'` and the description names both numbers.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
