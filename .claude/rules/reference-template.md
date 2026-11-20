@@ -56,7 +56,7 @@ functionName(param: Type): ReturnType
 ```
 
 - Path のリンクは README.md と同じディレクトリ内の相対パス（`./<file>.md`）にする。`samples/<file>` `scripts/<file>` のようにディレクトリ名を重ねない
-- 例外として、`references/` 配下でページを子ディレクトリに分けた階層型カテゴリ（`gcp-*` の `references/rest/<api>/`、`storybook` の `references/api/`、`nvidia-cuda` の `references/cutlass/` 等）では、どの階層の README でも、同じディレクトリの個別ページには `./<file>.md`、直下の子ディレクトリの索引には `./<subdir>/README.md` を Path に置いてよい（1 つの表に両方を載せてよい）。子ディレクトリの README も同じ書式（H1 と索引表のみ）に従い、孫以下のディレクトリを直接指さない。子索引の行はリンク先で判定し、表示名は問わない（`[doc-blocks/](./doc-blocks/README.md)` のような既存の表記も可）。`samples/` `scripts/` の README には適用しない
+- 例外として、`references/` 配下でページを子ディレクトリに分けた階層型カテゴリ（`gcp-*` の `references/rest/<api>/`、`storybook` の `references/api/`、`nvidia-cuda` の `references/cutlass/` 等）では、どの階層の README でも、Path に (1) 同じディレクトリの個別ページ `./<file>.md`、(2) 直下の子ディレクトリの索引 `./<subdir>/README.md`、(3) 直下の子ディレクトリのページ `./<subdir>/<file>.md`（子ディレクトリに README を置かず親で集約する形。`chakra-ui` の `references/components/` 等） を置いてよく、1 つの表に混在してよい。子ディレクトリに README があるときは (2) で指すのを基本とし、README が無い子ディレクトリのページは親の README から (3) で指す。子ディレクトリの README も同じ書式（H1 と索引表のみ）に従う。孫以下のディレクトリのページを直接指さない。子索引の行はリンク先で判定し、表示名は問わない（`[doc-blocks/](./doc-blocks/README.md)` のような既存の表記も可）。`samples/` `scripts/` の README には適用しない
 
 ## 関連
 

@@ -87,7 +87,7 @@ samples 本文の不備は sample-curator、scripts 本文の不備は script-co
 
 1. `| Name | Description | Path |` ヘッダー行が存在するか
 2. 3カラムの区切り行（`| --- | --- | --- |` 等。ダッシュ数や前後の空白の差異は許容する）が存在するか
-3. 各行の `Path` セルが `[{filename}.md](./{filename}.md)` 形式のリンクになっているか。階層型カテゴリ（reference-template の例外。`references/` 配下の README のみ）では、リンク先が直下の子ディレクトリの索引 `./{subdir}/README.md` の行も許容し、同じ表に両方が混在してよい。子索引の行はリンク先で判定し、表示名は問わない（`[{subdir}/README.md]` のほか既存の `[doc-blocks/]` のような表記も可）。リンク先が実在しない行、孫以下のディレクトリを直接指す行、`samples/` `scripts/` の README で子ディレクトリを指す行は違反とする
+3. 各行の `Path` セルが `[{filename}.md](./{filename}.md)` 形式のリンクになっているか。階層型カテゴリ（reference-template の例外。`references/` 配下の README のみ）では、リンク先が直下の子ディレクトリの索引 `./{subdir}/README.md` の行と、直下の子ディレクトリのページ `./{subdir}/{filename}.md` の行も許容し、同じ表に混在してよい。これらの行はリンク先で判定し、表示名は問わない（`[{subdir}/README.md]` のほか既存の `[doc-blocks/]` のような表記も可）。リンク先が実在しない行、孫以下のディレクトリのページを直接指す行、`samples/` `scripts/` の README で子ディレクトリを指す行は違反とする
 4. ヘッダー以外の行が空でないか
 
 ### Step 4: SKILL.md frontmatter の YAML 妥当性確認
