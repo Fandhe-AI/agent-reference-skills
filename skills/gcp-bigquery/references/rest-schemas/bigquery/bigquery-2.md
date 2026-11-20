@@ -2,11 +2,21 @@
 source: https://bigquery.googleapis.com/$discovery/rest?version=v2
 ---
 
-# BigQuery API message schemas (bigquery) (part 2/2)
+# BigQuery API message schemas (bigquery) (part 2/3)
 
 ## Signature / Usage
 
 Message types referenced by the methods listed under `references/rest/bigquery/`.
+
+### `JobStatistics2`
+
+- Statistics for a query job.
+- Version: v2
+
+### `JobStatistics3`
+
+- Statistics for a load job.
+- Version: v2
 
 ### `JobStatistics4`
 
@@ -171,9 +181,7 @@ Message types referenced by the methods listed under `references/rest/bigquery/`
 - An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the IAM documentation (https://cloud.google.com/iam/help/conditions/resource-policies). The JSON and YAML examples of this description are shown below. For a description of IAM and its features, see the IAM documentation (https://cloud.google.com/iam/docs/).
 - Version: v2
 
-JSON example from the Discovery description (as a JSON block; the trailing comma after the `condition.expression` value is removed; see Notes):
-
-Adapted (not in the official docs): the trailing comma after the `condition.expression` value of the Discovery example is removed so that the block is valid JSON.
+Adapted (not in the official docs): the JSON example of the Discovery `Policy` description, quoted as a JSON block; only the trailing comma after the `condition.expression` value is removed, so that the block is valid JSON (see Notes).
 
 ```json
 {
@@ -600,36 +608,189 @@ version: 3
 - Statistics for a vector search query. Populated as part of JobStatistics2.
 - Version: v2
 
-### `ViewDefinition`
-
-- Describes the definition of a logical view.
-- Version: v2
-
-### Shape of `JobStatistics4`
+### Shape of `JobStatistics2`
 
 Generated from the Discovery schema (not in the official docs); values show each field type:
 
 ```json
 {
-  "destinationUriFileCounts": "array<string (int64)>",
-  "inputBytes": "string (int64)",
-  "timeline": "array<QueryTimelineSample>"
+  "biEngineStatistics": "BiEngineStatistics",
+  "billingTier": "integer (int32)",
+  "cacheHit": "boolean",
+  "dclTargetDataset": "DatasetReference",
+  "dclTargetTable": "TableReference",
+  "dclTargetView": "TableReference",
+  "ddlAffectedRowAccessPolicyCount": "string (int64)",
+  "ddlDestinationTable": "TableReference",
+  "ddlOperationPerformed": "string",
+  "ddlTargetDataset": "DatasetReference",
+  "ddlTargetRoutine": "RoutineReference",
+  "ddlTargetRowAccessPolicy": "RowAccessPolicyReference",
+  "ddlTargetTable": "TableReference",
+  "dmlStats": "DmlStatistics",
+  "estimatedBytesProcessed": "string (int64)",
+  "exportDataStatistics": "ExportDataStatistics",
+  "externalServiceCosts": "array<ExternalServiceCost>",
+  "genAiStats": "GenAiStats",
+  "incrementalResultStats": "IncrementalResultStats",
+  "loadQueryStatistics": "LoadQueryStatistics",
+  "materializedViewStatistics": "MaterializedViewStatistics",
+  "metadataCacheStatistics": "MetadataCacheStatistics",
+  "mlStatistics": "MlStatistics",
+  "modelTraining": "BigQueryModelTraining",
+  "modelTrainingCurrentIteration": "integer (int32)",
+  "modelTrainingExpectedTotalIteration": "string (int64)",
+  "numDmlAffectedRows": "string (int64)",
+  "objectStorageStats": "array<ObjectStorageStats>",
+  "performanceInsights": "PerformanceInsights",
+  "queryInfo": "QueryInfo",
+  "queryPlan": "array<ExplainQueryStage>",
+  "referencedLogicalViews": "array<TableReference>",
+  "referencedPropertyGraphs": "array<PropertyGraphReference>",
+  "referencedRoutines": "array<RoutineReference>",
+  "referencedTables": "array<TableReference>",
+  "reservationUsage": "array<object>",
+  "schema": "TableSchema",
+  "searchStatistics": "SearchStatistics",
+  "sparkStatistics": "SparkStatistics",
+  "statementType": "string",
+  "timeline": "array<QueryTimelineSample>",
+  "totalBytesBilled": "string (int64)",
+  "totalBytesProcessed": "string (int64)",
+  "totalBytesProcessedAccuracy": "string",
+  "totalPartitionsProcessed": "string (int64)",
+  "totalServicesSkuSlotMs": "string (int64)",
+  "totalSlotMs": "string (int64)",
+  "transferredBytes": "string (int64)",
+  "undeclaredQueryParameters": "array<QueryParameter>",
+  "vectorSearchStatistics": "VectorSearchStatistics"
 }
 ```
 
-### Example `JobStatistics4` value
+### Example `JobStatistics2` value
 
-Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0`, `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests).
+Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0`, `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests). Deprecated fields are left out (`modelTraining`, `modelTrainingCurrentIteration`, `modelTrainingExpectedTotalIteration`, `reservationUsage`; see the table and Notes).
 
 ```json
 {
-  "destinationUriFileCounts": [],
-  "inputBytes": "0",
-  "timeline": []
+  "biEngineStatistics": {},
+  "billingTier": 0,
+  "cacheHit": false,
+  "dclTargetDataset": {},
+  "dclTargetTable": {},
+  "dclTargetView": {},
+  "ddlAffectedRowAccessPolicyCount": "0",
+  "ddlDestinationTable": {},
+  "ddlOperationPerformed": "",
+  "ddlTargetDataset": {},
+  "ddlTargetRoutine": {},
+  "ddlTargetRowAccessPolicy": {},
+  "ddlTargetTable": {},
+  "dmlStats": {},
+  "estimatedBytesProcessed": "0",
+  "exportDataStatistics": {},
+  "externalServiceCosts": [],
+  "genAiStats": {},
+  "incrementalResultStats": {},
+  "loadQueryStatistics": {},
+  "materializedViewStatistics": {},
+  "metadataCacheStatistics": {},
+  "mlStatistics": {},
+  "numDmlAffectedRows": "0",
+  "objectStorageStats": [],
+  "performanceInsights": {},
+  "queryInfo": {},
+  "queryPlan": [],
+  "referencedLogicalViews": [],
+  "referencedPropertyGraphs": [],
+  "referencedRoutines": [],
+  "referencedTables": [],
+  "schema": {},
+  "searchStatistics": {},
+  "sparkStatistics": {},
+  "statementType": "",
+  "timeline": [],
+  "totalBytesBilled": "0",
+  "totalBytesProcessed": "0",
+  "totalBytesProcessedAccuracy": "",
+  "totalPartitionsProcessed": "0",
+  "totalServicesSkuSlotMs": "0",
+  "totalSlotMs": "0",
+  "transferredBytes": "0",
+  "undeclaredQueryParameters": [],
+  "vectorSearchStatistics": {}
 }
 ```
 
 ## Options / Props
+
+### `JobStatistics2` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `biEngineStatistics` | BiEngineStatistics | Output only. BI Engine specific Statistics. |
+| `billingTier` | integer (int32) | Output only. Billing tier for the job. This is a BigQuery-specific concept which is not related to the Google Cloud notion of "free tier". The value here is a measure of the query's resource consumption relative to the amount of data scanned. For on-demand queries, the limit is 100, and all queries within this limit are billed at the standard on-demand rates. On-demand queries that exceed this limit will fail with a billingTierLimitExceeded error. |
+| `cacheHit` | boolean | Output only. Whether the query result was fetched from the query cache. |
+| `dclTargetDataset` | DatasetReference | Output only. Referenced dataset for DCL statement. |
+| `dclTargetTable` | TableReference | Output only. Referenced table for DCL statement. |
+| `dclTargetView` | TableReference | Output only. Referenced view for DCL statement. |
+| `ddlAffectedRowAccessPolicyCount` | string (int64) | Output only. The number of row access policies affected by a DDL statement. Present only for DROP ALL ROW ACCESS POLICIES queries. |
+| `ddlDestinationTable` | TableReference | Output only. The table after rename. Present only for ALTER TABLE RENAME TO query. |
+| `ddlOperationPerformed` | string | Output only. The DDL operation performed, possibly dependent on the pre-existence of the DDL target. |
+| `ddlTargetDataset` | DatasetReference | Output only. The DDL target dataset. Present only for CREATE/ALTER/DROP SCHEMA(dataset) queries. |
+| `ddlTargetRoutine` | RoutineReference | Output only. \[Beta\] The DDL target routine. Present only for CREATE/DROP FUNCTION/PROCEDURE queries. |
+| `ddlTargetRowAccessPolicy` | RowAccessPolicyReference | Output only. The DDL target row access policy. Present only for CREATE/DROP ROW ACCESS POLICY queries. |
+| `ddlTargetTable` | TableReference | Output only. The DDL target table. Present only for CREATE/DROP TABLE/VIEW and DROP ALL ROW ACCESS POLICIES queries. |
+| `dmlStats` | DmlStatistics | Output only. Detailed statistics for DML statements INSERT, UPDATE, DELETE, MERGE or TRUNCATE. |
+| `estimatedBytesProcessed` | string (int64) | Output only. The original estimate of bytes processed for the job. |
+| `exportDataStatistics` | ExportDataStatistics | Output only. Stats for EXPORT DATA statement. |
+| `externalServiceCosts` | `array<ExternalServiceCost>` | Output only. Job cost breakdown as bigquery internal cost and external service costs. |
+| `genAiStats` | GenAiStats | Output only. Statistics related to GenAI usage in the query. |
+| `incrementalResultStats` | IncrementalResultStats | Output only. Statistics related to incremental query results, if enabled for the query. This feature is not yet available. |
+| `loadQueryStatistics` | LoadQueryStatistics | Output only. Statistics for a LOAD query. |
+| `materializedViewStatistics` | MaterializedViewStatistics | Output only. Statistics of materialized views of a query job. |
+| `metadataCacheStatistics` | MetadataCacheStatistics | Output only. Statistics of metadata cache usage in a query for BigLake tables. |
+| `mlStatistics` | MlStatistics | Output only. Statistics of a BigQuery ML training job. |
+| `modelTraining` | BigQueryModelTraining | Deprecated. |
+| `modelTrainingCurrentIteration` | integer (int32) | Deprecated. |
+| `modelTrainingExpectedTotalIteration` | string (int64) | Deprecated. |
+| `numDmlAffectedRows` | string (int64) | Output only. The number of rows affected by a DML statement. Present only for DML statements INSERT, UPDATE or DELETE. |
+| `objectStorageStats` | `array<ObjectStorageStats>` | Output only. Storage and caching statistics per cloud provider for queries over object storage. |
+| `performanceInsights` | PerformanceInsights | Output only. Performance insights. |
+| `queryInfo` | QueryInfo | Output only. Query optimization information for a QUERY job. |
+| `queryPlan` | `array<ExplainQueryStage>` | Output only. Describes execution plan for the query. |
+| `referencedLogicalViews` | `array<TableReference>` | Output only. Referenced logical views for the job. |
+| `referencedPropertyGraphs` | `array<PropertyGraphReference>` | Output only. Referenced property graphs for the job. Queries that reference more than 50 property graphs will not have a complete list. |
+| `referencedRoutines` | `array<RoutineReference>` | Output only. Referenced routines for the job. |
+| `referencedTables` | `array<TableReference>` | Output only. Referenced tables for the job. |
+| `reservationUsage` | `array<object>` | Output only. Job resource usage breakdown by reservation. This field reported misleading information and will no longer be populated. Deprecated (`deprecated: true` in the Discovery document; see Notes). |
+| `reservationUsage[].name` | string | Reservation name or "unreserved" for on-demand resource usage and multi-statement queries. |
+| `reservationUsage[].slotMs` | string (int64) | Total slot milliseconds used by the reservation for a particular job. |
+| `schema` | TableSchema | Output only. The schema of the results. Present only for successful dry run of non-legacy SQL queries. |
+| `searchStatistics` | SearchStatistics | Output only. Search query specific statistics. |
+| `sparkStatistics` | SparkStatistics | Output only. Statistics of a Spark procedure job. |
+| `statementType` | string | Output only. The type of query statement, if valid. Possible values: \* `SELECT`: `SELECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select_list) statement. \* `ASSERT`: `ASSERT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/debugging-statements#assert) statement. \* `INSERT`: `INSERT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#insert_statement) statement. \* `UPDATE`: `UPDATE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#update_statement) statement. \* `DELETE`: `DELETE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-manipulation-language) statement. \* `MERGE`: `MERGE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-manipulation-language) statement. \* `TRUNCATE_TABLE`: `TRUNCATE TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#truncate_table_statement) statement. \* `CREATE_TABLE`: `CREATE TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_statement) statement, without `AS SELECT`. \* `CREATE_TABLE_AS_SELECT`: `CREATE TABLE AS SELECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_statement) statement. \* `CREATE_VIEW`: `CREATE VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_view_statement) statement. \* `CREATE_MODEL`: `CREATE MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create#create_model_statement) statement. \* `CREATE_MATERIALIZED_VIEW`: `CREATE MATERIALIZED VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_materialized_view_statement) statement. \* `CREATE_FUNCTION`: `CREATE FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_function_statement) statement. \* `CREATE_TABLE_FUNCTION`: `CREATE TABLE FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_table_function_statement) statement. \* `CREATE_PROCEDURE`: `CREATE PROCEDURE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_procedure) statement. \* `CREATE_ROW_ACCESS_POLICY`: `CREATE ROW ACCESS POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_row_access_policy_statement) statement. \* `CREATE_SCHEMA`: `CREATE SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_schema_statement) statement. \* `CREATE_EXTERNAL_SCHEMA`: `CREATE EXTERNAL SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_external_schema_statement) statement. \* `CREATE_EXTERNAL_TABLE`: `CREATE EXTERNAL TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_external_table_statement) statement. \* `CREATE_SNAPSHOT_TABLE`: `CREATE SNAPSHOT TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_snapshot_table_statement) statement. \* `CREATE_SEARCH_INDEX`: `CREATE SEARCH INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_search_index_statement) statement. \* `CREATE_VECTOR_INDEX`: `CREATE VECTOR INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_vector_index_statement) statement. \* `CREATE_CONNECTION`: `CREATE CONNECTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_connection_statement) statement. \* `CREATE_DATA_POLICY`: `CREATE DATA_POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_data_policy_statement) statement. \* `CREATE_PROPERTY_GRAPH`: `CREATE PROPERTY GRAPH` (https://cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#gql_create_graph) statement. \* `CREATE_CAPACITY`: `CREATE CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_capacity_statement) statement. \* `CREATE_RESERVATION`: `CREATE RESERVATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_reservation_statement) statement. \* `CREATE_ASSIGNMENT`: `CREATE ASSIGNMENT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_assignment_statement) statement. \* `DROP_TABLE`: `DROP TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_table_statement) statement. \* `DROP_EXTERNAL_TABLE`: `DROP EXTERNAL TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_external_table_statement) statement. \* `DROP_VIEW`: `DROP VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_view_statement) statement. \* `DROP_MODEL`: `DROP MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-drop-model) statement. \* `DROP_MATERIALIZED_VIEW`: `DROP MATERIALIZED VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_materialized_view_statement) statement. \* `DROP_FUNCTION`: `DROP FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_function_statement) statement. \* `DROP_TABLE_FUNCTION`: `DROP TABLE FUNCTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_table_function) statement. \* `DROP_PROCEDURE`: `DROP PROCEDURE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_procedure_statement) statement. \* `DROP_SEARCH_INDEX`: `DROP SEARCH INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_search_index) statement. \* `DROP_VECTOR_INDEX`: `DROP VECTOR INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_vector_index) statement. \* `DROP_SCHEMA`: `DROP SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_schema_statement) statement. \* `UNDROP_SCHEMA`: `UNDROP SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#undrop_schema_statement) statement. \* `DROP_SNAPSHOT_TABLE`: `DROP SNAPSHOT TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_snapshot_table_statement) statement. \* `DROP_ROW_ACCESS_POLICY`: \[`DROP [ALL] ROW ACCESS POLICY\|POLICIES`\](https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_row_access_policy_statement) statement. \* `DROP_CONNECTION`: `DROP CONNECTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_connection_statement) statement. \* `DROP_DATA_POLICY`: `DROP DATA_POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_data_policy) statement. \* `DROP_PROPERTY_GRAPH`: `DROP PROPERTY GRAPH` (https://cloud.google.com/bigquery/docs/reference/standard-sql/graph-schema-statements#gql_drop_graph) statement. \* `DROP_CAPACITY`: `DROP CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_capacity_statement) statement. \* `DROP_RESERVATION`: `DROP RESERVATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_reservation_statement) statement. \* `DROP_ASSIGNMENT`: `DROP ASSIGNMENT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#drop_assignment_statement) statement. \* `ALTER_TABLE`: `ALTER TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_table_set_options_statement) statement. \* `ALTER_VIEW`: `ALTER VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_view_set_options_statement) statement. \* `ALTER_MATERIALIZED_VIEW`: `ALTER MATERIALIZED VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_materialized_view_set_options_statement) statement. \* `ALTER_SCHEMA`: `ALTER SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_schema_set_options_statement) statement. \* `ALTER_MODEL`: `ALTER MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-alter-model) statement. \* `ALTER_SEARCH_INDEX`: `ALTER SEARCH INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_search_index_statement) statement. \* `ALTER_VECTOR_INDEX`: `ALTER VECTOR INDEX` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_vector_index_rebuild_statement) statement. \* `ALTER_CONNECTION`: `ALTER CONNECTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_connection_set_options_statement) statement. \* `ALTER_DATA_POLICY`: `ALTER DATA_POLICY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_data_policy_statement) statement. \* `ALTER_PROJECT`: `ALTER PROJECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_project_set_options_statement) statement. \* `ALTER_ORGANIZATION`: `ALTER ORGANIZATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_organization_set_options_statement) statement. \* `ALTER_BI_CAPACITY`: `ALTER BI_CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_bi_capacity_set_options_statement) statement. \* `ALTER_CAPACITY`: `ALTER CAPACITY` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_capacity_set_options_statement) statement. \* `ALTER_RESERVATION`: `ALTER RESERVATION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#alter_reservation_set_options_statement) statement. \* `SCRIPT`: `SCRIPT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language) statement. \* `CALL`: `CALL` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#call) statement. \* `BEGIN_TRANSACTION`: `BEGIN TRANSACTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#begin_transaction) statement. \* `COMMIT_TRANSACTION`: `COMMIT TRANSACTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#commit_transaction) statement. \* `ROLLBACK_TRANSACTION`: `ROLLBACK TRANSACTION` (https://cloud.google.com/bigquery/docs/reference/standard-sql/procedural-language#rollback_transaction) statement. \* `EXPORT_DATA`: `EXPORT DATA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/export-statements#export_data_statement) statement. \* `EXPORT_MODEL`: `EXPORT MODEL` (https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-export-model) statement. \* `EXPORT_METADATA`: `EXPORT TABLE METADATA` (https://cloud.google.com/bigquery/docs/biglake-iceberg-tables-in-bigquery) statement, for BigLake Iceberg tables. \* `LOAD_DATA`: `LOAD DATA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/load-statements#load_data_statement) statement. \* `GRANT_ON_SCHEMA`: `GRANT ... ON SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. \* `GRANT_ON_TABLE`: `GRANT ... ON TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. Also used for `GRANT ... ON EXTERNAL TABLE`. \* `GRANT_ON_VIEW`: `GRANT ... ON VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. \* `GRANT_ON_PROJECT`: `GRANT ... ON PROJECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#grant_statement) statement. \* `REVOKE_ON_SCHEMA`: `REVOKE ... ON SCHEMA` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. \* `REVOKE_ON_TABLE`: `REVOKE ... ON TABLE` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. Also used for `REVOKE ... ON EXTERNAL TABLE`. \* `REVOKE_ON_VIEW`: `REVOKE ... ON VIEW` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. \* `REVOKE_ON_PROJECT`: `REVOKE ... ON PROJECT` (https://cloud.google.com/bigquery/docs/reference/standard-sql/data-control-language#revoke_statement) statement. |
+| `timeline` | `array<QueryTimelineSample>` | Output only. Describes a timeline of job execution. |
+| `totalBytesBilled` | string (int64) | Output only. If the project is configured to use on-demand pricing, then this field contains the total bytes billed for the job. If the project is configured to use flat-rate pricing, then you are not billed for bytes and this field is informational only. |
+| `totalBytesProcessed` | string (int64) | Output only. Total bytes processed for the job. |
+| `totalBytesProcessedAccuracy` | string | Output only. For dry-run jobs, totalBytesProcessed is an estimate and this field specifies the accuracy of the estimate. Possible values can be: UNKNOWN: accuracy of the estimate is unknown. PRECISE: estimate is precise. LOWER_BOUND: estimate is lower bound of what the query would cost. UPPER_BOUND: estimate is upper bound of what the query would cost. |
+| `totalPartitionsProcessed` | string (int64) | Output only. Total number of partitions processed from all partitioned tables referenced in the job. |
+| `totalServicesSkuSlotMs` | string (int64) | Output only. Total slot milliseconds for the job that ran on external services and billed on the services SKU. This field is only populated for jobs that have external service costs, and is the total of the usage for costs whose billing method is `"SERVICES_SKU"`. |
+| `totalSlotMs` | string (int64) | Output only. Slot-milliseconds for the job. |
+| `transferredBytes` | string (int64) | Output only. Total bytes transferred for BigQuery Omni queries from the remote cloud back to Google Cloud. This tracks data movement over Google-managed connections (like query results). It doesn't include input data read from the external data lake (for example, S3) because that data stays within the remote cloud. |
+| `undeclaredQueryParameters` | `array<QueryParameter>` | Output only. GoogleSQL only: list of undeclared query parameters detected during a dry run validation. |
+| `vectorSearchStatistics` | VectorSearchStatistics | Output only. Vector Search query specific statistics. |
+
+### `JobStatistics3` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `badRecords` | string (int64) | Output only. The number of bad records encountered. Note that if the job has failed because of more bad records encountered than the maximum allowed in the load job configuration, then this number can be less than the total number of bad records present in the input data. |
+| `inputFileBytes` | string (int64) | Output only. Number of bytes of source data in a load job. |
+| `inputFiles` | string (int64) | Output only. Number of source files in a load job. |
+| `outputBytes` | string (int64) | Output only. Size of the loaded data in bytes. Note that while a load job is in the running state, this value may change. |
+| `outputRows` | string (int64) | Output only. Number of rows imported in a load job. Note that while an import job is in the running state, this value may change. |
+| `timeline` | `array<QueryTimelineSample>` | Output only. Describes a timeline of job execution. |
 
 ### `JobStatistics4` fields
 
@@ -706,7 +867,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | Field | Type | Description |
 |---|---|---|
 | `badRecords` | string (int64) | Output only. The number of bad records encountered while processing a LOAD query. Note that if the job has failed because of more bad records encountered than the maximum allowed in the load job configuration, then this number can be less than the total number of bad records present in the input data. |
-| `bytesTransferred` | string (int64) | Output only. This field is deprecated. The number of bytes of source data copied over the network for a `LOAD` query. `transferred_bytes` has the canonical value for physical transferred bytes, which is used for BigQuery Omni billing. REST JSON field name: `transferredBytes` of [`JobStatistics2`](./bigquery-1.md#jobstatistics2) (`transferred_bytes` in the description; it is not a field of this message; see Notes). |
+| `bytesTransferred` | string (int64) | Output only. This field is deprecated. The number of bytes of source data copied over the network for a `LOAD` query. `transferred_bytes` has the canonical value for physical transferred bytes, which is used for BigQuery Omni billing. REST JSON field name: `transferredBytes` of [`JobStatistics2`](#jobstatistics2) (`transferred_bytes` in the description; it is not a field of this message; see Notes). |
 | `inputFileBytes` | string (int64) | Output only. Number of bytes of source data in a LOAD query. |
 | `inputFiles` | string (int64) | Output only. Number of source files in a LOAD query. |
 | `outputBytes` | string (int64) | Output only. Size of the loaded data in bytes. Note that while a LOAD query is in the running state, this value may change. |
@@ -1788,17 +1949,6 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `indexUsageMode` | string enum | Specifies the index usage mode for the query. Values: `INDEX_USAGE_MODE_UNSPECIFIED`, `UNUSED`, `PARTIALLY_USED`, `FULLY_USED`. |
 | `storedColumnsUsages` | `array<StoredColumnsUsage>` | Specifies the usage of stored columns in the query when stored columns are used in the query. |
 
-### `ViewDefinition` fields
-
-| Field | Type | Description |
-|---|---|---|
-| `foreignDefinitions` | `array<ForeignViewDefinition>` | Optional. Foreign view representations. |
-| `privacyPolicy` | PrivacyPolicy | Optional. Specifies the privacy policy for the view. |
-| `query` | string | Required. A query that BigQuery executes when the view is referenced. |
-| `useExplicitColumnNames` | boolean | True if the column names are explicitly specified. For example by using the 'CREATE VIEW v(c1, c2) AS ...' syntax. Can only be set for GoogleSQL views. |
-| `useLegacySql` | boolean | Specifies whether to use BigQuery's legacy SQL for this view. The default value is true. If set to false, the view uses BigQuery's GoogleSQL (https://docs.cloud.google.com/bigquery/docs/introduction-sql). Queries and views that reference this view must use the same flag value. A wrapper is used here because the default value is True. |
-| `userDefinedFunctionResources` | `array<UserDefinedFunctionResource>` | Describes user-defined function resources used in the query. |
-
 ## Notes
 
 - Generated from the Discovery document(s) v2 of `bigquery` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
@@ -1813,7 +1963,11 @@ Generated from the field types (not in the official docs): a JSON value that mat
 - Corrected from the Discovery document: the `queryResultsFormat` description of `QueryRequest` says the schema "will be provided in `QueryResponse.results_schema` field" and the first page "in `QueryResponse.results` field"; the same text is in the proto. In the proto, `results_schema` and `results` are the names of two `oneof` groups of `QueryResponse`, not fields: `oneof results_schema` has the single member `arrow_schema` ("Output only. Arrow schema") and `oneof results` has the single member `arrow_record_batch` ("Output only. Serialized row data in Arrow RecordBatch format."), which are `arrowSchema` and `arrowRecordBatch` in the `QueryResponse` table; both groups are marked "This feature is not yet available." (`google/cloud/bigquery/v2/job.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/job.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Corrected from the Discovery document: the `creationTime` and `lastModifiedTime` descriptions of `RowAccessPolicy` read "The time when this row access policy was created, in milliseconds since the epoch." (likewise "was last modified"); the same text is in the REST reference (https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/rowAccessPolicies, retrieved 2026-11-21) and the proto. The fields are `google.protobuf.Timestamp` in the proto (`google/cloud/bigquery/v2/row_access_policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/v2/row_access_policy.proto, commit `5ce0245`), `format: google-datetime` in the Discovery document, and the REST reference types them as a string in the `google.protobuf.Timestamp` format, so the JSON value is an RFC 3339 timestamp string (for example `2026-01-01T00:00:00Z`), not a number of milliseconds.
 - Corrected from the Discovery document: the `TestIamPermissionsResponse.permissions` description reads "A subset of `TestPermissionsRequest.permissions` that the caller is allowed."; the same text is in the `google.iam.v1` proto, where the request message of `TestIamPermissions` is `TestIamPermissionsRequest` (`google/iam/v1/iam_policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/iam_policy.proto, commit `5ce0245`, retrieved 2026-11-21).
-- Deprecated: `LoadQueryStatistics.bytesTransferred` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "`transferred_bytes` has the canonical value for physical transferred bytes, which is used for BigQuery Omni billing." REST JSON field name: `transferredBytes` of [`JobStatistics2`](./bigquery-1.md#jobstatistics2) (`transferred_bytes` in the description; it is not a field of this message; see Notes).
+- Deprecated: `JobStatistics2.modelTraining` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `JobStatistics2.modelTrainingCurrentIteration` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `JobStatistics2.modelTrainingExpectedTotalIteration` (its Discovery description). The Discovery document states no replacement.
+- Deprecated: `JobStatistics2.reservationUsage` (`deprecated: true` in the Discovery document). Replacement or status stated in the description: "This field reported misleading information and will no longer be populated."
+- Deprecated: `LoadQueryStatistics.bytesTransferred` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "`transferred_bytes` has the canonical value for physical transferred bytes, which is used for BigQuery Omni billing." REST JSON field name: `transferredBytes` of [`JobStatistics2`](#jobstatistics2) (`transferred_bytes` in the description; it is not a field of this message; see Notes).
 - Deprecated: `Model.bestTrialId` (`deprecated: true` in the Discovery document). The Discovery document states no replacement.
 - Deprecated: `ModelDefinition.modelOptions` (its Discovery description). The Discovery document states no replacement.
 - Deprecated: `ModelDefinition.trainingRuns` (its Discovery description). The Discovery document states no replacement.

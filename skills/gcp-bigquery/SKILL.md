@@ -151,7 +151,7 @@ skills/gcp-bigquery/
 
 `references/gcloud/` のグループ（3）: `biglake` / `bq` / `data-catalog`。GA コマンドのページは gcloud help の verbatim、alpha / beta は NAME と SYNOPSIS のみ（各ページ冒頭に明記）。`bq` グループは `migration-workflows` を除いて alpha のみ、`data-catalog` の `crawlers` と `crawler-runs` は alpha のみ、`biglake` の `data-product-sharing` と `delta-sharing` は alpha と GA（beta なし）、`hive` と `iceberg` は alpha・beta・GA（gcloud 593.0.0 の生成ページで確認）。
 
-`references/rest/` `references/rest-schemas/` の API（9）: `analyticshub` / `biglake` / `bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` / `datacatalog` / `dataform`（分割投入中: REST メソッド（`rest/`）は上記の全 API を収録済み、メッセージ型（`rest-schemas/`）は `analyticshub` / `biglake` / `bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` のみ収録済み）。
+`references/rest/` `references/rest-schemas/` の API（9）: `analyticshub` / `biglake` / `bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` / `datacatalog` / `dataform`（分割投入中: REST メソッド（`rest/`）は上記の全 API を収録済み、メッセージ型（`rest-schemas/`）は `analyticshub` / `biglake` / `bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` のみ収録済み、`rest-schemas/bigquery` は 2 / 3 ページ）。
 
 `references/iam/` のファイル（16）: `analyticshub` / `biglake` / `bigquery-1` / `bigquery-2` / `bigqueryconnection` / `bigquerycontinuousquery` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigquerymigration` / `bigqueryomni` / `bigqueryspark` / `datacatalog` / `dataform-1` / `dataform-2` / `dataprep` / `geminidataanalytics`。
 
@@ -175,7 +175,7 @@ skills/gcp-bigquery/
 8. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
 9. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
 
-分割投入中のカテゴリ（`legacy-sql`: 1 / 3 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+分割投入中のカテゴリ（`legacy-sql`: 1 / 3 ページ / `rest-schemas/bigquery`: 2 / 3 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。載っていないメッセージ型（`rest-schemas/`）は、各 API の公式 REST リファレンスか、各 REST ページの Notes の Source にある Discovery document の `schemas` を引く。
 
 分割投入中: `references/rest-schemas/` は `analyticshub` / `biglake` / `bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` のみ収録済みで、`datacatalog` / `dataform` は後続 PR で投入する。それまで未投入の API・グループは、各 API の公式 REST リファレンスと gcloud の公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference ）を引く。
 
@@ -235,7 +235,7 @@ skills/gcp-bigquery/
 | REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/bigquery.*` / `roles/analyticshub.*` / `roles/biglake.*` / `roles/dataform.*` / `roles/datacatalog.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/dataform` / `rest-schemas/datacatalog`。一部だけ収録済み: `legacy-sql`（1 / 3 ページ）。収録済みのページは各カテゴリの README.md の索引で確認する
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas/dataform` / `rest-schemas/datacatalog`。一部だけ収録済み: `legacy-sql`（1 / 3 ページ） / `rest-schemas/bigquery`（2 / 3 ページ）。収録済みのページは各カテゴリの README.md の索引で確認する
 
 ## 他スキルとの使い分け
 

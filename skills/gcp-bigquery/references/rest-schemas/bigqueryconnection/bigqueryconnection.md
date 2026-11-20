@@ -12,8 +12,48 @@ Message types referenced by the methods listed under `references/rest/bigqueryco
 
 ### `AuditConfig`
 
-- Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": \[ { "service": "allServices", "audit_log_configs": \[ { "log_type": "DATA_READ", "exempted_members": \[ "user:jose@example.com" \] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } \] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": \[ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": \[ "user:aliya@example.com" \] } \] } \] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.
+- Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. The `Policy` example of this description is shown below with the REST JSON field names. For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.
 - Version: v1
+
+Adapted (not in the official docs): the `Policy` example of the Discovery `AuditConfig` description, with the proto field names `audit_configs`, `audit_log_configs`, `log_type` and `exempted_members` written as the REST JSON names `auditConfigs`, `auditLogConfigs`, `logType` and `exemptedMembers` (see Notes).
+
+```json
+{
+  "auditConfigs": [
+    {
+      "service": "allServices",
+      "auditLogConfigs": [
+        {
+          "logType": "DATA_READ",
+          "exemptedMembers": [
+            "user:jose@example.com"
+          ]
+        },
+        {
+          "logType": "DATA_WRITE"
+        },
+        {
+          "logType": "ADMIN_READ"
+        }
+      ]
+    },
+    {
+      "service": "sampleservice.googleapis.com",
+      "auditLogConfigs": [
+        {
+          "logType": "DATA_READ"
+        },
+        {
+          "logType": "DATA_WRITE",
+          "exemptedMembers": [
+            "user:aliya@example.com"
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
 
 ### `AuditLogConfig`
 
@@ -175,9 +215,7 @@ Message types referenced by the methods listed under `references/rest/bigqueryco
 - An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the IAM documentation (https://cloud.google.com/iam/help/conditions/resource-policies). The JSON and YAML examples of this description are shown below. For a description of IAM and its features, see the IAM documentation (https://cloud.google.com/iam/docs/).
 - Version: v1
 
-JSON example from the Discovery description (as a JSON block; the trailing comma after the `condition.expression` value is removed; see Notes):
-
-Adapted (not in the official docs): the trailing comma after the `condition.expression` value of the Discovery example is removed so that the block is valid JSON.
+Adapted (not in the official docs): the JSON example of the Discovery `Policy` description, quoted as a JSON block; only the trailing comma after the `condition.expression` value is removed, so that the block is valid JSON (see Notes).
 
 ```json
 {
@@ -592,6 +630,7 @@ A JSON value that matches the table (not a request to send as is). The values ar
 
 - Generated from the Discovery document(s) v1, v1beta1 of `bigqueryconnection` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
 - Shortened from the Discovery document: the `parameters` description of `ConnectorConfigurationAuthentication` repeats the text of `ConnectorConfiguration.parameters`, including "To update a single parameter value, call ConnectionService.UpdateConnection with `update_mask` set to `configuration.parameters.parameter_id`." and the backtick-escaping example `configuration.parameters.`parameter id``. That path names the `parameters` map directly under `configuration` (`ConnectorConfiguration.parameters`), not the map under `configuration.authentication`. Neither the Discovery document nor the googleapis protos (`google/cloud/bigquery/connection/v1/connection.proto` at commit `5ce0245` has no `ConnectorConfiguration` message) state whether a single key of the authentication map can be updated with an update mask, so the table gives only the field description; the instructions are kept on `ConnectorConfiguration.parameters`.
+- Adapted from the Discovery document: the `AuditConfig` description embeds an "Example Policy with multiple AuditConfigs" in one line with the proto field names (`audit_configs`, `audit_log_configs`, `log_type`, `exempted_members`); this page shows it as a JSON block of a `Policy` with the REST JSON (camelCase) field names; the values are unchanged.
 - Corrected from the Discovery document: the JSON example in the `Policy` description (the `google.iam.v1` text shared by the IAM methods) has a trailing comma after the `condition.expression` value (`"expression": "request.time < timestamp('2020-10-01T00:00:00.000Z')", } }`), which is not valid JSON; the same comma is in the proto comment. This page shows the example as a JSON block without that comma. The Discovery text of the YAML example has lost its line breaks and indentation, so the YAML block is taken from the proto comment (`google/iam/v1/policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/policy.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Corrected from the source proto: the service account formats in the `serviceAccountId` descriptions of `CloudResourceProperties` (`@gcp-sa-bigquery-cloudresource.iam.gserviceaccount.com`) and `SparkProperties` (`bqcx--@gcp-sa-bigquery-consp.iam.gserviceaccount.com`) lost their placeholders in the Discovery document; the proto comments read "The account ID is in the form of: `<service-1234>@gcp-sa-bigquery-cloudresource.iam.gserviceaccount.com`" and "The account ID is in the form of: `bqcx-<projectnumber>-<uniqueid>@gcp-sa-bigquery-consp.iam.gserviceaccount.com`" (backticks added) (`google/cloud/bigquery/connection/v1/connection.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/connection/v1/connection.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the Discovery document: the `AuditLogConfig` description gives the example `{ "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] }`, which is the `auditLogConfigs` array of the parent `AuditConfig` written with proto field names, not an `AuditLogConfig` value; the table shows the two array elements as `AuditLogConfig` values with the REST JSON (camelCase) field names `logType` and `exemptedMembers` (a whole `AuditConfig` with the same values in REST JSON: `{ "service": "allServices", "auditLogConfigs": [ { "logType": "DATA_READ", "exemptedMembers": [ "user:jose@example.com" ] }, { "logType": "DATA_WRITE" } ] }`).
