@@ -261,7 +261,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The organization whose config is being retrieved. |
+| `name` | path | string | yes | Required. The organization whose config is being retrieved. Format for this method (from its `flatPath`): `organizations/{organizationsId}/locations/{locationsId}`. |
 
 ### `datacatalog.organizations.locations.retrieveEffectiveConfig` parameters
 
@@ -279,7 +279,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | The name of the operation resource to be cancelled. |
+| `name` | path | string | yes | The name of the operation resource to be cancelled. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/operations/{operationsId}`. |
 
 ### `datacatalog.projects.locations.operations.delete` parameters
 
@@ -297,7 +297,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | The name of the operation's parent resource. |
+| `name` | path | string | yes | The name of the operation's parent resource. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}`. |
 | `filter` | query | string | no | The standard list filter. |
 | `pageSize` | query | integer (int32) | no | The standard list page size. |
 | `pageToken` | query | string | no | The standard list page token. |
@@ -319,7 +319,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `parent` | path | string | yes | Required. Resource name of the project that the taxonomy will belong to. |
+| `parent` | path | string | yes | Required. Resource name of the project that the taxonomy will belong to. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}`. |
 
 ### `datacatalog.projects.locations.taxonomies.delete` parameters
 
@@ -331,7 +331,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `parent` | path | string | yes | Required. Resource name of the project that the exported taxonomies belong to. |
+| `parent` | path | string | yes | Required. Resource name of the project that the exported taxonomies belong to. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}`. |
 | `serializedTaxonomies` | query | boolean | no | Serialized export taxonomies that contain all the policy tags as nested protocol buffers. |
 | `taxonomies` | query | repeated string | yes | Required. Resource names of the taxonomies to export. |
 
@@ -351,13 +351,13 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `parent` | path | string | yes | Required. Resource name of project that the imported taxonomies will belong to. |
+| `parent` | path | string | yes | Required. Resource name of project that the imported taxonomies will belong to. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}`. |
 
 ### `datacatalog.projects.locations.taxonomies.list` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `parent` | path | string | yes | Required. Resource name of the project to list the taxonomies of. |
+| `parent` | path | string | yes | Required. Resource name of the project to list the taxonomies of. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}`. |
 | `filter` | query | string | no | Supported field for filter is 'service' and value is 'dataplex'. Eg: service=dataplex. |
 | `pageSize` | query | integer (int32) | no | The maximum number of items to return. Must be a value between 1 and 1000 inclusively. If not set, defaults to 50. |
 | `pageToken` | query | string | no | The pagination token of the next results page. If not set, the first page is returned. The token is returned in the response to a previous list request. |
@@ -373,7 +373,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `parent` | path | string | yes | Required. Resource name of the taxonomy that the policy tag will belong to. |
+| `parent` | path | string | yes | Required. Resource name of the taxonomy that the policy tag will belong to. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/taxonomies/{taxonomiesId}`. |
 
 ### `datacatalog.projects.locations.taxonomies.policyTags.delete` parameters
 
@@ -397,7 +397,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `parent` | path | string | yes | Required. Resource name of the taxonomy to list the policy tags of. |
+| `parent` | path | string | yes | Required. Resource name of the taxonomy to list the policy tags of. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/taxonomies/{taxonomiesId}`. |
 | `pageSize` | query | integer (int32) | no | The maximum number of items to return. Must be a value between 1 and 1000 inclusively. If not set, defaults to 50. |
 | `pageToken` | query | string | no | The pagination token of the next results page. If not set, returns the first page. The token is returned in the response to a previous list request. |
 
@@ -424,7 +424,7 @@ GET https://datacatalog.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. Resource name of the taxonomy to update. |
+| `name` | path | string | yes | Required. Resource name of the taxonomy to update. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/taxonomies/{taxonomiesId}`. |
 
 ### `datacatalog.projects.locations.taxonomies.setIamPolicy` parameters
 

@@ -381,7 +381,7 @@ GET https://bigquerydatatransfer.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | The resource that owns the locations collection, if applicable. |
+| `name` | path | string | yes | The resource that owns the locations collection, if applicable. Format for this method (from its `flatPath`): `projects/{projectsId}`. |
 | `extraLocationTypes` | query | repeated string | no | Optional. Do not use this field unless explicitly documented otherwise. This is primarily for internal usage. |
 | `filter` | query | string | no | A filter to narrow down results to a preferred subset. The filtering language accepts strings like `"displayName=tokyo"`, and is documented in more detail in AIP-160 (https://google.aip.dev/160). |
 | `pageSize` | query | integer (int32) | no | The maximum number of results to return. If not set, the service selects a default. |

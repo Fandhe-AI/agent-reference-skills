@@ -146,7 +146,7 @@ GET https://bigqueryconnection.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. Name of the connection, for example: `projects/{project_id}/locations/{location_id}/connections/{connection_id}/credential` |
+| `name` | path | string | yes | Required. Name of the connection, for example: `projects/{project_id}/locations/{location_id}/connections/{connection_id}/credential` Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/connections/{connectionsId}/credential`. |
 
 ## Notes
 

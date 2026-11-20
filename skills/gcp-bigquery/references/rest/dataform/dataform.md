@@ -877,7 +877,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | The resource that owns the locations collection, if applicable. |
+| `name` | path | string | yes | The resource that owns the locations collection, if applicable. Format for this method (from its `flatPath`): `projects/{projectsId}`. |
 | `extraLocationTypes` | query | repeated string | no | Optional. Do not use this field unless explicitly documented otherwise. This is primarily for internal usage. |
 | `filter` | query | string | no | A filter to narrow down results to a preferred subset. The filtering language accepts strings like `"displayName=tokyo"`, and is documented in more detail in AIP-160 (https://google.aip.dev/160). |
 | `pageSize` | query | integer (int32) | no | The maximum number of results to return. If not set, the service selects a default. |
@@ -905,7 +905,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | The name of the operation's parent resource. |
+| `name` | path | string | yes | The name of the operation's parent resource. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}`. |
 | `filter` | query | string | no | The standard list filter. |
 | `pageSize` | query | integer (int32) | no | The standard list page size. |
 | `pageToken` | query | string | no | The standard list page token. |
@@ -968,7 +968,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The repository's name. |
+| `name` | path | string | yes | Required. The repository's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}`. |
 
 ### `dataform.projects.locations.repositories.create` parameters
 
@@ -988,13 +988,13 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The repository's name. |
+| `name` | path | string | yes | Required. The repository's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}`. |
 
 ### `dataform.projects.locations.repositories.fetchHistory` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The repository's name. |
+| `name` | path | string | yes | Required. The repository's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}`. |
 | `pageSize` | query | integer (int32) | no | Optional. Maximum number of commits to return. The server may return fewer items than requested. If unspecified, the server will pick an appropriate default. |
 | `pageToken` | query | string | no | Optional. Page token received from a previous `FetchRepositoryHistory` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `FetchRepositoryHistory`, with the exception of `page_size`, must match the call that provided the page token. |
 
@@ -1002,7 +1002,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The repository's name. |
+| `name` | path | string | yes | Required. The repository's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}`. |
 
 ### `dataform.projects.locations.repositories.get` parameters
 
@@ -1044,7 +1044,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The repository's name. |
+| `name` | path | string | yes | Required. The repository's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}`. |
 | `commitSha` | query | string | no | Optional. The Commit SHA for the commit to query from. If unset, the directory will be queried from HEAD. |
 | `pageSize` | query | integer (int32) | no | Optional. Maximum number of paths to return. The server may return fewer items than requested. If unspecified, the server will pick an appropriate default. |
 | `pageToken` | query | string | no | Optional. Page token received from a previous `QueryRepositoryDirectoryContents` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `QueryRepositoryDirectoryContents`, with the exception of `page_size`, must match the call that provided the page token. |
@@ -1054,7 +1054,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The repository's name. |
+| `name` | path | string | yes | Required. The repository's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}`. |
 | `commitSha` | query | string | no | Optional. The commit SHA for the commit to read from. If unset, the file will be read from HEAD. |
 | `path` | query | string | yes | Required. Full file path to read including filename, from repository root. |
 
@@ -1237,27 +1237,27 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 | `path` | query | string | yes | Required. The file's full path including filename, relative to the workspace root. |
 
 ### `dataform.projects.locations.repositories.workspaces.fetchFileGitStatuses` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The workspace's name. |
+| `name` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.repositories.workspaces.fetchGitAheadBehind` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The workspace's name. |
+| `name` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 | `remoteBranch` | query | string | no | Optional. The name of the branch in the Git remote against which this workspace should be compared. If left unset, the repository's default branch name will be used. |
 
 ### `dataform.projects.locations.repositories.workspaces.fetchHistory` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The workspace's name. |
+| `name` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 | `pageSize` | query | integer (int32) | no | Optional. Maximum number of commits to return. The server may return fewer items than requested. If unspecified, the server will pick an appropriate default. |
 | `pageToken` | query | string | no | Optional. Page token received from a previous `FetchWorkspaceHistory` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `FetchWorkspaceHistory`, with the exception of `page_size`, must match the call that provided the page token. |
 
@@ -1278,7 +1278,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.repositories.workspaces.list` parameters
 
@@ -1294,37 +1294,37 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.repositories.workspaces.moveDirectory` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.repositories.workspaces.moveFile` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.repositories.workspaces.pull` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The workspace's name. |
+| `name` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.repositories.workspaces.push` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The workspace's name. |
+| `name` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.repositories.workspaces.queryDirectoryContents` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 | `pageSize` | query | integer (int32) | no | Optional. Maximum number of paths to return. The server may return fewer items than requested. If unspecified, the server will pick an appropriate default. |
 | `pageToken` | query | string | no | Optional. Page token received from a previous `QueryDirectoryContents` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `QueryDirectoryContents`, with the exception of `page_size`, must match the call that provided the page token. |
 | `path` | query | string | no | Optional. The directory's full path including directory name, relative to the workspace root. If left unset, the workspace root is used. |
@@ -1334,7 +1334,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 | `path` | query | string | yes | Required. The file's full path including filename, relative to the workspace root. |
 | `revision` | query | string | no | Optional. The Git revision of the file to return. If left empty, the current contents of `path` will be returned. |
 
@@ -1342,25 +1342,25 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.repositories.workspaces.removeFile` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.repositories.workspaces.reset` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `name` | path | string | yes | Required. The workspace's name. |
+| `name` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.repositories.workspaces.searchFiles` parameters
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 | `filter` | query | string | no | Optional. Optional filter for the returned list in filtering format. Filtering is only currently supported on the `path` field. See https://google.aip.dev/160 for details. |
 | `pageSize` | query | integer (int32) | no | Optional. Maximum number of search results to return. The server may return fewer items than requested. If unspecified, the server will pick an appropriate default. |
 | `pageToken` | query | string | no | Optional. Page token received from a previous `searchFiles` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `searchFiles`, with the exception of `page_size`, must match the call that provided the page token. |
@@ -1387,7 +1387,7 @@ GET https://dataform.googleapis.com/v1/{+name}
 
 | Parameter | In | Type | Required | Description |
 |---|---|---|---|---|
-| `workspace` | path | string | yes | Required. The workspace's name. |
+| `workspace` | path | string | yes | Required. The workspace's name. Format for this method (from its `flatPath`): `projects/{projectsId}/locations/{locationsId}/repositories/{repositoriesId}/workspaces/{workspacesId}`. |
 
 ### `dataform.projects.locations.teamFolders.create` parameters
 
