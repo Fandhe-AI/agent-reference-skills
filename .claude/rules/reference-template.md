@@ -78,10 +78,10 @@ reference-linter・skill-structure-validator・readme-indexer はこの定義を
 - 生成ツールが出力する README（下記）でなく、H1 と索引表 1 つだけで、アンカー付きの行（`./<file>.md#<anchor>`）も同じページを指す行の重複も無い README は、readme-indexer がページから再生成する（Name・Description はページから抽出し直す。既存の子索引の行の Description と表示名は引き継ぐ）
 - それ以外の README（前置きの説明文、`##` 節ごとの複数の索引表、`syncpack` の `update-groups/README.md` の共通プロパティ表のような補足の節、`anthropic-*` / `openai-*` の README レベル距離線、旧書式の索引、`gcp-bigquery` の `googlesql-functions/README.md` のような関数ごとのアンカー付きの行を持つもの）は手で保守する（生成ツールが出力する README はその生成ツールで直す）。これらの内容は削除しない。readme-indexer は書き込まずに差分（載っていないページ・リンク切れの行・適合しない行・旧書式の索引）を報告し、呼び出し元がその報告に従って README を直接編集する
 - **旧書式の索引**: ヘッダーが `| Name | Description | Path |` でない表やリストで、同じディレクトリ（または `references/` 配下の README では直下の子ディレクトリ）のページへのリンクを持つもの（例: `| Name | Path |` の表、`| Name | Activation Property | Description | Path |` のような 4 列の表、ページへのリンクの箇条書き）。補足の表（ページへのリンクを持たない表）は旧書式の索引ではない
-- **生成ツールが出力する README**: スキルの SKILL.md のディレクトリツリーで、そのカテゴリまたは祖先のディレクトリに `機械生成` と注記されたもの（`gcp-*` の `gcloud/` `commands/` `rest/` `rest-schemas/` `iam/`、`gcp-bigquery` の SQL リファレンスの各カテゴリ等）と、`gcp-services-index` のすべての README（`_/tools/gcp/gen_index.py` が出力する）。構成にかかわらず readme-indexer は書き込まずに報告だけを返し、直すときは README を直接編集せず、生成ツールを直して再生成する
+- **生成ツールが出力する README**: スキルの SKILL.md のディレクトリツリーで、そのカテゴリまたは祖先のディレクトリに `機械生成` または `機械変換` と注記されたもの（`機械生成` は `gcp-*` の `gcloud/` `commands/` `rest/` `rest-schemas/` `iam/`、`機械変換` は `gcp-bigquery` の `googlesql-syntax/` `legacy-sql/` `bq-cli/` などの SQL・CLI リファレンスの各カテゴリ）と、`gcp-services-index` のすべての README（`_/tools/gcp/gen_index.py` が出力する）。構成にかかわらず readme-indexer は書き込まずに報告だけを返し、直すときは README を直接編集せず、生成ツールを直して再生成する。生成ツール（`_/tools/gcp/` 等）は `_/` が `.gitignore` の対象のためリポジトリに含まれず、メンテナーの作業ツリーにだけある。生成ツールが無いチェックアウトでは README も生成ツールも直さず、対象の README と未解消の指摘を報告して終える
 - 手で保守する README を直すときは次に従う
   - 適合しない行は、その行がある索引表の中で置き換える（複数リンクの行は 1 リンク 1 行に分け、分けた行を元の行の位置に置く。別の表や節へ移さない）。成立していない索引表（区切り行が無い、ヘッダー行との間に空行がある等）は、報告された置き換え用の表全体（ヘッダー行・区切り行・直したデータ行）で同じ位置の表を丸ごと置き換える
-  - 旧書式の索引は、同じ位置で標準の索引表に変換する。既存の名前・説明・リンク先を引き継ぎ（4 列以上の表は余った列の内容を Description に括弧書きで入れる）、Path は適合行の形にする
+  - 旧書式の索引は、同じ位置で標準の索引表に変換する。既存の名前・説明・リンク先を引き継ぎ（4 列以上の表は余った列の内容を Description に括弧書きで入れる）、Path は適合行の形にする。リンク先（正規化をしたパス）が実在しない行は変換に含めず、リンク切れとして報告する（移動先が確かなときだけ移動先に直す）
   - 載っていないページの行は、内容に合う節の索引表に加える（索引表が無ければ、変換した旧書式の索引か、H1 の直後の説明文の後に新設した索引表に加える）
 
 ## 関連
