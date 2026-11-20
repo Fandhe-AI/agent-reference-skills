@@ -43,6 +43,11 @@ skills/gcp-bigquery/
       data-catalog/               # Data Catalog（Policy Tag Manager のため本スキル）
         README.md
         data-catalog-<sub>.md     # 24 ファイル（taxonomies・policy-tags・tag-templates・entries・entry-groups・tags・search・crawlers 等）
+    rest/                         # 機械生成: Discovery 由来のメソッド表（9 API）
+      README.md
+      <api>/
+        README.md
+        <api>.md
     iam/                          # 機械生成: IAM roles-permissions reference（16 ファイル）
       README.md
       <service>[-<N>].md          # 例: bigquery-1.md・dataform-2.md
@@ -61,7 +66,7 @@ skills/gcp-bigquery/
     information-schema/           # 機械変換: INFORMATION_SCHEMA の各ビュー
       README.md
       <view>.md
-    legacy-sql/                   # 機械変換: legacy SQL、分割投入中（1 / 3 ページ。収録済みは README 掲載分のみ）
+    legacy-sql/                   # 機械変換: legacy SQL
       README.md
       <page>.md
     bq-cli/                       # 機械変換: bq コマンドラインツールのリファレンス（3 分割）
@@ -141,6 +146,8 @@ skills/gcp-bigquery/
 
 `references/gcloud/` のグループ（3）: `biglake` / `bq` / `data-catalog`。GA コマンドのページは gcloud help の verbatim、alpha / beta は NAME と SYNOPSIS のみ（各ページ冒頭に明記）。`bq` グループは `migration-workflows` を除いて alpha のみ、`data-catalog` の `crawlers` と `crawler-runs` は alpha のみ、`biglake` の `data-product-sharing` と `delta-sharing` は alpha と GA（beta なし）、`hive` と `iceberg` は alpha・beta・GA（gcloud 593.0.0 の生成ページで確認）。
 
+`references/rest/` `references/rest-schemas/`（後続 PR で投入） の API（9）: `analyticshub` / `biglake` / `bigquery` / `bigqueryconnection` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigqueryreservation` / `datacatalog` / `dataform`。
+
 `references/iam/` のファイル（16）: `analyticshub` / `biglake` / `bigquery-1` / `bigquery-2` / `bigqueryconnection` / `bigquerycontinuousquery` / `bigquerydatapolicy` / `bigquerydatatransfer` / `bigquerymigration` / `bigqueryomni` / `bigqueryspark` / `datacatalog` / `dataform-1` / `dataform-2` / `dataprep` / `geminidataanalytics`。
 
 機械生成のみで、ガイドを持たないサービス（ページに書かれている範囲のみ）。
@@ -159,12 +166,9 @@ skills/gcp-bigquery/
 4. INFORMATION_SCHEMA のビュー → `references/information-schema/README.md`（概要・権限・リージョン修飾子は `overview-datasets/information-schema-intro.md`）
 5. `bq` のサブコマンド → `references/bq-cli/README.md`。コマンドは `bq-cli-reference-2.md`、共通・グローバルフラグは `bq-cli-reference-1.md`。サブコマンド名で grep する。gcloud の `bq` グループとは別
 6. gcloud コマンド → `references/gcloud/README.md` からグループ（`biglake` / `bq` / `data-catalog`）を選び、グループの README.md → コマンドページへ。GA は help の verbatim、alpha / beta は NAME と SYNOPSIS のみなので、フラグの詳細が要るときは `gcloud alpha|beta <command> --help` を使う。BigQuery 本体の操作は gcloud ではなく `bq` と SQL が中心
-7. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
-8. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
-
-未投入カテゴリ（`rest` / `rest-schemas`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
-
-分割投入中のカテゴリ（`legacy-sql`: 1 / 3 ページ）は、その README に載っているページだけが収録済み。載っていないコマンド・メソッド・ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+7. REST（メソッド・パス・パラメータ）→ `references/rest/<api>/README.md`、メッセージ型 → `references/rest-schemas/<api>/README.md`（後続 PR で投入）。`<api>` は上記 9 つ。Storage Read / Write API は gRPC のため REST ページは無い（ガイドは `storage-write-read-api-cdc`）
+8. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/bigquery.dataViewer`・`roles/bigquery.jobUser`・`roles/analyticshub.admin`）で `references/iam/` 配下を grep して該当ファイルを特定する。BigQuery のロールの解説は `access-control-iam/access-control.md`
+9. 他製品側の設定（Cloud Storage のバケット、Pub/Sub のトピック、Cloud KMS の鍵、Cloud SQL のインスタンス等）は他スキル（下記「他スキルとの使い分け」）
 
 ## タスク → カテゴリ マッピング
 
@@ -217,9 +221,10 @@ skills/gcp-bigquery/
 | Lakehouse（BigLake）のコマンド（`biglake iceberg` / `hive` / `delta-sharing` / `data-product-sharing`） | gcloud/biglake | [references/gcloud/biglake/README.md](references/gcloud/biglake/README.md) |
 | gcloud `bq` グループ（datasets・jobs・migration・migration-workflows・query・tables） | gcloud/bq | [references/gcloud/bq/README.md](references/gcloud/bq/README.md) |
 | Policy Tag Manager（taxonomies・policy tags）・tag templates・entries のコマンド | gcloud/data-catalog | [references/gcloud/data-catalog/README.md](references/gcloud/data-catalog/README.md) |
+| REST のメソッド・パスを調べたい | rest | [references/rest/README.md](references/rest/README.md) |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/bigquery.*` / `roles/analyticshub.*` / `roles/biglake.*` / `roles/dataform.*` / `roles/datacatalog.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas`
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest-schemas` / `rest/bigquery` / `rest/bigqueryreservation` / `rest/bigquerydatatransfer` / `rest/bigqueryconnection` / `rest/bigquerydatapolicy` / `rest/datacatalog` / `rest/dataform`
 
 ## 他スキルとの使い分け
 
@@ -260,7 +265,7 @@ skills/gcp-bigquery/
 - データプロファイル・データ品質スキャン（機能は Knowledge Catalog の `dataplex` API。`gcp-knowledge-catalog` の範囲）
 - Data Catalog の概要・廃止告知・移行のガイド（`gcp-knowledge-catalog`）
 - 認証の定型ページ・クライアントライブラリのリファレンス・事前定義ロールの一覧ページ（ロールは `references/iam/`）
-- REST リファレンスの公式ページ（`references/rest/`（後続 PR で投入） の機械生成ページで代替）・コードサンプル集・release notes・SLA・料金・quotas
+- REST リファレンスの公式ページ（`references/rest/` の機械生成ページで代替）・コードサンプル集・release notes・SLA・料金・quotas
 - GoogleSQL リファレンスの次の 3 ページ: `functions-all`（関数の総覧）・`window-functions`・`graph-conditional-expressions`（索引・案内だけで固有の内容が無いページ）。関数の索引は `references/googlesql-functions/README.md`、ウィンドウ関数の呼び出しは `window-function-calls.md` と `navigation_functions.md`・`numbering_functions.md` を引く
 - Dataprep by Trifacta のガイド（`iam/dataprep.md` のみ収録）
 - 料金の表（取得していない。費用の考え方は `workload-cost-management` と `overview-datasets/storage-overview.md` の本文）
@@ -269,7 +274,7 @@ skills/gcp-bigquery/
 
 - 取得日: 2026-11-19（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin。URL に版が無いため取得日で pin）、2026-11-14（機械生成分。gcloud 593.0.0 の help、Discovery document、roles-permissions ページ。各ページ Notes に記載。例: `rest/bigquery/bigquery.md` は Discovery document `bigquery` v2 の revision 20261009）
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- `references/gcloud/` `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/` は機械生成。`googlesql-syntax` `googlesql-functions` `bigqueryml-sql` `graph-gql` `information-schema` `legacy-sql` `bq-cli` `dataform-cli` の 8 グループは公式の Markdown twin から機械的に変換した。他の 22 カテゴリは公式ガイド由来の手書き
+- `references/gcloud/` `references/rest/` `references/rest-schemas/`（後続 PR で投入） `references/iam/` は機械生成。`googlesql-syntax` `googlesql-functions` `bigqueryml-sql` `graph-gql` `information-schema` `legacy-sql` `bq-cli` `dataform-cli` の 8 グループは公式の Markdown twin から機械的に変換した。他の 22 カテゴリは公式ガイド由来の手書き
 - 機械変換した SQL・CLI リファレンスの変換規則（各ページの Notes より）: 見出しは公式ページより 1 段下げる、インデントされたコードブロックは fenced にする、各コードブロックの本文は rendered page から取る（twin は結果表の罫線のダッシュを短縮するため）、本文はそれ以外は原文のまま。罫線のダッシュは rendered page に一致するブロックがある箇所のみ復元できており、一致するブロックが無い箇所は twin の短縮のまま。一部のページには `:` で始まる定義リスト記法が残っている
 - 公式ガイドの例の一部は誤りや危険を直している（直した例はコードブロック直前に `Adapted (not in the official docs)` の行を置き、ページの Notes にも残す）。gcloud の help の例を直した箇所は gcloud ページの Notes に `Corrected from the official docs:` で記載
 - 変更・縮退・名称変更（references で確認したもの）:

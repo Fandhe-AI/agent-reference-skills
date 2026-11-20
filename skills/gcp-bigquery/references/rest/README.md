@@ -1,0 +1,6 @@
+# REST API methods (Discovery)
+
+| Name | Description | Path |
+|---|---|---|
+| Analytics Hub API (analyticshub) | Exchange data and analytics assets securely and efficiently. | [analyticshub/README.md](./analyticshub/README.md) |
+| Lakehouse API (biglake) | The Lakehouse API (formerly BigLake API) provides access to a serverless, fully managed, and highly available metastore that provides a single source of truth for your data lakehouse. It lets multiple engines—including Apache Spark, Google Managed Spark, Apache Flink, Trino and BigQuery—share tables and metadata for key open formats (Apache Iceberg, Apache Hive), and query the same copy of data. Plus, through the Lakehouse runtime catalog federation seamlessly unite your lakehouse ecosystem, letting Iceberg compatible engines on Google Cloud (BigQuery, Google Managed Spark) discover and analyze enterprise data across Snowflake, Databricks, and AWS Glue. | [biglake/README.md](./biglake/README.md) |
