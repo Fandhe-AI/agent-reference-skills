@@ -1,0 +1,138 @@
+---
+source: https://docs.cloud.google.com/generative-ai-app-builder/docs/agentic-retrieval-stream-answer
+---
+
+# Stream answers using agentic retrieval
+
+Agentic retrieval with the `streamAnswer` method enables multi-pass retrieval (for example across several data stores, plus tools such as Google Search and Google Maps), multi-turn follow-ups on blended search apps, and custom query classification. It adds some complexity in return for more control over results.
+
+## Signature / Usage
+
+### Set up a reasoning engine for multi-turn sessions
+
+To persist conversation context across turns, create an Agent Runtime instance (also called a reasoning engine) on Gemini Enterprise Agent Platform, with the Agent Engine REST API or the Agent Development Kit. Its resource name has this format and is passed as `reasoningEngine`:
+
+```text
+projects/PROJECT_NUMBER/locations/LOCATION_ID/reasoningEngines/REASONING_ENGINE_ID
+```
+
+Grant `roles/aiplatform.reasoningEngineServiceAgent` to the Discovery Engine service account so the streaming answer backend can create, read and append events to sessions on your behalf (`PROJECT_NUMBER` is the project that hosts the reasoning engine):
+
+```text
+service-PROJECT_NUMBER@gcp-sa-discoveryengine.iam.gserviceaccount.com
+```
+
+### Optional: set up a custom AI-mode app
+
+By default agentic retrieval uses the predefined Google answer agent, which classifies queries into `DEFAULT_ANSWER_SEEKING` and `DO_NOT_ANSWER`. To add intents (frames) and tools, create the engine through the `engines.create` REST method with an `engine_config.answer_agent` block.
+
+```text
+engine {
+ name: "YOUR_AI_MODE_ENGINE"
+ display_name: "YOUR_AI_MODE_ENGINE_DISPLAY_NAME"
+ engine_config {
+   answer_agent {
+     frames {
+       vertical_intent: "YOUR_CUSTOM_INTENT"
+       vertical_intent_prompt {
+         instructions: "Instructions for when to classify a user query as YOUR_CUSTOM_INTENT."
+       }
+       initial_prompt {
+         instructions: "Instructions for the agent on how to process a user query classified as YOUR_CUSTOM_INTENT."
+         tools {
+           discovery_engine_search_tool_config {
+             serving_config: "YOUR_SEARCH_SERVING_CONFIG_1"
+             page_size: 10
+           }
+           tool_description: "This tool can help search corpus 1."
+         }
+         tools {
+           discovery_engine_search_tool_config {
+             serving_config: "YOUR_SEARCH_SERVING_CONFIG_2"
+             page_size: 10
+           }
+           tool_description: "This tool can help search corpus 2."
+         }
+       }
+     }
+   }
+ }
+}
+engine_id: "SAMPLE_MULTI_SEARCH_RETRIEVAL"
+```
+
+Route requests through the engine's `default_agent_answer` serving config:
+
+```text
+projects/*/locations/*/collections/*/engines/YOUR_AI_MODE_ENGINE/servingConfigs/default_agent_answer
+```
+
+### Stream an answer using agentic retrieval
+
+```bash
+curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "Content-Type: application/json" \
+  "https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/engines/APP_ID/servingConfigs/SERVING_CONFIG_ID:streamAnswer" \
+  -d '{
+        "query": { "text": "QUERY" },
+        "session": "SESSION",
+        "enableAgentInvocation": true,
+        "userPseudoId": "USER_PSEUDO_ID",
+        "reasoningEngine": "projects/PROJECT_NUMBER/locations/LOCATION_ID/reasoningEngines/REASONING_ENGINE_ID"
+      }'
+```
+
+## Options / Props
+
+### Ways to enable agentic retrieval
+
+| Way | Description |
+|-----|-------------|
+| Predefined Google answer agent | For an existing Agent Search app, set `enable_agent_invocation=true` in API requests; the existing search serving config is kept (`SERVING_CONFIG_ID` = `default_search`). |
+| Custom AI-mode app | Create an app with a `default_agent_answer` serving config (also called the custom AI-mode engine; "app" and "engine" are interchangeable). |
+
+### Placeholders
+
+| Name | Description |
+|------|-------------|
+| `PROJECT_ID` | The ID of your Google Cloud project. |
+| `APP_ID` | The ID of the Agent Search app that you want to query. |
+| `SERVING_CONFIG_ID` | `default_agent_answer` for a custom AI-mode app; `default_search` for the predefined Google answer agent. |
+| `PROJECT_NUMBER` | The number of the project that hosts the reasoning engine. |
+| `QUERY` | A free-text string that contains the question or search query. |
+| `SESSION` | The session resource name from the previous turn's response (for example `projects/PROJECT_ID/locations/global/collections/default_collection/engines/APP_ID/sessions/SESSION_ID`); `-` (a hyphen) if not continuing a conversation. |
+| `USER_PSEUDO_ID` | A unique identifier used for tracking the visitor. |
+| `LOCATION_ID` | The location of your reasoning engine, for example `us-central1`. |
+| `REASONING_ENGINE_ID` | The ID of the Agent Engine instance you created. |
+
+### Fields missing from the REST reference (allowlisted)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `enableAgentInvocation` (request) | boolean | `true` switches to agentic processing with the existing search serving config. Optional when you specify an `answer_agent` serving config with a custom AI-mode app. |
+| `reasoningEngine` (request) | string | Resource name of the Agent Runtime that hosts the agent sessions: `projects/*/locations/*/reasoningEngines/*`. |
+| `queries` (`Answer.Reference`, response) | repeated string | The queries the agent issued to produce the reference. |
+
+### Quotas consumed by Agent Runtime sessions
+
+| Quota | Description |
+|-------|-------------|
+| `aiplatform.googleapis.com/session_write_requests` | Create, delete or update Agent Runtime sessions per minute. |
+| `aiplatform.googleapis.com/session_event_append_requests` | Append event to Agent Runtime sessions per minute. |
+
+## Notes
+
+- Availability: "GA with allowlist". Access to agentic retrieval with the stream answers method is available to select Google Cloud customers; contact your Google Cloud sales representative. The allowlisted feature needs a preview Discovery Engine SDK obtained through support, different from the generally available client libraries; the source shows a Python sample against `discoveryengine_v1alpha` (`stream_answer_query`), which is omitted here.
+- Suspected inconsistency left as in the source: the Python sample sets `LOCATION = "global"` and reuses it in the reasoning engine path, while the REST text says the reasoning engine location is for example `us-central1`. Verify the location before use.
+- Because of the allowlist, the `streamAnswer` REST reference doesn't show `enableAgentInvocation` or `reasoningEngine`; the `discoveryengine.v1` Discovery document does not list them as request fields either.
+- Without agentic retrieval, multi-turn search works only with single data store apps. Sessions backed by Agent Runtime consume Agent Platform API quotas (see the Agent Engine quotas page).
+- The Session service REST and RPC APIs don't support `create` or `update`; `list`, `get` and `delete` are supported.
+- This page is about Google's Agent Search, ADK and Agent Runtime, not Claude Code, the Claude Agent SDK or OpenAI Agents.
+- Former names: Agent Search was Vertex AI Search (API still Discovery Engine); Agent Runtime was Vertex AI Agent Engine.
+- The source also shows a long example response in protobuf text format, which is omitted.
+- Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/agentic-retrieval-stream-answer (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+
+## Related
+
+- [stream-answer.md](./stream-answer.md)
+- [answer-generation-models.md](./answer-generation-models.md)

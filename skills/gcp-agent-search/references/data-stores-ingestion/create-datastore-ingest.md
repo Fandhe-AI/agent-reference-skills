@@ -1,0 +1,75 @@
+---
+source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-datastore-ingest
+---
+
+# About Agent Search apps and data stores
+
+Overview of Agent Search (formerly Vertex AI Search) apps and data stores: how apps relate to data stores, what a document is for each data type, document-level CRUD operations, the website / structured / media / unstructured / healthcare data store kinds, and blended search (several data stores on one custom search app). A Google Cloud project can contain multiple apps.
+
+## Signature / Usage
+
+### Create a data store with the API
+
+Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/provide-schema. The source page itself has no code block. Replace `INDUSTRY_VERTICAL` with `GENERIC` or `MEDIA`; `DATA_STORE_ID` can contain only lowercase letters, digits, underscores, and hyphens.
+
+```bash
+curl -X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+-H "X-Goog-User-Project: PROJECT_ID" \
+"https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores?dataStoreId=DATA_STORE_ID" \
+-d '{
+  "displayName": "DATA_STORE_DISPLAY_NAME",
+  "industryVertical": "INDUSTRY_VERTICAL"
+}'
+```
+
+## Notes
+
+- App to data store relationship:
+  - Custom search app: Many-to-many. Several data stores on one app is called blended search.
+  - Custom recommendations app: One-to-one with its data store.
+  - Media app: Many-to-one: an app connects to only one data store, a data store can be connected to several apps (for example a media search app and a media recommendations app share one).
+  - Healthcare search app (deprecated): Many-to-one, as for media (for example a patient-facing and a provider-facing app share a data store). Batch import goes into a data store within an app; streaming import (Preview) goes into an entity, a type of data store within a data connector, which is itself a type of data store within an app.
+- What a document is:
+  - Website: A web page.
+  - Structured data: A row in a table or a JSON record that follows a schema (provided by you or derived from the ingested data).
+  - Structured data for media: A row or JSON record following a media-specific schema; at minimum title, URI to the content location, categories, duration and available date.
+  - Unstructured data: A file in TXT, PDF, HTML, DOCX, PPTX, XLSX, or XLSM format.
+  - Healthcare FHIR data: A supported FHIR R4 resource.
+- Document CRUD (structured and unstructured data stores):
+  - Create: `documents.create`
+  - Read: `documents.get`, `documents.list`
+  - Update: `documents.patch`; set `allowMissing` to `true` for an upsert (insert if not found)
+  - Delete: `documents.delete` (single record instead of deleting the data store)
+- Website data store types:
+  - Basic website search: Search over the existing Google Search index for the included websites; no domain verification.
+  - Advanced website indexing: Index generated from sitemaps you submit, or from an initial index mirroring Google Search that you extend by recrawling; requires domain verification; allows adding structured data (`meta` tags, PageMap attributes, schema.org data) to the schema.
+- Blended search limitations:
+  - Data stores per search app: Limit of 50.
+  - Turning on: Connect at least two data stores during app creation; if you don't select multiple data stores at creation you can't add more later.
+  - Add / remove: Allowed, but the app can't have fewer than two data stores at any time. A single data store connected at creation can't be added or removed.
+  - Website data stores: Need advanced website indexing turned on.
+  - Unstructured data imported using BigQuery: Not supported.
+  - Image search: Not supported (`params` field with `searchType: 1`).
+  - CMEK: If one data store uses a CMEK configuration, all others must use the same CMEK configuration.
+  - Search request fields allowed: `boostSpec`, `contentSearchSpec`, `dataStoreSpecs`, `facetSpecs`, `filter`, `languageCode`, `offset`, `oneBoxPageSize`, `orderBy`, `query`, `pageSize`, `pageToken`, `relevanceScoreSpec`, `relevanceThreshold`, `session`, `sessionSpec`, `spellCorrectionSpec`, `userInfo`, `userPseudoId`
+  - `DataStoreSpec` fields allowed: `dataStore`; `boostSpec` and `filter` (if specified in both `SearchRequest` and `dataStoreSpecs`, both are applied)
+  - Serving config fields that can be added or updated: `boostControlIds`, `displayName`, `filterControlIds`, `genericConfig` (`contentSearchSpec`), `name`, `solutionType`, `synonymsControlIds`
+  - Controls with CRUD support: `boostAction`, `synonymAction`, `filterAction`
+- After a data store is connected to an app, it can't be disconnected.
+- A data store can contain only one type of data. Website data created with the API must be attached to an app with Enterprise features enabled in the Google Cloud console.
+- Document-level CRUD isn't supported for website data stores: change included / excluded URL patterns, maintain sitemaps, or refresh web pages instead.
+- Excluded URL patterns take priority over included ones. Media apps can only connect to media data stores (structured data stores with a Google-defined schema, or a custom schema with five media-related fields); media data stores also hold user events, which are required for media apps.
+- Unstructured search returns 10 URLs and summarized answers for natural language queries; documents must be in a Cloud Storage bucket with appropriate access permissions.
+- Deprecated: "Agent Search for healthcare is deprecated and won't be available after May 15, 2027." (https://docs.cloud.google.com/generative-ai-app-builder/docs/prepare-data, retrieved 2026-11-21).
+- Try document deletion (`documents.delete`) in a disposable project first. Console and per-type "What's next" links in the source are omitted.
+- Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-datastore-ingest (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/provide-schema (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+
+## Related
+
+- [prepare-data.md](./prepare-data.md)
+- [provide-schema.md](./provide-schema.md)
+- [parse-chunk-documents.md](./parse-chunk-documents.md)
+- [turn-on-advanced-indexing.md](./turn-on-advanced-indexing.md)
