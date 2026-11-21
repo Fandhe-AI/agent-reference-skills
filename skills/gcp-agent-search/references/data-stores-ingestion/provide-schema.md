@@ -1,0 +1,198 @@
+---
+source: https://docs.cloud.google.com/generative-ai-app-builder/docs/provide-schema
+---
+
+# Provide or auto-detect a schema for structured data
+
+How Agent Search (formerly Vertex AI Search) determines the schema of a structured or media data store: auto-detect and edit, or provide a JSON Schema object through the API. Covers the schema property fields (`keyPropertyMapping`, `indexable`, `retrievable`, `searchable`, `dynamicFacetable`, `completable`, `recommendationsFilterable`) and the REST flow that creates a data store with an empty schema and then patches it.
+
+## Signature / Usage
+
+### Example schema as a JSON object
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "dynamic": "true",
+  "datetime_detection": true,
+  "geolocation_detection": true,
+  "properties": {
+    "title": {
+      "type": "string",
+      "keyPropertyMapping": "title",
+      "retrievable": true,
+      "completable": true
+    },
+    "description": {
+      "type": "string",
+      "keyPropertyMapping": "description"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "keyPropertyMapping": "category"
+      }
+    },
+    "uri": {
+      "type": "string",
+      "keyPropertyMapping": "uri"
+    },
+    "brand": {
+      "type": "string",
+      "indexable": true,
+      "dynamicFacetable": true
+    },
+    "location": {
+      "type": "geolocation",
+      "indexable": true,
+      "retrievable": true
+    },
+    "creationDate": {
+      "type": "datetime",
+      "indexable": true,
+      "retrievable": true
+    },
+    "isCurrent": {
+      "type": "boolean",
+      "indexable": true,
+      "retrievable": true
+    },
+    "runtime": {
+      "type": "string",
+      "keyPropertyMapping": "media_duration"
+    },
+    "releaseDate": {
+      "type": "string",
+      "keyPropertyMapping": "media_available_time"
+    }
+  }
+}
+```
+
+### Provide your own schema (REST)
+
+Step 1: prepare the schema object. Step 2: create a data store (empty schema).
+
+Run the command by itself and type `DATA_STORE_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the value.
+
+Adapted (not in the official docs): the request body is built with `printf '%s\n' ... | jq -Rn '[inputs] as [...] | {...}'` from the values read by one `IFS= read -r` per placeholder (`DATA_STORE_DISPLAY_NAME`), rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"DATA_STORE_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. `printf` is a shell builtin, so these values reach `jq` on standard input, not in its arguments (the process list). The body is built in its own step (`BODY=$(... | jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs.
+
+```bash
+( set +x; set +a; unset TOKEN DATA_STORE_DISPLAY_NAME BODY; IFS= read -r DATA_STORE_DISPLAY_NAME &&
+[ -n "$DATA_STORE_DISPLAY_NAME" ] &&
+BODY=$(printf '%s\n' "$DATA_STORE_DISPLAY_NAME" |
+jq -Rn '[inputs] as [$data_store_display_name] | {
+  "displayName": $data_store_display_name,
+  "industryVertical": "INDUSTRY_VERTICAL"
+}') &&
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+printf '%s' "$BODY" |
+curl -q --fail-with-body -X POST \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
+-H "Content-Type: application/json" \
+-H "X-Goog-User-Project: PROJECT_ID" \
+"https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores?dataStoreId=DATA_STORE_ID" \
+--data @- )
+```
+
+`INDUSTRY_VERTICAL` is `GENERIC` or `MEDIA`. `DATA_STORE_ID` can contain only lowercase letters, digits, underscores, and hyphens.
+
+`dataStores.create` returns a long-running operation, not the data store. Before step 3, use the `name` field of that response as `OPERATION_NAME` and poll it as in "Poll an operation (REST)" on the long-running operations page of this skill (`references/agent-search-overview-setup/long-running-operations.md`) until the response shows `"done": true`; go on only if that response has no `error` field.
+
+Step 3: provide the schema with `schemas.patch`.
+
+Save the schema object (`JSON_SCHEMA_OBJECT`, for example the one below) in a JSON file. Run the command by itself and type the path to that file (`SCHEMA_FILE`) on one line at the prompt; the path is used as typed (`~` is not expanded). `jq` (required) reads the file once, checks that it holds exactly one JSON value and that it is an object, and wraps that same value in `structSchema`; nothing is sent if the path is empty, the file can't be read or parsed, or it does not hold one JSON object. A line that follows the command in the same paste or script is read as the path.
+
+Adapted (not in the official docs): the source pastes `JSON_SCHEMA_OBJECT` into the single-quoted `-d '{...}'` argument. Here the schema is read from the file named by `IFS= read -r SCHEMA_FILE`, checked and wrapped by a single `jq -s -e 'if length == 1 and (.[0] | type) == "object" then {"structSchema": .[0]} else error(...) end'` (the file is read once on standard input with `< "$SCHEMA_FILE"`, so a file named `-` is opened as a file; the body is built from the same value that was checked, and `error` gives a non-zero exit otherwise, so the `&&` chain ends before anything is sent) and sent on standard input with `--data @-`, so an apostrophe in the schema (for example in a description) cannot break the shell quoting; the URL and headers are unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs.
+
+```bash
+( set +x; set +a; unset TOKEN SCHEMA_FILE BODY; IFS= read -r SCHEMA_FILE && [ -n "$SCHEMA_FILE" ] &&
+BODY=$(jq -s -e 'if length == 1 and (.[0] | type) == "object" then {
+  "structSchema": .[0]
+} else error("SCHEMA_FILE must hold exactly one JSON object") end' < "$SCHEMA_FILE") &&
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+printf '%s' "$BODY" |
+curl -q --fail-with-body -X PATCH \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
+-H "Content-Type: application/json" \
+"https://discoveryengine.googleapis.com/v1beta/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/schemas/default_schema" \
+--data @- )
+```
+
+`JSON_SCHEMA_OBJECT` example:
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "keyPropertyMapping": "title"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "keyPropertyMapping": "category"
+      }
+    },
+    "uri": {
+      "type": "string",
+      "keyPropertyMapping": "uri"
+    }
+  }
+}
+```
+
+`schemas.patch` also returns a long-running operation (the source's sample result is `.../schemas/default_schema/operations/update-schema-...`); wait for it the same way before you import data.
+
+Step 4 (optional): review the schema with "View a schema definition".
+
+## Options / Props
+
+### Schema fields
+
+| Field | Applies to | Description |
+|---|---|---|
+| `dynamic` | all | `"true"` adds new properties found in imported data to the schema; `"false"` ignores new properties (neither schema nor values imported). Default `"true"`. |
+| `datetime_detection` | all | `true`: datetime data (RFC 3339 and ISO 8601, for example `2024-08-05T08:30:00Z`, `2024-08-05`) gets schema type `datetime`; `false`: type `string`. Default `true`. |
+| `geolocation_detection` | all | `true`: an object with latitude and longitude numbers, or an object with an address string, gets type `geolocation`; `false`: type `object`. Default `true`. |
+| `keyPropertyMapping` | all | Maps a field to a keyword: `title`, `description`, `uri`, `category`, `update_time`, `create_time` (media also `media_duration`, `media_available_time`). Field names need not match. In search data stores such fields are by default indexable and searchable, but not retrievable, completable, or dynamicFacetable. |
+| `type` | all | `datetime`, `geolocation`, or `integer`, `boolean`, `object`, `array`, `number`, `string`. |
+| `retrievable` | search apps | Field can be returned in a search response; types `number`, `string`, `boolean`, `integer`, `datetime`, `geolocation`; maximum 50 fields; off by default for user-defined and key property fields. |
+| `indexable` | search apps | Field can be filtered, faceted, boosted or sorted in `servingConfigs.search`; same types; maximum 50 fields; off by default except fields with `keyPropertyMapping`. |
+| `dynamicFacetable` | search apps | Can be a dynamic facet; types `number`, `string`, `boolean`, `integer`; must also be `indexable`. |
+| `searchable` | search apps | Reverse indexed to match unstructured text queries; type `string` only; maximum 50 fields; off by default except fields with `keyPropertyMapping`. |
+| `completable` | search apps | Can be returned as an autocomplete suggestion; type `string` only. |
+| `recommendationsFilterable` | recommendations apps | Can be used in a recommendations filter expression. |
+
+## Notes
+
+- Approaches to providing a schema:
+  - Auto-detect and edit: Console flow for structured data; Agent Search samples the first few imported documents and proposes a schema. Map key properties to the important fields.
+  - Provide the schema as a JSON object: API flow (curl or program); upload data after creating the schema.
+  - Media: Google-defined schema: Data structured as in "About media documents and data store"; auto-detect appends new fields by default.
+  - Media: auto-detect and edit: The JSON must include fields mappable to the media key properties `title`, `uri`, `category`, `media_duration`, and `media_available_time`.
+  - Media: own schema as JSON object: The schema must include fields mappable to the same five media key properties.
+- A schema you provide and later update must be backward compatible with the original, otherwise the update fails. If you don't provide a schema, auto-detect can add newly detected fields on later imports; documents with new fields that are not backward compatible fail to import.
+- "Field" and "property" are used interchangeably. For auto-detected schemas, newly detected fields are automatically indexable, searchable, and retrievable, within type requirements and maximum limits.
+- Auto-detect does not map key properties; add the mapping manually. Mapping a field to `update_time` (or `create_time` as a fallback) is required for the `document_age` custom ranking signal.
+- Put good-quality documents with all key fields at the start of the dataset, since only the first few documents are sampled. Providing your own schema typically improves result quality.
+- API versions: the data store is created with `v1` and the schema patched with `v1beta` in the source's steps; the Discovery document for `v1` also has `schemas.patch`, and `structSchema` is a free-form object in both. The source's sample result shows the same PATCH on `v1`.
+- Source inconsistencies kept as written: the text names `keyPropertyValues` where the schema field is `keyPropertyMapping`, and `datatime_detection` for `datetime_detection`. The source's separate field-list snippet for `recommendationsFilterable` contains `...` and is omitted.
+- The source also includes a sample command with its result and Colab notebook links, which are omitted.
+- Corrected from the official docs: the source writes free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"displayName": "DATA_STORE_DISPLAY_NAME"`). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"` or `\` makes the JSON invalid, so the body is built with `jq -Rn` from the values, which the `printf` builtin writes to its standard input (not its arguments), and sent with `--data @-` (`man jq` 1.7.1: `--raw-input / -R` "each line of text is passed to the filter as a string"; `inputs` "Outputs all remaining inputs, one by one.").
+- Corrected from the official docs: the source's `schemas.patch` command ends with `-d '{` / `"structSchema": JSON_SCHEMA_OBJECT` / `}'`, so the whole schema is pasted inside single quotes; a schema that contains an apostrophe (valid in JSON strings) ends the shell quoting and the rest is parsed as shell syntax. The example reads the schema from a JSON file with one `jq -s` call that checks that the file holds one JSON object and builds the body from that same value, and sends the body with `--data @-`.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero. The command runs in a subshell that starts with `set +x`, so `set -x` tracing does not print the token, and `TOKEN` does not stay in the calling shell. `unset` at its start also drops an `export` of the variables it sets in the calling shell, so their values are not put in the environment of `curl` and the other commands.
+- Adapted from the official docs: the source goes from `dataStores.create` straight to `schemas.patch`. Both return `GoogleLongrunningOperation` in the `discoveryengine` Discovery documents (`dataStores.create` in `v1`, `schemas.patch` in `v1` and `v1beta`), whose `done` field reads "If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available." The steps above add the wait for `done: true` without `error`.
+- Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/provide-schema (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: every `curl` call starts with `-q`, because the curl manual says for `-q, --disable` "If used as the first parameter on the command line, the curlrc config file is not read or used." (`man curl`, curl 8.7.1); without it, a `trace` or `trace-ascii` line in `.curlrc` writes the request headers, including the token or API key, to a file (checked with curl 8.7.1 against a local 127.0.0.1 server).
+- Adapted from the official docs: the subshell starts with `set +a` because it inherits `set -a` from the calling shell. With it on, in bash "Each variable or function that is created or modified is given the export attribute and marked for export to the environment of subsequent commands." (`man bash`, GNU bash 5.3.9), and in zsh "All parameters subsequently defined are automatically exported." (`ALL_EXPORT`, `man zshoptions`, zsh 5.9), so `TOKEN`, `API_KEY` or `BODY` would reach the environment of `curl` and `jq`.
+
+## Related
+
+- [prepare-data.md](./prepare-data.md)
+- [create-datastore-ingest.md](./create-datastore-ingest.md)
