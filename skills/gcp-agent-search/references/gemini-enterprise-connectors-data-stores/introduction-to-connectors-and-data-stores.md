@@ -10,7 +10,7 @@ Connectors get data from Google and third-party data sources into Gemini Enterpr
 
 ### Create a data store (REST)
 
-Snippet taken from https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-cloud-storage: the `dataStores.create` call that creates a first-party data store through the Discovery Engine API.
+Snippet taken from https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-cloud-storage: the `dataStores.create` call. It only creates an empty data store and connects no source: import Cloud Storage data as in [connect-cloud-storage.md](./connect-cloud-storage.md), and connect other sources on their own pages.
 
 Run the command by itself and type `DATA_STORE_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the value.
 
