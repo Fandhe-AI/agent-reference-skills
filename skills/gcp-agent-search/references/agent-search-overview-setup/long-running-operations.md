@@ -200,7 +200,7 @@ curl --fail-with-body -X POST \
    "https://discoveryengine.googleapis.com/v1/OPERATION_NAME":cancel
 ```
 
-A successful cancellation returns an empty JSON object. To verify, call `operations.get`; a cancelled operation returns the error `"code": 1` (the `CANCELLED` status code):
+An empty JSON object means the cancellation request was accepted; cancellation is asynchronous and best-effort, so the operation can still complete. Before you rely on the job having stopped, call `operations.get` and check for `"done": true` with the error `"code": 1` (the `CANCELLED` status code):
 
 ```json
 {
@@ -244,7 +244,7 @@ def cancel_operation_sample(operation_name: str) -> None:
 
 - Cancel results:
   - Error `"code": 400` and `"status": "FAILED_PRECONDITION"`: The request couldn't be canceled
-  - Empty JSON object: Successful cancellation request
+  - Empty JSON object: the cancellation request was accepted (not proof that the job stopped)
   - `operations.get` returns error `"code": 1`: The operation was cancelled (`CANCELLED` status code)
 - The record of an operation is kept for approximately 30 days after the operation finishes; you can't view or list an operation after that time.
 - Long running operations can't be filtered or paginated in Agent Search: when you call `operations.list` you can't use the `filter`, `pageSize` or `pageToken` fields.
@@ -254,7 +254,8 @@ def cancel_operation_sample(operation_name: str) -> None:
 - The REST list call uses the data store resource (`.../dataStores/DATA_STORE_ID/operations`); the Python samples use `DocumentServiceClient` and Application Default Credentials.
 - Corrected from the official docs: the source writes `curl -X post` in the cancel example; changed to `curl -X POST` (the Discovery document `discoveryengine.v1` defines every `operations.cancel` method with `httpMethod` `POST`). The source tags the cancel response sample `bash`; it is tagged `json` here (the content is unchanged).
 - Corrected from the official docs: the source says "Stop the polling job (`Control+Z`) after the status shows `"done": true`." `Control+Z` only suspends the loop, which does not exit on its own at `"done": true`, so the page says to end it with `Ctrl+C`. Run it only against an operation you started yourself.
-- Cancelling an operation (for example an import) stops the job; do it in a disposable project first if unsure.
+- Cancelling an operation (for example an import) asks the job to stop; it can still complete. Do it in a disposable project first if unsure.
+- Corrected from the official docs: the source says "A successful cancellation results in an empty JSON object." The `operations.cancel` description in the `discoveryengine.v1` Discovery document says "Starts asynchronous cancellation on a long-running operation. The server makes a best effort to cancel the operation, but success is not guaranteed." and "On successful cancellation, the operation is not deleted; instead, it becomes an operation with an Operation.error value with a google.rpc.Status.code of `1`", so the empty object is treated as an accepted request, confirmed with `operations.get`.
 - The cancel response sample in the source shows a `v1alpha` `ImportDocumentsMetadata` type although the request uses `v1`; kept as written.
 - Corrected from the official docs: the source's operations-list sample writes `"@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata",` with a trailing comma before the closing `}` of `metadata`; JSON does not allow trailing commas, so the comma is removed and the block is tagged `json`.
 - Corrected from the official docs: `poll_operation_sample(operation_name, limit=10)` ran `for _ in range(limit):` and then `return operation` without checking `limit`; `limit` must be a positive integer.

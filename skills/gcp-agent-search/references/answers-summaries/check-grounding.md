@@ -12,7 +12,7 @@ The check grounding API determines how grounded a piece of text (the answer cand
 
 Call the `groundingConfigs.check` method. Run the command by itself and type each value on its own line at the prompts, in this order: `CANDIDATE`, then `TEXT_0`, `VALUE_A0`, `VALUE_B0`, `TEXT_1`, `VALUE_A1`, `VALUE_B1`, `TEXT_2`, `VALUE_A2`, `VALUE_B2`; `jq` (required) encodes each one as a JSON string, and nothing is sent if a value is missing or empty. A line that follows the command in the same paste or script is read as a value. `ATTRIBUTE_A` and `ATTRIBUTE_B` are attribute names and stay in the command.
 
-Adapted (not in the official docs): the request body is built with `jq -n --arg candidate "$CANDIDATE" --arg text_0 "$TEXT_0" --arg value_a0 "$VALUE_A0" ... '{...}'` from the values read by one `IFS= read -r` per placeholder, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"CANDIDATE"`, `"TEXT_n"` and `"VALUE_An"` / `"VALUE_Bn"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero.
+Adapted (not in the official docs): the request body is built with `jq -n --arg candidate "$CANDIDATE" --arg text_0 "$TEXT_0" --arg value_a0 "$VALUE_A0" ... '{...}'` from the values read by one `IFS= read -r` per placeholder, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"CANDIDATE"`, `"TEXT_n"` and `"VALUE_An"` / `"VALUE_Bn"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `CITATION_THRESHOLD` is unquoted in the `jq` program: replace it with a number from 0 through 1 (left unreplaced, it is a `jq` error and nothing is sent).
 
 ```bash
 IFS= read -r CANDIDATE &&
@@ -43,7 +43,7 @@ BODY=$(jq -n --arg candidate "$CANDIDATE" \
   }
   ],
   "groundingSpec": {
-    "citationThreshold": "CITATION_THRESHOLD"
+    "citationThreshold": CITATION_THRESHOLD
   }
 }') &&
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
@@ -119,7 +119,7 @@ printf '%s' "$BODY" |
 - Google recommends against supplying one very large fact. Break large facts into smaller facts and supply attributes (for example title, author or URL).
 - The source notes that, in the example requests, double quotes are escaped with a backslash and the apostrophe is replaced by its HTML character entity (`&#39;`).
 - Corrected from the official docs: the claim-level example request wrote `"enableClaimLevelScore": true,` with a trailing comma before `}`, which is invalid JSON; it is kept here without that comma. The claim-level template (`"enableClaimLevelScore": "ENABLE_CLAIM_LEVEL_SCORE",` and `},` before `]`, also trailing commas) is left out.
-- `citationThreshold` is a `double` in the `discoveryengine.v1` Discovery document; the source passes it as a quoted string, which is kept in the first block.
+- Corrected from the official docs: the first block wrote `"citationThreshold": "CITATION_THRESHOLD"`, which sends that text if left as is; `citationThreshold` is a `double` in the `discoveryengine.v1` Discovery document ("If unset, the threshold will default to 0.6."), so the placeholder is unquoted. The claim-level block's `"0.6"` is kept as written: the proto3 JSON mapping says for `double` "Either numbers or strings are accepted." (https://protobuf.dev/programming-guides/json/ , retrieved 2026-11-21).
 - The source also shows a Python sample (`discoveryengine_v1.GroundedGenerationServiceClient`, `check_grounding`), example facts, and tables of example answer candidates with their responses.
 - Former name: Agent Search was Vertex AI Search; the API is still Discovery Engine (`discoveryengine.googleapis.com`).
 - Corrected from the official docs: both requests write free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"answerCandidate": "CANDIDATE"`, `"factText": "TEXT_0"`, `"attributes": {"ATTRIBUTE_A": "VALUE_A0","ATTRIBUTE_B": "VALUE_B0"}` and the same for facts 1 and 2). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"`, `\` or a line break makes the JSON invalid, so the bodies are built with `jq --arg` from standard input and sent with `--data @-`.
