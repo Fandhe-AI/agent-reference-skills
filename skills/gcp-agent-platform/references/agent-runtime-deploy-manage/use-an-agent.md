@@ -12,6 +12,8 @@ How to query agents: through the Agent Platform SDK (same code locally or deploy
 
 For an ADK API server deployed from a Dockerfile or container image, invoke `/api/run` (single response). Both calls below use an existing session: `"s_abc"` is a placeholder. First create a session with the ADK API server route `POST /apps/{app_name}/users/{user_id}/sessions` (called through the same `/api/` prefix, that is `.../reasoningEngines/RESOURCE_ID/api/apps/my_sample_agent/users/u_123/sessions`, with the same `appName` and `userId` as the run request), then replace `s_abc` with the `id` of the returned session:
 
+These calls are for single-user use (not in the official docs): the caller chooses `userId` in the session path and in the run request, and IAM permission to call the runtime does not prove that the caller is that user or owns the session. In an API that several users share, derive the user ID on the server side from the authenticated principal, and check that the session belongs to that user before you create, run or stream in it.
+
 ```bash
 curl \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -27,7 +29,7 @@ https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCA
 }'
 ```
 
-and `/api/run_sse` (streaming):
+and `/api/run_sse` (streaming), which takes the same caller-chosen `userId` and `sessionId`; the same single-user limit and the same server-side checks apply:
 
 ```bash
 curl \
