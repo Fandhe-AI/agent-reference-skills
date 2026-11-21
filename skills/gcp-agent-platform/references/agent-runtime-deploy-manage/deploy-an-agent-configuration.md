@@ -89,11 +89,13 @@ remote_agent = client.runtimes.create(
 
 Custom container or Dockerfile deployment. The example is the Dockerfile form; for a prebuilt container image, replace `"source_packages"` and `"image_spec"` with `"container_spec": {"image_uri": "CONTAINER_IMAGE_URI"}` (as in [deploy-an-agent-containers.md](./deploy-an-agent-containers.md)) and keep `"keep_alive_probe"`. The comment in the example says `"image_uri"`, but in google-cloud-aiplatform 2.10.0 `image_uri` is a field of `container_spec` (`ReasoningEngineSpecContainerSpec`), not of `config`:
 
+Adapted (not in the official docs): removed the comment `# or set "image_uri" when deploying a prebuilt container image` after `"image_spec": {},`; `image_uri` belongs in `container_spec`, as the sentence above says.
+
 ```text
 remote_agent = client.runtimes.create(
     config={
         "source_packages": ["agent.py", "main.py", "requirements.txt", "Dockerfile"],
-        "image_spec": {},  # or set "image_uri" when deploying a prebuilt container image
+        "image_spec": {},
         "keep_alive_probe": {
             "http_get": {
                 "path": "/is_busy",
@@ -238,7 +240,7 @@ remote_agent = client.runtimes.create(
   - `service_account`: Custom service account email instead of agent identity / default identity.
   - `encryption_spec.kms_key_name`: CMEK key resource name.
   - `psc_interface_config`: `network_attachment`, `dns_peering_configs` (`domain`, `target_project`, `target_network`).
-- Agent-framework requirement extras: ADK `google-cloud-aiplatform[agent_engines,adk]`; A2A (Preview) `google-cloud-aiplatform[agent_engines]` plus `google-adk[a2a]`; LangChain `[agent_engines,langchain]`; LangGraph `[agent_engines,langgraph]`; AG2 `[agent_engines,ag2]`; LlamaIndex Query Pipeline (Preview) `[agent_engines,llama_index]`. Specify the SDK version imported during development (such as `1.112.0`). The `langgraph` extra is not declared in the google-cloud-aiplatform 2.10.0 package metadata; there the `langchain` extra pulls in `langgraph<2.0.0,>=1.0.0`.
+- Agent-framework requirement extras: ADK `google-cloud-aiplatform[agent_engines,adk]`; A2A (Preview) `google-cloud-aiplatform[agent_engines]` plus `google-adk[a2a]`; LangChain `[agent_engines,langchain]`; LangGraph `[agent_engines,langchain]` (the source writes `[agent_engines,langgraph]`, see below); AG2 `[agent_engines,ag2]`; LlamaIndex Query Pipeline (Preview) `[agent_engines,llama_index]`. Specify the SDK version imported during development (such as `1.112.0`). Corrected from the official docs: the source gives `[agent_engines,langgraph]` for LangGraph, but the `langgraph` extra is not declared in the google-cloud-aiplatform 2.10.0 package metadata (pip ignores an unknown extra); there the `langchain` extra pulls in `langgraph<2.0.0,>=1.0.0`.
 - Do not set these environment variables: `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_QUOTA_PROJECT`, `GOOGLE_CLOUD_LOCATION`, `PORT`, `K_SERVICE`, `K_REVISION`, `K_CONFIGURATION`, `GOOGLE_APPLICATION_CREDENTIALS`; avoid the prefix `GOOGLE_CLOUD_AGENT_ENGINE`.
 - With agent identity, grant `secretmanager.versions.access` (in `roles/secretmanager.secretAccessor`) to the Agent Platform Service Agent `service-PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com`: the configured agent identity is used at runtime, but the service agent fetches secrets during deployment. Without agent identity, grant the agent `roles/secretmanager.secretAccessor`.
 - Resource controls and keep-alive probe are Preview (Pre-GA Offerings Terms). Keep-alive allocates CPU continuously (CPU throttling disabled); you are billed for allocated CPU and memory until the instance scales down. Idle instances scale down after 15 minutes (`900` seconds) by default. On non-container deployments, custom `http_get` or `max_seconds` are rejected with `400 FAILED_PRECONDITION`. The default probe reports busy for up to 1 hour after each query, streaming query or bidirectional streaming request.
@@ -248,7 +250,7 @@ remote_agent = client.runtimes.create(
 - The `identity_type=AGENT_IDENTITY` example provisions a unique identity tied to the Agent Platform agent resource ID, independent of the framework.
 - Corrected from the official docs: the CMEK key name appears in the source as `` kms_key_name = "projects/`PROJECT_ID`/locations/`LOCATION`/keyRings/`KEY_RING`/cryptoKeys/`KEY_NAME`" ``; the backticks were removed.
 - Console, Java, Go forms and the pip git-branch requirement example (placeholders wrapped in backticks) are omitted.
-- Source inconsistency: the keep-alive example comments `# or set "image_uri" when deploying a prebuilt container image` next to `"image_spec": {}`; the container deployment guide and the SDK put `image_uri` inside `container_spec`.
+- Corrected from the official docs: the keep-alive example commented `# or set "image_uri" when deploying a prebuilt container image` next to `"image_spec": {}`; the container deployment guide and the SDK put `image_uri` inside `container_spec`, so the comment is removed.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

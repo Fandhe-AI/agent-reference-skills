@@ -120,7 +120,7 @@ gcloud RESOURCE_TYPE add-iam-policy-binding RESOURCE_ID \
 
 ### Agent-to-agent (A2A) calls with a custom role and a deny policy
 
-Create a custom role `agentInvoker` with only `aiplatform.reasoningEngines.query` and `aiplatform.reasoningEngines.get`, bound to Agent B's resource path:
+Create a custom role `agentInvoker` with only `aiplatform.reasoningEngines.query` and `aiplatform.reasoningEngines.get`. This command only defines the role; it grants nothing. To let Agent A call Agent B, then add a binding of `projects/PROJECT_ID/roles/agentInvoker` for Agent A's identity on Agent B's resource (`projects/PROJECT_ID/locations/LOCATION/reasoningEngines/AGENT_B_ID`) with `reasoningEngines.getIamPolicy` and `reasoningEngines.setIamPolicy` (Discovery `aiplatform.v1`; send the full retrieved policy with the added binding), not at the project level:
 
 ```bash
 gcloud iam roles create agentInvoker --project=PROJECT_ID \

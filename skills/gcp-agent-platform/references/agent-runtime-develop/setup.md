@@ -76,8 +76,10 @@ gcloud beta services identity create --service=aiplatform.googleapis.com --proje
 
 ### Create a staging bucket
 
+Adapted (not in the official docs): added `--project=PROJECT_ID` (a gcloud-wide flag), so the bucket is created in the project that the SDK client uses.
+
 ```bash
-gcloud storage buckets create gs://BUCKET_NAME --default-storage-class STORAGE_CLASS --location LOCATION
+gcloud storage buckets create gs://BUCKET_NAME --project=PROJECT_ID --default-storage-class STORAGE_CLASS --location LOCATION
 ```
 
 ### Bring your own container: grant Artifact Registry Reader
@@ -131,6 +133,7 @@ gcloud projects add-iam-policy-binding AR_REPO_PROJECT_NUMBER \
 - `from vertexai import agent_engines` imports the `vertexai.agent_engines` subpackage, which exists in google-cloud-aiplatform 2.10.0.
 - Adapted from the official docs: the source writes `pip install google-cloud-aiplatform[agent_engines,adk,langchain,ag2,llama_index]>=1.112.0` unquoted.
 - The source also shows Console steps for creating a bucket. Console click paths are omitted.
+- Corrected from the official docs: the staging bucket example was `gcloud storage buckets create gs://BUCKET_NAME --default-storage-class STORAGE_CLASS --location LOCATION`, which uses the gcloud default project instead of the `PROJECT_ID` passed to the SDK client.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/setup (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
