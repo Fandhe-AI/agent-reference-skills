@@ -35,6 +35,15 @@ gcloud access-context-manager perimeters create PERIMETER \
 - Optional, if you restricted Identity Platform, Cloud Storage or Firestore: add a condition that allows the users of the agent adapter to access those services, with an access level attribute of those users.
 - If your use case requires it, Private Google Access can allow access to restricted resources within a perimeter instead of an access level.
 
+A new access level takes effect only once it is attached to the perimeter (the source does not show this step). Attach it to the perimeter created above (`ACCESS_LEVEL` is the access level ID). To allow it for specific services only, use an ingress policy file with `--set-ingress-policies=YAML_FILE` instead (the format is in the Access Context Manager API reference).
+
+Adapted (not in the official docs): the help example `gcloud access-context-manager perimeters update my-perimeter --add-resources=... --add-access-levels="accessPolicies/123/accessLevels/a_level" ...` is reduced to `--add-access-levels`, with `--policy` and the policy ID of the create example above.
+
+```bash
+gcloud access-context-manager perimeters update PERIMETER --policy=9876543 \
+    --add-access-levels="accessPolicies/9876543/accessLevels/ACCESS_LEVEL"
+```
+
 ### Private Service Connect (Preview)
 
 With Private Service Connect you can set up private ingress into your instance, private egress out of it, or both, using your own internal IP address, keeping traffic private and within Google Cloud. The source points to separate pages, Set up private ingress and Set up private egress, which are not part of this page.
@@ -43,6 +52,8 @@ With Private Service Connect you can set up private ingress into your instance, 
 
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/access-context-manager/perimeters/create (gcloud 593.0.0 help); the source uses the console.
 - Corrected from the official docs: the gcloud 593.0.0 help example `gcloud access-context-manager perimeters create --title=my_perimeter_title --resources=projects/12345 ...` has no perimeter ID, and the command fails with "argument --policy: PERIMETER must be specified." (SYNOPSIS: `gcloud access-context-manager perimeters create (PERIMETER : --policy=POLICY) --title=TITLE`; the PERIMETER positional "must be specified if any of the other arguments in this group are specified").
+- Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/access-context-manager/perimeters/update (gcloud 593.0.0 help; `--add-access-levels`, `--set-ingress-policies`).
+- Adapted from the official docs: the `perimeters update` help example also adds resources, removes a restricted service and changes VPC accessible services; the page keeps only `--add-access-levels`.
 - Corrected from the official docs: the help example restricts `--restricted-services="storage.googleapis.com"`, which leaves the CCAI Platform API outside the perimeter and restricts Cloud Storage instead. The page uses `contactcenteraiplatform.googleapis.com`, the service the console steps select as **CCAI Platform API** (the audit logging page names the API `contactcenteraiplatform.googleapis.com`). Add `storage.googleapis.com` and the other agent adapter services only if you also intend to restrict them (see the next line).
 - The agent adapter depends on Identity Platform, Cloud Storage and Firestore. If you restrict those services in the perimeter, these APIs cannot be called from outside the perimeter, so you must allow access to them for your agent adapter users: `identitytoolkit.googleapis.com` and `securetoken.googleapis.com` (Identity Platform), `storage.googleapis.com` (Cloud Storage), `firestore.googleapis.com` (Firestore).
 - Private Service Connect is a Preview feature subject to the "Pre-GA Offerings Terms" in the General Service Terms section of the Service Specific Terms; Pre-GA features are available "as is" and might have limited support. Private access (Preview) also requires Private Service Connect for agents, managers and administrators to reach the instance (see https://docs.cloud.google.com/contact-center/ccai-platform/docs/get-started).

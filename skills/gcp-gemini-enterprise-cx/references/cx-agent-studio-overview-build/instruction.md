@@ -77,6 +77,8 @@ Say exactly: "Welcome to support".
 
 ### Few-shot examples
 
+This is a standalone example with its own tool contract: only the call uses the quickstart's parameter name. Its `tool_outputs` (`temperature`, `condition`) is not what the quickstart's `get_weather` returns (`status` and `report`, for London `{"status": "success", "report": "It's cloudy in London and  15°C."}`). In your own agent, show your tool's actual output.
+
 Adapted (not in the official docs): the tool call `get_weather(location="London")` became `get_weather(city="London")`, the parameter name of the `get_weather(city: str)` tool that the Weather Agent quickstart defines.
 
 ````xml

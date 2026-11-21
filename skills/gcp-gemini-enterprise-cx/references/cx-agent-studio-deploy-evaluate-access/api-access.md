@@ -84,7 +84,7 @@ The `console.log` calls that print the sent queries and the received messages ar
 
 `SESSION_ID` identifies one conversation: generate a new ID when a new conversation starts, and reuse that ID only for further messages of the same conversation; never share one ID across conversations or users. Each run of the example below starts one new conversation.
 
-Adapted (not in the official docs): the fixed `const sessionId = 'session-name';` is replaced with `const sessionId = randomUUID();` (with `import {randomUUID} from 'node:crypto';`), so each run starts its own session instead of every run sharing one, as the source's Java and Python `BidiRunSession` samples do with `UUID.randomUUID().toString()` and `str(uuid.uuid4())`; and the first `config` message also sets `deployment` to the API access channel's deployment (`${appResourceName}/deployments/DEPLOYMENT_ID`), as the source's Go `BidiRunSession` sample does, so the session uses the version and channel-specific settings of the deployment you created; and the location `us`, written twice in the source (in the app resource name and at the end of the WebSocket path), is defined once as `const location = 'us';` and used in both, so the WebSocket endpoint and the app, session and deployment always name the same location, as the source's Go `BidiRunSession` sample does with its `-location` flag (`"/ws/google.cloud.ces.v1.SessionService/BidiRunSession/locations/" + *location`).
+Adapted (not in the official docs): the fixed `const sessionId = 'session-name';` is replaced with `const sessionId = randomUUID();` (with `import {randomUUID} from 'node:crypto';`), so each run starts its own session instead of every run sharing one, as the source's Java and Python `BidiRunSession` samples do with `UUID.randomUUID().toString()` and `str(uuid.uuid4())`; and the first `config` message also sets `deployment` to the API access channel's deployment (`${appResourceName}/deployments/DEPLOYMENT_ID`), as the source's Go `BidiRunSession` sample does, so the session uses the version and channel-specific settings of the deployment you created; and the location `us`, written twice in the source (in the app resource name and at the end of the WebSocket path), is defined once as `const location = 'us';` and used in both, so the WebSocket endpoint and the app, session and deployment always name the same location, as the source's Go `BidiRunSession` sample does with its `-location` flag (`"/ws/google.cloud.ces.v1.SessionService/BidiRunSession/locations/" + *location`); and instead of closing after a fixed 10 seconds, the client sends the second query after the first turn completes, exits normally after the second turn completes (`sessionOutput.turnCompleted`) or on `endSession`, and logs an error with a non-zero exit code on a 60-second timeout or an early close.
 
 ```javascript
 import {randomUUID} from 'node:crypto';
@@ -140,23 +140,52 @@ async function main() {
       const queryJson = JSON.stringify(queryMessage);
       console.log(`Sending query: ${queryJson}`);
       ws.send(queryJson);
-
-      // 3. Send query message 2
-      const queryMessage2 = {
-        realtimeInput: {text: query2},
-      };
-      const queryJson2 = JSON.stringify(queryMessage2);
-      console.log(`Sending query 2: ${queryJson2}`);
-      ws.send(queryJson2);
     } catch (e) {
       console.error(`Error during on_open: ${e}`);
       ws.close();
     }
   });
 
+  let turns = 0;
+  let done = false;
+  const finish = (ok, why) => {
+    if (done) return;
+    done = true;
+    clearTimeout(timer);
+    if (!ok) {
+      console.error(why);
+      process.exitCode = 1;
+    }
+    ws.close();
+  };
+  const timer = setTimeout(
+      () => finish(false, 'Timed out before the last turn completed'), 60000);
+
   ws.on('message', message => {
     console.log('===============');
     console.log(`Received message: ${message}`);
+    let msg;
+    try {
+      msg = JSON.parse(message);
+    } catch (e) {
+      return;
+    }
+    if (msg.endSession) {
+      finish(true);
+    } else if (msg.sessionOutput && msg.sessionOutput.turnCompleted) {
+      turns += 1;
+      if (turns === 1) {
+        // 3. Send query message 2 after the first turn completed
+        const queryMessage2 = {
+          realtimeInput: {text: query2},
+        };
+        const queryJson2 = JSON.stringify(queryMessage2);
+        console.log(`Sending query 2: ${queryJson2}`);
+        ws.send(queryJson2);
+      } else {
+        finish(true);
+      }
+    }
   });
 
   ws.on('error', err => {
@@ -166,12 +195,10 @@ async function main() {
   ws.on('close', (code, reason) => {
     console.log(
         `WebSocket connection closed with code ${code} and reason: ${reason}`);
+    if (!done) {
+      finish(false, 'Connection closed before the last turn completed');
+    }
   });
-
-  console.log('Waiting for 10 seconds for messages...');
-  await new Promise(resolve => setTimeout(resolve, 10000));
-  console.log('10 seconds elapsed, closing connection.');
-  ws.close();
 }
 
 main();
@@ -205,6 +232,7 @@ If you use `ces.us.rep.googleapis.com` or `ces.eu.rep.googleapis.com`, you don't
 - The gRPC `x-goog-request-params` snippet is a fragment and is tagged `text`: it does not import `SessionServiceClient` and assigns `stream` without declaring it. The source's full Node.js `runSession` sample imports the client with `import {AgentServiceClient, SessionServiceClient} from '../src/v1';` (a path inside the client library repository).
 - The source also shows a PowerShell form of the request, `runSession` samples in Java, Python and Node.js, and `BidiRunSession` samples in Go, Java and Python. They were omitted; the Python `runSession` sample also updates the app's root agent before running a session.
 - The Node.js `BidiRunSession` sample uses the location `us`; set `location` to your app's location (the location in its resource name) and replace `project-name` and `app-name` with your own. The `ces` Discovery document lists the regional endpoints `https://ces.us.rep.googleapis.com/` (`us`) and `https://ces.eu.rep.googleapis.com/` (`eu`); the WebSocket samples in the source connect to `ces.googleapis.com` with the location at the end of the path.
+- Corrected from the official docs: the Node.js `BidiRunSession` sample sends both queries on open, then `await new Promise(resolve => setTimeout(resolve, 10000));` and `ws.close();` whatever has arrived, so slow replies are lost and a cut-off run logs like a normal one. The page uses `sessionOutput` (the Go sample's `BidiSessionServerMessage`) and `turnCompleted` (Discovery `SessionOutput`: "will provide no further output for this turn"); the 60-second timeout is the page's choice.
 - Corrected from the official docs: the Node.js `BidiRunSession` sample writes the location twice, as `'projects/project-name/locations/us/apps/app-name'` and `'wss://ces.googleapis.com/ws/google.cloud.ces.v1.SessionService/BidiRunSession/locations/us'`, so changing only the app resource name to another location (for example `eu`) leaves the WebSocket endpoint at `us`. Its session ID is generated per run (see the next line); to continue an existing conversation, pass that conversation's stored ID instead of generating a new one.
 - Corrected from the official docs: the Node.js `BidiRunSession` sample's first message is `config: {session: sessionName},` with no deployment, so it does not select the API access channel created above. `SessionConfig` in the Discovery document (`ces.v1`, `ces.v1beta`) defines `deployment` ("Optional. The deployment of the app to use for the session. Format: `projects/{project}/locations/{location}/apps/{app}/deployments/{deployment}`"), and the source's Go `BidiRunSession` sample sends `"deployment": *deployment` in its config message; the page adds `deployment` with `DEPLOYMENT_ID` from the channel dialog. The REST `runSession` body above already sets `config.deployment`.
 - Corrected from the official docs: the Node.js `BidiRunSession` sample hard-codes `const sessionId = 'session-name';`, so every run and every conversation would use the same session. The source's Java and Python `BidiRunSession` samples also start from a fixed value (`String sessionId = "session-name";`, `session_id = "session_name"`) but generate `UUID.randomUUID().toString()` / `str(uuid.uuid4())` when it is empty; the page uses `randomUUID()` from the Node.js `node:crypto` module. A UUID matches the `SESSION_ID` pattern `[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}`. It authenticates through Application Default Credentials (`GoogleAuth`).
