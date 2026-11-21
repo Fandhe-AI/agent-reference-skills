@@ -10,11 +10,11 @@ Agent Search offers multiple model versions for generating answers, selectable w
 
 Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/get-search-summaries: a search request that specifies `preview` as the model version.
 
-Adapted (not in the official docs): added `"summaryResultCount": 3` to `summarySpec` and `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}` to `contentSearchSpec`, the values of the source's own summary example, because the source's summary procedure says a summary request "specifies values for `summaryResultCount` and `maxExtractiveAnswerCount`"; the model version and every other field are unchanged. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+Adapted (not in the official docs): added `"summaryResultCount": 3` to `summarySpec` and `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}` to `contentSearchSpec`, the values of the source's own summary example, because the source's summary procedure says a summary request "specifies values for `summaryResultCount` and `maxExtractiveAnswerCount`"; the model version and every other field are unchanged. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero.
 
 ```bash
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
-curl -X POST \
+curl --fail-with-body -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 "https://discoveryengine.googleapis.com/v1/projects/exampleproject/locations/global/collections/default_collection/dataStores/exampledatastore/servingConfigs/default_search:search" \
@@ -51,7 +51,7 @@ curl -X POST \
 - For quality and latency reasons, the 128K context window is smaller than allowed elsewhere for these models.
 - The streaming answer method supports only Gemini models ([stream-answer.md](./stream-answer.md)).
 - Former names: Agent Search was Vertex AI Search (API still Discovery Engine); Agent Platform was Vertex AI.
-- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/answer-generation-models (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the source's model-version example sends only `"summarySpec": {"modelSpec": {"version": "preview"}}`, while the same page says "to get a summary, you must also get extractive answers with your search results" and "To get a search summary, follow these steps: 1. Submit a search request that includes `contentSearchSpec.summarySpec` and specifies values for `summaryResultCount` and `maxExtractiveAnswerCount`." Its own summary example uses `"summaryResultCount": 3` and `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}`, so the example adds those two values. The `discoveryengine.v1` Discovery document describes `summaryResultCount` only as "The number of top results to generate the summary from." and does not say what happens when it is unset.
 - Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/get-search-summaries (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

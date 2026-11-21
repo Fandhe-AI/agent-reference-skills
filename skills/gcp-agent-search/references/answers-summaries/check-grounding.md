@@ -12,7 +12,7 @@ The check grounding API determines how grounded a piece of text (the answer cand
 
 Call the `groundingConfigs.check` method. Run the command by itself and type each value on its own line at the prompts, in this order: `CANDIDATE`, then `TEXT_0`, `VALUE_A0`, `VALUE_B0`, `TEXT_1`, `VALUE_A1`, `VALUE_B1`, `TEXT_2`, `VALUE_A2`, `VALUE_B2`; `jq` (required) encodes each one as a JSON string, and nothing is sent if a value is missing or empty. A line that follows the command in the same paste or script is read as a value. `ATTRIBUTE_A` and `ATTRIBUTE_B` are attribute names and stay in the command.
 
-Adapted (not in the official docs): the request body is built with `jq -n --arg candidate "$CANDIDATE" --arg text_0 "$TEXT_0" --arg value_a0 "$VALUE_A0" ... '{...}'` from the values read by one `IFS= read -r` per placeholder, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"CANDIDATE"`, `"TEXT_n"` and `"VALUE_An"` / `"VALUE_Bn"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+Adapted (not in the official docs): the request body is built with `jq -n --arg candidate "$CANDIDATE" --arg text_0 "$TEXT_0" --arg value_a0 "$VALUE_A0" ... '{...}'` from the values read by one `IFS= read -r` per placeholder, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"CANDIDATE"`, `"TEXT_n"` and `"VALUE_An"` / `"VALUE_Bn"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero.
 
 ```bash
 IFS= read -r CANDIDATE &&
@@ -48,7 +48,7 @@ BODY=$(jq -n --arg candidate "$CANDIDATE" \
 }') &&
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 printf '%s' "$BODY" |
-curl -X POST \
+curl --fail-with-body -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 -H "X-Goog-User-Project: PROJECT_ID" \
@@ -62,7 +62,7 @@ Set `enableClaimLevelScore` to `true` in `groundingSpec`; each claim then also r
 
 Run the command by itself and type the answer candidate on one line at the prompt (the facts are the source's fixed example text); nothing is sent if the input ends first or the line is empty.
 
-Adapted (not in the official docs): removed the trailing comma after `"enableClaimLevelScore": true` that makes the JSON body invalid. Also, the request body is built with `jq -n --arg candidate "$CANDIDATE" '{...}'` from the text read by `IFS= read -r CANDIDATE`, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"CANDIDATE"` inside the single-quoted `-d '{...}'` argument; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+Adapted (not in the official docs): removed the trailing comma after `"enableClaimLevelScore": true` that makes the JSON body invalid. Also, the request body is built with `jq -n --arg candidate "$CANDIDATE" '{...}'` from the text read by `IFS= read -r CANDIDATE`, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"CANDIDATE"` inside the single-quoted `-d '{...}'` argument; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero.
 
 ```bash
 IFS= read -r CANDIDATE &&
@@ -86,7 +86,7 @@ BODY=$(jq -n --arg candidate "$CANDIDATE" '{
     }') &&
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 printf '%s' "$BODY" |
-    curl -X POST \
+    curl --fail-with-body -X POST \
     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
     -H "Content-Type: application/json" \
     "https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/groundingConfigs/default_grounding_config:check" \
@@ -123,7 +123,7 @@ printf '%s' "$BODY" |
 - The source also shows a Python sample (`discoveryengine_v1.GroundedGenerationServiceClient`, `check_grounding`), example facts, and tables of example answer candidates with their responses.
 - Former name: Agent Search was Vertex AI Search; the API is still Discovery Engine (`discoveryengine.googleapis.com`).
 - Corrected from the official docs: both requests write free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"answerCandidate": "CANDIDATE"`, `"factText": "TEXT_0"`, `"attributes": {"ATTRIBUTE_A": "VALUE_A0","ATTRIBUTE_B": "VALUE_B0"}` and the same for facts 1 and 2). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"`, `\` or a line break makes the JSON invalid, so the bodies are built with `jq --arg` from standard input and sent with `--data @-`.
-- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/check-grounding (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

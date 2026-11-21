@@ -77,7 +77,7 @@ Step 1: prepare the schema object. Step 2: create a data store (empty schema).
 
 Run the command by itself and type `DATA_STORE_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the value.
 
-Adapted (not in the official docs): the request body is built with `jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DATA_STORE_DISPLAY_NAME`), rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"DATA_STORE_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+Adapted (not in the official docs): the request body is built with `jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DATA_STORE_DISPLAY_NAME`), rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"DATA_STORE_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero.
 
 ```bash
 IFS= read -r DATA_STORE_DISPLAY_NAME &&
@@ -88,7 +88,7 @@ BODY=$(jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{
 }') &&
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 printf '%s' "$BODY" |
-curl -X POST \
+curl --fail-with-body -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 -H "X-Goog-User-Project: PROJECT_ID" \
@@ -102,7 +102,7 @@ Step 3: provide the schema with `schemas.patch`.
 
 Save the schema object (`JSON_SCHEMA_OBJECT`, for example the one below) in a JSON file. Run the command by itself and type the path to that file (`SCHEMA_FILE`) on one line at the prompt; the path is used as typed (`~` is not expanded). `jq` (required) reads the file once, checks that it holds exactly one JSON value and that it is an object, and wraps that same value in `structSchema`; nothing is sent if the path is empty, the file can't be read or parsed, or it does not hold one JSON object. A line that follows the command in the same paste or script is read as the path.
 
-Adapted (not in the official docs): the source pastes `JSON_SCHEMA_OBJECT` into the single-quoted `-d '{...}'` argument. Here the schema is read from the file named by `IFS= read -r SCHEMA_FILE`, checked and wrapped by a single `jq -s -e 'if length == 1 and (.[0] | type) == "object" then {"structSchema": .[0]} else error(...) end'` (the file is read once on standard input with `< "$SCHEMA_FILE"`, so a file named `-` is opened as a file; the body is built from the same value that was checked, and `error` gives a non-zero exit otherwise, so the `&&` chain ends before anything is sent) and sent on standard input with `--data @-`, so an apostrophe in the schema (for example in a description) cannot break the shell quoting; the URL and headers are unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+Adapted (not in the official docs): the source pastes `JSON_SCHEMA_OBJECT` into the single-quoted `-d '{...}'` argument. Here the schema is read from the file named by `IFS= read -r SCHEMA_FILE`, checked and wrapped by a single `jq -s -e 'if length == 1 and (.[0] | type) == "object" then {"structSchema": .[0]} else error(...) end'` (the file is read once on standard input with `< "$SCHEMA_FILE"`, so a file named `-` is opened as a file; the body is built from the same value that was checked, and `error` gives a non-zero exit otherwise, so the `&&` chain ends before anything is sent) and sent on standard input with `--data @-`, so an apostrophe in the schema (for example in a description) cannot break the shell quoting; the URL and headers are unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero.
 
 ```bash
 IFS= read -r SCHEMA_FILE && [ -n "$SCHEMA_FILE" ] &&
@@ -111,7 +111,7 @@ BODY=$(jq -s -e 'if length == 1 and (.[0] | type) == "object" then {
 } else error("SCHEMA_FILE must hold exactly one JSON object") end' < "$SCHEMA_FILE") &&
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 printf '%s' "$BODY" |
-curl -X PATCH \
+curl --fail-with-body -X PATCH \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 "https://discoveryengine.googleapis.com/v1beta/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/schemas/default_schema" \
@@ -181,7 +181,7 @@ Step 4 (optional): review the schema with "View a schema definition".
 - The source also includes a sample command with its result and Colab notebook links, which are omitted.
 - Corrected from the official docs: the source writes free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"displayName": "DATA_STORE_DISPLAY_NAME"`). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"` or `\` makes the JSON invalid, so the body is built with `jq --arg` from standard input and sent with `--data @-`.
 - Corrected from the official docs: the source's `schemas.patch` command ends with `-d '{` / `"structSchema": JSON_SCHEMA_OBJECT` / `}'`, so the whole schema is pasted inside single quotes; a schema that contains an apostrophe (valid in JSON strings) ends the shell quoting and the rest is parsed as shell syntax. The example reads the schema from a JSON file with one `jq -s` call that checks that the file holds one JSON object and builds the body from that same value, and sends the body with `--data @-`.
-- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/provide-schema (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
