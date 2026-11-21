@@ -27,11 +27,12 @@ gcloud init
 
 - Select the project that contains the Agent Search engine.
 - When selecting a role, enter **Discovery Engine** in the filter, then click **Discovery Engine Admin**.
-- Project owners automatically have the Discovery Engine Admin role for that project.
+- Project owners automatically have the Discovery Engine Admin role for that project (see Notes).
 
 ## Notes
 
 - Project-level access control: to grant access with the console, grant the Discovery Engine Admin role (`roles/discoveryengine.admin`) to a principal for the project that contains the Agent Search engine. Other users, groups and service accounts: see access-control.md.
+- Project owners: the source says "If you are an owner of the project, you automatically have the Discovery Engine Admin role for that project." Read this as the access an owner (`roles/owner`) has; the source does not say that a `roles/discoveryengine.admin` binding is added to the project's IAM policy. When you audit or remove this access, check `roles/owner` bindings as well as `roles/discoveryengine.admin` bindings.
 - Grant Discovery Engine Admin only to principals that need full access to all Discovery Engine resources; the narrower Editor, User and Viewer roles are described in access-control.md.
 - For API use, see authentication.md ("Set up authentication on Google Cloud") for authentication and access control.
 - The source shows only Console steps (and links to the gcloud install / initialize pages).

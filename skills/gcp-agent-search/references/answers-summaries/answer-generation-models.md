@@ -43,8 +43,6 @@ curl --fail-with-body -X POST \
 | `gemini-3-flash-preview/answer_gen/v1` | The `gemini-3-flash-preview` model. | 128K | N/A |
 | `gemini-3.5-flash/answer_gen/v1` | The `gemini-3.5-flash` model. | 128K | N/A |
 
-The example above uses `preview`, which this table does not list. The search summaries page (get-search-summaries, see Snippet taken from) says "You can specify `stable`, `preview`, or a specific model version by name." and "`preview` points to the latest Gemini model for question and answering."; use a model version from the table to pin a specific model.
-
 ## Notes
 
 - Agent Search uses two types of models: Gemini Enterprise Agent Platform LLM models tested on question answering tasks, and Agent Search models based on Agent Platform LLM models and further trained for question answering.
@@ -54,6 +52,7 @@ The example above uses `preview`, which this table does not list. The search sum
 - The streaming answer method supports only Gemini models ([stream-answer.md](./stream-answer.md)).
 - Former names: Agent Search was Vertex AI Search (API still Discovery Engine); Agent Platform was Vertex AI.
 - Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero. The command runs in a subshell that starts with `set +x`, so `set -x` tracing does not print the token, and `TOKEN` does not stay in the calling shell.
+- The example above uses `preview`, which this table does not list. The search summaries page (get-search-summaries, see Snippet taken from) says "You can specify `stable`, `preview`, or a specific model version by name." and "`preview` points to the latest Gemini model for question and answering."; use a model version from the table to pin a specific model.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/answer-generation-models (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Corrected from the official docs: the source's model-version example sends only `"summarySpec": {"modelSpec": {"version": "preview"}}`, while the same page says "to get a summary, you must also get extractive answers with your search results" and "To get a search summary, follow these steps: 1. Submit a search request that includes `contentSearchSpec.summarySpec` and specifies values for `summaryResultCount` and `maxExtractiveAnswerCount`." Its own summary example uses `"summaryResultCount": 3` and `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}`, so the example adds those two values. The `discoveryengine.v1` Discovery document describes `summaryResultCount` only as "The number of top results to generate the summary from." and does not say what happens when it is unset.
 - Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/get-search-summaries (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

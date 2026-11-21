@@ -63,7 +63,7 @@ def list_operations_sample(
 
 ### Get details about an operation (REST)
 
-The operation name comes from the response of the call that started the LRO (for example `documents.import`), or from listing operations. The start of that response looks like this:
+The operation name comes from the response of the call that started the LRO, or from listing operations. A call such as `documents.import` returns a single operation, and its name is the top-level `name` field (the same shape as the `operations.get` response below). A list response (`operations.list`) holds the names in `operations[].name`, for example:
 
 Adapted (not in the official docs): the trailing comma after the `"@type"` value is removed, because JSON does not allow a comma before a closing brace.
 
@@ -260,6 +260,7 @@ def cancel_operation_sample(operation_name: str) -> None:
 - Corrected from the official docs: the source's operations-list sample writes `"@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata",` with a trailing comma before the closing `}` of `metadata`; JSON does not allow trailing commas, so the comma is removed and the block is tagged `json`.
 - Corrected from the official docs: `poll_operation_sample(operation_name, limit=10)` ran `for _ in range(limit):` and then `return operation` without checking `limit`; `limit` must be a positive integer.
 - Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero. The command runs in a subshell that starts with `set +x`, so `set -x` tracing does not print the token, and `TOKEN` does not stay in the calling shell.
+- Corrected from the official docs: the source introduces the `operations` array above with "if you call `documents.import`, the start of the response looks something like this:". In the `discoveryengine.v1` Discovery document `documents.import` returns `GoogleLongrunningOperation` (one operation with a top-level `name`), and `operations.list` returns `GoogleLongrunningListOperationsResponse`, whose `operations` field is "A list of operations that matches the specified filter in the request.", so the array is labelled as a list response here.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/long-running-operations (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
