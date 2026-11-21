@@ -31,7 +31,6 @@ client = vertexai.Client(
 
 ### Develop the agent
 
-
 Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data.
 
 ```python

@@ -45,7 +45,6 @@ gcloud network-services agent-gateways import AGENT_GATEWAY_NAME \
 
 Without an attached `AuthzPolicy`, an Agent-to-Anywhere gateway adopts a default-deny policy and blocks all outbound traffic. Authorization extension that points to IAP. The example enforces the IAP decision; to audit only during a migration, add `iamEnforcementMode: "DRY_RUN"` under `metadata` (in dry-run mode, requests that IAP denies are not blocked).
 
-
 Adapted (not in the official docs): removed `iamEnforcementMode: "DRY_RUN"`, so the setup enforces IAP authorization; the source says to remove this line to enforce.
 
 ```bash

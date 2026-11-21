@@ -60,7 +60,6 @@ async for event in app.async_stream_query(
 
 ### Define and use a tool
 
-
 Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data.
 
 ```python
@@ -152,7 +151,6 @@ async for event in app.async_stream_query(
 ```
 
 ### Memories
-
 
 Adapted (not in the official docs): in instruction item 1, the sentence telling the agent to provide a hypothetical tool execution outcome is replaced with one that reports only real tool results; this agent has only `PreloadMemoryTool`, so the original wording makes it claim vehicle actions it cannot perform.
 
