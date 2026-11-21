@@ -14,11 +14,12 @@ For an ADK API server deployed from a Dockerfile or container image, invoke `/ap
 
 These calls are for single-user use (not in the official docs): the caller chooses `userId` in the session path and in the run request, and IAM permission to call the runtime does not prove that the caller is that user or owns the session. In an API that several users share, derive the user ID on the server side from the authenticated principal, and check that the session belongs to that user before you create, run or stream in it. Grant the permissions that call the runtime (such as `aiplatform.reasoningEngines.query`) and the `aiplatform.sessions.*` permissions only to that backend's service identity, not to end users, so that every call goes through the check; besides `roles/aiplatform.user`, `roles/aiplatform.viewer` and the basic `roles/viewer` also contain `aiplatform.reasoningEngines.query` (IAM roles-permissions page for `aiplatform`).
 
-Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash
-curl --fail-with-body \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
+( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+curl -q --fail-with-body \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID/api/run -d '{
   "appName": "my_sample_agent",
@@ -28,16 +29,17 @@ https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCA
     "role": "user",
     "parts": [{"text": "What is the capital of France?"}]
   }
-}'
+}' )
 ```
 
 and `/api/run_sse` (streaming), which takes the same caller-chosen `userId` and `sessionId`; the same single-user limit and the same server-side checks apply:
 
-Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success, and `--no-buffer`, so the server-sent events are printed as they arrive.
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success, and `--no-buffer`, so the server-sent events are printed as they arrive. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash
-curl --fail-with-body --no-buffer \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
+( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+curl -q --fail-with-body --no-buffer \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID/api/run_sse -d '{
   "appName": "my_sample_agent",
@@ -48,7 +50,7 @@ https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCA
     "parts": [{"text": "What is the weather in New York?"}]
   },
   "streaming": true
-}'
+}' )
 ```
 
 ## Options / Props
@@ -88,6 +90,7 @@ https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCA
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/use-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the source's `curl` commands have no `--fail-with-body`.
 - Adapted from the official docs: the `/api/run_sse` `curl` has no `--no-buffer` (`-N`, "Disable buffering of the output stream" in `curl --help all`); without it, curl buffers its output and the streamed events can appear late.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `-q` is the first argument because for `-q, --disable` the manual says "If used as the first parameter on the command line, the curlrc config file is not read or used.", so a `trace` line in `.curlrc` cannot write the headers to a file. The subshell starts with `set +x` (no tracing of the token) and `set +a` (an inherited `set -a` would export `TOKEN` to `curl`), and `unset` at its start also drops an inherited `export TOKEN`; `TOKEN` does not stay in the calling shell.
 
 ## Related
 

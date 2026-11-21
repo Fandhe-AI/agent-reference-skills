@@ -37,12 +37,13 @@ for agent in client.runtimes.list(
 
 REST (`reasoningEngines.list`):
 
-Adapted (not in the official docs): added the standard `fields` parameter ("Selector specifying which fields to include in a partial response", Discovery `aiplatform.v1`) so the list returns only names and display names, not each `spec`. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero.
+Adapted (not in the official docs): added the standard `fields` parameter ("Selector specifying which fields to include in a partial response", Discovery `aiplatform.v1`) so the list returns only names and display names, not each `spec`. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash
-curl --fail-with-body -X GET \
-     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-     "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines?fields=reasoningEngines(name,displayName),nextPageToken"
+( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+curl -q --fail-with-body -X GET \
+     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
+     "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines?fields=reasoningEngines(name,displayName),nextPageToken" )
 ```
 
 ### Get a deployed agent
@@ -62,12 +63,13 @@ remote_agent = client.runtimes.get(
 
 REST (`reasoningEngines.get`):
 
-Adapted (not in the official docs): added `?fields=name,displayName`, so the response omits `spec` (which can hold environment variables), as in the list example; also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+Adapted (not in the official docs): added `?fields=name,displayName`, so the response omits `spec` (which can hold environment variables), as in the list example; also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash
-curl --fail-with-body -X GET \
-     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-     "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID?fields=name,displayName"
+( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+curl -q --fail-with-body -X GET \
+     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
+     "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID?fields=name,displayName" )
 ```
 
 ### Update a deployed agent
@@ -108,14 +110,15 @@ REST (`reasoningEngines.patch`) request body, saved as `request.json`:
 }
 ```
 
-Adapted (not in the official docs): the query parameter is `updateMask=displayName,description` (the name and the JSON field paths of the Discovery document `aiplatform.v1` `reasoningEngines.patch`) instead of the source's `update_mask="display_name,description"` with nested quotes. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero.
+Adapted (not in the official docs): the query parameter is `updateMask=displayName,description` (the name and the JSON field paths of the Discovery document `aiplatform.v1` `reasoningEngines.patch`) instead of the source's `update_mask="display_name,description"` with nested quotes. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash
-curl --fail-with-body -X PATCH \
-     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+curl -q --fail-with-body -X PATCH \
+     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
      -H "Content-Type: application/json; charset=utf-8" \
      -d @request.json \
-     "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID?updateMask=displayName,description"
+     "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID?updateMask=displayName,description" )
 ```
 
 ### Delete a deployed agent
@@ -143,12 +146,13 @@ client.runtimes.delete(
 )
 ```
 
-Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash
-curl --fail-with-body -X DELETE \
-     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-     "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID"
+( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+curl -q --fail-with-body -X DELETE \
+     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
+     "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID" )
 ```
 
 ## Options / Props
@@ -193,6 +197,7 @@ curl --fail-with-body -X DELETE \
 - Adapted from the official docs: both list examples used `print(agent)` and the REST list returned full resources. In google-cloud-agentplatform 2.10.0, `client.runtimes.list()` yields `types.Runtime`, whose `api_resource` is a `ReasoningEngine` with `name`, `display_name` and `spec` (`agentplatform/_genai/types/common.py`).
 - Adapted from the official docs: the REST get example returned the whole `ReasoningEngine`, including `spec` (deployment settings such as environment variables). `fields` is a top-level parameter of the `aiplatform.v1` Discovery document ("Selector specifying which fields to include in a partial response"), so it applies to `reasoningEngines.get` as well; request other fields only when you need them, and do not log a full response.
 - Adapted from the official docs: the source's `curl` commands have no `--fail-with-body`.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `-q` is the first argument because for `-q, --disable` the manual says "If used as the first parameter on the command line, the curlrc config file is not read or used.", so a `trace` line in `.curlrc` cannot write the headers to a file. The subshell starts with `set +x` (no tracing of the token) and `set +a` (an inherited `set -a` would export `TOKEN` to `curl`), and `unset` at its start also drops an inherited `export TOKEN`; `TOKEN` does not stay in the calling shell.
 
 ## Related
 

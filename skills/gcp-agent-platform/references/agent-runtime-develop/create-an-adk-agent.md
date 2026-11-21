@@ -66,7 +66,7 @@ async for event in app.async_stream_query(
 
 ### Define and use a tool
 
-Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data. Also, `currency_date` is checked to be `latest` or a `YYYY-MM-DD` date (`datetime.datetime.strptime(currency_date, "%Y-%m-%d")` raises `ValueError` otherwise) and the parsed date, normalized with `.date().isoformat()` (for example `2023-1-5` becomes `2023-01-05`), is what goes in the URL path, so a model-supplied value cannot point the request at another path or query and the request always uses the `YYYY-MM-DD` form.
+Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data. Also, `currency_date` is checked to be `latest` or a `YYYY-MM-DD` date (`datetime.datetime.strptime(currency_date, "%Y-%m-%d")` raises `ValueError` otherwise) and the parsed date, normalized with `.date().isoformat()` (for example `2023-1-5` becomes `2023-01-05`), is what goes in the URL path, so a model-supplied value cannot point the request at another path or query and the request always uses the `YYYY-MM-DD` form. `currency_from` and `currency_to` are normalized with `.strip().upper()` and must each be three ASCII letters (`len(code) == 3 and code.isascii() and code.isalpha()`, `ValueError` otherwise, as for an invalid date), so the request carries only a single 3-letter currency code in each parameter.
 ```python
 def get_exchange_rate(
     currency_from: str = "USD",
@@ -95,6 +95,11 @@ def get_exchange_rate(
     import datetime
     import requests
 
+    currency_from = currency_from.strip().upper()
+    currency_to = currency_to.strip().upper()
+    for code in (currency_from, currency_to):
+        if not (len(code) == 3 and code.isascii() and code.isalpha()):
+            raise ValueError(f"Invalid currency code: {code!r}")
     if currency_date != "latest":
         currency_date = datetime.datetime.strptime(
             currency_date, "%Y-%m-%d"
@@ -281,6 +286,7 @@ print(response)
 - Corrected from the official docs: the `Agent` rebuilt with `tools=[get_exchange_rate]` did not pass `generate_content_config`, so the safety settings of the first example were dropped for it and for the Sessions example that uses it (google-adk 2.15.0 `google/adk/agents/llm_agent.py`: `generate_content_config: types.GenerateContentConfig | None = None`, `Agent: TypeAlias = LlmAgent`).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-adk-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - `user_id` and sessions: in google-adk 2.15.0, `BaseSessionService.get_session` takes `app_name`, `user_id` and `session_id`, and `VertexAiSessionService.get_session` (`google/adk/sessions/vertex_ai_session_service.py`, the service the deployed `AdkApp` uses) raises `ValueError` "Session {session_id} does not belong to user {user_id}." when they do not match; it does not check who the caller is, so `user_id` must come from the authenticated principal.
+- Corrected from the official docs: `get_exchange_rate` passed the model-supplied `currency_from` and `currency_to` to the request unchecked, although the create-an-adk-agent docstring describes each as "(3-letter currency code)"; the example normalizes them with `.strip().upper()` and raises `ValueError` unless each is three ASCII letters.
 
 ## Related
 

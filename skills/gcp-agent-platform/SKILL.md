@@ -23,7 +23,7 @@ Google Cloud (GCP) の Gemini Enterprise Agent Platform（以下 Agent Platform�
 
 機械生成の層として、gcloud 8 グループ（`ai` / `ai-platform` / `gemini` / `vector-search` / `agent-identity` / `agent-registry` / `developer-knowledge` / `mldiagnostics`）、REST 5 API（`aiplatform` / `agentregistry` / `deepreview` / `ml` / `datalabeling`）、メッセージスキーマ、IAM ロール・権限を収録する。
 
-製品名の変更: Vertex AI → Agent Platform、Vertex AI Agent Engine → Agent Runtime、Vertex AI Vector Search 2.0 → Agent Retrieval、Vertex AI Search → Agent Search（別スキル `gcp-agent-search`（分割投入中で未配布。それまでは公式ドキュメント https://docs.cloud.google.com/ を引く））、Agentspace → Gemini Enterprise。API 名・gcloud グループ・IAM ロール接頭辞（`roles/aiplatform.*`）・SDK モジュール（`vertexai`）は旧名のまま。
+製品名の変更: Vertex AI → Agent Platform、Vertex AI Agent Engine → Agent Runtime、Vertex AI Vector Search 2.0 → Agent Retrieval、Vertex AI Search → Agent Search（別スキル `gcp-agent-search`）、Agentspace → Gemini Enterprise。API 名・gcloud グループ・IAM ロール接頭辞（`roles/aiplatform.*`）・SDK モジュール（`vertexai`）は旧名のまま。
 
 参照本文は英語（公式ドキュメントの原語）。
 
@@ -71,7 +71,7 @@ skills/gcp-agent-platform/
 
 - `google-gemini-api` — Gemini Developer API（aistudio.google.com、Google AI Studio の API キー）と、それに対する Gen AI SDK。本スキルは Agent Platform のエンドポイントと ADC を使う側
 - `anthropic-*` — Claude 自体。Model Garden の Claude ページは本スキルに収録せず、GCP 側の有効化は `model-garden-open-partner-models/control-model-access.md`（後続 PR で投入） のみ。Claude Code を Vertex 経由で使う設定は `anthropic-claude-code-deploy`。本スキルの ADK / Agent Runtime は Google のもので、Claude Code / Agent SDK / OpenAI Agents とは別物
-- `gcp-agent-search`（分割投入中で未配布。それまでは公式ドキュメント https://docs.cloud.google.com/ を引く） — Agent Search（旧 Vertex AI Search）と Gemini Enterprise（旧 Agentspace）。Discovery Engine API
+- `gcp-agent-search` — Agent Search（旧 Vertex AI Search）と Gemini Enterprise（旧 Agentspace）。Discovery Engine API
 - `gcp-gemini-enterprise-cx`（分割投入中で未配布。それまでは公式ドキュメント https://docs.cloud.google.com/ を引く） — Gemini Enterprise for Customer Experience（CX Agent Studio）・Customer Experience Insights・CCAI Platform
 - `gcp-foundation` — IAM 全般・サービスアカウント・Workload Identity Federation・ADC・Organization Policy・クォータ全般。Agent Identity API（`agentidentity`）と Developer Knowledge API の REST ページも同スキル
 - `gcp-cli` — gcloud のインストール・認証

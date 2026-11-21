@@ -112,11 +112,12 @@ The console and gcloud do not support modifying Agent Runtime gateway bindings; 
 
 Before you run it: the request fails while a manual revision traffic split is active, so remove the split first; when it succeeds, it creates a new revision and irreversibly archives every previous revision of the agent, including any known-good revision you might roll back to.
 
-Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash
-curl --fail-with-body -X PATCH \
- -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+curl -q --fail-with-body -X PATCH \
+ -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
  -H "Content-Type: application/json; charset=utf-8" \
  -d '{
    "spec": {
@@ -125,7 +126,7 @@ curl --fail-with-body -X PATCH \
      }
    }
  }' \
- "https://REGION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/REGION/reasoningEngines/RESOURCE_ID?updateMask=spec.deploymentSpec.agentGatewayConfig"
+ "https://REGION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/REGION/reasoningEngines/RESOURCE_ID?updateMask=spec.deploymentSpec.agentGatewayConfig" )
 ```
 
 The call returns a long-running operation (`reasoningEngines.patch` returns `GoogleLongrunningOperation` in the `aiplatform.v1` Discovery document). Poll `GET https://REGION-aiplatform.googleapis.com/v1/OPERATION_NAME` until the response contains `"done": true` and check that it has no `error`, then `GET` the reasoning engine and confirm that `spec.deploymentSpec.agentGatewayConfig` is empty. Only then go on to delete the gateway's policies (not in the official docs).
@@ -226,6 +227,7 @@ gcloud network-services agent-connectivity-templates delete CONNECTIVITY_TEMPLAT
 - CLI tracks (gcloud 593.0.0 help): `service-extensions authz-extensions` and `network-security authz-policies` (`list`, `describe`, `import`, `delete`) are GA (networkservices / networksecurity `v1`) as well as beta, so the GA commands from the source are kept; set-up-agent-gateway.md imports the extension with `gcloud beta` as its source does, and the `AuthzExtension` fields are the same in `networkservices` `v1` and `v1beta1` (Discovery). `network-services telemetry-policies` exists only in beta and alpha.
 - Adapted from the official docs: the update example wrote `- //agentregistry.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION` under `registries`, while the source explains `PROJECT_NUMBER` only for `agentConnectivityTemplate` ("requires the project number rather than the project ID"), the set-up examples use `PROJECT_ID` there, and the Discovery document (`networkservices.v1`, `AgentGateway.registries`) gives the format `//agentregistry.googleapis.com/projects/{project}/locations/{location}/`.
 - Adapted from the official docs: the disassociation `curl -X PATCH` had no `--fail-with-body` and the source does not show waiting for the returned operation.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `-q` is the first argument because for `-q, --disable` the manual says "If used as the first parameter on the command line, the curlrc config file is not read or used.", so a `trace` line in `.curlrc` cannot write the headers to a file. The subshell starts with `set +x` (no tracing of the token) and `set +a` (an inherited `set -a` would export `TOKEN` to `curl`), and `unset` at its start also drops an inherited `export TOKEN`; `TOKEN` does not stay in the calling shell.
 
 ## Related
 

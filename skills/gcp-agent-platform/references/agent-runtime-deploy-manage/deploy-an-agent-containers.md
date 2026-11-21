@@ -120,11 +120,12 @@ remote_agent = client.runtimes.create(
 
 ### Deploy from a container image: REST
 
-Adapted (not in the official docs): added `spec.deploymentSpec.keepAliveProbe` (`httpGet.path`, `httpGet.port`, `maxSeconds`, field names of the `aiplatform.v1` Discovery document) with the same values as the SDK example above, and `spec.classMethods` with the same two operations. Each method declares `message` as a required string in `parameters`, in the shape of the `class_methods` example in deploy-an-agent.md, because the runtime-contract.md server returns `400` unless `input` is `{"message": <string>}`. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero.
+Adapted (not in the official docs): added `spec.deploymentSpec.keepAliveProbe` (`httpGet.path`, `httpGet.port`, `maxSeconds`, field names of the `aiplatform.v1` Discovery document) with the same values as the SDK example above, and `spec.classMethods` with the same two operations. Each method declares `message` as a required string in `parameters`, in the shape of the `class_methods` example in deploy-an-agent.md, because the runtime-contract.md server returns `400` unless `input` is `{"message": <string>}`. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash
-curl --fail-with-body -X POST \
-  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+curl -q --fail-with-body -X POST \
+  -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
   -H "Content-Type: application/json" \
   "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines" \
   -d '{
@@ -147,7 +148,7 @@ curl --fail-with-body -X POST \
         }
       }
     }
-  }'
+  }' )
 ```
 
 ## Notes
@@ -174,6 +175,7 @@ curl --fail-with-body -X POST \
 - Adapted from the official docs: the three examples left `class_methods` commented out (SDK) or absent (REST), while the source says to declare the supported operations "in `class_methods` (or `spec.classMethods` in REST) so you can invoke the agent through standard `query` and `streamQuery` requests". google-cloud-agentplatform 2.10.0 `runtimes.py` converts each `class_methods` dict to a `google.protobuf.Struct` (`_to_proto`), so the keys `name` and `api_mode` are sent as written, for `source_packages` / `image_spec` and for `container_spec`; Discovery `aiplatform.v1` `ReasoningEngineSpec.classMethods` is an array of free-form objects ("Declarations for object class methods in OpenAPI specification format"). The declarations here also add `parameters` with a required string `message`.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the source's `curl` commands have no `--fail-with-body`.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `-q` is the first argument because for `-q, --disable` the manual says "If used as the first parameter on the command line, the curlrc config file is not read or used.", so a `trace` line in `.curlrc` cannot write the headers to a file. The subshell starts with `set +x` (no tracing of the token) and `set +a` (an inherited `set -a` would export `TOKEN` to `curl`), and `unset` at its start also drops an inherited `export TOKEN`; `TOKEN` does not stay in the calling shell.
 
 ## Related
 
