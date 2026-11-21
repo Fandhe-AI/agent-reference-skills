@@ -126,6 +126,8 @@ curl -X PATCH \
 
 ### Delete a gateway (gcloud)
 
+First, as the source's step 1 says, "Ensure that no Gemini Enterprise apps or Agent Runtime agents reference the gateway" (see Disassociate an Agent Runtime agent above, and "Before you can delete an Agent Gateway, you must disassociate every Gemini Enterprise app and Agent Runtime agent that references the gateway."). Then, before you delete any policy, confirm that the gateway no longer receives traffic (for example on the gateway's **Observability** tab) or that its traffic now goes through another gateway with its own policies; this check is not in the official docs. Removing the `AuthzPolicy` of a Client-to-Agent gateway that still receives requests lets them pass without content checks (Notes), and the later deletes can still fail (Notes), which would leave the gateway running without the policy.
+
 Delete each `AuthzPolicy` before the `AuthzExtension` it references:
 
 ```bash

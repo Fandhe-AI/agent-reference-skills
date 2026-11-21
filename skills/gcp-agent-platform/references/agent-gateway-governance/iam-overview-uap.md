@@ -10,9 +10,12 @@ IAM Unified Access Policies (UAPs) govern communication between agent principals
 
 ### CEL condition on an unregistered destination
 
+Adapted (not in the official docs): `destination.unregistered.path.startsWith('/v1/statements')` is replaced with `(destination.unregistered.path == '/v1/statements' || destination.unregistered.path.startsWith('/v1/statements/'))`, so the condition matches `/v1/statements` and the paths below it but not other routes that only start with the same characters (such as `/v1/statementsX`).
+
 ```text
 destination.unregistered.host == 'finance.example.com' &&
-destination.unregistered.path.startsWith('/v1/statements')
+(destination.unregistered.path == '/v1/statements' ||
+destination.unregistered.path.startsWith('/v1/statements/'))
 ```
 
 ### Enforcement mode
@@ -82,6 +85,7 @@ Use dry-run (`iamEnforcementMode: "DRY_RUN"`, or **Audit-only** in the console) 
 - IAP and Context-Aware Access provide default end-to-end authentication with mutual TLS (mTLS) and Demonstrating Proof of Possession (DPoP); agent identities are provisioned with an X.509 certificate and a certificate-bound token. A Principal Access Boundary (PAB) can also be created on the agent identity and enforced through IAP.
 - Create only UAPs (IAM v3 policies); in gcloud and REST, UAPs are configured from a JSON-formatted file. The source shows no policy file example; the console offers a Condition builder and a Condition editor.
 - Best practices: use dry-run first, least privilege (specific tool names or paths rather than wildcards), deny rules for guardrails, regular audits of Cloud Audit Logs.
+- Corrected from the official docs: the example condition was `destination.unregistered.path.startsWith('/v1/statements')`, which also matches any path that begins with those characters (`/v1/statementsX`, `/v1/statements-admin`). The source uses the example to explain CEL sub-expressions; `==` and `.startsWith()` are both supported operations for `destination.unregistered.path` (attribute table below). Use exact matches or a prefix that ends with `/` for path conditions in allow rules.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/policies/iam-overview-uap (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

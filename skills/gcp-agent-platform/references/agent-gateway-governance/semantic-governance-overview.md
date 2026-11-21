@@ -12,8 +12,11 @@ Semantic governance is a security check layer (an "intent gate") for agents: a p
 
 Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/beta/ai/semantic-governance-policies/create (gcloud 593.0.0 help):
 
+Adapted (not in the official docs): added `--project=PROJECT_ID`, so the policy is created in the intended project instead of the project of the current gcloud configuration, as the Agent Gateway commands of this category do.
+
 ```bash
 gcloud beta ai semantic-governance-policies create my-policy \
+    --project=PROJECT_ID \
     --location=us-central1 --display-name="My Policy" \
     --natural-language-constraint="constraint" --agent="agent-name"
 ```
@@ -80,6 +83,7 @@ gcloud beta ai semantic-governance-policies create my-policy \
 - Semantic governance complements IAM, rate limits and network security; it does not replace them. In a hub-and-spoke architecture, one Agent Gateway and policy engine in a central management project can govern agents across member projects.
 - `gcloud beta ai semantic-governance-policies` is a beta command; `--location` is required.
 - The source also describes governing Agent Skills, best practices and the configuration page (separate pages).
+- Corrected from the official docs: the gcloud help example has no `--project` and uses the project of the current configuration (the help: "provide the argument --project on the command line; set the property core/project"); `--project` is a gcloud-wide flag listed in the command's GCLOUD WIDE FLAGS.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/policies/semantic-governance-overview (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/beta/ai/semantic-governance-policies/create (gcloud 593.0.0 help)
 
