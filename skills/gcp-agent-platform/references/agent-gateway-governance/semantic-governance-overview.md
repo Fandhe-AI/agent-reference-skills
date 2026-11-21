@@ -26,7 +26,7 @@ gcloud beta ai semantic-governance-policies create my-policy \
 1. Identification: requests from the agent to the model and to remote tools carry an Identity token in the Authorization header.
 2. Interception: Agent Gateway intercepts the model's suggested tool call, uses the agent identity to retrieve the NLCs, and sends the tool suggestion, NLCs and chat history to the policy engine (the policy decision point).
 3. Evaluation: the engine evaluates the call against user intent and constraints and renders a verdict.
-4. Enforcement: the verdict is added to the model response, removing the proposed tool call, before it returns to the agent through Agent Gateway.
+4. Enforcement: "The verdict is added to the model response, removing the proposed tool call, before returning to the agent through the Agent Gateway." By the verdict definitions below and the source's summary ("allowing only tool calls that don't violate specified policies"), an `ALLOW` verdict keeps the tool call and the action proceeds; a `DENY` verdict removes it and blocks the action.
 
 ## Options / Props
 
