@@ -14,7 +14,7 @@ Find your data store ID first (console **Data Stores** page, then the **Data** p
 
 Run the command by itself and type `APP_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the value.
 
-Adapted (not in the official docs): the request body is built with `jq -n --arg app_display_name "$APP_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`APP_DISPLAY_NAME`), rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"APP_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
+Adapted (not in the official docs): the request body is built with `jq -n --arg app_display_name "$APP_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`APP_DISPLAY_NAME`), rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"APP_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
 
 ```bash
 ( set +x; unset TOKEN; IFS= read -r APP_DISPLAY_NAME &&
@@ -31,7 +31,7 @@ BODY=$(jq -n --arg app_display_name "$APP_DISPLAY_NAME" '{
 }') &&
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 printf '%s' "$BODY" |
-curl --fail-with-body -X POST \
+curl -q --fail-with-body -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 -H "X-Goog-User-Project: PROJECT_ID" \
@@ -41,7 +41,9 @@ curl --fail-with-body -X POST \
 
 ### Python
 
-Uses Application Default Credentials. For a location other than `global`, the sample sets the regional endpoint `{location}-discoveryengine.googleapis.com`.
+Uses Application Default Credentials. For a location other than `global`, the sample sets the regional endpoint `{location}-discoveryengine.googleapis.com`. To create the app without generative responses, delete the `search_add_ons=` line.
+
+Adapted (not in the official docs): the comment above `search_add_ons` lists only `SEARCH_ADD_ON_LLM`; the source also lists `SEARCH_ADD_ON_UNSPECIFIED`, which the Discovery document says is invalid to use (see Notes).
 
 ```python
 from typing import List
@@ -88,7 +90,7 @@ def create_engine_sample(
         search_engine_config=discoveryengine.Engine.SearchEngineConfig(
             # Options: SEARCH_TIER_STANDARD, SEARCH_TIER_ENTERPRISE
             search_tier=discoveryengine.SearchTier.SEARCH_TIER_ENTERPRISE,
-            # Options: SEARCH_ADD_ON_LLM, SEARCH_ADD_ON_UNSPECIFIED
+            # Options: SEARCH_ADD_ON_LLM
             search_add_ons=[discoveryengine.SearchAddOn.SEARCH_ADD_ON_LLM],
         ),
         # For generic recommendation apps only
@@ -137,7 +139,7 @@ def create_engine_sample(
 | `APP_DISPLAY_NAME` | Display name of the app |
 | `DATA_STORE_ID` | ID of an existing data store to add to the app |
 | `SEARCH_TIER` | `SEARCH_TIER_STANDARD` or `SEARCH_TIER_ENTERPRISE`; `SEARCH_TIER_ENTERPRISE` is required for website search and for choosing a region for your app, and Enterprise edition features incur additional cost |
-| `SEARCH_ADD_ON` | `SEARCH_ADD_ON_LLM` for generative responses with advanced LLM features (search summaries and search with follow-ups); otherwise specify `SEARCH_ADD_ON_UNSPECIFIED` or remove the `searchAddOns` field |
+| `SEARCH_ADD_ON` | `SEARCH_ADD_ON_LLM` for generative responses with advanced LLM features (search summaries and search with follow-ups); otherwise delete the `"searchAddOns"` line and the comma at the end of the `"searchTier"` line (see Notes) |
 
 ## Notes
 
@@ -145,7 +147,7 @@ def create_engine_sample(
   - `industry_vertical`: `GENERIC`, `MEDIA`, `HEALTHCARE_FHIR`
   - `solution_type`: `SOLUTION_TYPE_RECOMMENDATION`, `SOLUTION_TYPE_SEARCH`, `SOLUTION_TYPE_CHAT`, `SOLUTION_TYPE_GENERATIVE_CHAT`
   - `search_tier`: `SEARCH_TIER_STANDARD`, `SEARCH_TIER_ENTERPRISE`
-  - `search_add_ons`: `SEARCH_ADD_ON_LLM`, `SEARCH_ADD_ON_UNSPECIFIED`
+  - `search_add_ons`: `SEARCH_ADD_ON_LLM` (the source also lists `SEARCH_ADD_ON_UNSPECIFIED`; see the Corrected line below)
 - The industry vertical `GENERIC` is used to create custom search apps that contain structured, unstructured, website data stores, or multiple data stores (blended search).
 - Data stores attached to one app (this source, console step): "If you attach only one data store, you cannot remove it or add other data stores to the app later. Attaching multiple data stores lets you update the attached data stores later, but the app always requires at least two data stores." (see "About blended search" in the data stores guide).
 - Apps that share a data store (data stores guide, "Relationship between apps and data stores"): "Custom search apps have a many-to-many relationship with data stores. When multiple data stores are connected to a single custom search app, this is referred to as *blended search*." The same guide says a custom recommendations app "has a one-to-one connection with its data store", and media and healthcare search apps have "a many-to-one relationship with its data store. An app can only connect to one data store, whereas a given data store can be connected to several apps."
@@ -159,6 +161,8 @@ def create_engine_sample(
 - Adapted from the official docs: added the wait for a data store that was just created. `dataStores.create` returns `GoogleLongrunningOperation` in the `discoveryengine.v1` Discovery document, whose `done` field reads "If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available."
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-datastore-ingest (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: every `curl` call starts with `-q`, because the curl manual says for `-q, --disable` "If used as the first parameter on the command line, the curlrc config file is not read or used." (`man curl`, curl 8.7.1); without it, a `trace` or `trace-ascii` line in `.curlrc` writes the request headers, including the token or API key, to a file (checked with curl 8.7.1 against a local 127.0.0.1 server).
+- Corrected from the official docs: the source says "If you don't want generative responses, then either specify `SEARCH_ADD_ON_UNSPECIFIED` as the search add-on or remove the `searchAddOns` field.", and its Python sample comment lists "SEARCH_ADD_ON_LLM, SEARCH_ADD_ON_UNSPECIFIED". In the `discoveryengine.v1` Discovery document, `searchAddOns` takes `SEARCH_ADD_ON_LLM` ("Large language model add-on."), and `SEARCH_ADD_ON_UNSPECIFIED` is described as "Default value when the enum is unspecified. This is invalid to use.", so this page only says to leave the add-on out (REST: delete the `"searchAddOns"` line and the comma at the end of the `"searchTier"` line; Python: delete the `search_add_ons=` line).
 
 ## Related
 

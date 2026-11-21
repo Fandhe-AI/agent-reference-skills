@@ -12,9 +12,11 @@ Checklist of the steps to create a website search app (a type of custom search a
 
 Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (the twin for this page has no code block). The source says to turn on Enterprise edition when creating the app (`SEARCH_TIER_ENTERPRISE`):
 
+Replace `SEARCH_ADD_ON` with `SEARCH_ADD_ON_LLM` to turn on generative responses; to create the app without the add-on, delete the `"searchAddOns"` line and the comma at the end of the `"searchTier"` line. Left as is, the placeholder is not a valid value and the request fails.
+
 Run the command by itself and type `APP_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the value.
 
-Adapted (not in the official docs): the request body is built with `jq -n --arg app_display_name "$APP_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`APP_DISPLAY_NAME`), rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"APP_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
+Adapted (not in the official docs): `"searchTier"` is set to `SEARCH_TIER_ENTERPRISE` instead of the `SEARCH_TIER` placeholder, because this checklist says to turn on Enterprise edition when creating the app (see Notes). Also, the request body is built with `jq -n --arg app_display_name "$APP_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`APP_DISPLAY_NAME`), rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"APP_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
 
 ```bash
 ( set +x; unset TOKEN; IFS= read -r APP_DISPLAY_NAME &&
@@ -25,13 +27,13 @@ BODY=$(jq -n --arg app_display_name "$APP_DISPLAY_NAME" '{
   "solutionType": "SOLUTION_TYPE_SEARCH",
   "industryVertical": "GENERIC",
   "searchEngineConfig": {
-     "searchTier": "SEARCH_TIER",
+     "searchTier": "SEARCH_TIER_ENTERPRISE",
      "searchAddOns": ["SEARCH_ADD_ON"]
    }
 }') &&
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 printf '%s' "$BODY" |
-curl --fail-with-body -X POST \
+curl -q --fail-with-body -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 -H "X-Goog-User-Project: PROJECT_ID" \
@@ -69,6 +71,8 @@ curl --fail-with-body -X POST \
 - Adapted from the official docs: step 4 adds the wait for the data store's creation operation; `dataStores.create` returns `GoogleLongrunningOperation` in the `discoveryengine.v1` Discovery document.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/website-search-checklist (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: every `curl` call starts with `-q`, because the curl manual says for `-q, --disable` "If used as the first parameter on the command line, the curlrc config file is not read or used." (`man curl`, curl 8.7.1); without it, a `trace` or `trace-ascii` line in `.curlrc` writes the request headers, including the token or API key, to a file (checked with curl 8.7.1 against a local 127.0.0.1 server).
+- Adapted from the official docs: the example sends `SEARCH_TIER_ENTERPRISE` in place of the create-engine-es placeholder `SEARCH_TIER`, and the text before it says how to replace or leave out `SEARCH_ADD_ON`; in the `discoveryengine.v1` Discovery document, `GoogleCloudDiscoveryengineV1EngineSearchEngineConfig.searchTier` takes `SEARCH_TIER_STANDARD` ("Standard tier.") or `SEARCH_TIER_ENTERPRISE` ("Enterprise tier."), and `searchAddOns` takes `SEARCH_ADD_ON_LLM` ("Large language model add-on."); `SEARCH_TIER_UNSPECIFIED` and `SEARCH_ADD_ON_UNSPECIFIED` are described as "Default value when the enum is unspecified. This is invalid to use."
 
 ## Related
 
