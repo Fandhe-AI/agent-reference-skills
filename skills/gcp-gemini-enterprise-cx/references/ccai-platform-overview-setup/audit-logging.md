@@ -10,7 +10,7 @@ Cloud Audit Logs for the `contactcenteraiplatform.googleapis.com` API track admi
 
 ### Find the audit logs
 
-In the Logs Explorer, paste the following query into the **Query** field and click **Run query**.
+The Data Access methods below (`ADMIN_READ`) appear only after you enable Data Access audit logs (`ADMIN_READ`) for `contactcenteraiplatform.googleapis.com`: "Data Access audit logs are disabled by default for all services except some BigQuery services" (Enable Data Access audit logs). "Admin Activity audit logs are always written" (Cloud Audit Logs overview, https://docs.cloud.google.com/logging/docs/audit, retrieved 2026-11-18). In the Logs Explorer, paste the following query into the **Query** field and click **Run query**.
 
 ```text
 protoPayload.serviceName="contactcenteraiplatform.googleapis.com"
@@ -50,6 +50,7 @@ The log filter for a method is `protoPayload.methodName="<fully qualified method
 - The method names above are in the `v1alpha1` API; the `contactcenteraiplatform.v1alpha1` Discovery document has the matching REST methods (`projects.locations.contactCenters.create` / `delete` / `patch` / `get` / `list`, `projects.locations.queryContactCenterQuota`, `projects.locations.generateShifts`, `projects.locations.operations.cancel` / `delete` / `get` / `list`).
 - The source shows the Console and Logs Explorer only.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/audit-logging (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/logging/docs/audit/configure-data-access (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

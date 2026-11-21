@@ -80,11 +80,11 @@ Response shape (the `diagnosticInfo` content is elided in the source):
 
 ### Call BidiRunSession (Node.js, WebSocket)
 
-The `console.log` calls that print the sent queries and the received messages are for local debugging with test data only; a deployed client that passes real user input should log only metadata such as the session ID and the connection state, not conversation content.
+The example logs only metadata (connection state, message sizes, turn completion), not the queries or the received conversation content.
 
 `SESSION_ID` identifies one conversation: generate a new ID when a new conversation starts, and reuse that ID only for further messages of the same conversation; never share one ID across conversations or users. Each run of the example below starts one new conversation.
 
-Adapted (not in the official docs): the fixed `const sessionId = 'session-name';` is replaced with `const sessionId = randomUUID();` (with `import {randomUUID} from 'node:crypto';`), so each run starts its own session instead of every run sharing one, as the source's Java and Python `BidiRunSession` samples do with `UUID.randomUUID().toString()` and `str(uuid.uuid4())`; and the first `config` message also sets `deployment` to the API access channel's deployment (`${appResourceName}/deployments/DEPLOYMENT_ID`), as the source's Go `BidiRunSession` sample does, so the session uses the version and channel-specific settings of the deployment you created; and the location `us`, written twice in the source (in the app resource name and at the end of the WebSocket path), is defined once as `const location = 'us';` and used in both, so the WebSocket endpoint and the app, session and deployment always name the same location, as the source's Go `BidiRunSession` sample does with its `-location` flag (`"/ws/google.cloud.ces.v1.SessionService/BidiRunSession/locations/" + *location`); and instead of closing after a fixed 10 seconds, the client sends the second query after the first turn completes, exits normally after the second turn completes (`sessionOutput.turnCompleted`) and logs an error with a non-zero exit code on a credentials failure, a 60-second timeout, an early close, or an `endSession` (top level or in `sessionOutput`) before the second turn completes.
+Adapted (not in the official docs): the fixed `const sessionId = 'session-name';` is replaced with `const sessionId = randomUUID();` (with `import {randomUUID} from 'node:crypto';`), so each run starts its own session instead of every run sharing one, as the source's Java and Python `BidiRunSession` samples do with `UUID.randomUUID().toString()` and `str(uuid.uuid4())`; and the first `config` message also sets `deployment` to the API access channel's deployment (`${appResourceName}/deployments/DEPLOYMENT_ID`), as the source's Go `BidiRunSession` sample does, so the session uses the version and channel-specific settings of the deployment you created; and the location `us`, written twice in the source (in the app resource name and at the end of the WebSocket path), is defined once as `const location = 'us';` and used in both, so the WebSocket endpoint and the app, session and deployment always name the same location, as the source's Go `BidiRunSession` sample does with its `-location` flag (`"/ws/google.cloud.ces.v1.SessionService/BidiRunSession/locations/" + *location`); and instead of closing after a fixed 10 seconds, the client sends the second query after the first turn completes, exits normally after the second turn completes (`sessionOutput.turnCompleted`) and logs an error with a non-zero exit code on a credentials failure, a 60-second timeout, an early close, or an `endSession` (top level or in `sessionOutput`) before the second turn completes; and the query and received-message logs print only the query number, the message size and turn completion instead of the full text.
 
 ```javascript
 import {randomUUID} from 'node:crypto';
@@ -139,7 +139,7 @@ async function main() {
         realtimeInput: {text: query},
       };
       const queryJson = JSON.stringify(queryMessage);
-      console.log(`Sending query: ${queryJson}`);
+      console.log('Sending query 1');
       ws.send(queryJson);
     } catch (e) {
       console.error(`Error during on_open: ${e}`);
@@ -163,8 +163,7 @@ async function main() {
       () => finish(false, 'Timed out before the last turn completed'), 60000);
 
   ws.on('message', message => {
-    console.log('===============');
-    console.log(`Received message: ${message}`);
+    console.log(`Received message (${message.length} bytes)`);
     let msg;
     try {
       msg = JSON.parse(message);
@@ -174,6 +173,7 @@ async function main() {
     const out = msg.sessionOutput || {};
     if (out.turnCompleted) {
       turns += 1;
+      console.log(`Turn ${turns} completed`);
     }
     if (msg.endSession || out.endSession || turns === 2) {
       if (turns === 2) {
@@ -187,7 +187,7 @@ async function main() {
         realtimeInput: {text: query2},
       };
       const queryJson2 = JSON.stringify(queryMessage2);
-      console.log(`Sending query 2: ${queryJson2}`);
+      console.log('Sending query 2');
       ws.send(queryJson2);
     }
   });
@@ -240,7 +240,7 @@ If you use `ces.us.rep.googleapis.com` or `ces.eu.rep.googleapis.com`, you don't
 - Corrected from the official docs: the Node.js `BidiRunSession` sample writes the location twice, as `'projects/project-name/locations/us/apps/app-name'` and `'wss://ces.googleapis.com/ws/google.cloud.ces.v1.SessionService/BidiRunSession/locations/us'`, so changing only the app resource name to another location (for example `eu`) leaves the WebSocket endpoint at `us`. Its session ID is generated per run (see the next line); to continue an existing conversation, pass that conversation's stored ID instead of generating a new one.
 - Corrected from the official docs: the Node.js `BidiRunSession` sample's first message is `config: {session: sessionName},` with no deployment, so it does not select the API access channel created above. `SessionConfig` in the Discovery document (`ces.v1`, `ces.v1beta`) defines `deployment` ("Optional. The deployment of the app to use for the session. Format: `projects/{project}/locations/{location}/apps/{app}/deployments/{deployment}`"), and the source's Go `BidiRunSession` sample sends `"deployment": *deployment` in its config message; the page adds `deployment` with `DEPLOYMENT_ID` from the channel dialog. The REST `runSession` body above already sets `config.deployment`.
 - Corrected from the official docs: the Node.js `BidiRunSession` sample hard-codes `const sessionId = 'session-name';`, so every run and every conversation would use the same session. The source's Java and Python `BidiRunSession` samples also start from a fixed value (`String sessionId = "session-name";`, `session_id = "session_name"`) but generate `UUID.randomUUID().toString()` / `str(uuid.uuid4())` when it is empty; the page uses `randomUUID()` from the Node.js `node:crypto` module. A UUID matches the `SESSION_ID` pattern `[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}`. It authenticates through Application Default Credentials (`GoogleAuth`).
-- Logging: the Node.js `BidiRunSession` sample prints the config, both queries (``console.log(`Sending query: ${queryJson}`)``) and every received message (``console.log(`Received message: ${message}`)``). Use these prints only for local debugging with test data; in a deployed client that handles real user conversations, log metadata (session ID, connection open / close, error codes) and not the conversation text, which can contain personal data.
+- Logging: the Node.js `BidiRunSession` sample prints the config, both queries (``console.log(`Sending query: ${queryJson}`)``) and every received message (``console.log(`Received message: ${message}`)``). The page logs metadata instead, because conversation text can contain personal data.
 - The sample `curl` command uses user credentials from `gcloud`; use a service account for production (see the CX Agent Studio authentication page).
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/deploy/api-access (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
