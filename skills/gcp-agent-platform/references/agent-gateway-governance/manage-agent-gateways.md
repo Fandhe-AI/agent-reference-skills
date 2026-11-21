@@ -33,7 +33,9 @@ gcloud network-services agent-gateways export AGENT_GATEWAY_NAME \
  --project=PROJECT_ID
 ```
 
-In the exported file keep `protocols`, `googleManaged.governedAccessPath` (it cannot be changed after the gateway is created; the example below shows an Agent-to-Anywhere gateway, so keep the exported value such as `CLIENT_TO_AGENT` for other gateways), `registries`, `description` and `labels`, remove output-only fields (`createTime`, `updateTime`, `agentGatewayCard`, `selfLink`), and point `agentConnectivityTemplate` at the new template (project number, not project ID):
+In the exported file keep `protocols`, `googleManaged.governedAccessPath` (it cannot be changed after the gateway is created; the example below shows an Agent-to-Anywhere gateway, so keep the exported value such as `CLIENT_TO_AGENT` for other gateways), `registries` (unchanged, as exported), `description` and `labels`, remove output-only fields (`createTime`, `updateTime`, `agentGatewayCard`, `selfLink`), and point `agentConnectivityTemplate` at the new template (project number, not project ID; this applies to `agentConnectivityTemplate` only):
+
+Adapted (not in the official docs): the `registries` entry is the placeholder `AGENT_REGISTRY_PATH` (as in set-up-agent-gateway.md) for the exported value, instead of a URI rebuilt with `PROJECT_NUMBER` (Notes).
 
 ```yaml
 name: projects/PROJECT_NUMBER/locations/LOCATION/agentGateways/AGENT_GATEWAY_NAME
@@ -42,7 +44,7 @@ protocols:
 googleManaged:
   governedAccessPath: AGENT_TO_ANYWHERE
 registries:
-  - //agentregistry.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION
+  - AGENT_REGISTRY_PATH
 agentConnectivityTemplate: projects/PROJECT_NUMBER/locations/LOCATION/agentConnectivityTemplates/NEW_TEMPLATE_NAME
 ```
 
@@ -218,6 +220,7 @@ gcloud network-services agent-connectivity-templates delete CONNECTIVITY_TEMPLAT
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/manage-agent-gateways (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the source lists `TelemetryPolicy` as a deletion blocker but gives no steps; the `TelemetryPolicy` commands come from the gcloud 593.0.0 help of `gcloud beta network-services telemetry-policies` (`list`, `export`, `import`, `delete`; the group is beta and alpha only), and `telemetryTarget.resources` is `TelemetryTarget.resources` in the Network Services API `networkservices.v1beta1` Discovery document. Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/monitor-agent-gateway (retrieved 2026-11-21).
 - CLI tracks (gcloud 593.0.0 help): `service-extensions authz-extensions` and `network-security authz-policies` (`list`, `describe`, `import`, `delete`) are GA (networkservices / networksecurity `v1`) as well as beta, so the GA commands from the source are kept; set-up-agent-gateway.md imports the extension with `gcloud beta` as its source does, and the `AuthzExtension` fields are the same in `networkservices` `v1` and `v1beta1` (Discovery). `network-services telemetry-policies` exists only in beta and alpha.
+- Adapted from the official docs: the update example wrote `- //agentregistry.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION` under `registries`, while the source explains `PROJECT_NUMBER` only for `agentConnectivityTemplate` ("requires the project number rather than the project ID"), the set-up examples use `PROJECT_ID` there, and the Discovery document (`networkservices.v1`, `AgentGateway.registries`) gives the format `//agentregistry.googleapis.com/projects/{project}/locations/{location}/`.
 
 ## Related
 

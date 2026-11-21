@@ -224,6 +224,17 @@ async for event in app.async_stream_query(
     print(event)
 ```
 
+Adapted (not in the official docs): the source's follow-up answer for when the agent asks for the preferred temperature, sent in the same session so the preference is in it; `initial_session["id"]` as above.
+
+```python
+async for event in app.async_stream_query(
+    user_id="USER_ID",
+    session_id=initial_session["id"],
+    message="I like it at 71 degrees",
+):
+    print(event)
+```
+
 Adapted (not in the official docs): after the stream is consumed, the session is read again with `async_get_session` and that latest session is passed, instead of `initial_session` from before the conversation.
 
 ```python
@@ -257,7 +268,7 @@ print(response)
 - With a custom in-memory session or memory service, state might not stay in sync after deployment to Agent Runtime; the source only recommends customizing if you can synchronize state across instances in a deployed environment.
 - Write tool docstrings that fully describe parameters, behavior and return values; the model uses them to choose a function. Test functions locally first. The tool calls an external API with a fixed URL (Frankfurter).
 - Corrected from the official docs: the source writes `session_id=SESSION_ID, # Optional.` and `session_id=initial_session.id,`.
-- The source's follow-up examples also read `session.id` / `initial_session.id` from the dictionary returned by `async_create_session`; those blocks are not reproduced.
+- The source's follow-up examples also read `session.id` / `initial_session.id` from the dictionary returned by `async_create_session`; of those, only the Memories answer `message="I like it at 71 degrees"` is reproduced, with `initial_session["id"]`.
 - The top-level `await` / `async for` statements run in a notebook; in a plain Python script, put them inside an `async def` function and run it with `asyncio.run(...)`.
 - The source's memory test creates `new_session` but then queries with `session_id=initial_session.id`; that walkthrough block is not reproduced here.
 - The source also shows sample response dictionaries and the rest of the memory test walkthrough (the follow-up message and the new-session test), which are omitted.
