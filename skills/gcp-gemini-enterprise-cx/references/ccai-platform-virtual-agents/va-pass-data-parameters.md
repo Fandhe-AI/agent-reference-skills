@@ -105,7 +105,7 @@ Secured data (signed using JWT):
 }
 ```
 
-Second part of the same source block, shown directly after the request body:
+Second part of the same source block, shown directly after the request body. Its `exp` (`1734567890`) and `iat` (`1734560000`) are fixed example values from late 2024, so a payload signed with them is already expired. When signing, your server sets `iat` to the current Unix time and a short `exp` itself, never values taken from the client. The official docs do not say how to set them for custom data; the CCAI Platform SDK authentication docs set them on the server at signing time: the SDK end user authentication example uses `payload["iat"] = Time.now.to_i` and `payload["exp"] = Time.now.to_i + 10.minutes # Valid for 10 minutes`, and the web SDK v3 Express example uses `'iat': now` and `'exp': now + 3600`.
 
 ```json
 {
@@ -131,20 +131,14 @@ Second part of the same source block, shown directly after the request body:
 }
 ```
 
-Unsecured data. Verification status must not come from unsigned data: your server decides whether the end user is verified from its own authenticated session and sends `reserved_verified_customer` only in signed data, and authorization decisions in the virtual agent must use that server-verified state, never a value from an unsigned request (this rule is not stated in the official docs).
+Unsecured data. Unsigned data should carry only non-sensitive fields, such as display values: your server decides from its own authenticated session and records whether the end user is verified, a bad actor or a repeat customer, and sends the `reserved_verified_customer`, `reserved_bad_actor` and `reserved_repeat_customer` keys only in signed data. Routing, fraud and verification decisions in the virtual agent must use values your server signed (the signed example above) or verified itself, never a value from an unsigned request (this rule is not stated in the official docs).
 
-Adapted (not in the official docs): removed the `reserved_verified_customer` entry from the unsigned example, because unsigned data is a claim from the caller and must not carry a verification status; every other field is as the source writes it.
+Adapted (not in the official docs): removed the `reserved_verified_customer`, `reserved_bad_actor` and `reserved_repeat_customer` entries from the unsigned example, because unsigned data is a claim from the caller and must not carry verification, fraud or customer-status flags; the `field1` and `field2` entries are as the source writes them.
 
 ```json
 {
   "signed": false,
   "data": {
-    "reserved_bad_actor": {
-      "value": false
-    },
-    "reserved_repeat_customer": {
-      "value": true
-    },
     "field1": {
       "value": "dummy1"
     },
@@ -174,7 +168,10 @@ Adapted (not in the official docs): removed the `reserved_verified_customer` ent
 - Data parameters that contain metadata can only be passed to virtual agents, not to outbound SIP headers.
 - The web SDK block is tagged `text` because it contains a `[...]` elision.
 - The signed-data request body and the claims object are two consecutive parts of one source block; the source does not label them further.
-- Corrected from the official docs: the source's unsigned example (`"signed": false`) starts its `data` object with `"reserved_verified_customer": { "value": true },`. Unsigned data is sent with only the Apps API key, and the custom data is merged with the chat's existing data and passed to the virtual agent, so an unsigned `reserved_verified_customer` value would be a claim from the caller under the same key as a verified state. The page removes that entry; the source does not say which keys must be signed.
+- Corrected from the official docs: the source's unsigned example (`"signed": false`) starts its `data` object with `"reserved_verified_customer": { "value": true },`, `"reserved_bad_actor": { "value": false },` and `"reserved_repeat_customer": { "value": true },`, the same reserved keys as the signed example. Unsigned data is sent with only the Apps API key, and the custom data is merged with the chat's existing data and passed to the virtual agent, so unsigned values for these keys would be claims from the caller under the same keys as server-signed states. The page removes the three entries and keeps `field1` and `field2`; the source does not say which keys must be signed.
+- The signed example's `exp` / `iat` values are kept as the source writes them; they are example values, explained before the block.
+- Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/sdk-end-user-auth (retrieved 2026-11-21; server-side `iat` / `exp` in the signing example)
+- Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/web-sdk-v3-authenticate (retrieved 2026-11-21; server-side `iat` / `exp` in the Express example)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/va-pass-data-parameters (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
