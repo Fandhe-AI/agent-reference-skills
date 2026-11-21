@@ -10,7 +10,7 @@ user-invocable: false
 Google Cloud (GCP) の検索・アンサー生成・社内エージェント基盤スキル。Agent Search（旧 Vertex AI Search。API は引き続き Discovery Engine、`discoveryengine.googleapis.com`）と Gemini Enterprise（旧 Agentspace）を扱う。
 
 - Agent Search: app（engine）・data store・取り込み（website / 非構造化 / 構造化 / FHIR）・スキーマ・parse と chunk・ドメイン検証・search / `searchLite`・filter・boost・`streamAnswer`・check grounding・`summarySpec`・snippets・ranking API・custom ranking・serving controls・user events・autocomplete・CMEK・データソースのアクセス制御・VPC Service Controls・Organization Policy
-- Gemini Enterprise: エディションとライセンス・app 作成・Assistant 設定・コネクタと data store（Cloud Storage・BigQuery・Knowledge Catalog・custom MCP server）・ADK / A2A agent の登録と共有・`streamAssist` による agent 呼び出し・Agent Registry からの取り込み・app 単位の IAM policy・identity provider（Workforce Identity Federation）
+- Gemini Enterprise: エディションとライセンス・app 作成・Assistant 設定・コネクタと data store（Cloud Storage・BigQuery・Knowledge Catalog・custom MCP server）・ADK / A2A agent の登録と共有・`streamAssist` による agent 呼び出し（登録した ADK / A2A agent は非対応）・Agent Registry からの取り込み・app 単位の IAM policy・identity provider（Workforce Identity Federation）
 - 機械生成: REST（Discovery）`discoveryengine` 1 API、メッセージスキーマ 1688 件、IAM（`roles/discoveryengine.*`）
 
 参照本文は英語（公式ドキュメントの原語）。**gcloud のグループはこれらのプロダクトに無い**ため本スキルは gcloud のカテゴリを持たず、手順の正は REST・クライアントライブラリ・コンソール（`gcloud auth print-access-token` は REST 呼び出しの bearer token を得るためだけに使う）。
@@ -62,7 +62,7 @@ skills/gcp-agent-search/
 | `streamAnswer` による生成回答・check grounding・検索の要約（`summarySpec`）・snippets・extractive content | answers-summaries | [references/answers-summaries/README.md](references/answers-summaries/README.md) |
 | agentic retrieval のストリーミング・回答生成モデルのバージョン・safety settings と fallback | answers-summaries | [references/answers-summaries/README.md](references/answers-summaries/README.md) |
 | ADK agent・A2A agent の登録と管理・Agent Registry からの取り込み・agent の共有と所有権の移転 | gemini-enterprise-agents-admin | [references/gemini-enterprise-agents-admin/README.md](references/gemini-enterprise-agents-admin/README.md) |
-| `streamAssist` での agent 呼び出し・app 単位の IAM policy（`getIamPolicy` / `setIamPolicy`） | gemini-enterprise-agents-admin | [references/gemini-enterprise-agents-admin/README.md](references/gemini-enterprise-agents-admin/README.md) |
+| `streamAssist` での agent 呼び出し（Core Assistant・Deep Research・Workflow Builder の chat agent / workflow。登録した ADK / A2A agent は非対応）・app 単位の IAM policy（`getIamPolicy` / `setIamPolicy`） | gemini-enterprise-agents-admin | [references/gemini-enterprise-agents-admin/README.md](references/gemini-enterprise-agents-admin/README.md) |
 
 後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access` / `gemini-enterprise-overview-apps` / `gemini-enterprise-connectors-data-stores`。収録済みのページは各カテゴリの README.md の索引で確認する
 

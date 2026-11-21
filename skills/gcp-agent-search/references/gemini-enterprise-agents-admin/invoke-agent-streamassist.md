@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-stream
 
 # Invoke a registered agent with streamAssist
 
-To call a specific registered agent of a Gemini Enterprise app (formerly Agentspace), supply the optional `agentsSpec` field in a `streamAssist` REST request or client library call. The assistant routes the query directly to that agent and preserves session context across turns. The agent list is served on `v1alpha`; the `streamAssist` call itself uses `v1`.
+To call a specific registered agent of a Gemini Enterprise app (formerly Agentspace), supply the optional `agentsSpec` field in a `streamAssist` REST request or client library call. The assistant routes the query directly to that agent and preserves session context across turns. The agent list is served on `v1alpha`; the `streamAssist` call itself uses `v1`. Supported agent types: Core Assistant, Deep Research, Workflow Builder chat agents (formerly low-code), and Workflow Builder workflows. The source states: "A2A or ADK agents registered to a Gemini Enterprise app are not supported through `streamAssist`." To call a registered A2A agent, use its registry A2A endpoint instead (https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-a2a).
 
 ## Signature / Usage
 

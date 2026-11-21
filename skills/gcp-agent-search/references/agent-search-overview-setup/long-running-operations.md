@@ -10,7 +10,7 @@ List, get, poll and cancel long-running operations (LRO) in Agent Search (former
 
 ### List long-running operations (REST)
 
-Call `operations.list`. `DATA_STORE_ID` is the ID of the data store created with your engine; in the console URL it appears after `engines/` and before `/data`.
+Call `operations.list`. `DATA_STORE_ID` is the ID of the data store created with your engine. Get it from the data store itself: in the console go to **AI Applications** > **Data Stores**, click the name of your data store and read the data store ID on its **Data** page, or take the last segment of the data store resource name (`.../dataStores/DATA_STORE_ID`). The segment after `engines/` in a console URL is the app (engine) ID, not the data store ID.
 
 ```bash
 curl -X GET \
@@ -241,6 +241,8 @@ def cancel_operation_sample(operation_name: str) -> None:
   - `operations.get` returns error `"code": 1`: The operation was cancelled (`CANCELLED` status code)
 - The record of an operation is kept for approximately 30 days after the operation finishes; you can't view or list an operation after that time.
 - Long running operations can't be filtered or paginated in Agent Search: when you call `operations.list` you can't use the `filter`, `pageSize` or `pageToken` fields. The Python list sample still has an `operations_filter` argument (default `None`); the source does not say how it interacts with this restriction.
+- Corrected from the official docs: the source says "`DATA_STORE_ID`: The ID of the Agent Search data store that was created with your engine. In the Google Cloud console URL, the data store ID appears after `engines/` and before `/data`." The `engines/` segment names the app (engine), and the app and its data store can have different IDs, while the request path is `dataStores/DATA_STORE_ID/operations`; the search app creation page of the same documentation set (create-engine-es, see Source) gets the data store ID from the console "In the Google Cloud console, go to the **AI Applications** page and in the navigation menu, click **Data Stores**." ... "On the **Data** page for your data store, get the data store ID." The page follows that procedure.
+- The Python samples are kept as written: they name the argument `search_engine_id` but put it in the `dataStores/` segment of the resource name (`.../collections/default_collection/dataStores/{search_engine_id}`), so pass the data store ID there, not the app (engine) ID.
 - The REST list call uses the data store resource (`.../dataStores/DATA_STORE_ID/operations`); the Python samples use `DocumentServiceClient` and Application Default Credentials.
 - Corrected from the official docs: the source writes `curl -X post` in the cancel example; changed to `curl -X POST` (the Discovery document `discoveryengine.v1` defines every `operations.cancel` method with `httpMethod` `POST`). The source tags the cancel response sample `bash`; it is tagged `json` here (the content is unchanged).
 - Corrected from the official docs: the source says "Stop the polling job (`Control+Z`) after the status shows `"done": true`." In a shell, `Control+Z` suspends the `while true` loop instead of ending it; the loop does not exit on its own when `"done": true` appears, so the page says to end it with `Ctrl+C`. Run it only against an operation you started yourself.
@@ -249,6 +251,7 @@ def cancel_operation_sample(operation_name: str) -> None:
 - Corrected from the official docs: the source's operations-list sample writes `"@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata",` with a trailing comma before the closing `}` of `metadata`; JSON does not allow trailing commas, so the comma is removed and the block is tagged `json`.
 - Corrected from the official docs: `poll_operation_sample(operation_name, limit=10)` ran `for _ in range(limit):` and then `return operation` without checking `limit`; `limit` must be a positive integer.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/long-running-operations (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 
