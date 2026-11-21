@@ -164,7 +164,10 @@ the array column `arr` from `T`.
 #### Subqueries in more places
 
 GoogleSQL supports subqueries in the `SELECT` list, `WHERE` clause, and
-anywhere else in the query that expects an expression. For example, consider the
+anywhere else in the query that expects an expression. (Some clauses take only constant
+expressions: for example, the `count` of `LIMIT` and the `skip_rows` of `OFFSET` are `INT64`
+constant expressions, see [`LIMIT` and `OFFSET` clause](../googlesql-syntax/query-syntax-3.md#limit-and-offset-clause),
+so a subquery that reads a table can't be used there. Added; see Notes.) For example, consider the
 following GoogleSQL query that computes the fraction of warm days in Seattle
 in 2015:
 
@@ -1470,7 +1473,7 @@ WHERE
 This function is equivalent to `TABLE_DATE_RANGE`, except that it fails with an error if any daily table in the sequence is missing.
 
 > [!NOTE]
-> **Note:** If you don't need the query to fail when tables are missing, use the simpler `_TABLE_SUFFIX` filter, as shown in the [`TABLE_DATE_RANGE` migration example](#the-table_date_range-function). That query still runs when only some of the daily tables are missing, but it can fail with an error if no table matches the wildcard (see the version with a `WITH` clause below). If the query must return a result even when no table exists, check the tables in `INFORMATION_SCHEMA.TABLES` in a separate statement first and branch on the result, as in the scripting example below (added; see Notes).
+> **Note:** If you don't need the query to fail when tables are missing, use the simpler `_TABLE_SUFFIX` filter, as shown in the [`TABLE_DATE_RANGE` migration example](#the-table_date_range-function). That query still runs when only some of the daily tables are missing, but it can fail with an error if no table matches the wildcard (see the version with a `WITH` clause below). If the query must return a result even when no table exists, check in a separate statement whether `INFORMATION_SCHEMA.TABLES` lists any of the daily tables, and run the `_TABLE_SUFFIX` query only when it does, returning `NULL` as the average otherwise. The scripting example below shows how to check the tables in a separate statement, but it raises an error when any daily table is missing, as `TABLE_DATE_RANGE_STRICT` does (added; see Notes).
 
 <br />
 
@@ -1815,7 +1818,8 @@ The permissions required to access the partition metadata differ between legacy 
 - Added (not in the official docs): the `x % y` row of the function comparison table maps the operator to `MOD(x, y)` without a remark; legacy-sql/legacy-sql-1.md says that an arithmetic operation that "evaluates to an undefined result" returns `NULL`, and googlesql-functions/mathematical_functions.md says for `MOD` that "An error is generated if Y is 0.", so a remark with `MOD(x, NULLIF(y, 0))` is added.
 - Added (not in the official docs): the `QUANTILES(x, boundaries)` row maps the function to `APPROX_QUANTILES(x, boundaries-1)`, but googlesql-functions/approximate_aggregate_functions.md says that the `number` argument is an "`INT64` literal or query parameter."; a remark that the value is passed as a literal or as a query parameter is added.
 - Changed from the official formatting: in the `SOME`, `EVERY`, `PARSE_IP` and `FORMAT_IP` rows of the function comparison table, the official page links function names inside the GoogleSQL expression; each expression is written as one code span and the links are moved to the remarks column, so that the code spans and the links don't overlap.
-- Added (not in the official docs): the note on `TABLE_DATE_RANGE_STRICT` recommends the simpler `_TABLE_SUFFIX` filter when the query need not fail for missing tables; a sentence is added that this query runs when only some daily tables are missing but can fail when no table matches the wildcard, as said for the version with a `WITH` clause, and that a separate statement that checks `INFORMATION_SCHEMA.TABLES` (the scripting example) returns a result in that case.
+- Added (not in the official docs): the note on `TABLE_DATE_RANGE_STRICT` recommends the simpler `_TABLE_SUFFIX` filter when the query need not fail for missing tables; a sentence is added that this query runs when only some daily tables are missing but can fail when no table matches the wildcard, as said for the version with a `WITH` clause, and that a separate statement that checks `INFORMATION_SCHEMA.TABLES` before the query can return `NULL` in that case; the scripting example checks the tables that way, but it raises an error for missing tables.
+- Added (not in the official docs): the text says that GoogleSQL supports subqueries "anywhere else in the query that expects an expression"; a sentence is added that some clauses take only constant expressions, such as the `count` of `LIMIT` and the `skip_rows` of `OFFSET` ("`INT64` constant expression", googlesql-syntax/query-syntax-3.md).
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
