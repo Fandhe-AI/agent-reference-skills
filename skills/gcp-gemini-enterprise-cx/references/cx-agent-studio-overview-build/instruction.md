@@ -160,6 +160,7 @@ Adapted (not in the official docs): the tool call `get_weather(location="London"
 
 ## Notes
 
+- Added (not in the official docs): `CURRENT CUSTOMER: {username}` shows the dynamic-variable syntax as the source writes it. If `username` holds text the user typed, that text reaches the model; see quick-create-agent.md for why this reference leaves the source's name-capture step out, and show user-supplied names in your own UI instead.
 - Channel conditions use `{@startChannel_API}` / `{@endChannel_API}` (or `{@startChannelAPI}`), `{@startChannel_GoogleTelephonyPlatform}` / `{@endChannel_GoogleTelephonyPlatform}` and `{@startChannel_WEB_UI}` / `{@endChannel_WEB_UI}` (or `{@startChannelWEB_UI}`); the full list of channel tags (`Twilio`, `Five9`, `AudioCodes`, `GoogleCCaaSVoice`, `GoogleCCaaSChat`, `WhatsApp`, `Instagram`) is on the modular components page.
 - Select the correct **Modality** setting in the deployment settings for modality conditions to apply.
 - Modular components: dynamic instructions let one instruction set behave like multiple agents per channel, modality or session variable using `if`/`elif`/`else`, filters, `for` loops and macros. Operators `!=`, `<`, `>`, `<=`, `>=`, `in`, `is defined`, filters `| default`, `| length`, `| upper` are described on the modular components page.

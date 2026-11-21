@@ -86,6 +86,7 @@ CURRENT CUSTOMER: {username}
 
 ## Notes
 
+- Added (not in the official docs): `CURRENT CUSTOMER: {username}` shows the dynamic-variable syntax as the source writes it. If `username` holds text the user typed, that text reaches the model; see quick-create-agent.md for why this reference leaves the source's name-capture step out, and show user-supplied names in your own UI instead.
 - Advantages over Dialogflow CX listed in the source: AI-augmented building, optimization and evaluation; a simple visual builder for non-technical teams and agent architects; handling of infrastructure, enterprise integrations, security and operations out of the box ("last mile"); natural conversational flow during truly async backend tool calls; ultra-low latency voice interactions through a bi-directional streaming architecture; integrated collaboration and versioning (granular changelogs, one-click rollbacks, conflict warnings).
 - AI-augmented features: create an agent with Gemini (generate agent details), restructure instructions (XML structure), refine instructions, and test case hill climbing for evaluations.
 - Legacy conversational agents are documented under Dialogflow CX and Dialogflow ES (https://docs.cloud.google.com/dialogflow/cx/docs, https://docs.cloud.google.com/dialogflow/es/docs).
