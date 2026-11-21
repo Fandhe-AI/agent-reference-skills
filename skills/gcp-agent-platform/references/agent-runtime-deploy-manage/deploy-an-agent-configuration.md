@@ -155,6 +155,8 @@ labels = {"author": "username", "version": "latest"}
 
 ### Agent identity and custom service account
 
+With `AGENT_IDENTITY`, do not set `service_account`, and create the client with `http_options=dict(api_version="v1beta1")` as on agent-identity-registry/agent-identity.md (not in the official docs; deploy-an-agent.md Notes).
+
 ```text
 identity_type=AGENT_IDENTITY
 ```
