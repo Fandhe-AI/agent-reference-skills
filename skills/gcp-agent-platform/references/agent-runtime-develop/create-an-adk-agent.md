@@ -42,6 +42,8 @@ generate_content_config = types.GenerateContentConfig(
 
 ### Create the app and test locally
 
+Every `AdkApp` on this page takes its project and location from the `vertexai.init` global configuration when it is created, not from `vertexai.Client` (not in the official docs): call `vertexai.init(project="PROJECT_ID", location="LOCATION")` first, and `unset GOOGLE_CLOUD_LOCATION` or set it to the same `LOCATION`; details in [quickstart-adk.md](./quickstart-adk.md).
+
 ```python
 from google.adk.agents import Agent
 from vertexai.agent_engines import AdkApp
