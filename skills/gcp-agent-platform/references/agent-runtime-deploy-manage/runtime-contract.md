@@ -1,0 +1,208 @@
+---
+source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/runtime-contract
+---
+
+# Agent Runtime Contract
+
+Agent Runtime is independent of the application framework. A custom container or Dockerfile deployment must adhere to this HTTP contract to serve queries: listen on `0.0.0.0:8080` and, to use the Python SDK or the console Playground, implement `/api/reasoning_engine` and `/api/stream_reasoning_engine`.
+
+## Signature / Usage
+
+### Example API server (Python, FastAPI)
+
+Requires `fastapi`, `uvicorn` and `pydantic`. Pin `fastapi==0.165.0`, the version this example was checked with, as the `requirements.txt` in [deploy-an-agent-containers.md](./deploy-an-agent-containers.md) does: older releases such as 0.115.0 have no `max_body_size` parameter but accept unknown keyword arguments in `**extra`, so `FastAPI(max_body_size=...)` starts there but does not enforce the limit. If you use another FastAPI version, enforce a request body size limit separately (for example in a reverse proxy in front of the server). It wraps an example `SimpleAgent`; replace it with your own agent, and list in `UNARY_METHODS` / `STREAM_METHODS` only the methods you register for each mode. The streaming endpoint iterates the result with `async for`, so this server works only with an asynchronous generator `stream_query` (as in `SimpleAgent`); a synchronous generator, such as the `stream_query` in create-a-custom-agent.md, is not handled.
+
+So the streaming endpoint as written covers only methods that are asynchronous generators (`api_mode` `"async_stream"`); list only those in `STREAM_METHODS`. A synchronous generator method (`api_mode` `"stream"`) comes back from `run_in_threadpool` as a synchronous iterator, and the `async for` in `json_generator` then raises `TypeError` after the response has started, so no chunks are returned. To serve such a method, the synchronous iterator has to be iterated in a thread pool, for example by passing it through `iterate_in_threadpool` (re-exported by `fastapi.concurrency` in fastapi 0.165.0, from Starlette) before `json_generator`; this is not in the official docs.
+
+Adapted (not in the official docs): added the `UNARY_METHODS` / `STREAM_METHODS` allowlists and a `400` response for any `class_method` not in the allowlist of the endpoint, checked before `getattr`, because the source passes the request's `class_method` straight to `getattr(agent, ...)`, so a request could call any attribute of the agent object (for example `__init__` or an internal helper); also added `_is_message_input` and a `400` response, checked before the method is invoked, for an `input` that is not `{"message": <string>}`, because both allowed methods take one string `message` and any other `input` raises `TypeError` (for streaming, after the response has started), and that also rejects a `message` that cannot be encoded as UTF-8 (such as a lone surrogate `"\ud800"`), which `JSONResponse` would fail to encode (HTTP 500); the unary and streaming `not allowed` messages show `class_method` with `!r` for the same reason; also, a synchronous method is run with `run_in_threadpool` (fastapi 0.165.0 `fastapi.concurrency`, re-exported from Starlette) instead of being called directly in the `async def` handler, which would block the event loop, and a chunk that cannot be encoded raises `RuntimeError` instead of `break`, so the stream ends with an error instead of looking complete, and `json.dumps` takes `allow_nan=False`, so a non-finite number such as `float("nan")` is such a chunk instead of an invalid `NaN` line; also added `MAX_MESSAGE_CHARS`, which rejects a longer `message` with `400`, `FastAPI(max_body_size=MAX_BODY_BYTES)`, which rejects a larger request body with `413` (both values are examples), and a `RequestValidationError` handler that returns `422` without echoing the rejected input.
+
+```python
+import inspect
+import json
+import logging
+import os
+import uvicorn
+from fastapi import FastAPI, encoders, responses
+from fastapi.concurrency import run_in_threadpool
+from fastapi.exceptions import RequestValidationError
+from pydantic import BaseModel
+
+MAX_MESSAGE_CHARS = 10_000  # example value
+MAX_BODY_BYTES = 256 * 1024  # example value
+
+app = FastAPI(max_body_size=MAX_BODY_BYTES)
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_handler(request, exc):
+    return responses.JSONResponse(status_code=422, content={"error": "invalid request body"})
+
+# Define the request body structure
+class QueryRequest(BaseModel):
+    input: dict | None = None
+    class_method: str
+
+# Example Agent implementation
+class SimpleAgent:
+    def query(self, message: str) -> str:
+        return f"Echo: {message}"
+
+    async def stream_query(self, message: str):
+        words = message.split()
+        for word in words:
+            yield {"output": word + " "}
+
+agent = SimpleAgent()
+
+UNARY_METHODS = {"query"}
+STREAM_METHODS = {"stream_query"}
+
+def _is_message_input(payload):
+    if not (
+        isinstance(payload, dict)
+        and set(payload) == {"message"}
+        and isinstance(payload["message"], str)
+        and len(payload["message"]) <= MAX_MESSAGE_CHARS
+    ):
+        return False
+    try:
+        payload["message"].encode("utf-8")
+    except UnicodeEncodeError:
+        return False
+    return True
+
+def _encode_chunk_to_json(chunk):
+    """Encodes a chunk to a JSON string with a newline."""
+    try:
+        json_chunk = encoders.jsonable_encoder(chunk)
+        return json.dumps(json_chunk, allow_nan=False) + "\n"
+    except Exception:
+        logging.exception("Failed to encode chunk")
+        return None
+
+async def json_generator(output):
+    async for chunk in output:
+        encoded_chunk = _encode_chunk_to_json(chunk)
+        if encoded_chunk is None:
+            raise RuntimeError("Failed to encode chunk")
+        yield encoded_chunk
+
+async def _invoke_callable_or_raise(invocation_callable, invocation_payload):
+    if inspect.iscoroutinefunction(invocation_callable):
+        return await invocation_callable(**invocation_payload)
+    else:
+        return await run_in_threadpool(invocation_callable, **invocation_payload)
+
+@app.get("/")
+def health_check():
+    """Health check endpoint for container readiness."""
+    return {"status": "ok"}
+
+@app.post("/api/reasoning_engine")
+async def query_endpoint(request: QueryRequest) -> responses.JSONResponse:
+    if request.class_method not in UNARY_METHODS:
+        return responses.JSONResponse(
+            status_code=400,
+            content={"error": f"Method {request.class_method!r} not allowed"}
+        )
+    try:
+        method = getattr(agent, request.class_method)
+    except AttributeError:
+        return responses.JSONResponse(
+            status_code=400,
+            content={"error": f"Method {request.class_method} not found on agent"}
+        )
+    if not _is_message_input(request.input):
+        return responses.JSONResponse(
+            status_code=400,
+            content={"error": 'input must be {"message": "<string>"}'}
+        )
+
+    output = await _invoke_callable_or_raise(method, request.input or {})
+
+    try:
+        json_serialized_content = encoders.jsonable_encoder({"output": output})
+    except ValueError as encoding_error:
+        logging.exception("Failed to JSON-encode response: %s", encoding_error)
+        raise encoding_error
+    return responses.JSONResponse(content=json_serialized_content)
+
+@app.post("/api/stream_reasoning_engine")
+async def stream_query_endpoint(request: QueryRequest) -> responses.StreamingResponse:
+    if request.class_method not in STREAM_METHODS:
+        return responses.StreamingResponse(
+            content=iter([json.dumps({"error": f"Method {request.class_method!r} not allowed"})]),
+            status_code=400,
+            media_type="application/json"
+        )
+    try:
+        method = getattr(agent, request.class_method)
+    except AttributeError:
+        return responses.StreamingResponse(
+            content=iter([json.dumps({"error": f"Method {request.class_method} not found"})]),
+            status_code=400,
+            media_type="application/json"
+        )
+    if not _is_message_input(request.input):
+        return responses.StreamingResponse(
+            content=iter([json.dumps({"error": 'input must be {"message": "<string>"}'})]),
+            status_code=400,
+            media_type="application/json"
+        )
+
+    output = await _invoke_callable_or_raise(method, request.input or {})
+    return responses.StreamingResponse(
+        content=json_generator(output),
+        media_type="application/json",
+    )
+
+@app.get("/is_busy")
+def keep_alive_endpoint() -> responses.JSONResponse:
+    """Optional keep-alive probe endpoint for background tasks."""
+    if getattr(agent, "has_active_background_tasks", False):
+        return responses.JSONResponse(status_code=200, content={"status": "busy"})
+    return responses.JSONResponse(status_code=412, content={"status": "idle"})
+
+if __name__ == "__main__":
+    # The container must listen on 0.0.0.0 and port 8080
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+```
+
+## Options / Props
+
+### Routing by `api_mode`
+
+| API Mode | Execution Type | Routing Endpoint |
+|---|---|---|
+| `""` (empty string) or `"async"` | Unary (Request-Response) | `/api/reasoning_engine` |
+| `"stream"` or `"async_stream"` | Streaming | `/api/stream_reasoning_engine` |
+
+## Notes
+
+- Request fields (both endpoints, HTTP `POST` with a JSON body):
+  - `class_method` (string): Method name of the underlying agent to invoke (for example `query` or `stream_query`).
+  - `input` (JSON object): Arguments passed to the class method.
+- Endpoints:
+  - `/api/reasoning_engine` (`reasoningEngines/query` REST API and the Python SDK's synchronous / asynchronous query methods): Body `{"class_method": "query", "input": {"message": "What is the capital of France?"}}`; returns a JSON object such as `{"output": "The capital of France is Paris."}`.
+  - `/api/stream_reasoning_engine` (`reasoningEngines/streamQuery` REST API and the SDK's streaming query methods; required for Playground): Body `{"class_method": "stream_query", "input": {"message": "Tell me a short story."}}`; returns line-delimited JSON (ndjson), each line a chunk such as `{"output": "Once"}`.
+  - `GET /` (an example path), for health probes: respond `200 OK` on `0.0.0.0:8080` to enable liveness / readiness probing.
+  - `GET http_get.path` (for example `/is_busy`), for the optional keep-alive probe: see the keep-alive bullet below.
+- Required methods for integration:
+  - SDK standard query: `query` (mode `""` or `"async"`) and `stream_query` (mode `"stream"` or `"async_stream"`)
+  - Playground: `stream_query` (mode `"stream"` or `"async_stream"`)
+- Flow: the client sends `POST /v1/projects/.../reasoningEngines/...:query` (or `:streamQuery`); the control plane forwards `POST /api/reasoning_engine` (or `/api/stream_reasoning_engine`) with a JSON envelope to the container on `0.0.0.0:8080`; the container returns `HTTP 200 OK` with a JSON envelope (or NDJSON chunks), which the control plane returns to the client (as SSE events for streaming).
+- Declare the supported class methods (`name` and `api_mode`) in the `classMethods` list of the deployment specification (`class_methods` in the SDK). The request body carries `class_method` (matching the method name) and `input`.
+- Both endpoints are optional at the API level; custom HTTP endpoints you expose can be called through the agent's underlying API.
+- Keep-alive probe (when `keep_alive_probe` is configured): `GET` on `http_get.path` on `http_get.port` (default `8080`), polled every 10 seconds with a 1-second request timeout while the instance is idle. Any `200`-`299` response (for example `{"status": "busy"}`) means busy and prevents idle scale-down until `max_seconds` (maximum `3600` seconds) after the last request completes. A non-`2xx` response (for example `412 Precondition Failed` or `503 Service Unavailable`, with `{"status": "idle"}`) or timing out for 3 consecutive probes makes the idle instance eligible for scale-down; a failing probe doesn't terminate active request processing.
+- ADK: to support the full ADK feature set a proxy container must implement the methods defined by the ADK contract (see "Use an ADK agent"); the `AdkApp` template is a reference implementation. To have Google handle updates when you update ADK, use ADK's own deployment tooling instead of writing your own API server.
+- Adapted from the official docs: the source's endpoints call `method = getattr(agent, request.class_method)` for any requested name; the example above first rejects names outside `UNARY_METHODS` (`/api/reasoning_engine`) or `STREAM_METHODS` (`/api/stream_reasoning_engine`) with `400`. It also rejects with `400`, before invoking the method, an `input` that is not an object whose only key is `message` with a string value (the signature of `SimpleAgent.query` / `stream_query`); the source passes `request.input or {}` unchecked. Keep these sets equal to the methods declared in `classMethods` for each `api_mode`, and change the input check when your methods take other arguments. A `message` that cannot be encoded as UTF-8 is rejected the same way: Starlette 1.10.0 `JSONResponse.render` encodes with `json.dumps(..., ensure_ascii=False).encode("utf-8")`, so a lone surrogate such as `"\ud800"` (accepted by the JSON decoder) raised `UnicodeEncodeError` and HTTP 500; checked with fastapi 0.165.0 `TestClient` (`{"message": "\ud800"}` 400, `{"message": "hi"}` 200). The example also bounds the input before the agent is called: a `message` longer than `MAX_MESSAGE_CHARS` gets the same `400`, and `FastAPI(max_body_size=MAX_BODY_BYTES)` answers `413`. In fastapi 0.165.0 this wraps the app in Starlette 1.10.0 `RequestBodyLimitMiddleware` (`starlette/middleware/body_limit.py`), which rejects a declared `Content-Length` above the limit before reading the body and otherwise counts the bytes received, so a chunked body without `Content-Length` is also limited. Both limits are example values; the source states no request size limit for these endpoints. Checked with `TestClient` on both endpoints: a `message` of exactly `MAX_MESSAGE_CHARS` characters 200 (also sent chunked), one more 400, a body above `MAX_BODY_BYTES` 413 with `Content-Length` and chunked.
+- Adapted from the official docs: FastAPI's default handler for `RequestValidationError` (`fastapi/exception_handlers.py` in 0.165.0) returns `422` with `{"detail": jsonable_encoder(exc.errors())}`, and the errors include the rejected `input`. For a body such as `{"class_method": "query", "input": "\ud800"}` (a string, not an object), encoding that response raised `UnicodeEncodeError` and HTTP 500 on both endpoints. The `validation_error_handler` above returns a fixed `{"error": "invalid request body"}` with `422` instead (checked: that body, a missing `class_method` and malformed JSON all 422 on both endpoints).
+- The request-flow sequence diagram (iframe) is omitted; its text description is summarized above. The JSON request / response bodies in the source are inline code only, so they are in the Endpoints bullets instead of fenced blocks.
+- Corrected from the official docs: `_invoke_callable_or_raise` called a synchronous method directly (`return invocation_callable(**invocation_payload)`) inside the `async def` handlers, and `json_generator` ended the stream with `break` when `_encode_chunk_to_json` returned `None`. Raising inside the generator aborts the HTTP response after it has started, so the client sees an incomplete stream rather than a normal end; the source defines no error chunk format for the stream.
+- Adapted from the official docs: the source's `_encode_chunk_to_json` calls `json.dumps(json_chunk)`, which writes `NaN` / `Infinity` for non-finite floats (not valid JSON for a standard parser); Starlette 1.10.0 `JSONResponse.render` already uses `allow_nan=False` for the unary endpoint. With `allow_nan=False` the `ValueError` is caught by the `except Exception` in `_encode_chunk_to_json`, which returns `None`, and `json_generator` then raises `RuntimeError`. The `200` response has already started, so the server closes the connection without the final chunk and the client sees a cut-off stream, not a normal end: checked over HTTP with uvicorn 0.54.0 and httpx 0.28.1, with an agent that yields `{"output": float("nan")}` between two other chunks (status `200`, only `{"output": "ok"}` arrives, then httpx raises `RemoteProtocolError` "peer closed connection without sending complete message body (incomplete chunked read)"; without the change all three chunks are sent, including `{"output": NaN}`). Version check for the note above the example: fastapi 0.165.0 raises `TypeError` for an unknown keyword argument; 0.115.0 stores it in `self.extra`.
+- Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/runtime-contract (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+
+## Related
+
+- [deploy-an-agent.md](./deploy-an-agent.md)
+- [deploy-an-agent-containers.md](./deploy-an-agent-containers.md)
+- [use-an-agent.md](./use-an-agent.md)

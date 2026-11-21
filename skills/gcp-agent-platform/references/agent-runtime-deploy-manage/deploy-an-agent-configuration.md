@@ -1,0 +1,274 @@
+---
+source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent
+---
+
+# Agent Runtime Deployment Configuration
+
+Optional `config` fields for `client.runtimes.create` / `client.runtimes.update` when deploying to Agent Runtime: package requirements, extra packages, environment variables and secrets, resource controls (Preview), keep-alive probe (Preview), build options, framework, identity, Private Service Connect interface and CMEK.
+
+## Signature / Usage
+
+The `client.runtimes.create` / `client.runtimes.update` examples on this page that pass `agent=local_agent` (an agent-object deployment) show only the fields of their topic. Their `config` also needs `"staging_bucket": "gs://BUCKET_NAME"`: google-cloud-agentplatform 2.10.0 raises `ValueError` ("Please provide a `staging_bucket` in `client.runtimes.create(...)`.") for an agent object without it, as described in [deploy-an-agent.md](./deploy-an-agent.md).
+
+### Package requirements
+
+Pin versions for reproducible builds (track `google-cloud-aiplatform`, `cloudpickle`, `langchain`, `langchain-core`, `langchain-google-vertexai`, `pydantic`) and keep dependencies minimal. For deployments from source files use a `requirements.txt` in the package (`requirements_file`) instead of `requirements`.
+
+```python
+requirements = [
+    "google-cloud-aiplatform[agent_engines,adk]",
+    # any other dependencies
+]
+```
+
+```python
+requirements = [
+    # See https://pypi.org/project/google-cloud-aiplatform for the latest version.
+    "google-cloud-aiplatform[agent_engines,adk]==1.112.0",
+]
+```
+
+### Extra packages (agent-object deployments only)
+
+```python
+extra_packages = ["agents"] # directory that includes agents/agent.py
+```
+
+### Environment variables and secrets
+
+```python
+env_vars = {
+  "VARIABLE_1": "VALUE_1",
+  "VARIABLE_2": "VALUE_2",
+}
+# These environment variables will become available in Agent Platform
+# through `os.environ`, e.g.
+#
+#   import os
+#   os.environ["VARIABLE_1"] # will have the value "VALUE_1"
+#
+# and
+#
+#   os.environ["VARIABLE_2"] # will have the value "VALUE_2"
+#
+```
+
+Reference a Secret Manager secret (same project as the agent only):
+
+```text
+env_vars = {
+  # ... (other environment variables and their values)
+  "CLOUD_SQL_CREDENTIALS_SECRET": {"secret": SECRET_ID, "version": SECRET_VERSION_ID},
+}
+```
+
+In your agent code (a fragment from inside a function, so it is shown as `text`; it uses `os` and `json`):
+
+```text
+secret = os.environ.get("CLOUD_SQL_CREDENTIALS_SECRET")
+if secret:
+  # Secrets are stored as strings, so use json.loads to parse JSON
+  # payloads.
+  return json.loads(secret)
+```
+
+### Resource controls (Preview)
+
+```text
+remote_agent = client.runtimes.create(
+    agent=local_agent,
+    config={
+        "min_instances": 1,
+        "max_instances": 10,
+        "resource_limits": {"cpu": "4", "memory": "8Gi"},
+        "container_concurrency": 9,
+        # ... other configs
+    }
+)
+```
+
+### Keep-alive probe (Preview)
+
+Custom container or Dockerfile deployment. The example is the Dockerfile form; for a prebuilt container image, replace `"source_packages"` and `"image_spec"` with `"container_spec": {"image_uri": "CONTAINER_IMAGE_URI"}` (as in [deploy-an-agent-containers.md](./deploy-an-agent-containers.md)) and keep `"keep_alive_probe"`. The comment in the example says `"image_uri"`, but in google-cloud-aiplatform 2.10.0 `image_uri` is a field of `container_spec` (`ReasoningEngineSpecContainerSpec`), not of `config`:
+
+Adapted (not in the official docs): removed the comment `# or set "image_uri" when deploying a prebuilt container image` after `"image_spec": {},`; `image_uri` belongs in `container_spec`, as the sentence above says.
+
+```text
+remote_agent = client.runtimes.create(
+    config={
+        "source_packages": ["agent.py", "main.py", "requirements.txt", "Dockerfile"],
+        "image_spec": {},
+        "keep_alive_probe": {
+            "http_get": {
+                "path": "/is_busy",
+                "port": 8080,
+            },
+            "max_seconds": 3600,
+        },
+        # ... other configs
+    }
+)
+```
+
+Managed ADK agent (`AdkApp`, `agent_framework="google-adk"`). Only `AdkApp` supports the default probe. In this agent-object example, `agent_framework` is detected from the object (`AdkApp` sets the class attribute `agent_framework = "google-adk"` in google-cloud-aiplatform 2.10.0 and google-cloud-agentplatform 2.10.0). When the agent is not passed as an object, set `"agent_framework": "google-adk"` in `config` explicitly, because for source files it "defaults to `custom`" (not in the official docs for this example): `requirements` must install the package that provides the deployed object's class: for `vertexai.agent_engines.AdkApp`, `google-cloud-aiplatform[agent_engines,adk]` (as here); for `agentplatform.frameworks.AdkApp`, `google-cloud-agentplatform[adk,agent_engines]` (in the 2.10.0 metadata the `adk` extra requires `google-cloud-agentplatform[agent_engines]` and `google-adk<3.0.0,>=1.27.0`; the source's agent identity example writes `[adk,runtimes]`, an extra 2.10.0 does not declare). The google-cloud-aiplatform 2.10.0 wheel also contains the `agentplatform` package (`agentplatform/frameworks/adk.py` has the same sha256 in the RECORD of both wheels), so the requirement shown also provides `agentplatform.frameworks.AdkApp` at that version. List only one of the two distributions, because both install the same `agentplatform/` files (see setup.md in the agent-runtime-develop category), and pin the version you deploy with.
+
+```text
+remote_agent = client.runtimes.create(
+    agent=local_agent,
+    config={
+        "requirements": ["google-cloud-aiplatform[agent_engines,adk]"],
+        "keep_alive_probe": {},
+        # ... other configs
+    }
+)
+```
+
+### Build options
+
+Place scripts in an `installation_scripts` directory (run with root permissions while building the image):
+
+```text
+.
+├── ...
+└── installation_scripts/
+    └── install.sh
+```
+
+```text
+extra_packages = [..., "installation_scripts/install.sh"]
+build_options = {"installation_scripts": ["installation_scripts/install.sh"]}
+```
+
+### Agent framework, display name, description, labels
+
+```python
+agent_framework = "google-adk"
+```
+
+```python
+display_name = "Currency Exchange Rate Agent (Staging)"
+```
+
+```python
+labels = {"author": "username", "version": "latest"}
+```
+
+### Agent identity and custom service account
+
+With `AGENT_IDENTITY`, do not set `service_account`, and create the client with `http_options=dict(api_version="v1beta1")` as on agent-identity-registry/agent-identity.md (not in the official docs; deploy-an-agent.md Notes).
+
+```text
+identity_type=AGENT_IDENTITY
+```
+
+Specify only the service account email, not the full resource URI:
+
+Both calls below pass an agent object, so their `config` also needs `"staging_bucket": "gs://BUCKET_NAME"`, as the first paragraph of Signature / Usage says: in google-cloud-agentplatform 2.10.0, `create` and `update` both build their config with `_create_config`, which calls `_set_package_spec` for an agent object, and `_validate_staging_bucket_or_raise` (`agentplatform/_genai/_runtimes_utils.py`) raises `ValueError` ("Please provide a `staging_bucket` in `client.runtimes.create(...)`.") when it is missing.
+
+Adapted (not in the official docs): the update takes the resource name from the created instance (`remote_agent.api_resource.name`; `Runtime.api_resource` in google-cloud-agentplatform 2.10.0) instead of a plain string with `{project_id}`-style placeholders, which Python does not fill in.
+
+```text
+# Create a new instance
+remote_agent = client.runtimes.create(
+    agent=local_agent,
+    config={
+        "service_account": "my-custom-service-account@my-project.iam.gserviceaccount.com",
+        # ...
+    },
+)
+
+# Update an existing instance
+resource_name = remote_agent.api_resource.name
+client.runtimes.update(
+    name=resource_name,
+    agent=local_agent,
+    config={
+        "service_account": "my-new-custom-service-account@my-project.iam.gserviceaccount.com",
+        # ...
+    },
+)
+```
+
+### Private Service Connect interface
+
+In this and the other `client.runtimes.create` / `client.runtimes.update` examples on this page, `client` is an `agentplatform.Client` (created as in [manage-deployed-agents.md](./manage-deployed-agents.md)) and `local_agent` is the agent object you built (see Create an agent, https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-agent); the official page does not define either.
+
+Adapted (not in the official docs): added `"staging_bucket": "gs://BUCKET_NAME",` to `config`, because this complete call deploys an agent object, which needs a staging bucket (see the first paragraph of this section).
+
+```python
+remote_agent = client.runtimes.create(
+    agent=local_agent,
+    config={
+        "staging_bucket": "gs://BUCKET_NAME",
+        "psc_interface_config": {
+            "network_attachment": "NETWORK_ATTACHMENT",
+            "dns_peering_configs": [
+                {
+                    "domain": "DOMAIN_SUFFIX",
+                    "target_project": "TARGET_PROJECT",
+                    "target_network": "TARGET_NETWORK",
+                },
+            ],
+        },
+    },
+)
+```
+
+### Customer-managed encryption keys (CMEK)
+
+Adapted (not in the official docs): the backticks around the placeholders inside the string are removed, because the key must have the format `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}` (Discovery document `aiplatform.v1`, `EncryptionSpec.kmsKeyName`).
+
+```text
+# The fully qualified key name
+kms_key_name = "projects/PROJECT_ID/locations/LOCATION/keyRings/KEY_RING/cryptoKeys/KEY_NAME"
+
+remote_agent = client.runtimes.create(
+    agent=local_agent,
+    config={
+        "encryption_spec": {"kms_key_name": kms_key_name},
+        # ... other parameters
+    },
+)
+```
+
+## Notes
+
+- Resource controls (Preview):
+  - `min_instances` (`[0, 75]`, default `1`): Minimum number of application instances kept running. While in Preview you aren't billed for idle time even with a higher minimum (billing behavior subject to change).
+  - `max_instances` (`[1, 1000]`, default `100`): Maximum instances for increased traffic. If VPC-SC or PSC-I is enabled the range is `[1, 100]` per Agent Platform resource.
+  - `resource_limits` (default `{"cpu": "4", "memory": "4Gi"}`): Only `cpu` and `memory` keys. `cpu` supports `1`, `2`, `4`, `6`, `8`; `memory` supports `1Gi`, `2Gi`, ... `32Gi` (required CPU per memory value: Cloud Run "Configure memory limits").
+  - `container_concurrency` (recommended `2 * cpu + 1`, default `9`): Concurrency per container and agent server.
+- Keep-alive probe (Preview):
+  - `keep_alive_probe.http_get.path`: Must start with `/` (for example `"/is_busy"`). The source writes "Required when specifying `http_get` (and always required for prebuilt container image deployments)." The default probe (`"keep_alive_probe": {}`) is described only for Dockerfile (`image_spec`) deployments that run the ADK `AdkApp` server on port `8080` and for managed ADK agents. The Discovery document (`aiplatform.v1`) marks `ReasoningEngineSpecDeploymentSpec.keepAliveProbe` and `KeepAliveProbe.httpGet` "Optional." and `KeepAliveProbeHttpGet.path` "Required."; that schema is shared by every deployment method and states no per-method conditions, so it does not settle the prebuilt-image case.
+  - `keep_alive_probe.http_get.port` (`[1, 65535]`, default `8080`): Cannot use reserved ports `15000`, `15001`, `15006`, `15007`, `15020`, `15021`.
+  - `keep_alive_probe.max_seconds` (`[900, 3600]`, default `900` when `http_get` is specified): Maximum time to keep an idle instance alive after the last request completes.
+  - `keep_alive_probe: {}` (`max_seconds=3600`): Managed default probe; only `AdkApp` supports it.
+- Other fields:
+  - `agent_framework`: `google-adk`, `langchain`, `langgraph`, `ag2`, `llama-index`, `custom`. Auto-detected for agent-object deployments; defaults to `custom` for source files.
+  - `gcs_dir_name`: Cloud Storage folder for staging artifacts (agent-object deployments only); existing artifacts in the folder are overwritten.
+  - `extra_packages`: Local files, directories or wheels bundled with the agent (agent-object deployments only).
+  - `env_vars`: Dictionary (supports Secret Manager) or list (no Secret Manager).
+  - `service_account`: Custom service account email instead of agent identity / default identity.
+  - `encryption_spec.kms_key_name`: CMEK key resource name.
+  - `psc_interface_config`: `network_attachment`, `dns_peering_configs` (`domain`, `target_project`, `target_network`).
+- Agent-framework requirement extras: ADK `google-cloud-aiplatform[agent_engines,adk]`; A2A (Preview) `google-cloud-aiplatform[agent_engines]` plus `google-adk[a2a]`; LangChain `[agent_engines,langchain]`; LangGraph `[agent_engines,langchain]` (the source writes `[agent_engines,langgraph]`, see below); AG2 `[agent_engines,ag2]`; LlamaIndex Query Pipeline (Preview) `[agent_engines,llama_index]`. Specify the SDK version imported during development (such as `1.112.0`). Corrected from the official docs: the source gives `[agent_engines,langgraph]` for LangGraph, but the `langgraph` extra is not declared in the google-cloud-aiplatform 2.10.0 package metadata (pip ignores an unknown extra); there the `langchain` extra pulls in `langgraph<2.0.0,>=1.0.0`.
+- Do not set these environment variables: `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_QUOTA_PROJECT`, `GOOGLE_CLOUD_LOCATION`, `PORT`, `K_SERVICE`, `K_REVISION`, `K_CONFIGURATION`, `GOOGLE_APPLICATION_CREDENTIALS`; avoid the prefix `GOOGLE_CLOUD_AGENT_ENGINE`.
+- With agent identity, grant `secretmanager.versions.access` (in `roles/secretmanager.secretAccessor`) to the Agent Platform Service Agent `service-PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com`: the configured agent identity is used at runtime, but the service agent fetches secrets during deployment. Without agent identity, grant the agent `roles/secretmanager.secretAccessor`. Grant the role on each secret, not on the project (`gcloud secrets add-iam-policy-binding SECRET`, "add IAM policy binding to a secret", gcloud 593.0.0 help): secrets referenced as environment variables to the principal named above, and secrets that the agent code reads at runtime to the agent's identity.
+- Resource controls and keep-alive probe are Preview (Pre-GA Offerings Terms). Keep-alive allocates CPU continuously (CPU throttling disabled); you are billed for allocated CPU and memory until the instance scales down. Idle instances scale down after 15 minutes (`900` seconds) by default. On non-container deployments, custom `http_get` or `max_seconds` are rejected with `400 FAILED_PRECONDITION`. The default probe reports busy for up to 1 hour after each query, streaming query or bidirectional streaming request.
+- Build-option scripts run as root. The source provides `install_npx.sh` (Node.js v20.x), `install_uvx.sh` and `install_gcloud_cli.sh`; they are omitted here because `install_uvx.sh` pipes `curl` into `sh` (download, inspect, then run instead).
+- A2A and LlamaIndex requirement sets are Preview.
+- Staging artifacts are overwritten per folder; use `gcs_dir_name` values such as `"dev"`, `"staging"`, `"prod"` or a UUID.
+- The `identity_type=AGENT_IDENTITY` example provisions a unique identity tied to the Agent Platform agent resource ID, independent of the framework.
+- Corrected from the official docs: the CMEK key name appears in the source as `` kms_key_name = "projects/`PROJECT_ID`/locations/`LOCATION`/keyRings/`KEY_RING`/cryptoKeys/`KEY_NAME`" ``; the backticks were removed.
+- Console, Java, Go forms and the pip git-branch requirement example (placeholders wrapped in backticks) are omitted.
+- Corrected from the official docs: the keep-alive example commented `# or set "image_uri" when deploying a prebuilt container image` next to `"image_spec": {}`; the container deployment guide and the SDK put `image_uri` inside `container_spec`, so the comment is removed.
+- Corrected from the official docs: the Private Service Connect interface example called `client.runtimes.create(agent=local_agent, config={"psc_interface_config": {...}})` with no `staging_bucket`. In google-cloud-agentplatform 2.10.0, `_validate_staging_bucket_or_raise` (`agentplatform/_genai/_runtimes_utils.py`) raises `ValueError` with "Please provide a `staging_bucket` in `client.runtimes.create(...)`." when an agent object is deployed without one, and a value that does not start with `gs://` is rejected. The other agent-object examples on the page already mark their remaining fields with `# ... other configs` / `# ...` and are kept as written; see the first paragraph of Signature / Usage.
+- Source inconsistency: the keep-alive section says `http_get.path` is "always required for prebuilt container image deployments", while the same page's container image deployment examples (SDK `client.runtimes.create(config={"container_spec": {"image_uri": "CONTAINER_IMAGE_URI"}, ...})` and the REST `reasoningEngines.create` body with `spec.containerSpec.imageUri`) set no `keep_alive_probe`. Both are kept as written on this page; deploy-an-agent-containers.md adds the probe to its container image examples (Adapted), following the keep-alive section. If you deploy a prebuilt image with a keep-alive probe, give `keep_alive_probe.http_get.path` as in the example above; if a prebuilt image deployment without a probe is rejected, add one in that form.
+- Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the service account update example set `resource_name = "projects/{project_id}/locations/{location}/reasoningEngines/{reasoning_engine_id}"` (not an f-string).
+
+## Related
+
+- [deploy-an-agent.md](./deploy-an-agent.md)
+- [deploy-an-agent-containers.md](./deploy-an-agent-containers.md)
+- [runtime-contract.md](./runtime-contract.md)
