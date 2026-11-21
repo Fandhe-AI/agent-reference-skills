@@ -73,7 +73,7 @@ remote_app = client.agent_engines.create(
 )
 ```
 
-Then grant the agent identity additional roles and add agent code later by updating this resource: `client.agent_engines.update(name=remote_app.api_resource.name, agent=..., config=...)` (google-cloud-aiplatform 2.10.0 `AgentEngines.update` takes `name`, `agent` and `config`). The source writes `agent_engine.update(...)`, where `agent_engine` is not defined on the page.
+Then grant the agent identity additional roles and add agent code later by updating this resource: `client.agent_engines.update(name=remote_app.api_resource.name, agent=..., config={"staging_bucket": "gs://BUCKET_NAME"})` (google-cloud-aiplatform 2.10.0 `AgentEngines.update` takes `name`, `agent` and `config`). The resource above was created without a staging bucket, and an update that passes an agent object needs one: `update` documents "ValueError: If `config.staging_bucket` was not set when `agent_engine` is specified.", so create the bucket first as in [Create a staging bucket](#create-a-staging-bucket). The source writes `agent_engine.update(...)`, where `agent_engine` is not defined on the page.
 
 ### Manually generate the default service agent
 
@@ -89,7 +89,7 @@ Adapted (not in the official docs): added `--project=PROJECT_ID` (a gcloud-wide 
 gcloud storage buckets create gs://BUCKET_NAME --project=PROJECT_ID --default-storage-class STORAGE_CLASS --location LOCATION
 ```
 
-The source asks for `roles/storage.admin` on the project (Notes), which includes `storage.buckets.create` for creating this bucket. A principal that only deploys into an existing bucket needs a role on that bucket, not on the project: the SDK reads the bucket metadata (`storage.buckets.get`), creates the bucket only if it is not found, and writes `agent_engine.pkl`, `requirements.txt` and `dependencies.tar.gz` under `gs://BUCKET_NAME/agent_engine/` by default, overwriting the objects of an earlier deployment (`storage.objects.create` and `storage.objects.delete`). `roles/storage.legacyBucketWriter` contains these three permissions and can be granted on a bucket (`PRINCIPAL` is `user:EMAIL`, `group:EMAIL` or `serviceAccount:EMAIL`).
+The source asks for `roles/storage.admin` on the project (Notes), which includes `storage.buckets.create` for creating this bucket. A principal that only deploys into an existing bucket needs a role on that bucket, not on the project: the SDK reads the bucket metadata (`storage.buckets.get`), creates the bucket only if it is not found, and writes `agent_engine.pkl`, `requirements.txt` and `dependencies.tar.gz` under `gs://BUCKET_NAME/agent_engine/` by default, overwriting the objects of an earlier deployment (`storage.objects.create` and `storage.objects.delete`). `roles/storage.legacyBucketWriter` contains these three permissions and can be granted on a bucket (`PRINCIPAL` is `user:EMAIL`, `group:EMAIL` or `serviceAccount:EMAIL`). It lets the principal overwrite or delete any object in the bucket, not only the staging objects, so grant it only on a staging bucket dedicated to one trust boundary (deployers who may change each other's agents). If several deployments share that bucket, give each its own `gcs_dir_name` in `config` (default `agent_engine`), so they do not overwrite each other's staged files.
 
 Adapted (not in the official docs): a bucket-level grant for a principal that deploys into an existing staging bucket, in place of `roles/storage.admin` on the project.
 
