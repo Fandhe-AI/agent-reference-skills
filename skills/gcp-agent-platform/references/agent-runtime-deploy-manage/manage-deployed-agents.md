@@ -48,6 +48,8 @@ curl -q --fail-with-body -X GET \
      "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines?fields=reasoningEngines(name,displayName),nextPageToken" )
 ```
 
+This call returns the first page. While the response has `nextPageToken` ("A token to retrieve the next page of results."), repeat the request with `pageToken=` set to that value added to the query string (`aiplatform.v1` Discovery: `pageToken` "Optional. The standard list page token."; `pageSize` "Optional. The standard list page size.").
+
 ### Get a deployed agent
 
 ```python
@@ -199,7 +201,7 @@ curl -q --fail-with-body -X DELETE \
 - Adapted from the official docs: both list examples used `print(agent)` and the REST list returned full resources. In google-cloud-agentplatform 2.10.0, `client.runtimes.list()` yields `types.Runtime`, whose `api_resource` is a `ReasoningEngine` with `name`, `display_name` and `spec` (`agentplatform/_genai/types/common.py`).
 - Adapted from the official docs: the REST get example returned the whole `ReasoningEngine`, including `spec` (deployment settings such as environment variables). `fields` is a top-level parameter of the `aiplatform.v1` Discovery document ("Selector specifying which fields to include in a partial response"), so it applies to `reasoningEngines.get` as well; request other fields only when you need them, and do not log a full response.
 - Adapted from the official docs: the source's `curl` commands have no `--fail-with-body`.
-- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `-q` is the first argument because for `-q, --disable` the manual says "If used as the first parameter on the command line, the curlrc config file is not read or used.", so a `trace` line in `.curlrc` cannot write the headers to a file. The subshell starts with `set +x` (no tracing of the token) and `set +a` (an inherited `set -a` would export `TOKEN` to `curl`), and `unset` at its start also drops an inherited `export TOKEN`; `TOKEN` does not stay in the calling shell.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). These examples need curl 7.76.0 or later (`--fail-with-body`; `-H @file` needs 7.55.0); `man curl` 8.7.1 ends the `--fail-with-body` entry with "Added in 7.76.0.". `-q` is the first argument because for `-q, --disable` the manual says "If used as the first parameter on the command line, the curlrc config file is not read or used.", so a `trace` line in `.curlrc` cannot write the headers to a file. The subshell starts with `set +x` (no tracing of the token) and `set +a` (an inherited `set -a` would export `TOKEN` to `curl`), and `unset` at its start also drops an inherited `export TOKEN`; `TOKEN` does not stay in the calling shell.
 
 ## Related
 
