@@ -43,7 +43,10 @@ gcloud network-services agent-gateways import AGENT_GATEWAY_NAME \
 
 ### Attach an IAP authorization policy (egress)
 
-Without an attached `AuthzPolicy`, an Agent-to-Anywhere gateway adopts a default-deny policy and blocks all outbound traffic. Authorization extension that points to IAP, in dry-run (audit-only) mode (remove `iamEnforcementMode: "DRY_RUN"` to enforce):
+Without an attached `AuthzPolicy`, an Agent-to-Anywhere gateway adopts a default-deny policy and blocks all outbound traffic. Authorization extension that points to IAP. The example enforces the IAP decision; to audit only during a migration, add `iamEnforcementMode: "DRY_RUN"` under `metadata` (in dry-run mode, requests that IAP denies are not blocked).
+
+
+Adapted (not in the official docs): removed `iamEnforcementMode: "DRY_RUN"`, so the setup enforces IAP authorization; the source says to remove this line to enforce.
 
 ```bash
 cat >iap-request-authz-extension.yaml <<EOF
@@ -53,7 +56,6 @@ failOpen: false
 timeout: 1s
 metadata:
   iapPolicyVersion: "V2"
-  iamEnforcementMode: "DRY_RUN"
 EOF
 ```
 
@@ -166,6 +168,7 @@ gcloud network-services agent-gateways import AGENT_GATEWAY_NAME \
 - The Model Armor path requires granting the Agent Gateway service account permissions on the templates (especially when templates are in another project); see "Delegate authorization for Agent Gateway".
 - The source Terraform example also includes the IAP `google_network_services_authz_extension` and `google_network_security_authz_policy` resources, and a separate ingress gateway Terraform example; these and the Console steps are omitted here. The source also has a non-dry-run extension YAML (same fields without `iamEnforcementMode`).
 - Creating, importing and attaching policies changes live traffic enforcement; try them in a disposable project first.
+- Corrected from the official docs: the IAP authorization extension example set `iamEnforcementMode: "DRY_RUN"` (audit-only) in the main setup path.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/set-up-agent-gateway (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

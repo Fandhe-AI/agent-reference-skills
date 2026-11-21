@@ -66,7 +66,7 @@ remote_app = client.agent_engines.create(
 )
 ```
 
-Then grant the agent identity additional roles and add agent code later with `agent_engine.update(...)`.
+Then grant the agent identity additional roles and add agent code later by updating this resource: `client.agent_engines.update(name=remote_app.api_resource.name, agent=..., config=...)` (google-cloud-aiplatform 2.10.0 `AgentEngines.update` takes `name`, `agent` and `config`). The source writes `agent_engine.update(...)`, where `agent_engine` is not defined on the page.
 
 ### Manually generate the default service agent
 

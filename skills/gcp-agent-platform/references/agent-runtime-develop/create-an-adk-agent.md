@@ -60,6 +60,9 @@ async for event in app.async_stream_query(
 
 ### Define and use a tool
 
+
+Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data.
+
 ```python
 def get_exchange_rate(
     currency_from: str = "USD",
@@ -89,7 +92,9 @@ def get_exchange_rate(
     response = requests.get(
         f"https://api.frankfurter.app/{currency_date}",
         params={"from": currency_from, "to": currency_to},
+        timeout=10,
     )
+    response.raise_for_status()
     return response.json()
 ```
 
@@ -148,6 +153,9 @@ async for event in app.async_stream_query(
 
 ### Memories
 
+
+Adapted (not in the official docs): in instruction item 1, the sentence telling the agent to provide a hypothetical tool execution outcome is replaced with one that reports only real tool results; this agent has only `PreloadMemoryTool`, so the original wording makes it claim vehicle actions it cannot perform.
+
 ```python
 from google.adk.agents import Agent
 from google.adk.tools.preload_memory_tool import PreloadMemoryTool
@@ -158,7 +166,7 @@ agent = Agent(
     name='stateful_agent',
     instruction="""You are a Vehicle Voice Agent, designed to assist users with information and in-vehicle actions.
 
-1.  **Direct Action:** If a user requests a specific vehicle function (e.g., "turn on the AC"), execute it immediately using the corresponding tool. You don't have the outcome of the actual tool execution, so provide a hypothetical tool execution outcome.
+1.  **Direct Action:** If a user requests a specific vehicle function (e.g., "turn on the AC"), execute it immediately using the corresponding tool. Report an outcome only if the tool returned one; if no tool can perform the function, say so instead of describing an outcome.
 2.  **Information Retrieval:** Respond concisely to general information requests with your own knowledge (e.g., restaurant recommendation).
 3.  **Clarity:** When necessary, try to seek clarification to better understand the user's needs and preference before taking an action.
 4.  **Brevity:** Limit responses to under 30 words.
@@ -231,6 +239,8 @@ print(response)
 - The top-level `await` / `async for` statements run in a notebook; in a plain Python script, put them inside an `async def` function and run it with `asyncio.run(...)`.
 - The source's memory test creates `new_session` but then queries with `session_id=initial_session.id`; that walkthrough block is not reproduced here.
 - The source also shows sample response dictionaries and the rest of the memory test walkthrough (the follow-up message and the new-session test), which are omitted.
+- Corrected from the official docs: `get_exchange_rate` called `requests.get(f"https://api.frankfurter.app/{currency_date}", params={"from": currency_from, "to": currency_to})` with no timeout and returned `response.json()` without checking the HTTP status.
+- Corrected from the official docs: the Memories example's instruction item 1 ended "You don't have the outcome of the actual tool execution, so provide a hypothetical tool execution outcome."
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-adk-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

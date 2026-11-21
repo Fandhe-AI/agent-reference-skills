@@ -31,6 +31,9 @@ client = vertexai.Client(
 
 ### Develop the agent
 
+
+Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data.
+
 ```python
 def get_exchange_rate(
     currency_from: str = "USD",
@@ -43,7 +46,9 @@ def get_exchange_rate(
     response = requests.get(
         f"https://api.frankfurter.app/{currency_date}",
         params={"from": currency_from, "to": currency_to},
+        timeout=10,
     )
+    response.raise_for_status()
     return response.json()
 ```
 
@@ -118,6 +123,7 @@ remote_agent.delete(force=True)
 - Adapted from the official docs: the source writes `pip install --upgrade --quiet google-cloud-aiplatform[agent_engines,adk]>=1.112` unquoted.
 - The source also links alternative quickstarts: the ADK quickstart (runs entirely locally) and the Agent Starter Pack (production-ready agent templates).
 - The source also shows Colab and Cloud Shell authentication (Cloud Shell needs no action).
+- Corrected from the official docs: `get_exchange_rate` called `requests.get(f"https://api.frankfurter.app/{currency_date}", params={"from": currency_from, "to": currency_to})` with no timeout and returned `response.json()` without checking the HTTP status.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/quickstart-adk (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
