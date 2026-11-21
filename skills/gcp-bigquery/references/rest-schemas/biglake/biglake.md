@@ -208,7 +208,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ### Example `AuditConfig` value
 
-A JSON value that matches the table (not a request to send as is). The values are taken from the example in the `AuditConfig` description ("An AuditConfig must have one or more AuditLogConfigs"), with the REST JSON (camelCase) field names; the description writes the proto names `audit_log_configs`, `log_type` and `exempted_members`.
+A JSON value that matches the table (not a request to send as is). The values are taken from the example in the `AuditConfig` description ("An AuditConfig must have one or more AuditLogConfigs"), with the REST JSON (camelCase) field names. The proto (snake_case) names `audit_log_configs`, `log_type` and `exempted_members` are in the original Discovery description; both JSON examples on this page (this one and the `Policy` example under `AuditConfig`) use the REST JSON names.
 
 ```json
 {
