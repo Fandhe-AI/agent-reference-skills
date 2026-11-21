@@ -33,7 +33,7 @@ Each step is one of: **User goal** (the simulated user generates utterances unti
 
 How a simulation runs: the simulated user works on the current step only; after each agent response the step is assessed against its criteria and, if met, marked completed and never re-opened; if a step isn't completed within its **Max turns to achieve**, the simulation stops and later steps are never attempted. The whole conversation is capped at 100 turns (the same limit as any simulated conversation). A simulation passes only if every step is completed, in addition to the other pass or fail criteria. Results show `Goals (2/3)`-style counts with a **Justification** per step.
 
-The simulation editor has a **UI** tab and a **YAML** tab:
+The simulation editor has a **UI** tab and a **YAML** tab. Before you load the YAML below, declare `product_id` as a variable of the agent application: every key in `session_parameters` must be a variable declared in the agent application (see the validation rules below). The CX Agent Studio quickstart creates a variable this way: "Click the variables button on the right side of the agent builder", "Click **Create a variable** or **+**", type the variable name (here `product_id`), and "Click **Create**" (the quickstart leaves the type as **Text**; the quick-create-agent and variable pages in this skill cover the quickstart and variables):
 
 ```yaml
 evals:
@@ -103,7 +103,9 @@ Preview, subject to the "Pre-GA Offerings Terms". Only agent applications with a
 - Create dedicated test cases for each agent variant (voice and chat, SMS and chat SDK, brands) and cross-variant instruction leakage checks; run each case against the right deployment (a deployment encapsulates modality, model and channel); for builder-defined variable conditionals, inject the variable value when running the case.
 - When using a coding agent to iterate on the agent, have it reconcile conflicting suggestions, flag tricky conflicts for human review, produce side-by-side diffs, and validate results against real transcripts.
 - The source also shows Console click-paths for each step, not repeated here.
+- The evaluation page requires `session_parameters` keys to be declared variables but gives no steps to declare one; the steps before the simulation YAML are quoted from the CX Agent Studio quickstart, which creates a **Text** variable named `username`. Which variable type `product_id` needs is not stated in the official docs.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/evaluation (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/quick/create-agent (steps to create a variable; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 
