@@ -138,12 +138,12 @@ remote_agent.delete(force=True)
 - `BUCKET_NAME`: the staging bucket name; `staging_bucket` takes it prefixed by `gs://`.
 - Required roles:
   - `roles/aiplatform.user`: Agent Platform User.
-  - `roles/storage.admin`: Storage Admin.
+  - `roles/storage.admin`: Storage Admin, on the project, to create the staging bucket. To deploy into an existing bucket, a role on that bucket with `storage.buckets.get`, `storage.objects.create` and `storage.objects.delete` (such as `roles/storage.legacyBucketWriter`) is enough; see [Create a staging bucket](setup.md#create-a-staging-bucket).
   - `roles/serviceusage.serviceUsageAdmin`: Only if you lack `serviceusage.services.enable` to enable APIs.
 - Top-level `async for` (as the source writes it) runs in a notebook such as Colab, which the source covers for authentication; in a plain Python script, put them inside an `async def` function and run it with `asyncio.run(...)`.
 - Deploying an ADK agent automatically generates a managed session resource; it is deleted together with the agent in the clean-up step.
 - `delete(force=True)` is destructive and irreversible; try the quickstart in a disposable project first.
-- `roles/storage.admin` grants full control of Cloud Storage buckets and objects in the project.
+- `roles/storage.admin` grants full control of Cloud Storage buckets and objects in the project. The source says "ask your administrator to grant you the following IAM roles on your project" and lists Agent Platform User (`roles/aiplatform.user`) and Storage Admin (`roles/storage.admin`); the bucket-level alternative is not in the source (see setup.md for the SDK staging operations it is based on).
 - Adapted from the official docs: the source writes `pip install --upgrade --quiet google-cloud-aiplatform[agent_engines,adk]>=1.112` unquoted.
 - The source also links alternative quickstarts: the ADK quickstart (runs entirely locally) and the Agent Starter Pack (production-ready agent templates).
 - The source also shows Colab and Cloud Shell authentication (Cloud Shell needs no action).

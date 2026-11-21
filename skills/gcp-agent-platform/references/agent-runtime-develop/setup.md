@@ -89,6 +89,16 @@ Adapted (not in the official docs): added `--project=PROJECT_ID` (a gcloud-wide 
 gcloud storage buckets create gs://BUCKET_NAME --project=PROJECT_ID --default-storage-class STORAGE_CLASS --location LOCATION
 ```
 
+The source asks for `roles/storage.admin` on the project (Notes), which includes `storage.buckets.create` for creating this bucket. A principal that only deploys into an existing bucket needs a role on that bucket, not on the project: the SDK reads the bucket metadata (`storage.buckets.get`), creates the bucket only if it is not found, and writes `agent_engine.pkl`, `requirements.txt` and `dependencies.tar.gz` under `gs://BUCKET_NAME/agent_engine/` by default, overwriting the objects of an earlier deployment (`storage.objects.create` and `storage.objects.delete`). `roles/storage.legacyBucketWriter` contains these three permissions and can be granted on a bucket (`PRINCIPAL` is `user:EMAIL`, `group:EMAIL` or `serviceAccount:EMAIL`).
+
+Adapted (not in the official docs): a bucket-level grant for a principal that deploys into an existing staging bucket, in place of `roles/storage.admin` on the project.
+
+```bash
+gcloud storage buckets add-iam-policy-binding gs://BUCKET_NAME \
+  --member=PRINCIPAL \
+  --role=roles/storage.legacyBucketWriter
+```
+
 ### Bring your own container: grant Artifact Registry Reader
 
 Grant the role on the Artifact Registry repository that holds the container image (`REPOSITORY` in `LOCATION`), not on the whole project: a repository-level binding lets the service agent read images only from that repository, while a project-level binding lets it read every repository in the project.
@@ -125,7 +135,7 @@ gcloud artifacts repositories add-iam-policy-binding REPOSITORY \
   - `roles/aiplatform.reasoningEngineServiceAgent`: Default Service Agent role (AI Platform Reasoning Engine Service Agent).
   - `roles/iam.serviceAccountUser`: Grant yourself on a custom service account to deploy with it.
   - `roles/iam.serviceAccountTokenCreator`: Cross-project custom service account: grant to the Agent Platform Service Agent of the deployment project.
-  - `roles/storage.admin`: Principal that deploys from an agent object needs access to the staging bucket (the source names Storage Admin).
+  - `roles/storage.admin`: On the project, to create the staging bucket (the source names Storage Admin); deploying into an existing bucket needs only a role on that bucket (see Create a staging bucket).
   - `roles/artifactregistry.reader`: Default service agent reads container images (BYOC).
 - Identity options:
   - Agent identity (Recommended): IAM agent identity tied to each individual agent. Some features accessible by these roles may be in Preview.
@@ -143,7 +153,8 @@ gcloud artifacts repositories add-iam-policy-binding REPOSITORY \
 - Cross-project custom service account: the organization policy `iam.disableCrossProjectServiceAccountUsage` must NOT be enforced in the project where the service account lives; in that project, grant the Service Account Token Creator role on the custom service account to the Agent Platform Service Agent `service-RESOURCE_PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com`, where `RESOURCE_PROJECT_NUMBER` is the project number of the project where you plan to deploy the agent (the source: "the Agent Platform Service Agent (...) of the project where you plan to deploy the agent"), not of the project that owns the service account; then grant the custom service account its roles in the deployment project.
 - A bucket in the same project as the agents is strongly recommended; with a bucket in another project, manually grant the Agent Platform Service Agent (`service-PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com`) read permissions.
 - `gcloud beta services identity create` may show only the Vertex AI Service Agent in its response, but the Reasoning Engine Service Agent is also created. Find the principal `service-PROJECT_NUMBER@gcp-sa-aiplatform-re.iam.gserviceaccount.com` in IAM with "Include Google-provided role grants" checked.
-- `roles/storage.admin` grants full control of Cloud Storage buckets and objects in the project; the source asks for it for the deployer.
+- `roles/storage.admin` grants full control of Cloud Storage buckets and objects in the project. The source says: "Make sure the principal that is authenticated to use Gemini Enterprise Agent Platform (either yourself or a service account) has `Storage Admin` access to this bucket. This is needed because Agent Platform SDK for Python writes your code to this bucket." and "Ask your administrator to grant you the Storage Admin (`roles/storage.admin`) IAM role on your project."
+- Adapted from the official docs: the bucket-level `roles/storage.legacyBucketWriter` grant is not in the source. The staging operations are from google-cloud-aiplatform 2.10.0 `vertexai/_genai/_agent_engines_utils.py` (`_get_gcs_bucket` calls `storage_client.get_bucket` and `create_bucket` only on `NotFound`; `_upload_agent_engine`, `_upload_requirements` and `_upload_extra_packages` write under `gcs_dir_name`, default `_DEFAULT_GCS_DIR_NAME = "agent_engine"`); google-cloud-agentplatform 2.10.0 `_runtimes_utils.py` is the same. The role's permissions (`storage.buckets.get`, `storage.objects.create`, `storage.objects.delete`, and others) and its description ("create, overwrite, and delete objects"; lowest-level resource: Bucket) are from https://docs.cloud.google.com/iam/docs/roles-permissions/storage; `roles/storage.objectCreator` "Does not give permission to view, delete, or overwrite objects", so it does not cover a second deployment. The command form is from `gcloud storage buckets add-iam-policy-binding --help` (gcloud 593.0.0).
 - BYOC through Agent Gateway: the custom image must trust the gateway's root CA (see Agent Gateway runtime deploy docs).
 - Corrected from the official docs: the source's agent identity block starts at `remote_app = client.agent_engines.create(` and has no `from vertexai import types` line.
 - `roles/aiplatform.agentDefaultAccess` and `roles/aiplatform.agentContextEditor` are written as the source gives them; they are not listed on the IAM roles-permissions page for `aiplatform` (https://docs.cloud.google.com/iam/docs/roles-permissions/aiplatform), so the exact IDs are not confirmed there.
