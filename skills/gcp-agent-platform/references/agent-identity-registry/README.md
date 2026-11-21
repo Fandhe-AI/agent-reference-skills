@@ -1,4 +1,4 @@
-# Agent Identity and Agent Registry
+# agent-identity-registry
 
 | Name | Description | Path |
 |------|-------------|------|

@@ -182,7 +182,9 @@ credentials = google.oauth2.credentials.Credentials(
 )
 ```
 
-Adapted (not in the official docs): `client.access_secret_version` changed to `secret_manager_client.access_secret_version`, because `client` is never defined (the client is assigned to `secret_manager_client`), and added `import google.oauth2.credentials`, because the module-level annotation `google.oauth2.credentials.Credentials` is evaluated and the source does not import it.
+The authorization URL (with `state`, and with the PKCE `code_verifier` that `flow.authorization_url(...)` generates) comes from an earlier step that is not shown; keep that `code_verifier` and the redirect URI to finish the flow here.
+
+Adapted (not in the official docs): `client.access_secret_version` changed to `secret_manager_client.access_secret_version`, because `client` is never defined (the client is assigned to `secret_manager_client`), added `import google.oauth2.credentials`, because the module-level annotation `google.oauth2.credentials.Credentials` is evaluated and the source does not import it, and added `redirect_uri` / `code_verifier` to `from_client_config` plus `flow.fetch_token(code="AUTHORIZATION_CODE")` before `flow.credentials`, because in google-auth-oauthlib 1.5.0 `Flow.credentials` requires that `fetch_token` was called first.
 
 ```python
 from google.cloud import secretmanager
@@ -201,8 +203,12 @@ client_config = json.loads(secret_version.payload.data.decode())
 flow = InstalledAppFlow.from_client_config(
     client_config,
     scopes=['https://www.googleapis.com/auth/cloud-platform'],
-    state="OAUTH_FLOW_STATE"  # from flow.authorization_url(...)
+    state="OAUTH_FLOW_STATE",  # from flow.authorization_url(...)
+    redirect_uri="REDIRECT_URI",
+    code_verifier="CODE_VERIFIER",
 )
+
+flow.fetch_token(code="AUTHORIZATION_CODE")
 
 # You can get the credentials from the flow object.
 credentials: google.oauth2.credentials.Credentials = flow.credentials
@@ -230,6 +236,7 @@ vertexai.init(
 - Tracing: import and initialize OpenTelemetry instrumentation in `.set_up`. The OpenLLMetry variant installs `opentelemetry-instrumentation-langchain==0.38.10` and replaces the instrumentor lines with `from opentelemetry.instrumentation.langchain import LangchainInstrumentor` and `LangchainInstrumentor().instrument()`; the rest of the class is unchanged. Source mentions OpenTelemetry Google Cloud Integration combined with OpenInference or OpenLLMetry.
 - Environment variables: make them available through `os.environ` during development and define them at deployment time (see the deploy guide, "Define environment variables").
 - Secret Manager: the source's template carries `self.secret_id = secret_id`, which is undefined; replaced in the Adapted block above.
+- Corrected from the official docs: the flow block read `flow.credentials` right after `InstalledAppFlow.from_client_config(..., state="OAUTH_FLOW_STATE")` with no token exchange. google-auth-oauthlib 1.5.0 (`google_auth_oauthlib/flow.py`) documents for `Flow.credentials`: ":meth:`fetch_token` must be called before accessing this", and `fetch_token` needs `code` or `authorization_response`; `from_client_config` takes `code_verifier` and passes `redirect_uri` to the OAuth 2.0 session. `REDIRECT_URI`, `CODE_VERIFIER` and `AUTHORIZATION_CODE` are the values from your authorization step (the redirect URI used for `authorization_url`, the verifier that flow generated, and the `code` query parameter returned to the redirect URI).
 - The OAuth blocks use uppercase placeholders (`ACCESS_TOKEN`, `REFRESH_TOKEN`, `CLIENT_SECRET`); never hardcode real tokens or client secrets, keep them in Secret Manager as the flow example does.
 - Corrected from the official docs: the ADC template had `model: str = "meta/llama3-405b-instruct-maas",` before non-default parameters and `import google.auth` without `import google.auth.transport.requests`; the Secret Manager template had `self.secret_id = secret_id # <- new`; the OAuth snippets used `google.oauth2.credentials` without an import, and the flow used `secret_version = client.access_secret_version(request={`.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-a-custom-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

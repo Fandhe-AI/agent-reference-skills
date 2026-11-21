@@ -52,9 +52,11 @@ agent = CLASS_NAME(
 agent.set_up()
 ```
 
+Adapted (not in the official docs): `input` is a state with the question as a user message in `messages`, because the template's `query` passes its keyword arguments to `self.graph.invoke(**kwargs)` (a graph built by `create_react_agent`), and the prebuilt LangGraph template in google-cloud-aiplatform 2.10.0 (`vertexai/agent_engines/templates/langgraph.py`) converts a string input to a state with `"messages": [("user", input)]` before calling `.invoke(input=...)` / `.stream(input=...)` on the same kind of graph, while the source passes the question as a bare string.
+
 ```python
 response = agent.query(
-    input="What is the exchange rate from US dollars to Swedish currency?"
+    input={"messages": [("user", "What is the exchange rate from US dollars to Swedish currency?")]}
 )
 
 print(response)
@@ -105,11 +107,13 @@ agent = StreamingAgent(
 agent.set_up()
 ```
 
+Adapted (not in the official docs): `input` is a state with the question as a user message in `messages`, for the same reason as the `query` test above (the template's `stream_query` passes its keyword arguments to `self.graph.stream(**kwargs)`).
+
 ```python
 import pprint
 
 for chunk in agent.stream_query(
-    input="What is the exchange rate from US dollars to Swedish currency?"
+    input={"messages": [("user", "What is the exchange rate from US dollars to Swedish currency?")]}
 ):
     # Use pprint with depth=1 for a more concise, high-level view of the
     # streamed output.
@@ -169,6 +173,8 @@ class AnnotatedAgent(CLASS_NAME):
 
 ### Handle errors
 
+Adapted (not in the official docs): the wrapper re-raises exceptions that lack the `code` and `error` attributes, because the source catches every `Exception` and then reads `getattr(err, 'code')` / `getattr(err, 'error')` without defaults, so an ordinary exception (for example `ValueError`) would raise `AttributeError` inside the handler and hide the original failure.
+
 ```python
 from functools import wraps
 import json
@@ -180,6 +186,8 @@ def error_wrapper(func):
             # Execute the original function with its arguments
             return func(*args, **kwargs)
         except Exception as err:
+            if not (hasattr(err, 'code') and hasattr(err, 'error')):
+                raise
             error_code = getattr(err, 'code')
             error_message = getattr(err, 'error')
 
@@ -229,11 +237,12 @@ print(json.dumps(error_result, indent=2))
 - By default `query` and `stream_query` are registered as operations. You need not register both modes; `{"": ["query", "get_state"]}` supports only standard operations.
 - Only JSON-serializable types are supported in the input and output of deployed operations; annotate schemas with `TypedDict` or Pydantic models.
 - Streaming: LangChain's async `astream_event` method is not supported at the moment. If the consumer cannot keep up (backpressure), throttle content generation.
-- The wrapper in the error example returns the error as an ordinary return value (a dictionary); the caller must inspect it, it does not raise.
+- The wrapper in the error example returns the error as an ordinary return value (a dictionary) for exceptions that carry `code` and `error`; the caller must inspect it, it does not raise. Other exceptions propagate unchanged.
+- Corrected from the official docs: the local `query` and `stream_query` tests passed `input="What is the exchange rate from US dollars to Swedish currency?"` (a bare string) to a `create_react_agent` graph; the error wrapper had `except Exception as err:` followed directly by `error_code = getattr(err, 'code')` / `error_message = getattr(err, 'error')`, so only exceptions with both attributes (such as the example's `SessionNotFoundError`) are now converted to the error dictionary.
 - Corrected from the official docs: `async_query` was `for chunk in self.graph.ainvoke(**kwargs):` / `yield dumpd(chunk)`; `get_state` / `get_state_history` were `def get_state(self) -> dict:` and `def get_state_history(self) -> Iterable:`.
 - Left out: the source's `AsyncStreamingAgent` class, because it iterates `self.graph.astream(**kwargs)` with a plain `for` inside `async def async_stream_query`; whether `astream` returns a synchronous iterable cannot be confirmed against the pinned SDK sources, and the source calls the method's result an asynchronous generator. Its `async for` test loop is left out with it.
 - Top-level `async for` / `await` (as the source writes them) runs in a notebook; in a plain Python script, put it inside an `async def` function and run it with `asyncio.run(...)`.
-- `getattr(err, 'code')` in the error example has no default, so an exception without that attribute raises `AttributeError` inside the wrapper (verbatim from the source). The source's printed error output (JSON with message "Invocation error in 'get_session': ...") is garbled in the twin and differs from the code's message format, so it is not reproduced.
+- The source's printed error output (JSON with message "Invocation error in 'get_session': ...") is garbled in the twin and differs from the code's message format, so it is not reproduced.
 - The source also shows sample dictionary responses, the `async_query` test call and the streaming output samples.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-a-custom-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

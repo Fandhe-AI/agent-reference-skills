@@ -61,12 +61,14 @@ remote_agent = client.runtimes.create(
 
 ### Deploy from Dockerfile: REST
 
-Package the `Dockerfile` and source files at the root of a `.tar.gz` archive (maximum 8 MB), base64-encode it and `POST` to `reasoningEngines.create`:
+Package the `Dockerfile` and source files at the root of a `.tar.gz` archive (maximum 8 MB), base64-encode it and `POST` to `reasoningEngines.create`. Pack every file the container needs at start-up; for the example file structure above that is `Dockerfile`, `agent.py`, `main.py` and `requirements.txt` (the same list as `source_packages` in the SDK example).
+
+Adapted (not in the official docs): added `agent.py` to the `tar` file list, because the source's command packs only `Dockerfile main.py requirements.txt` while the SDK example for the same file structure ships `agent.py` next to `main.py`; a file left out of the archive is not in the image built from it.
 
 ```bash
 # Package your Dockerfile and source files at the root of a tar.gz archive
 # (replace main.py and requirements.txt with your project's source files):
-tar -czf /tmp/source.tar.gz Dockerfile main.py requirements.txt
+tar -czf /tmp/source.tar.gz Dockerfile agent.py main.py requirements.txt
 
 curl -X POST \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -132,6 +134,7 @@ curl -X POST \
 - If the container runs the ADK API server (such as `npx adk api_server` for TypeScript or `AdkWebServer` for Java), call its `/run` and `/run_sse` endpoints through the underlying API proxy (`/api/run` and `/api/run_sse`). The ADK Go `agentengine` launcher exposes `/api/reasoning_engine` and `/api/stream_reasoning_engine`.
 - Dockerfile builds can also be deployed with Terraform (see the Agent Runtime Terraform page).
 - The source also shows Go, TypeScript and Java Dockerfiles; they differ only in the build stage and `CMD` (all `EXPOSE 8080`, listening on `0.0.0.0`). Omitted here.
+- Corrected from the official docs: the REST example packed `tar -czf /tmp/source.tar.gz Dockerfile main.py requirements.txt`, leaving out the `agent.py` of the example file structure; the archive must contain every file the container loads at start-up.
 - Try deployments in a disposable project first; each deployment builds and runs a container.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

@@ -39,7 +39,7 @@ skills/gcp-agent-platform/
     agent-identity-registry/         # 8 ページ
 ```
 
-手書きの 22 カテゴリは合計 158 ページ（各カテゴリに README.md あり）。各カテゴリ・API 直下の `README.md` は索引表。
+完成形では手書きの 22 カテゴリが合計 158 ページ（各カテゴリに README.md あり）。各カテゴリ・API 直下の `README.md` は索引表。
 
 - `references/gcloud/`（後続 PR で投入） のコマンド数（リリーストラック合算）: `ai` 267 / `ai-platform` 91 / `gemini` 96 / `vector-search` 54 / `agent-identity` 99 / `agent-registry` 81 / `developer-knowledge` 9 / `mldiagnostics` 13
 - `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） の API（5）: `aiplatform`（Agent Platform API。スキーマ 3859）/ `agentregistry`（74）/ `deepreview`（28）/ `ml`（旧 AI Platform Training & Prediction。86）/ `datalabeling`（194）。各メソッドの `Versions` 行で v1 / v1beta1 等を確認する
