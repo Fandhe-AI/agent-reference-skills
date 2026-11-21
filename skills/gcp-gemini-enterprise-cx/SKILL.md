@@ -9,11 +9,13 @@ user-invocable: false
 
 Google Cloud (GCP) のカスタマーエクスペリエンス（コンタクトセンター）向け AI 系スキル。3 製品を扱う。
 
+分割投入中: 以下の収録範囲と機械生成の層は完成形の内容。分割投入中のため、未投入のカテゴリ（`rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。未投入の機能は、投入までは公式ドキュメント（https://docs.cloud.google.com/ ）を引く。
+
 - Gemini Enterprise for Customer Experience（CX Agent Studio、`ces` API）— agent と agent application・instruction・variable・callback・handoff・guardrail・tools（OpenAPI・MCP・Python・client function・data store・agent as a tool・A2A）・deploy・API access・version・evaluation・アクセス制御・VPC Service Controls・CMEK
 - Customer Experience Insights（旧 Contact Center AI Insights、`contactcenterinsights` API）— 会話データの ingest・analysis（analysis rule・summarization・topic modeling・queryMetrics）・Quality AI・BigQuery export・Pub/Sub 通知・fine-grained access control・CMEK・リージョン
 - CCAI Platform（`contactcenteraiplatform` API）— instance の作成と設定・audit logging・VPC Service Controls・カスタム組織ポリシー制約・virtual agents・Apps API / Manager API・Web SDK v3・モバイル SDK・webhooks
 
-加えて REST（Discovery）3 API と IAM のロール・権限を機械生成で収録する。分割投入中のため、未投入のカテゴリ（`rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+加えて REST（Discovery）3 API と IAM のロール・権限を機械生成で収録する。
 
 参照本文は英語（公式ドキュメントの原語）。**製品専用の gcloud グループはこれらのプロダクトに無い**ため本スキルは gcloud のカテゴリを持たず、手順の正は REST とコンソール。API の有効化・組織ポリシー・サービス境界・認証・Cloud Run へのデプロイ・Model Armor の floor setting といった共通の gcloud コマンドは、使う手順のページに例として収録する（探索手順 2）。
 

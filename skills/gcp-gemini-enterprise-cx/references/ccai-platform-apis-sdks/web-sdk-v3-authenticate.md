@@ -122,7 +122,7 @@ When a user starts as a guest and verifies identity mid-session (for example thr
 
 1. Initialize the SDK with a temporary (random or guest) identifier.
 2. Direct the user to authenticate (a CCAI Platform virtual assistant or your login screen).
-3. After authentication, while the user is still in the virtual agent or authentication flow, your backend calls the CCAI Platform Apps API to update the end user's chat session with their true identifier.
+3. After authentication, while the user is still in the virtual agent or authentication flow, your backend calls the CCAI Platform Apps API to update the end user's chat session with their true identifier. Before the update, your backend must confirm that the chat belongs to this user (not stated in the official docs): take the chat ID from the guest session your server issued and kept server-side, not from a value the client sends, look up the chat by that ID, check that it was created for that guest session's identifier, and update it only for the authenticated user who took over that same session; otherwise reject the update and do not sign a new JWT for it.
 4. Generate a new JWT for the authenticated user and reinitialize the SDK by calling the initialization method again.
 5. If a virtual assistant was used, it should now escalate the consumer to the final destination queue.
 
