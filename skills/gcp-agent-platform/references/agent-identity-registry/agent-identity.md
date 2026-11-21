@@ -43,6 +43,8 @@ agent = Agent(
 )
 ```
 
+This example sets only `staging_bucket`, so the SDK writes the deployment artifacts under its default `agent_engine/` prefix (`_DEFAULT_GCS_DIR_NAME` in google-cloud-aiplatform and google-cloud-agentplatform 2.10.0), where a later deployment to the same bucket overwrites them: use a bucket dedicated to this deployment, or add a unique `"gcs_dir_name"` to `config` for each deployment (Create a staging bucket in setup.md, agent-runtime-develop category).
+
 Adapted (not in the official docs): the staging bucket line was written as `f"gs://"BUCKET_NAME",` (a syntax error); it is now the string `"gs://BUCKET_NAME"`, where `BUCKET_NAME` is the name of your Cloud Storage bucket. The requirement `google-cloud-agentplatform[adk,runtimes]` is now `google-cloud-agentplatform[adk,agent_engines]`, because 2.10.0 has no `runtimes` extra and `client.runtimes` needs the `agent-engines` extra.
 
 ```python
@@ -169,7 +171,7 @@ Adapted (not in the official docs): `projects/PROJECT_ID` in `effectiveIdentity`
 |---|---|
 | `roles/serviceusage.serviceUsageConsumer` | Grant the agent permission to use the project's quota and the Agent Platform SDK. |
 | `roles/browser` | Grant access to basic Google Cloud functionalities. |
-| `roles/secretmanager.secretAccessor` | Grant the agent access to secrets in Secret Manager. If you reference secrets as environment variables, also grant it to the Agent Platform Service Agent (`service-PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com`) so it can retrieve the secret values during deployment. |
+| `roles/secretmanager.secretAccessor` | Grant the agent access to secrets in Secret Manager. If you reference secrets as environment variables, also grant it to the Agent Platform Service Agent (`service-PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com`) so it can retrieve the secret values during deployment. Grant it on each secret, not on the project (`gcloud secrets add-iam-policy-binding SECRET --member=PRINCIPAL --role=roles/secretmanager.secretAccessor`): to the agent's identity for secrets the agent reads at runtime, and to the service agent for secrets referenced as environment variables. |
 
 ### Roles for A2A delegation (grant to the parent agent's identity, not to your user account)
 

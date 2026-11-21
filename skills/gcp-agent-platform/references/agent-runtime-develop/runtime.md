@@ -10,7 +10,7 @@ Agent Runtime (formerly Vertex AI Agent Engine) is a fully managed, opinionated 
 
 ### Deploy an agent object (snippet)
 
-`client` is the `vertexai.Client` and `app` the `agent_engines.AdkApp` created in the Install and initialize and Develop the agent steps of [quickstart-adk.md](./quickstart-adk.md); the official quickstart defines them in earlier blocks.
+`client` is the `vertexai.Client` and `app` the `agent_engines.AdkApp` created in the Install and initialize and Develop the agent steps of [quickstart-adk.md](./quickstart-adk.md); the official quickstart defines them in earlier blocks. These examples set only `staging_bucket`, so the SDK writes the deployment artifacts under its default `agent_engine/` prefix (`_DEFAULT_GCS_DIR_NAME` in google-cloud-aiplatform and google-cloud-agentplatform 2.10.0), where a later deployment to the same bucket overwrites them: use a bucket dedicated to this deployment, or add a unique `"gcs_dir_name"` to `config` for each deployment ([Create a staging bucket](setup.md#create-a-staging-bucket)).
 
 Adapted (not in the official docs): `"STAGING_BUCKET"` is written as `"gs://BUCKET_NAME"` (the bucket from [Create a staging bucket](setup.md#create-a-staging-bucket)), because google-cloud-aiplatform 2.10.0 rejects a value without the prefix (Notes).
 

@@ -98,7 +98,7 @@ async for event in app.async_stream_query(
 
 ### Deploy
 
-Before you deploy, make sure the Agent Platform API (`aiplatform.googleapis.com`) is enabled in the project (see the local test step), which needs the `serviceusage.services.enable` permission (Notes), and create the Cloud Storage bucket `gs://BUCKET_NAME` that you pass as `staging_bucket` (steps in [Create a staging bucket](setup.md#create-a-staging-bucket)). The source's Before you begin section shows only the note on the enable permission, not a command; with gcloud, the command shown on other pages of the source is `gcloud services enable aiplatform.googleapis.com`; run it as `gcloud services enable aiplatform.googleapis.com --project=PROJECT_ID` (not in the official docs), so the API is enabled in the `PROJECT_ID` that the SDK client uses.
+Before you deploy, make sure the Agent Platform API (`aiplatform.googleapis.com`) is enabled in the project (see the local test step), which needs the `serviceusage.services.enable` permission (Notes), and create the Cloud Storage bucket `gs://BUCKET_NAME` that you pass as `staging_bucket` (steps in [Create a staging bucket](setup.md#create-a-staging-bucket)). The source's Before you begin section shows only the note on the enable permission, not a command; with gcloud, the command shown on other pages of the source is `gcloud services enable aiplatform.googleapis.com`; run it as `gcloud services enable aiplatform.googleapis.com --project=PROJECT_ID` (not in the official docs), so the API is enabled in the `PROJECT_ID` that the SDK client uses. These examples set only `staging_bucket`, so the SDK writes the deployment artifacts under its default `agent_engine/` prefix (`_DEFAULT_GCS_DIR_NAME` in google-cloud-aiplatform and google-cloud-agentplatform 2.10.0), where a later deployment to the same bucket overwrites them: use a bucket dedicated to this deployment, or add a unique `"gcs_dir_name"` to `config` for each deployment ([Create a staging bucket](setup.md#create-a-staging-bucket)).
 
 Adapted (not in the official docs): `"STAGING_BUCKET"` is written as `"gs://BUCKET_NAME"` (the bucket from [Create a staging bucket](setup.md#create-a-staging-bucket)), because google-cloud-aiplatform 2.10.0 rejects a value without the prefix (Notes).
 
@@ -129,10 +129,12 @@ async for event in remote_agent.async_stream_query(
 
 ### Clean up
 
-This deletes the Agent Runtime instance created by the quickstart. It passes `force=True`, which also deletes the child resources (sessions and memories) of the instance; this cannot be undone.
+This deletes the Agent Runtime instance created by the quickstart. If the instance has child resources (sessions, memories), the call fails with `FAILED_PRECONDITION`; the query above leaves one, because `async_stream_query` without `session_id` calls `async_create_session`, and on Agent Runtime the default session service is `VertexAiSessionService` (google-cloud-aiplatform 2.10.0, `vertexai/agent_engines/templates/adk.py`). `remote_agent.delete(force=True)` also deletes those child resources and cannot be undone; use it only when you mean to delete them.
+
+Adapted (not in the official docs): the source's `remote_agent.delete(force=True)` is written without `force`.
 
 ```python
-remote_agent.delete(force=True)
+remote_agent.delete()
 ```
 
 ## Notes
@@ -161,6 +163,7 @@ remote_agent.delete(force=True)
 - Adapted from the official docs: the `AdkApp` example started at `from google.adk.agents import Agent` and did not call `vertexai.init`.
 - Adapted from the official docs: the source writes `"staging_bucket": "STAGING_BUCKET"` (defined as "Cloud Storage bucket prefixed by `gs://`"). In google-cloud-aiplatform 2.10.0, `client.agent_engines.create` calls `_validate_staging_bucket_or_raise` (`vertexai/_genai/_agent_engines_utils.py`), which raises `ValueError` unless the value starts with `gs://`.
 - Corrected from the official docs: `get_exchange_rate` passed the model-supplied `currency_from` and `currency_to` to the request unchecked, although the create-an-adk-agent docstring describes each as "(3-letter currency code)"; the example normalizes them with `.strip().upper()` and raises `ValueError` unless each is three ASCII letters.
+- Adapted from the official docs: the cleanup omits the source's `force=True`. google-cloud-aiplatform 2.10.0 (`vertexai/_genai/types/common.py`) documents `force` as "If set to True, child resources will also be deleted. Otherwise, the request will fail with FAILED_PRECONDITION error when the Agent Engine has undeleted child resources. Defaults to False."
 
 ## Related
 
