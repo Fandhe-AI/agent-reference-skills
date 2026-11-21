@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/generative-ai-app-builder/docs/long-runnin
 
 # Manage long-running operations
 
-List, get, poll and cancel long-running operations (LRO) in Agent Search (formerly Vertex AI Search; Discovery Engine API). An LRO tracks methods that can take a long time, for example `documents.import`. A resource in a location other than `global` is served at `LOCATION-discoveryengine.googleapis.com`: for the list call change the host and `global`, and in Python pass `client_options=ClientOptions(api_endpoint=...)` (see Notes).
+List, get, poll and cancel long-running operations (LRO) in Agent Search (formerly Vertex AI Search; Discovery Engine API). An LRO tracks methods that can take a long time, for example `documents.import`. A resource in a location other than `global` is served at `LOCATION-discoveryengine.googleapis.com`: for the REST list call change the host and `global` (see Notes).
 
 ## Signature / Usage
 
@@ -22,6 +22,8 @@ curl -q --fail-with-body -X GET \
 ```
 
 ### List long-running operations (Python)
+
+The Python samples on this page (list, get, poll, cancel) reach the global endpoint; for a `us` or `eu` resource create the client with `client_options=ClientOptions(api_endpoint=f"{LOCATION}-discoveryengine.googleapis.com")`, as in [create-engine-es.md](./create-engine-es.md).
 
 Adapted (not in the official docs): the source sample also takes an `operations_filter` argument, tells you to create the filter in AIP-160 syntax and passes it as `filter=operations_filter` in `ListOperationsRequest`; that argument, its comment lines and the then-unused `from typing import Optional` import are removed, because the same page says `operations.list` in Agent Search can't use the `filter` field. `search_engine_id` / `YOUR_SEARCH_ENGINE_ID` are renamed `data_store_id` / `YOUR_DATA_STORE_ID`, because the value goes in the `dataStores/` segment. The rest of the sample is unchanged.
 
