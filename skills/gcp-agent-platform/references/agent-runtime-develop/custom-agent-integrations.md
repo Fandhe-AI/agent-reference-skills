@@ -22,7 +22,7 @@ The exporter writes spans to the project `self.project` as the principal that `g
 
 `hide_inputs` and `hide_outputs` mask only those attributes (not in the official docs). Other span attributes can still carry sensitive values: openinference-instrumentation-langchain 0.1.34 also writes the LangChain run metadata as JSON to `metadata` and its `session_id`, `conversation_id` or `thread_id` value to `session.id`, records exceptions on the span, and `llm.invocation_parameters` is kept unless `hide_llm_invocation_parameters` is set. If the agent handles sensitive data, export only attributes you allowlist, for example with a span exporter or processor that drops every other attribute before `CloudTraceSpanExporter`. The example below does not: it masks only inputs and outputs and sends the run metadata, session IDs and exception events to Cloud Trace as is, so use it as written only where traces may hold that data (the source has no filtering example).
 
-Adapted (not in the official docs): added `from openinference.instrumentation import TraceConfig` and passed `config=TraceConfig(hide_inputs=True, hide_outputs=True)` to `LangChainInstrumentor().instrument()`, so the OpenInference input and output span attributes (such as `input.value`, `output.value`, `llm.input_messages`, `llm.output_messages`, `llm.prompts`; full list in Notes) are redacted or dropped before the spans reach Cloud Trace.
+Adapted (not in the official docs): added `from openinference.instrumentation import TraceConfig` and passed `config=TraceConfig(hide_inputs=True, hide_outputs=True)` to `LangChainInstrumentor().instrument()`, so the OpenInference input and output span attributes (such as `input.value`, `output.value`, `llm.input_messages`, `llm.output_messages`, `llm.prompts`; full list in Notes) are redacted or dropped before the spans reach Cloud Trace. Also, `query` returns `dumpd(...)` of the LangGraph state, as in create-a-custom-agent.md, because the state holds LangChain message objects that are not JSON-serializable.
 
 ```python
 from typing import Callable, Sequence
@@ -78,7 +78,9 @@ class CLASS_NAME:
         self.graph = create_react_agent(model, tools=self.tools)
 
     def query(self, **kwargs):
-        return self.graph.invoke(**kwargs)
+        from langchain_core.load import dumpd
+
+        return dumpd(self.graph.invoke(**kwargs))
 ```
 
 OpenLLMetry alternative package. It records prompts and completions in spans by default; disable that content tracing as well by setting the environment variable `TRACELOOP_TRACE_CONTENT` to `false` for the deployed agent:
@@ -95,7 +97,7 @@ pip install google-cloud-secret-manager
 
 The class below also imports `langchain_anthropic` and `langgraph.prebuilt`: install `langchain-anthropic` and `langgraph` as well. List the same packages in the deployment `requirements` (see deploy-an-agent-configuration.md in the agent-runtime-deploy-manage category) so that `set_up` can import them in Agent Runtime.
 
-Adapted (not in the official docs): removed `self.secret_id = secret_id` because `secret_id` is not a parameter of `__init__` (it raises `NameError`) and the secret name is written out in `set_up`. Moved the key from `model_kwargs={"api_key": ...}` to the `api_key=` constructor argument, because langchain-anthropic 1.7.12 reads the client key from the `anthropic_api_key` field (alias `api_key`) and sends `model_kwargs` as request parameters.
+Adapted (not in the official docs): removed `self.secret_id = secret_id` because `secret_id` is not a parameter of `__init__` (it raises `NameError`) and the secret name is written out in `set_up`. Moved the key from `model_kwargs={"api_key": ...}` to the `api_key=` constructor argument, because langchain-anthropic 1.7.12 reads the client key from the `anthropic_api_key` field (alias `api_key`) and sends `model_kwargs` as request parameters. Also, `query` returns `dumpd(...)` of the LangGraph state, as in create-a-custom-agent.md, because the state holds LangChain message objects that are not JSON-serializable.
 
 ```python
 from typing import Callable, Sequence
@@ -129,7 +131,9 @@ class CLASS_NAME:
         self.graph = create_react_agent(model, tools=self.tools)
 
     def query(self, **kwargs):
-        return self.graph.invoke(**kwargs)
+        from langchain_core.load import dumpd
+
+        return dumpd(self.graph.invoke(**kwargs))
 ```
 
 ### Application default credentials
@@ -144,7 +148,7 @@ credentials, project = google.auth.default(
 
 The class below imports `langchain_openai` and `langgraph.prebuilt`: install `langchain-openai` and `langgraph` (`google.auth` comes with the Agent Platform SDK). List the same packages in the deployment `requirements` (see deploy-an-agent-configuration.md in the agent-runtime-deploy-manage category) so that `set_up` can import them in Agent Runtime.
 
-Adapted (not in the official docs): removed the default value `= "meta/llama3-405b-instruct-maas"` from `model`, because a parameter with a default cannot precede parameters without defaults (`SyntaxError`), and added `import google.auth.transport.requests`, because `import google.auth` alone does not load the `transport.requests` submodule that `creds.refresh(...)` uses; pass the model name when instantiating.
+Adapted (not in the official docs): removed the default value `= "meta/llama3-405b-instruct-maas"` from `model`, because a parameter with a default cannot precede parameters without defaults (`SyntaxError`), and added `import google.auth.transport.requests`, because `import google.auth` alone does not load the `transport.requests` submodule that `creds.refresh(...)` uses; pass the model name when instantiating. Also, `query` returns `dumpd(...)` of the LangGraph state, as in create-a-custom-agent.md, because the state holds LangChain message objects that are not JSON-serializable.
 
 ```python
 from typing import Callable, Sequence
@@ -180,7 +184,9 @@ class CLASS_NAME:
             api_key=creds.token,  # Use the token from the credentials here.
         )
         graph = create_react_agent(model, tools=self.tools)
-        return graph.invoke(**kwargs)
+        from langchain_core.load import dumpd
+
+        return dumpd(graph.invoke(**kwargs))
 ```
 
 ### OAuth
@@ -222,6 +228,7 @@ credentials = google.oauth2.credentials.Credentials(
 - Quota project permission: a principal needs `serviceusage.services.use` (in `roles/serviceusage.serviceUsageConsumer`) on a quota project it did not create (Google Cloud authentication docs, https://docs.cloud.google.com/docs/authentication/client-libraries; role contents from https://docs.cloud.google.com/iam/docs/roles-permissions/serviceusage).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-a-custom-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Scope (not in the official docs): the tracing example masks inputs and outputs only; run metadata, `session.id` and exception events still reach Cloud Trace, and the source gives no example that filters them.
+- Adapted from the official docs: the OpenInference, Secret Manager and ADC examples returned `self.graph.invoke(**kwargs)` / `graph.invoke(**kwargs)` unconverted; they use `dumpd` from `langchain_core.load` (langchain-core 1.0.0 and 1.8.4).
 
 ## Related
 
