@@ -18,10 +18,10 @@ Owner skill: `gcp-messaging-workflows` (status: 収録済み). gcloud groups: `e
 
 ```bash
 gcloud help
-gcloud <group> --help
+gcloud eventarc --help
 ```
 
-The first command lists all groups; the second lists the commands of one group.
+The first command lists all groups; the second lists the commands of one group (replace `eventarc` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name).
 
 ## Notes
 

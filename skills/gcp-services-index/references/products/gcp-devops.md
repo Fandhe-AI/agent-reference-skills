@@ -26,10 +26,10 @@ Owner skill: `gcp-devops` (status: 収録済み). gcloud groups: `app-lifecycle-
 
 ```bash
 gcloud help
-gcloud <group> --help
+gcloud app-lifecycle-manager --help
 ```
 
-The first command lists all groups; the second lists the commands of one group.
+The first command lists all groups; the second lists the commands of one group (replace `app-lifecycle-manager` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name).
 
 ## Notes
 

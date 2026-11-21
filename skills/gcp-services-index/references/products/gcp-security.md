@@ -28,10 +28,10 @@ Owner skill: `gcp-security` (status: 収録済み). gcloud groups: `access-conte
 
 ```bash
 gcloud help
-gcloud <group> --help
+gcloud access-context-manager --help
 ```
 
-The first command lists all groups; the second lists the commands of one group.
+The first command lists all groups; the second lists the commands of one group (replace `access-context-manager` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name).
 
 ## Notes
 

@@ -74,10 +74,9 @@ These products are not covered by any gcp-* skill (status: 対象外). Use the o
 
 ```bash
 gcloud help
-gcloud <group> --help
 ```
 
-The first command lists all groups; the second lists the commands of one group.
+The command lists all groups.
 
 ## Notes
 

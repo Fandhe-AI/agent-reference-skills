@@ -21,10 +21,10 @@ Owner skill: `gcp-api-management` (status: 未収録（予定）). gcloud groups
 
 ```bash
 gcloud help
-gcloud <group> --help
+gcloud api-gateway --help
 ```
 
-The first command lists all groups; the second lists the commands of one group.
+The first command lists all groups; the second lists the commands of one group (replace `api-gateway` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name).
 
 ## Notes
 

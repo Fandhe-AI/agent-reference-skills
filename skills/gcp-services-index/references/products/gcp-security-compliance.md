@@ -33,10 +33,10 @@ Owner skill: `gcp-security-compliance` (status: 収録済み). gcloud groups: `a
 
 ```bash
 gcloud help
-gcloud <group> --help
+gcloud access-approval --help
 ```
 
-The first command lists all groups; the second lists the commands of one group.
+The first command lists all groups; the second lists the commands of one group (replace `access-approval` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name).
 
 ## Notes
 

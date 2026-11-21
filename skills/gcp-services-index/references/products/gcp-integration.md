@@ -16,10 +16,9 @@ Owner skill: `gcp-integration` (status: 収録済み). gcloud groups: —.
 
 ```bash
 gcloud help
-gcloud <group> --help
 ```
 
-The first command lists all groups; the second lists the commands of one group.
+The command lists all groups.
 
 ## Notes
 

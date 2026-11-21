@@ -22,10 +22,10 @@ Owner skill: `gcp-run` (status: 収録済み). gcloud groups: `app`, `functions`
 
 ```bash
 gcloud help
-gcloud <group> --help
+gcloud app --help
 ```
 
-The first command lists all groups; the second lists the commands of one group.
+The first command lists all groups; the second lists the commands of one group (replace `app` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name).
 
 ## Notes
 
