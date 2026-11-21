@@ -112,7 +112,7 @@ remote_agent = client.agent_engines.create(
 
 ### Use the deployed agent
 
-This example is for a single user (not in the official docs). In a shared service, set `user_id` on the server side from the authenticated principal, not from a value the client sends, and use an existing `session_id` only after confirming that the session's `user_id` matches it.
+This example is for a single user (not in the official docs). In a shared service, set `user_id` on the server side from the authenticated principal, not from a value the client sends, and use an existing `session_id` only after confirming that the session's `user_id` matches it, and grant the runtime's query permission (such as `aiplatform.reasoningEngines.query`) and the `aiplatform.sessions.*` permissions only to the backend's service identity, not to end users, so that every call goes through this check (see use-an-agent.md in agent-runtime-deploy-manage).
 
 ```python
 async for event in remote_agent.async_stream_query(

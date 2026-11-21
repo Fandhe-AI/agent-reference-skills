@@ -124,7 +124,7 @@ agent = Agent(
 
 ### Sessions
 
-The session and memory examples are for a single user (not in the official docs). In a shared service, set `user_id` on the server side from the authenticated principal, not from a value the client sends, and use an existing `session_id` only after confirming that the session's `user_id` matches it (Notes).
+The session and memory examples are for a single user (not in the official docs). In a shared service, set `user_id` on the server side from the authenticated principal, not from a value the client sends, and use an existing `session_id` only after confirming that the session's `user_id` matches it, and grant the runtime's query permission (such as `aiplatform.reasoningEngines.query`) and the `aiplatform.sessions.*` permissions only to the backend's service identity, not to end users, so that every call goes through this check (Notes; use-an-agent.md in agent-runtime-deploy-manage).
 
 ```python
 def session_service_builder():
