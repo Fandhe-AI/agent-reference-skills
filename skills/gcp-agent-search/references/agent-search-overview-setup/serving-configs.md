@@ -12,10 +12,10 @@ A serving config holds the settings used when generating media recommendations i
 
 Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/configure-serving-controls (the twin for this page has no code block). It attaches boost controls to the default serving config of a search app (`default_search`) with the `engines.servingConfigs.patch` method (`v1alpha`); replace `BOOST_ID_N` with the control IDs. The official docs don't say whether `update_mask=boost_control_ids` replaces the `boostControlIds` list or adds to it (see Notes). To keep the controls already attached, read the serving config with `engines.servingConfigs.get` (`GET https://discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/global/collections/default_collection/engines/APP_ID/servingConfigs/default_search`), send its existing `boostControlIds` plus the new ID, then call `get` again and check the stored list (fix duplicates or missing IDs with another `patch`). The same applies to `filterControlIds`, `synonymsControlIds`, `redirectControlIds` and `promoteControlIds` with their `update_mask` values:
 
-Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero.
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell.
 
 ```bash
-TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+( set +x; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl --fail-with-body -X PATCH \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
@@ -23,7 +23,7 @@ curl --fail-with-body -X PATCH \
 "https://discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/global/collections/default_collection/engines/APP_ID/servingConfigs/default_search?update_mask=boost_control_ids" \
 -d '{
  "boostControlIds": ["BOOST_ID_1", "BOOST_ID_2"]
-}'
+}' )
 ```
 
 ### Create, edit or delete a serving config (console)
@@ -45,7 +45,7 @@ curl --fail-with-body -X PATCH \
 - What search apps can do: the serving controls guide says "To change the results of a request, first create a serving control. Then, attach that control to the *serving config* of a search app." and "A serving control only affects requests served by the app if the control is attached to the app's serving config." Its examples attach controls to the existing `default_search` serving config with `engines.servingConfigs.patch` (`v1alpha`) by updating `boostControlIds`, `filterControlIds`, `synonymsControlIds`, `redirectControlIds` or `promoteControlIds` with the matching `update_mask`; the borrowed snippet above is the boost case.
 - List fields and `update_mask`: the `discoveryengine.v1alpha` Discovery document describes the `servingConfigs.patch` parameter `updateMask` as "Indicates which fields in the provided ServingConfig to update. The following are NOT supported: * ServingConfig.name If not set, all supported fields are updated." and `servingConfigs.get` as "Gets a ServingConfig. Returns a NotFound error if the ServingConfig does not exist."; it does not say how repeated fields are merged. Neither the serving configs page nor the serving controls guide says whether a `*ControlIds` list in the request replaces the stored list or is added to it, so this is not confirmed by the official docs (AIP-134, https://google.aip.dev/134, covers field masks in general, not this service); check the stored list with `servingConfigs.get` after each update.
 - Deleting a serving config is destructive; try it in a disposable app or project first.
-- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero. The command runs in a subshell that starts with `set +x`, so `set -x` tracing does not print the token, and `TOKEN` does not stay in the calling shell.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/serving-configs (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/configure-serving-controls (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
