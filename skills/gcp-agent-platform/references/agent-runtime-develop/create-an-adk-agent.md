@@ -147,16 +147,18 @@ print(session)
 await app.async_list_sessions(user_id="USER_ID")
 ```
 
+Adapted (not in the official docs): `session_id="SESSION_ID"` is replaced with `session["id"]`, the ID of the session created above, and the result goes to `fetched_session` so that `session` keeps the created session.
+
 ```python
-session = await app.async_get_session(user_id="USER_ID", session_id="SESSION_ID")
+fetched_session = await app.async_get_session(user_id="USER_ID", session_id=session["id"])
 ```
 
-Adapted (not in the official docs): `session_id=SESSION_ID` is written as the string `"SESSION_ID"`, because the bare name is undefined; the same page passes `session_id="SESSION_ID"` to `async_get_session`.
+Adapted (not in the official docs): `session_id=SESSION_ID` (an undefined name) is replaced with `session["id"]`, the ID of the session created above.
 
 ```python
 async for event in app.async_stream_query(
     user_id="USER_ID",
-    session_id="SESSION_ID", # Optional. you can pass in the session_id when querying the agent
+    session_id=session["id"], # Optional. you can pass in the session_id when querying the agent
     message="What is the exchange rate from US dollars to Swedish currency on 2025-04-03?",
 ):
     print(event)
@@ -218,8 +220,14 @@ async for event in app.async_stream_query(
     print(event)
 ```
 
+Adapted (not in the official docs): after the stream is consumed, the session is read again with `async_get_session` and that latest session is passed, instead of `initial_session` from before the conversation.
+
 ```python
-await app.async_add_session_to_memory(session=initial_session)
+latest_session = await app.async_get_session(
+    user_id="USER_ID",
+    session_id=initial_session["id"],
+)
+await app.async_add_session_to_memory(session=latest_session)
 ```
 
 ```python
@@ -236,7 +244,7 @@ print(response)
 - `session_service_builder`: Optional function returning a session service; overrides the managed session service.
 - `memory_service_builder`: Optional function returning a `BaseMemoryService`; overrides the default memory service.
 - `async_stream_query(user_id, message, session_id)`: Streams events; `session_id` is optional.
-- `async_create_session` / `async_list_sessions` / `async_get_session`: Session management; the session is the dictionary form of an ADK session object.
+- `async_create_session` / `async_list_sessions` / `async_get_session`: Session management; the created session is the dictionary form of an ADK session object.
 - `async_add_session_to_memory` / `async_search_memory`: Generate and search memories.
 - `USER_ID`: User-defined ID with a character limit of 128 (for example `user-123`).
 - `PreloadMemoryTool`: Retrieves memories at the start of each turn and injects them into the model request context before the user turn.
@@ -253,7 +261,7 @@ print(response)
 - Corrected from the official docs: the Memories example's instruction item 1 ended "You don't have the outcome of the actual tool execution, so provide a hypothetical tool execution outcome."
 - Corrected from the official docs: the source writes `model = "gemini-2.0-flash"` and, in the Memories example, `model="gemini-2.0-flash",`. The model versions page lists `gemini-2.0-flash` in its "Retired models" table ("`gemini-2.0-flash` | February 5, 2025 | June 1, 2026 | `gemini-3.5-flash-lite`": release date, retirement date, recommended upgrade; https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-versions, retrieved 2026-11-21). Both examples use `gemini-3.5-flash` instead, the model in the ADK quickstart (`model="gemini-3.5-flash"`, https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/quickstart-adk, retrieved 2026-11-21), which the model versions page lists as available ("May 19, 2026 | May 19, 2027 or later").
 - Corrected from the official docs: `get_exchange_rate` put `currency_date` into the URL path (`f"https://api.frankfurter.app/{currency_date}"`) without checking it.
-- `async_add_session_to_memory(session=initial_session)` passes the session dictionary created before the conversation, as the source does. In google-cloud-aiplatform 2.10.0 (`vertexai/agent_engines/templates/adk.py`, `AdkApp.async_add_session_to_memory`), a session with no events (a new session from `async_create_session` has `events` empty: google-adk 2.15.0 `Session.events` defaults to an empty list) is re-read with `async_get_session(user_id=session.user_id, session_id=session.id)` before memories are generated ("Get the latest version of the session in case it was updated."), so the events added by `async_stream_query` are included. With a session object that already holds events, re-read it first with `await app.async_get_session(user_id="USER_ID", session_id=...)`.
+- Adapted from the official docs: the source passes `initial_session` (created before the conversation) to `async_add_session_to_memory` and queries and reads with the placeholder `SESSION_ID`; the examples use the created session's `["id"]` and pass the session read after the stream. In google-cloud-aiplatform 2.10.0 (`vertexai/agent_engines/templates/adk.py`), `async_create_session` returns a dictionary (`model_dump(mode="json")`), the local `async_get_session` returns the ADK `Session` object from the session service, and `async_add_session_to_memory` accepts either (a dictionary goes through `Session.model_validate`). It also re-reads a session that has no events ("Get the latest version of the session in case it was updated."), so the source's call still includes the conversation in 2.10.0, but passing the latest session does not depend on that.
 - Corrected from the official docs: `get_exchange_rate` put the model-supplied `currency_date` in the URL as given; the example validates it with `strptime("%Y-%m-%d")`, which also accepts dates without zero padding such as `2023-1-5`, so it sends the normalized `date().isoformat()` value.
 - Corrected from the official docs: the `Agent` rebuilt with `tools=[get_exchange_rate]` did not pass `generate_content_config`, so the safety settings of the first example were dropped for it and for the Sessions example that uses it (google-adk 2.15.0 `google/adk/agents/llm_agent.py`: `generate_content_config: types.GenerateContentConfig | None = None`, `Agent: TypeAlias = LlmAgent`).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-adk-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
