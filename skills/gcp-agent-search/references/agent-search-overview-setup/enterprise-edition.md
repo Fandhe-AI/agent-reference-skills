@@ -20,7 +20,7 @@ How to turn Enterprise edition features on or off for an Agent Search (formerly 
 
 Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (the twin for this page has no code block); `searchTier` is `SEARCH_TIER_STANDARD` or `SEARCH_TIER_ENTERPRISE`:
 
-Before you run it, replace `SEARCH_TIER` with `SEARCH_TIER_STANDARD` or `SEARCH_TIER_ENTERPRISE`, and `SEARCH_ADD_ON` with `SEARCH_ADD_ON_LLM` to turn on generative responses; to create the app without the add-on, delete the `"searchAddOns"` line and the comma at the end of the `"searchTier"` line. Left as is, the two placeholders are not valid values and the request fails.
+Before you run it, replace `SEARCH_TIER` with `SEARCH_TIER_STANDARD` or `SEARCH_TIER_ENTERPRISE`, and `SEARCH_ADD_ON` with `SEARCH_ADD_ON_LLM` to turn on generative responses; to create the app without the add-on, delete the `"searchAddOns"` line and the comma at the end of the `"searchTier"` line. Left as is, the two placeholders are not valid values and the request fails. For an app that connects a website data store, choose `SEARCH_TIER_ENTERPRISE` (see Notes).
 
 Run the command by itself and type `APP_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the value.
 
@@ -51,7 +51,9 @@ curl -q --fail-with-body -X POST \
 
 ## Notes
 
-- Features that require Enterprise edition include (source list): "Website search (both Standard and Enterprise editions)", extractive answers, extractive segments, and core generative answers. The parenthetical "(both Standard and Enterprise editions)" is not explained in the source.
+- Features that require Enterprise edition include (source list): "Website search (both Standard and Enterprise editions)", extractive answers, extractive segments, and core generative answers.
+- Source inconsistency: this page lists "Website search (both Standard and Enterprise editions)" under "Features that require Enterprise edition include:", and does not explain the parenthetical, while the advanced features page says "Enterprise edition features are required for any Agent Search app that uses website data (basic website search and advanced website indexing)." Both are kept as written.
+- Adapted from the official docs: the text before the REST example says to choose `SEARCH_TIER_ENTERPRISE` for an app that connects a website data store, as the advanced features page requires.
 - Website search: the advanced features page says "turning on Enterprise edition features is required for website search. That is, Enterprise edition features are required for any Agent Search app that uses website data (basic website search and advanced website indexing). This setting can't be turned off for apps that are attached to website data stores." So both basic website search and advanced website indexing require Enterprise edition.
 - You can't turn off Enterprise edition for apps that are connected to a website data store.
 - Turning on Enterprise edition features can incur additional costs; see the Agent Search pricing page (https://docs.cloud.google.com/generative-ai-app-builder/pricing).
