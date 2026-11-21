@@ -141,6 +141,8 @@ To reinitialize the web SDK, call `UJET.initialize` again after successful authe
 | User starts unauthenticated | Initialize SDK with a guest/random identifier. |
 | User authenticates mid-session | Update CCAI Platform with the API, generate a new JWT, and reinitialize the SDK. |
 
+The Express `GET /auth/token` example above signs a token only for a logged-in user (`req.user.id`) and answers other requests with `401`, so it does not cover the "User starts unauthenticated" row. When the user isn't authenticated, the source says to "initialize the CCAI Platform SDK using a random or guest identifier"; for that, your server must issue its own identifier for each guest session, keep it for that session, and sign that identifier instead. The official docs and this page do not show how.
+
 ## Notes
 
 - The source also shows a Flask (Python) example using `joserfc`; it is left out because it mixes JavaScript syntax into Python (`if (request.user) {`, `payload.identifier = request.user.id,` on a `dict`, a closing `}`), so it does not parse, and it reads `request.user`, which the example does not define. Use the Express example as the pattern. In the Express example, `your_session_middleware` and `req.user` stand for your own session handling.
