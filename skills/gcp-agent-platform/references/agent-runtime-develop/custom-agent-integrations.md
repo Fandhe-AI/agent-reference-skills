@@ -209,6 +209,8 @@ credentials = google.oauth2.credentials.Credentials(
 )
 ```
 
+An access token alone works until it expires; to refresh it after expiry, set all four of `refresh_token`, `token_uri`, `client_id` and `client_secret` (not in the official docs): without a `refresh_handler`, `Credentials.refresh` raises `RefreshError` "The credentials do not contain the necessary fields need to refresh the access token. You must specify refresh_token, token_uri, client_id, and client_secret." (google-auth 2.62.0 as bundled with gcloud 593.0.0, `google/oauth2/credentials.py`, `_perform_refresh_token`).
+
 ## Notes
 
 - Credential types:
