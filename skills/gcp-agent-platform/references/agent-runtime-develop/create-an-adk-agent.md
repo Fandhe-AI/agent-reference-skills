@@ -14,13 +14,15 @@ Use the `AdkApp` class of the Agent Platform SDK for Python to create ADK agents
 model = "gemini-2.0-flash"
 ```
 
+Adapted (not in the official docs): the threshold `types.HarmBlockThreshold.OFF` is replaced with `types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE`, so the example keeps the dangerous-content filter on for the agent it configures; `BLOCK_MEDIUM_AND_ABOVE` is a member of `HarmBlockThreshold` in google-genai 3.6.1.
+
 ```python
 from google.genai import types
 
 safety_settings = [
     types.SafetySetting(
         category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-        threshold=types.HarmBlockThreshold.OFF,
+        threshold=types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
     ),
 ]
 ```
@@ -229,7 +231,7 @@ print(response)
 - `USER_ID`: User-defined ID with a character limit of 128 (for example `user-123`).
 - `PreloadMemoryTool`: Retrieves memories at the start of each turn and injects them into the model request context before the user turn.
 - `vertexai.agent_engines.AdkApp` is the Agent Runtime SDK module, not the deprecated generative AI module. SDK version 2.0.1 refactored `agent_engines` into client-based modules (see [runtime.md](./runtime.md)).
-- `HarmBlockThreshold.OFF` in the safety example turns the safety filter off for that category; the source shows it as an example of configuring safety settings.
+- Corrected from the official docs: the safety settings example set `threshold=types.HarmBlockThreshold.OFF,` for `HARM_CATEGORY_DANGEROUS_CONTENT`, which turns that filter off ("Turn off the safety filter entirely.", google-genai 3.6.1 `google/genai/types.py`, `HarmBlockThreshold.OFF`) for the agent built from `generate_content_config`. The same enum defines `BLOCK_MEDIUM_AND_ABOVE` ("Block content with a medium harm probability or higher.").
 - With a custom in-memory session or memory service, state might not stay in sync after deployment to Agent Runtime; the source only recommends customizing if you can synchronize state across instances in a deployed environment.
 - Write tool docstrings that fully describe parameters, behavior and return values; the model uses them to choose a function. Test functions locally first. The tool calls an external API with a fixed URL (Frankfurter).
 - Corrected from the official docs: the source writes `session_id=SESSION_ID, # Optional.` and `session_id=initial_session.id,`.

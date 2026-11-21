@@ -17,9 +17,9 @@ Governance in Gemini Enterprise Agent Platform ("Agent Platform") is the framewo
 5. Configure Semantic governance policies (natural language constraints on tool usage).
 6. Deploy Agent Gateway and monitor traffic. If any control runs in audit mode, query Cloud Logging for a consolidated "would have been blocked" report before switching to active enforcement.
 
-### Audit-mode (dry-run) switches
+### Enforcement and audit mode
 
-For the IAM step, select **Audit-only** in the Google Cloud console or set `iamEnforcementMode: "DRY_RUN"` in the authorization extension `metadata` block. Snippet taken from https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/set-up-agent-gateway (authorization extension with the dry-run field):
+Enforce policies in production. Audit mode (dry-run) is a staging or migration step before enforcing: it logs evaluations without blocking access. For the IAM step, the authorization extension enforces when `iamEnforcementMode` is absent (or **Enforce policies** is selected in the Google Cloud console); set `iamEnforcementMode: "DRY_RUN"` in its `metadata` block (or select **Audit-only**) only while validating, then remove it. Snippet taken from https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/set-up-agent-gateway (enforcing authorization extension):
 
 ```bash
 cat >iap-request-authz-extension.yaml <<EOF
@@ -29,7 +29,6 @@ failOpen: false
 timeout: 1s
 metadata:
   iapPolicyVersion: "V2"
-  iamEnforcementMode: "DRY_RUN"
 EOF
 ```
 
@@ -51,6 +50,7 @@ EOF
   - IAM (IAP): audit (dry-run): `iamEnforcementMode: "DRY_RUN"` in the authorization extension `metadata` block, or **Audit-only** in the console; enforcement: Select **Enforce policies** in the console (writes `iamEnforcementMode: "ENFORCED"` when creating a gateway, or removes `iamEnforcementMode` when updating an existing gateway), or remove `iamEnforcementMode`
   - Model Armor: audit (dry-run): `enforcement_type: "INSPECT_ONLY"`; enforcement: `enforcement_type: "INSPECT_AND_BLOCK"`
   - Semantic governance: audit (dry-run): `sgpEnforcementMode: "DRY_RUN"`; enforcement: Remove `sgpEnforcementMode` (or set it to `"ENFORCE"`)
+- The source's tips on audit mode, quoted: IAM: "For testing in audit mode, select **Audit-only** in the Google Cloud console or set `iamEnforcementMode: "DRY_RUN"` in the authorization extension `metadata` block to log evaluations without blocking access."; Model Armor: "For testing in audit mode, set `enforcement_type: "INSPECT_ONLY"` in the authorization extension `metadata` block to log findings without blocking requests."; Semantic governance: "For testing in audit mode, you can set `sgpEnforcementMode: "DRY_RUN"` in the authorization extension `metadata` block to evaluate constraints in log-only mode." The set-up guide calls **Enforce policies** "recommended for production environments" (https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/set-up-agent-gateway, retrieved 2026-11-21).
 - All policy types are enforced internally through authorization policies or extension bindings managed through Service Extensions.
 - Support for token management policies and extension bindings is "coming soon"; features and timing are subject to change (early-access sign-up is offered by the source).
 - Agent Gateway for cross-cloud (Kubernetes clusters outside Google Cloud) is Limited Preview.

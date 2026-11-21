@@ -35,17 +35,18 @@ registries:
   - AGENT_REGISTRY_PATH
 ```
 
+Adapted (not in the official docs): added `--project=PROJECT_ID`, so the command operates on the same project as the `projects/PROJECT_ID/...` resource names in the YAML files on this page instead of the gcloud default project.
+
 ```bash
 gcloud network-services agent-gateways import AGENT_GATEWAY_NAME \
  --source="my-agent-gateway-egress.yaml" \
- --location=LOCATION
+ --location=LOCATION \
+ --project=PROJECT_ID
 ```
 
 ### Attach an IAP authorization policy (egress)
 
-Without an attached `AuthzPolicy`, an Agent-to-Anywhere gateway adopts a default-deny policy and blocks all outbound traffic. Authorization extension that points to IAP. The example enforces the IAP decision; to audit only during a migration, add `iamEnforcementMode: "DRY_RUN"` under `metadata` (in dry-run mode, requests that IAP denies are not blocked).
-
-Adapted (not in the official docs): removed `iamEnforcementMode: "DRY_RUN"`, so the setup enforces IAP authorization; the source says to remove this line to enforce.
+Without an attached `AuthzPolicy`, an Agent-to-Anywhere gateway adopts a default-deny policy and blocks all outbound traffic. Authorization extension that points to IAP. Enforcement is the default when `iamEnforcementMode` is absent, as in this example; add `iamEnforcementMode: "DRY_RUN"` under `metadata` only in a staging environment or during a migration (in dry-run mode IAP does not enforce IAM policies and requests it would deny are not blocked; `failOpen: false` only controls what happens when the call to the extension fails or times out).
 
 ```bash
 cat >iap-request-authz-extension.yaml <<EOF
@@ -58,10 +59,13 @@ metadata:
 EOF
 ```
 
+Adapted (not in the official docs): added `--project=PROJECT_ID`, so the command operates on the same project as the `projects/PROJECT_ID/...` resource names in the YAML files on this page instead of the gcloud default project.
+
 ```bash
 gcloud beta service-extensions authz-extensions import AUTHORIZATION_EXTENSION_NAME \
   --source=iap-request-authz-extension.yaml \
-  --location=LOCATION
+  --location=LOCATION \
+  --project=PROJECT_ID
 ```
 
 ```bash
@@ -79,10 +83,13 @@ customProvider:
 EOF
 ```
 
+Adapted (not in the official docs): added `--project=PROJECT_ID`, so the command operates on the same project as the `projects/PROJECT_ID/...` resource names in the YAML files on this page instead of the gcloud default project.
+
 ```bash
 gcloud network-security authz-policies import AUTHORIZATION_POLICY_NAME \
   --source=iap-request-authz-policy.yaml \
-  --location=LOCATION
+  --location=LOCATION \
+  --project=PROJECT_ID
 ```
 
 ### Egress gateway with Terraform
@@ -116,10 +123,13 @@ googleManaged:
   governedAccessPath: CLIENT_TO_AGENT
 ```
 
+Adapted (not in the official docs): added `--project=PROJECT_ID`, so the command operates on the same project as the `projects/PROJECT_ID/...` resource names in the YAML files on this page instead of the gcloud default project.
+
 ```bash
 gcloud network-services agent-gateways import AGENT_GATEWAY_NAME \
  --source="my-agent-gateway-ingress.yaml" \
- --location=LOCATION
+ --location=LOCATION \
+ --project=PROJECT_ID
 ```
 
 ## Notes
@@ -162,12 +172,13 @@ gcloud network-services agent-gateways import AGENT_GATEWAY_NAME \
 - Every Agent-to-Anywhere gateway requires an attached `AuthzPolicy`; without one it is default-deny and blocks all outbound traffic. Client-to-Agent gateways are not default-deny: attaching a `CONTENT_AUTHZ` policy (Model Armor, semantic governance) is optional and inbound requests pass through if none is attached.
 - Agent access to a destination requires an IAM access policy granting `iap.resources.egressViaIAP` to the agent identity (see the IAM Unified Access Policies page). Unregistered destinations need a policy for unregistered endpoints; destinations in a different project than the gateway must be registered in the gateway project's Agent Registry and are valid only for Agent Runtime in egress mode.
 - Turn off enforcement of the managed organization policy constraint `constraints/iam.managed.disableAccessPolicyBindings` ("Disable binding access policy to resource"); it is enabled by default for new organizations and prevents binding a UAP to a resource.
-- Recommended: deploy IAP and Semantic governance in dry-run mode first. Cross-project governance is supported only for Agent Runtime with egress gateways, not Gemini Enterprise. Gemini Enterprise apps in `global`, `us` or `eu` map to regional gateways (Agent Gateway region must correspond to the app's location).
+- Dry-run is a validation step before enforcing, not the production setting. The source recommends it for validation ("To validate your configuration without blocking traffic, we recommend that you deploy IAP in dry-run mode initially", and the same for Semantic governance policies); it describes dry-run as a mode where "the gateway permits all traffic through and only generates audit logs" and calls **Enforce policies** "recommended for production environments". Cross-project governance is supported only for Agent Runtime with egress gateways, not Gemini Enterprise. Gemini Enterprise apps in `global`, `us` or `eu` map to regional gateways (Agent Gateway region must correspond to the app's location).
 - VPC Service Controls are supported only for gateways created after September 8, 2026 that use the agent connectivity template for VPC connectivity; VPC egress is required to enable VPC Service Controls perimeter enforcement.
 - The Model Armor path requires granting the Agent Gateway service account permissions on the templates (especially when templates are in another project); see "Delegate authorization for Agent Gateway".
-- The source Terraform example also includes the IAP `google_network_services_authz_extension` and `google_network_security_authz_policy` resources, and a separate ingress gateway Terraform example; these and the Console steps are omitted here. The source also has a non-dry-run extension YAML (same fields without `iamEnforcementMode`).
+- The source Terraform example also includes the IAP `google_network_services_authz_extension` and `google_network_security_authz_policy` resources, and a separate ingress gateway Terraform example; these and the Console steps are omitted here. The source also shows a dry-run variant of the IAP extension YAML (the same fields plus `iamEnforcementMode: "DRY_RUN"`); the enforcing variant is the one shown here.
+- `failOpen`: the `AuthzExtension.failOpen` field "Determines how the proxy behaves if the call to the extension fails or times out" (Network Services API `networkservices.v1` Discovery document); it does not turn dry-run decisions into blocks.
 - Creating, importing and attaching policies changes live traffic enforcement; try them in a disposable project first.
-- Corrected from the official docs: the IAP authorization extension example set `iamEnforcementMode: "DRY_RUN"` (audit-only) in the main setup path.
+- Corrected from the official docs: the four `import` commands ended with `--location=LOCATION` and no `--project`, so they ran against the gcloud default project while the YAML names `projects/PROJECT_ID/...`; `--project` is a gcloud-wide flag of each command (gcloud 593.0.0 help, GCLOUD WIDE FLAGS).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/set-up-agent-gateway (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

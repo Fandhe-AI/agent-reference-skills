@@ -68,7 +68,9 @@ gcloud service-extensions authz-extensions describe AUTHZ_EXTENSION_NAME \
  --format=yaml
 ```
 
-IAP extension (include `iamEnforcementMode: "DRY_RUN"` for audit-only; remove it to enforce):
+IAP extension: enforcement is the default when `iamEnforcementMode` is absent. Add `iamEnforcementMode: "DRY_RUN"` under `metadata` only in a staging environment or during a migration; in dry-run mode IAP does not enforce IAM policies and requests it would deny are not blocked (`failOpen: false` does not change that, it only controls what happens when the call to the extension fails or times out).
+
+Adapted (not in the official docs): removed `iamEnforcementMode: "DRY_RUN" # Omit this line to enforce policies`, so updating the extension keeps IAP enforcement; the source says to omit this line to enforce policies.
 
 ```yaml
 name: AUTHZ_EXTENSION_NAME
@@ -77,7 +79,6 @@ failOpen: false
 timeout: 1s
 metadata:
   iapPolicyVersion: "V2"
-  iamEnforcementMode: "DRY_RUN" # Omit this line to enforce policies
 ```
 
 Model Armor extension:
@@ -183,6 +184,8 @@ gcloud network-services agent-connectivity-templates delete CONNECTIVITY_TEMPLAT
 - The registry must be a single regional registry matching the gateway's region (and the app location for Gemini Enterprise).
 - To attach new IAP, Model Armor or custom authorization policies to an existing gateway, use gcloud as described in "Delegate authorization for Agent Gateway"; console sections appear only if the features were enabled at creation.
 - Deleting a gateway, policies, extensions, connectivity templates or Agent Runtime bindings is destructive and disrupts agent traffic; try these steps in a disposable project first. A connectivity template cannot be deleted while a gateway references it; underlying PSC network attachments, private DNS zones and Certificate Manager `TrustConfig` resources are removed separately.
+- Corrected from the official docs: the IAP extension example contained `iamEnforcementMode: "DRY_RUN" # Omit this line to enforce policies`; importing it as an update switches an enforcing extension to audit-only. The source's text: "Include `iamEnforcementMode: "DRY_RUN"` for audit-only mode, or remove `iamEnforcementMode` to enforce policies". The set-up guide describes dry-run as a mode where "the gateway permits all traffic through and only generates audit logs" and calls **Enforce policies** "recommended for production environments" (https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/set-up-agent-gateway, retrieved 2026-11-21).
+- `failOpen`: the `AuthzExtension.failOpen` field "Determines how the proxy behaves if the call to the extension fails or times out" (Network Services API `networkservices.v1` Discovery document); it does not turn dry-run decisions into blocks.
 - The immutable-settings table is the source table; its separator row, which the source places after the last row, is moved under the header so the table renders.
 - The source also shows Console steps for each task.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/manage-agent-gateways (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

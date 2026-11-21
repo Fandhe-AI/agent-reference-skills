@@ -10,7 +10,7 @@ How to query agents: through the Agent Platform SDK (same code locally or deploy
 
 ### Call a deployed ADK API server through the underlying API
 
-For an ADK API server deployed from a Dockerfile or container image, invoke `/api/run` (single response):
+For an ADK API server deployed from a Dockerfile or container image, invoke `/api/run` (single response). Both calls below use an existing session: `"s_abc"` is a placeholder. First create a session with the ADK API server route `POST /apps/{app_name}/users/{user_id}/sessions` (called through the same `/api/` prefix, that is `.../reasoningEngines/RESOURCE_ID/api/apps/my_sample_agent/users/u_123/sessions`, with the same `appName` and `userId` as the run request), then replace `s_abc` with the `id` of the returned session:
 
 ```bash
 curl \
@@ -75,6 +75,7 @@ https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCA
 - With the Agent Platform SDK, query code is the same whether the agent runs locally or deployed; the supported operations vary by framework.
 - The deployed endpoint is equivalent to replacing the localhost base URL with the deployed agent base URL. For custom containers, endpoints and request / response structures are defined by the runtime contract.
 - Source inconsistency: the source's generic endpoint pattern is `https://LOCATION-aiplatform.googleapis.com/reasoningEngines/v1/projects/PROJECT_NUMBER/locations/LOCATION/reasoningEngines/RESOURCE_ID/api/API_PATH` (an extra `/reasoningEngines` before `/v1`, and `PROJECT_NUMBER` while its variable list names `PROJECT_ID`), but its own `curl` examples call `https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID/api/run`. The pattern above follows the `curl` examples, which use the same `v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID` prefix as the `reasoningEngines` methods of the `aiplatform.v1` Discovery document (the `/api/...` suffix itself is not in the Discovery document).
+- Sessions: the source's examples pass a fixed `sessionId` (`s_abc`) and do not show creating it. In google-adk 2.15.0 (`google/adk/cli/api_server.py`, `_register_production_endpoints`), `POST /apps/{app_name}/users/{user_id}/sessions` creates a session (the request body is optional; `session_id` defaults to "a random session ID") and returns it, and `/run` and `/run_sse` answer 404 "Session not found" for an unknown `session_id` unless the server was started with `auto_create_session` (default `False` in `google/adk/cli/fast_api.py`). The `POST /apps/{app_name}/users/{user_id}/sessions/{session_id}` variant is marked deprecated ("Please use create_session instead"). The `/api/` prefix for this route follows the source's `.../api/API_PATH` pattern; the source does not show it for sessions.
 - `LOCATION` is the region where the agent is deployed (see the Agent Platform locations page).
 - Playground (console): open Agent Platform Deployments, select the runtime, open the **Playground** tab, type a message, or click **New Session**. If OpenTelemetry traces are enabled you can view **Trace**, **Event** (graph of invoked APIs), **State** and **Sessions**.
 - The source also shows the console steps in detail.

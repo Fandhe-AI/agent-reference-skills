@@ -14,6 +14,8 @@ Optional integrations for a custom agent class on Agent Runtime: send traces to 
 pip install openinference-instrumentation-langchain==0.1.34
 ```
 
+Adapted (not in the official docs): added `from openinference.instrumentation import TraceConfig` and passed `config=TraceConfig(hide_inputs=True, hide_outputs=True)` to `LangChainInstrumentor().instrument()`, so prompts, model responses and tool inputs / outputs are masked in the spans exported to Cloud Trace instead of being readable by everyone with trace access.
+
 ```python
 from typing import Callable, Sequence
 
@@ -37,6 +39,7 @@ class CLASS_NAME:
         from opentelemetry.sdk.trace import TracerProvider
         from opentelemetry.sdk.trace.export import SimpleSpanProcessor
         from openinference.instrumentation.langchain import LangChainInstrumentor
+        from openinference.instrumentation import TraceConfig
         import google.cloud.trace_v2 as cloud_trace_v2
         import google.auth
 
@@ -52,7 +55,9 @@ class CLASS_NAME:
         trace.get_tracer_provider().add_span_processor(
             SimpleSpanProcessor(cloud_trace_exporter)
         )
-        LangChainInstrumentor().instrument()
+        LangChainInstrumentor().instrument(
+            config=TraceConfig(hide_inputs=True, hide_outputs=True)
+        )
         # end of additional code required
 
         import vertexai
@@ -68,7 +73,7 @@ class CLASS_NAME:
         return self.graph.invoke(**kwargs)
 ```
 
-OpenLLMetry alternative package:
+OpenLLMetry alternative package. It records prompts and completions in spans by default; disable that content tracing as well by setting the environment variable `TRACELOOP_TRACE_CONTENT` to `false` for the deployed agent:
 
 ```bash
 pip install opentelemetry-instrumentation-langchain==0.38.10
@@ -190,11 +195,12 @@ credentials = google.oauth2.credentials.Credentials(
   - Identity providers (External accounts (workload identity federation)): Identity Platform, Firebase Authentication or any OIDC provider.
 - Roles:
   - `roles/secretmanager.secretAccessor`: Grant to the agent's service account (through the Google Cloud console) to read secrets.
-- Tracing: import and initialize OpenTelemetry instrumentation in `.set_up`. The OpenLLMetry variant installs `opentelemetry-instrumentation-langchain==0.38.10` and replaces the instrumentor lines with `from opentelemetry.instrumentation.langchain import LangchainInstrumentor` and `LangchainInstrumentor().instrument()`; the rest of the class is unchanged. Source mentions OpenTelemetry Google Cloud Integration combined with OpenInference or OpenLLMetry.
+- Tracing: import and initialize OpenTelemetry instrumentation in `.set_up`. The OpenLLMetry variant installs `opentelemetry-instrumentation-langchain==0.38.10` and replaces the instrumentor lines with `from opentelemetry.instrumentation.langchain import LangchainInstrumentor` and `LangchainInstrumentor().instrument()`; the rest of the class is unchanged. `TraceConfig` belongs to OpenInference and does not apply to it: in opentelemetry-instrumentation-langchain 0.38.10, `should_send_prompts()` (`opentelemetry/instrumentation/langchain/utils.py`) reads `os.getenv("TRACELOOP_TRACE_CONTENT") or "true"`, and the package README says "To disable logging, set the `TRACELOOP_TRACE_CONTENT` environment variable to `false`." Source mentions OpenTelemetry Google Cloud Integration combined with OpenInference or OpenLLMetry.
 - Environment variables: make them available through `os.environ` during development and define them at deployment time (see the deploy guide, "Define environment variables").
 - Secret Manager: the source's template carries `self.secret_id = secret_id`, which is undefined; replaced in the Adapted block above.
 - The source's `google_auth_oauthlib.flow` (`InstalledAppFlow.from_client_config`) example is omitted: as written it reads `flow.credentials` without a token exchange (google-auth-oauthlib 1.5.0, `google_auth_oauthlib/flow.py`: ":meth:`fetch_token` must be called before accessing this") and does not verify the `state` returned to the callback. Follow the OAuth 2.0 web server flow at https://developers.google.com/identity/protocols/oauth2/web-server (verify `state` before exchanging the code), and keep the client config in Secret Manager as the source shows.
 - The OAuth block uses uppercase placeholders (`ACCESS_TOKEN`, `REFRESH_TOKEN`, `CLIENT_SECRET`); never hardcode real tokens or client secrets, keep them in Secret Manager.
+- Adapted from the official docs: the OpenInference template called `LangChainInstrumentor().instrument()` with no trace configuration, so span attributes carry the conversation and tool payloads to Cloud Trace. `TraceConfig` and its fields `hide_inputs` ("Hides input value & messages") and `hide_outputs` ("Hides output value & messages") are defined in `openinference/instrumentation/config.py` of openinference-instrumentation 0.1.17 (the minimum that openinference-instrumentation-langchain 0.1.34 requires, `openinference-instrumentation>=0.1.17`) and 0.1.82 (latest, which also hides input images and documents); openinference-instrumentation-langchain 0.1.34 and 0.1.89 read `kwargs.get("config")` in `LangChainInstrumentor._instrument` and pass it to `OITracer`. Without code changes, the same fields read the environment variables `OPENINFERENCE_HIDE_INPUTS` and `OPENINFERENCE_HIDE_OUTPUTS`. In 0.1.17, `hide_inputs` does not mask the `llm.prompts` attribute; 0.1.82 does (`(self.hide_inputs or self.hide_prompts) and SpanAttributes.LLM_PROMPTS in key`), so use openinference-instrumentation 0.1.82 or later. Prompts and tool payloads can contain credentials or personal data; restrict who can read Cloud Trace in the project.
 - Corrected from the official docs: the ADC template had `model: str = "meta/llama3-405b-instruct-maas",` before non-default parameters and `import google.auth` without `import google.auth.transport.requests`; the Secret Manager template had `self.secret_id = secret_id # <- new`; the OAuth access-token snippet used `google.oauth2.credentials` without an import; the Secret Manager template passed `model_kwargs={"api_key": secret_version.payload.data.decode()},  # <- new`, and in langchain-anthropic 1.7.12 (`langchain_anthropic/chat_models.py`) the client key is `anthropic_api_key: SecretStr = Field(default=SecretStr(""), alias="api_key")` while `model_kwargs` is merged into the request payload (`**self.model_kwargs`).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-a-custom-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
