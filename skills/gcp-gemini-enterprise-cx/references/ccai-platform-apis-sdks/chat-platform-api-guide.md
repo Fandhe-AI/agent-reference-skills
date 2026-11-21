@@ -44,7 +44,7 @@ Each signature is a Base64-encoded HMAC-SHA256 digest of:
 X-Signature-Timestamp + raw_request_body
 ```
 
-Handler steps: read both headers; reject the request if either is missing; reject stale timestamps to reduce replay risk; read the raw body before parsing JSON; compute the expected signature with each active webhook secret; compare with a constant-time comparison; accept if any active secret matches. Then return a success response quickly and process the event idempotently (deliveries and API responses can arrive in different orders, and the same state change can arrive more than once).
+Handler steps: read both headers; reject the request if either is missing; reject stale timestamps to reduce replay risk; read the raw body before parsing JSON; compute the expected signature with each active webhook secret; compare with a constant-time comparison; accept if any active secret matches. The source then says: "If verification succeeds, return a success response quickly and process the event idempotently." Before that success response, save the verified event to a database or a durable queue, return the success (2xx) response only after the save succeeds, and process the saved event asynchronously and idempotently (deliveries and API responses can arrive in different orders, and the same state change can arrive more than once). If the save fails, return an error status instead, so the event is not acknowledged and lost. The persist-before-acknowledging order and the error status are not stated in the official docs.
 
 ### Create or update the end user
 
@@ -93,7 +93,7 @@ Optional context for virtual-agent routing, which a queue-selection virtual agen
 
 ### Process webhook events
 
-Store at least the chat ID, event type, event timestamp, message sender / type / content when present, and escalation or deflection data. Verify every signature, store processed event IDs or a deterministic event key so retries don't create duplicates, return a 2xx response after accepting the event, and process downstream side effects asynchronously when possible. If events arrive out of order, reconcile display order with event timestamps.
+Store at least the chat ID, event type, event timestamp, message sender / type / content when present, and escalation or deflection data. Verify every signature, store processed event IDs or a deterministic event key so retries don't create duplicates, return a 2xx response after accepting the event, and process downstream side effects asynchronously when possible. "Accepting" here means the verified event has been saved to a database or durable queue: return the 2xx only after that save succeeds, and do the downstream processing from the saved event (this meaning is not stated in the official docs). If events arrive out of order, reconcile display order with event timestamps.
 
 ### Send a text message
 

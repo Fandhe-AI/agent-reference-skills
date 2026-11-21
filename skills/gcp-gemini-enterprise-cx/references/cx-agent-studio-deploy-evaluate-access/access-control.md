@@ -14,14 +14,21 @@ Open the IAM page in the Google Cloud console. To add a principal: click the add
 
 ### Restrict access to one agent application
 
-When adding or editing a principal, create a conditional role binding. The following condition provides access to a specific agent application as well as the top-level resources within the project that the agent application needs:
+When adding or editing a principal, create a conditional role binding. The source gives one condition that "provides access to a specific agent application as well as top-level resources within the project needed by the agent application". In one binding, its clauses for the shared, location-wide collections (`operations`, `sipDomains`, `omnichannels`, `dataStores`, `routes`, `endpointConfigs`) match every such resource in `PROJECT_ID` / `LOCATION_ID`, including those used by other apps; the `ces` Discovery documents (`v1` and `v1beta`) have operations only at `projects/{projectsId}/locations/{locationsId}/operations/{operationsId}`, with no app-scoped path. With `roles/ces.admin`, which the IAM reference shows includes `ces.operations.cancel` and `ces.operations.delete`, a single binding would let the principal cancel and delete any operation in that location. This page therefore splits the source's condition into two bindings (the split is not in the official docs).
 
-Adapted (not in the official docs): the app clause `resource.name.startsWith(".../apps/APP_ID")` is split into an exact match for the app and a prefix ending in `/` for its child resources, so the binding no longer also covers other apps whose ID starts with `APP_ID`.
+Binding 1, the editing role (for example `roles/ces.admin` or one of the editor roles below), limited to the project resource and the one app:
+
+Adapted (not in the official docs): this binding keeps only the project and app clauses of the source's condition, and the app clause `resource.name.startsWith(".../apps/APP_ID")` is split into an exact match for the app and a prefix ending in `/` for its child resources, so the binding covers neither other apps whose ID starts with `APP_ID` nor the location-wide collections.
 
 ```text
 resource.name == "projects/PROJECT_ID" ||
 resource.name == "projects/PROJECT_ID/locations/LOCATION_ID/apps/APP_ID" ||
-resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/apps/APP_ID/") ||
+resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/apps/APP_ID/")
+```
+
+Binding 2, the shared collections, as the source writes these clauses, with a narrower role. No predefined `ces` role covers only these collections; the narrowest predefined option is `roles/ces.viewer` (read-only; it includes `ces.operations.get` and `ces.operations.list`). The IAM reference does not list write permissions for `sipDomains`, `omnichannels`, `routes` or `endpointConfigs`, so a custom role with write access to them cannot be built from the IAM reference. Whether a given task works with read-only access to the shared collections is not stated in the official docs.
+
+```text
 resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/operations") ||
 resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/sipDomains") ||
 resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/omnichannels") ||
@@ -29,10 +36,6 @@ resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/dataStores")
 resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/routes") ||
 resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/endpointConfigs")
 ```
-
-What this condition restricts: the `apps/APP_ID` clauses limit app resources to the one app and its children. What it does not restrict: the `projects/PROJECT_ID` clause and the `operations`, `sipDomains`, `omnichannels`, `dataStores`, `routes` and `endpointConfigs` clauses match every such resource in `PROJECT_ID` / `LOCATION_ID`, including those used by other apps. The `ces` Discovery documents (`v1` and `v1beta`) have operations only at `projects/{projectsId}/locations/{locationsId}/operations/{operationsId}`, with no app-scoped path, so the condition cannot be narrowed to one app's operations. With `roles/ces.admin`, which the IAM reference shows includes `ces.operations.cancel` and `ces.operations.delete`, such a binding lets the principal cancel and delete any operation in that location.
-
-To limit that, use two bindings (not stated in the official docs): bind the editing role with a condition that has only the `projects/PROJECT_ID` and `apps/APP_ID` clauses, and grant access to the shared resources with a separate binding of a narrower role, for example `roles/ces.viewer` (read-only; it includes `ces.operations.get` and `ces.operations.list`) with the `operations` and shared-collection clauses. Whether a given task works without write access to the shared collections is not stated in the official docs.
 
 To access Customer Experience Insights, also grant Customer Experience Insights roles in addition to the conditional grant.
 
@@ -94,8 +97,8 @@ Ability to manage environments and deploy specific App Versions to them. Base ro
 
 ## Notes
 
-- Adapted from the official docs: the source condition writes `resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/apps/APP_ID")`. A prefix without the trailing `/` also matches `.../apps/APP_ID2` and its children, so it grants access to every app whose ID begins with the same string. The page uses `resource.name == ".../apps/APP_ID"` for the app itself and `resource.name.startsWith(".../apps/APP_ID/")` for its child resources. The other `startsWith` clauses end in a fixed collection name (`operations`, `sipDomains`, `omnichannels`, `dataStores`, `routes`, `endpointConfigs`) and are kept as written.
-- The `operations`, `sipDomains`, `omnichannels`, `dataStores`, `routes` and `endpointConfigs` clauses are kept as the source writes them; they are location-wide, not per app (see the explanation after the condition). Operations paths are from the `ces.v1` / `ces.v1beta` Discovery documents (`projects.locations.operations` `get`, `list`, `cancel`, `delete`). The product guide also lists create / update / delete permissions for `sipDomains`, `omnichannels`, `routes` and `endpointConfigs` under the Admin role, but the IAM reference does not list them.
+- Corrected from the official docs: the source's single condition is `resource.name == "projects/PROJECT_ID" || resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/apps/APP_ID") || resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/operations") || ...` (followed by the `sipDomains`, `omnichannels`, `dataStores`, `routes` and `endpointConfigs` clauses) in one binding. A prefix without the trailing `/` also matches `.../apps/APP_ID2` and its children, and the location-wide clauses in the same binding give the app's editing role over every operation and shared resource in the location. The page uses `resource.name == ".../apps/APP_ID"` and `resource.name.startsWith(".../apps/APP_ID/")` with the project clause in binding 1, and keeps the six location-wide clauses as the source writes them in a separate binding 2 with a narrower role.
+- Operations paths are from the `ces.v1` / `ces.v1beta` Discovery documents (`projects.locations.operations` `get`, `list`, `cancel`, `delete`). The product guide also lists create / update / delete permissions for `sipDomains`, `omnichannels`, `routes` and `endpointConfigs` under the Admin role, but the IAM reference does not list them.
 - The Admin role gives full access to all CX Agent Studio resources, including deleting apps, conversations and evaluation data and updating security settings; grant it sparingly and prefer the narrower editor roles or the Client role for services that only call `runSession`.
 - The product guide writes role and permission identifiers in the `ces.googleapis.com/...` form; the confirmed groups above give them in the IAM form, mapping `ces.googleapis.com/X.Y` to `ces.X.Y` and the Viewer role's `cloudresourcemanager.googleapis.com/projects.get` / `projects.list` to `resourcemanager.projects.get` / `resourcemanager.projects.list`, and list a permission as confirmed only when the IAM reference includes that ID in the same role. In IAM bindings use the role IDs given next to each heading (`roles/ces.admin`, `roles/ces.viewer`, `roles/ces.client`, `roles/ces.appEditor`, `roles/ces.agentEditor`, `roles/ces.toolsEditor`, `roles/ces.guardrailsEditor`, `roles/ces.evalsEditor`, `roles/ces.securitySettingsEditor`, `roles/ces.deploymentEditor`); the IAM roles and permissions reference writes permissions as `ces.apps.create`, `contactcenterinsights.conversations.get` and so on.
 - Corrected from the official docs: the source names the CX Insights permissions as `contactcenterinsights.googleapis.com/conversations.get` and `contactcenterinsights.googleapis.com/conversations.list`; the IAM roles and permissions reference lists them as `contactcenterinsights.conversations.get` and `contactcenterinsights.conversations.list` (contained in `roles/ces.admin`, `roles/ces.viewer`, `roles/contactcenterinsights.admin` and `roles/contactcenterinsights.viewer` among others), which is the form a custom role accepts.
