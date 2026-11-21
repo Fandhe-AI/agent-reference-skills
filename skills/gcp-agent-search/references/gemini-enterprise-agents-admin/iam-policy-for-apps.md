@@ -21,28 +21,31 @@ curl -X GET \
 
 ### Update the app IAM policy
 
-Before you send this request, build the `policy` body from the full policy that `getIamPolicy` returned: keep every existing entry in `bindings` (with its `members` and any `condition`) and the returned `etag`, and add the new members to the `roles/discoveryengine.agentspaceUser` binding (or add that binding if it is missing). The example below shows only the binding being added; the source says "The `setIamPolicy` method replaces the existing policy. To avoid removing existing permissions, your request must include all the policy bindings you want to retain, in addition to any new or modified bindings."
+`setIamPolicy` replaces the whole policy. The source says "The `setIamPolicy` method replaces the existing policy. To avoid removing existing permissions, your request must include all the policy bindings you want to retain, in addition to any new or modified bindings." Edit the policy that `getIamPolicy` returned: keep every existing entry in `bindings` (with its `members` and any `condition`) and the returned `etag`, and add the new members to the `roles/discoveryengine.agentspaceUser` binding (or add this binding if it is missing):
+
+Adapted (not in the official docs): the binding is shown as a fragment to merge into the retrieved policy instead of inside the request, and the Workload Identity Federation members include `projects/PROJECT_NUMBER/`, which the principal identifier format for workload identity pools requires.
+
+```json
+{
+  "role": "roles/discoveryengine.agentspaceUser",
+  "members": [
+    "user:USER_EMAIL",
+    "group:GROUP_EMAIL",
+    "principal://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/subject/SUBJECT_ID",
+    "principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/attribute.NAME/VALUE"
+  ]
+}
+```
+
+Save the edited policy as `{"policy": EDITED_POLICY}` in `policy.json` and send it:
+
+Adapted (not in the official docs): the request body is read from `policy.json` (the full edited policy) instead of an inline body that contains only the new binding.
 
 ```bash
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
--d '{
-      "policy": {
-         "etag": "ETAG",
-         "bindings": [
-          {
-            "role": "roles/discoveryengine.agentspaceUser",
-            "members": [
-              "user:USER_EMAIL",
-              "group:GROUP_EMAIL",
-              "principal://iam.googleapis.com/locations/global/workloadIdentityPools/POOL_ID/subject/SUBJECT_ID",
-              "principalSet://iam.googleapis.com/locations/global/workloadIdentityPools/POOL_ID/attribute.NAME/VALUE"
-            ]
-          }
-        ]
-      }
-    }' \
+-d @policy.json \
 "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID:setIamPolicy"
 ```
 
@@ -62,6 +65,7 @@ curl -X POST \
 | `APP_ID` | The ID of the app that you want to configure. |
 | `ETAG` | The `etag` value returned by `getIamPolicy`; it changes with each policy update, so fetch a new one before updating again. |
 | `USER_EMAIL`, `GROUP_EMAIL` | One or more user or group email addresses; `principal` and `principalSet` are also valid member types for Workload Identity Federation. Avoid extra spaces before or after the address. |
+| `PROJECT_NUMBER` | The number of the project that owns the workload identity pool (added; see Notes). |
 | `POOL_ID` | The ID of your workload identity pool. |
 | `SUBJECT_ID` | The subject identifier for a specific identity. |
 | `NAME`, `VALUE` | The name and the value of an attribute. |
@@ -74,7 +78,8 @@ curl -X POST \
 - The app-level grant is done through the API; the Google Cloud console does not support it (the project-level changes use the console).
 - Key term: in Gemini Enterprise, app and engine are used interchangeably in APIs; a Gemini Enterprise engine is a generic search engine whose `app_type` field is `APP_TYPE_INTRANET`.
 - `setIamPolicy` replaces the existing policy: the request must include all bindings you want to retain, in addition to new or modified ones. To revoke access, remove principals from the `members` array. Changes are subject to IAM propagation delay (it can take several minutes).
-- Warning: sending the update example as written (only the `roles/discoveryengine.agentspaceUser` binding plus `etag`) removes every other binding on the app, so every other principal loses the access those bindings gave. Send the full policy from `getIamPolicy` with your members added; the `etag` only detects concurrent changes and does not preserve bindings.
+- Corrected from the official docs: the update example sent `-d '{"policy": {"etag": "ETAG", "bindings": [{"role": "roles/discoveryengine.agentspaceUser", "members": [...]}]}}'`, a policy with only the new binding; sent as written it removes every other binding on the app. The page shows the binding as a fragment to merge and sends the full edited policy from `policy.json`. `ETAG` is the `etag` of the retrieved policy, which detects concurrent changes; it does not keep the other bindings.
+- Corrected from the official docs: the members were `principal://iam.googleapis.com/locations/global/workloadIdentityPools/POOL_ID/subject/SUBJECT_ID` and `principalSet://iam.googleapis.com/locations/global/workloadIdentityPools/POOL_ID/attribute.NAME/VALUE`; the IAM principal identifier formats are `principal://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/subject/SUBJECT_ATTRIBUTE_VALUE` and `principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/attribute.ATTRIBUTE_NAME/ATTRIBUTE_VALUE` (https://docs.cloud.google.com/iam/docs/principal-identifiers; details in `gcp-foundation`).
 - Member forms: the source's `principal` / `principalSet` members use `workloadIdentityPools` (Workload Identity Federation), whereas the share-agents page uses `workforcePools` for Workforce Identity Federation principals. The source's example result for `setIamPolicy` uses `roles/discoveryengine.user` rather than `roles/discoveryengine.agentspaceUser`; the example output blocks are omitted here.
 - To delete an app that has an IAM policy, remove users from the policy first (see the best practices for deleting an app with an IAM policy on the delete-app page); try deletion in a disposable project first.
 - For granular, resource-level access controls across both apps and data stores, see https://docs.cloud.google.com/gemini/enterprise/docs/iam-policy-for-apps-and-data-stores.

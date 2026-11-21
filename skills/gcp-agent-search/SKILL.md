@@ -69,8 +69,8 @@ skills/gcp-agent-search/
 ## 他スキルとの使い分け
 
 - `google-gemini-api` — Gemini Developer API（aistudio.google.com、Google AI Studio の API キー）と Gen AI SDK。本スキルは Google Cloud 上の Agent Search / Gemini Enterprise
-- `gcp-agent-platform` — Agent Platform（旧 Vertex AI）。Gemini モデルの呼び出し・RAG Engine・Vector Search（Agent Retrieval）・Agent Runtime（旧 Agent Engine）での ADK agent の開発とデプロイ・Agent Registry / Agent Gateway・Agent Identity。本スキルは登録済み agent を Gemini Enterprise の app から使う側
-- `gcp-gemini-enterprise-cx` — Gemini Enterprise for Customer Experience（CX Agent Studio）・Customer Experience Insights・CCAI Platform。名称が似ているが別製品で、本スキルの Gemini Enterprise はナレッジワーカー向けの社内アシスタント・検索
+- `gcp-agent-platform`（分割投入中で未配布。それまでは公式ドキュメント https://docs.cloud.google.com/ を引く） — Agent Platform（旧 Vertex AI）。Gemini モデルの呼び出し・RAG Engine・Vector Search（Agent Retrieval）・Agent Runtime（旧 Agent Engine）での ADK agent の開発とデプロイ・Agent Registry / Agent Gateway・Agent Identity。本スキルは登録済み agent を Gemini Enterprise の app から使う側
+- `gcp-gemini-enterprise-cx`（分割投入中で未配布。それまでは公式ドキュメント https://docs.cloud.google.com/ を引く） — Gemini Enterprise for Customer Experience（CX Agent Studio）・Customer Experience Insights・CCAI Platform。名称が似ているが別製品で、本スキルの Gemini Enterprise はナレッジワーカー向けの社内アシスタント・検索
 - `gcp-integration` — Application Integration と Integration Connectors。Gemini Enterprise のコネクタとは別製品（名称が近い）
 - `gcp-knowledge-catalog` — Knowledge Catalog。本スキルは Gemini Enterprise からの federated query 接続のページのみ
 - `gcp-bigquery` — BigQuery。本スキルは BigQuery を data store として接続するガイドのみ
