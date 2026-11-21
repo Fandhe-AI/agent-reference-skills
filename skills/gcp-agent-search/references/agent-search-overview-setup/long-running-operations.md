@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/generative-ai-app-builder/docs/long-runnin
 
 # Manage long-running operations
 
-List, get, poll and cancel long-running operations (LRO) in Agent Search (formerly Vertex AI Search; Discovery Engine API). An LRO tracks methods that can take a long time, for example `documents.import`.
+List, get, poll and cancel long-running operations (LRO) in Agent Search (formerly Vertex AI Search; Discovery Engine API). An LRO tracks methods that can take a long time, for example `documents.import`. A resource in a location other than `global` is served at `LOCATION-discoveryengine.googleapis.com`: for the list call change the host and `global`, and in Python pass `client_options=ClientOptions(api_endpoint=...)` (see Notes).
 
 ## Signature / Usage
 
@@ -80,15 +80,17 @@ Adapted (not in the official docs): the trailing comma after the `"@type"` value
 }
 ```
 
-Call `operations.get` on the resource that created the operation. `OPERATION_NAME` is the operation name without quotes:
+Call `operations.get` on the resource that created the operation. Run the command and type `OPERATION_NAME` (the operation name, without quotes) at the prompt:
 
-Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs.
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs. The host comes from `OPERATION_NAME`, read at the prompt (see Notes).
 
 ```bash
-( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+( set +x; set +a; unset TOKEN OP L HOST; IFS= read -r OP && L=${OP#projects/*/locations/} && L=${L%%/*} &&
+case $OP in *[!A-Za-z0-9/_.-]*|*//*) false ;; projects/*/locations/global/*) HOST=discoveryengine.googleapis.com ;; projects/*/locations/"$L"/*) HOST=$L-discoveryengine.googleapis.com ;; *) false ;; esac &&
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -q --fail-with-body -X GET \
     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
-    "https://discoveryengine.googleapis.com/v1/OPERATION_NAME" )
+    "https://$HOST/v1/$OP" )
 ```
 
 The first lines of the response look something like this:
@@ -129,20 +131,22 @@ def get_operation_sample(operation_name: str) -> operations_pb2.Operation:
 
 ### Poll an operation (REST)
 
-Calls `operations.get` repeatedly with a backoff of 10 seconds between requests; stop the polling loop with `Ctrl+C` after the status shows `"done": true` (`Ctrl+Z` only suspends the job, which keeps sending requests if it is resumed). For example, `OPERATION_NAME` is `projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789`.
+Calls `operations.get` repeatedly with a backoff of 10 seconds between requests; stop the polling loop with `Ctrl+C` after the status shows `"done": true` (`Ctrl+Z` only suspends the job, which keeps sending requests if it is resumed). Type `OPERATION_NAME` at the prompt, for example `projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789`.
 
 `--fail-with-body` needs curl 7.76.0 or later.
 
-Adapted (not in the official docs): The access token is read into `TOKEN` on each pass (a token that expires during a long poll is refreshed) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. A failed token fetch, or an HTTP error such as 404 or 403 (`curl --fail-with-body`), stops the loop with a message, and `[ "$rc" -eq 0 ]` returns non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs.
+Adapted (not in the official docs): The access token is read into `TOKEN` on each pass (a token that expires during a long poll is refreshed) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. A failed token fetch, or an HTTP error such as 404 or 403 (`curl --fail-with-body`), stops the loop with a message, and `[ "$rc" -eq 0 ]` returns non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs. The host comes from `OPERATION_NAME`, read at the prompt (see Notes).
 
 ```bash
-( set +x; set +a; unset TOKEN; rc=0; while true; \
+( set +x; set +a; unset TOKEN OP L HOST; IFS= read -r OP && L=${OP#projects/*/locations/} && L=${L%%/*} &&
+case $OP in *[!A-Za-z0-9/_.-]*|*//*) false ;; projects/*/locations/global/*) HOST=discoveryengine.googleapis.com ;; projects/*/locations/"$L"/*) HOST=$L-discoveryengine.googleapis.com ;; *) false ;; esac &&
+{ rc=0; while true; \
     do TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] || { rc=1; echo "token fetch failed" >&2; break; }; \
     curl -q --fail-with-body -X GET \
     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
-    "https://discoveryengine.googleapis.com/v1/OPERATION_NAME" || { rc=$?; echo "request failed" >&2; break; }; \
+    "https://$HOST/v1/$OP" || { rc=$?; echo "request failed" >&2; break; }; \
     sleep 10; \
-    done; [ "$rc" -eq 0 ] )
+    done; [ "$rc" -eq 0 ]; } )
 ```
 
 ### Poll an operation (Python)
@@ -189,15 +193,17 @@ def poll_operation_sample(
 
 ### Cancel an operation (REST)
 
-Call `operations.cancel`. `OPERATION_NAME` is the name of the operation to cancel, for example `projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789`.
+Call `operations.cancel`. Type `OPERATION_NAME`, the name of the operation to cancel, at the prompt, for example `projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789`.
 
-Adapted (not in the official docs): the HTTP method `post` is written in upper case `POST`, because HTTP methods are case-sensitive and `cancel` is a POST method. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs.
+Adapted (not in the official docs): the HTTP method `post` is written in upper case `POST`, because HTTP methods are case-sensitive and `cancel` is a POST method. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs. The host comes from `OPERATION_NAME`, read at the prompt (see Notes).
 
 ```bash
-( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+( set +x; set +a; unset TOKEN OP L HOST; IFS= read -r OP && L=${OP#projects/*/locations/} && L=${L%%/*} &&
+case $OP in *[!A-Za-z0-9/_.-]*|*//*) false ;; projects/*/locations/global/*) HOST=discoveryengine.googleapis.com ;; projects/*/locations/"$L"/*) HOST=$L-discoveryengine.googleapis.com ;; *) false ;; esac &&
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -q --fail-with-body -X POST \
    -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
-   "https://discoveryengine.googleapis.com/v1/OPERATION_NAME":cancel )
+   "https://$HOST/v1/$OP:cancel" )
 ```
 
 An empty JSON object means the cancellation request was accepted; cancellation is asynchronous and best-effort, so the operation can still complete. Before you rely on the job having stopped, call `operations.get` and check for `"done": true` with the error `"code": 1` (the `CANCELLED` status code):
@@ -262,6 +268,7 @@ def cancel_operation_sample(operation_name: str) -> None:
 - Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero. The command runs in a subshell that starts with `set +x`, so `set -x` tracing does not print the token, and `TOKEN` does not stay in the calling shell. `unset` at its start also drops an `export` of the variables it sets in the calling shell, so their values are not put in the environment of `curl` and the other commands.
 - Corrected from the official docs: the source introduces the `operations` array above with "if you call `documents.import`, the start of the response looks something like this:". In the `discoveryengine.v1` Discovery document `documents.import` returns `GoogleLongrunningOperation` (one operation with a top-level `name`), and `operations.list` returns `GoogleLongrunningListOperationsResponse`, whose `operations` field is "A list of operations that matches the specified filter in the request.", so the array is labelled as a list response here.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/long-running-operations (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the source's REST and Python samples always use `discoveryengine.googleapis.com`; its create-engine-es sample sets `ClientOptions(api_endpoint=f"{location}-discoveryengine.googleapis.com")` `if location != "global"`; the get, poll and cancel commands take the host from the `locations/` segment of `OPERATION_NAME` and send nothing for a malformed name.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: every `curl` call starts with `-q`, because the curl manual says for `-q, --disable` "If used as the first parameter on the command line, the curlrc config file is not read or used." (`man curl`, curl 8.7.1); without it, a `trace` or `trace-ascii` line in `.curlrc` writes the request headers, including the token or API key, to a file (checked with curl 8.7.1 against a local 127.0.0.1 server).
 - Adapted from the official docs: the subshell starts with `set +a` because it inherits `set -a` from the calling shell. With it on, in bash "Each variable or function that is created or modified is given the export attribute and marked for export to the environment of subsequent commands." (`man bash`, GNU bash 5.3.9), and in zsh "All parameters subsequently defined are automatically exported." (`ALL_EXPORT`, `man zshoptions`, zsh 5.9), so `TOKEN`, `API_KEY` or `BODY` would reach the environment of `curl` and `jq`.
