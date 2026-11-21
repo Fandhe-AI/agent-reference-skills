@@ -12,10 +12,12 @@ Preview. Administrators connect agents built with the Agent2Agent (A2A) Protocol
 
 Needed if the A2A agent is hosted on Cloud Run, uses a default `.run.app` URL directly, and requires authentication (not when Cloud Run is behind Apigee, a load balancer or a custom domain).
 
-Adapted (not in the official docs): the source wraps the placeholders in `<var>` tags inside the command; they are plain upper-case placeholders here.
+Adapted (not in the official docs): the source wraps the placeholders in `<var>` tags inside the command; they are plain upper-case placeholders here. The source grants the role on the whole project with `gcloud projects add-iam-policy-binding PROJECT_ID`, which lets the service agent invoke every Cloud Run service in the project; the command is scoped to the agent's Cloud Run service with `gcloud run services add-iam-policy-binding SERVICE_NAME --project=PROJECT_ID --region=REGION` (gcloud 593.0.0 help; `--project` keeps the source's `PROJECT_ID`), where `SERVICE_NAME` is the Cloud Run service that hosts the agent and `REGION` its region (see the Cloud Run Invoker placeholders table).
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID \
+gcloud run services add-iam-policy-binding SERVICE_NAME \
+   --project="PROJECT_ID" \
+   --region="REGION" \
    --member="serviceAccount:service-PROJECT_NUMBER@gcp-sa-discoveryengine.iam.gserviceaccount.com" \
    --role="roles/run.invoker"
 ```
@@ -246,6 +248,13 @@ gcloud agent-identity auth-providers add-iam-policy-binding AUTH_PROVIDER_NAME \
 | `authorName` | The name of the person, team or company that built the agent. Shown as **By AUTHOR_NAME** in the agent gallery (only when the agent has no owner name of its own) and as **Author** in the **Agent Info** dialog. Names that contain the word "Google" are not shown. |
 | `contactEmail` | An email address where users can reach the author; shown as **Contact** in the **Agent Info** dialog. |
 
+### Cloud Run Invoker placeholders
+
+| Placeholder | Description |
+|---|---|
+| `SERVICE_NAME` | The Cloud Run service that hosts the A2A agent (added; see Notes). |
+| `REGION` | The region of that Cloud Run service (added; see Notes). |
+
 ### Register request placeholders
 
 | Placeholder | Description |
@@ -267,7 +276,8 @@ gcloud agent-identity auth-providers add-iam-policy-binding AUTH_PROVIDER_NAME \
 - Prerequisites: the Gemini Enterprise Admin role, the Discovery Engine API enabled, an existing Gemini Enterprise app, and an agent that uses the A2A protocol that you host and maintain. Gemini Enterprise supports the A2A v0.3 streaming mechanism; if you use A2A v1.0.0 or later, use the SDK compatibility packages (for example `a2acompat/a2av0` for Go or `a2a.compat.v0_3` for Python).
 - Model Armor: to secure A2A agents, developers must configure Model Armor using the REST API within the agent's application code. The Model Armor settings in the Google Cloud console for Gemini Enterprise do not automatically protect A2A agents.
 - Agent Gateway: traffic to A2A agents added through this method does not go through Agent Gateway, and Agent Gateway policies do not apply.
-- The `roles/run.invoker` binding above opens the Cloud Run service to the Discovery Engine service agent of that project; scope it to the intended service.
+- The `roles/run.invoker` binding above lets the Discovery Engine service agent of that project invoke the agent's Cloud Run service; it is set on that one service, not on the project.
+- Corrected from the official docs: the source writes `gcloud projects add-iam-policy-binding <var>PROJECT_ID</var> \` with `--member="serviceAccount:service-<var>PROJECT_NUMBER</var>@gcp-sa-discoveryengine.iam.gserviceaccount.com"` and `--role="roles/run.invoker"`. A project-level binding is inherited by every Cloud Run service in the project, so the command is changed to `gcloud run services add-iam-policy-binding SERVICE_NAME --project="PROJECT_ID" --region="REGION"` with the same member and role (synopsis from the gcloud 593.0.0 help: `gcloud run services add-iam-policy-binding SERVICE --member=PRINCIPAL --role=ROLE [--region=REGION]`).
 - `roles/agentidentity.user` (Agent Identity User) is written as in the source; it is not listed in the IAM roles reference pages generated for this skill set, and the gcloud 593.0.0 help for `gcloud agent-identity auth-providers add-iam-policy-binding` uses the same role ID in its example.
 - Corrected from the official docs: the source writes placeholders inside the two `gcloud` commands and the Python client example as `<var>PROJECT_ID</var>` (and similar) HTML tags. In the `bash` commands an unquoted `<var>` is parsed as an input redirection, so the tags break the command; in the Python example they are only string content, and they are removed there because the source's own placeholder lists name the same placeholders bare (`PROJECT_ID`, `LOCATION`, `AGENT_DISPLAY_NAME`).
 - Securing the endpoint: Gemini Enterprise does not use the `securitySchemes` and `security` fields of the agent card to authenticate, does not support the `apiKey` security scheme, and cannot add static API keys or custom header values to requests. With an Apigee API proxy the proxy receives the end-user `Authorization` token but not `X-Serverless-Authorization`: configure OAuth 2.0 for the agent (required), set the agent card `url` to the proxy URL, and validate the token in the proxy (VerifyJWT policy for signed JWT access tokens from third-party providers; for Google OAuth 2.0 `ya29...` opaque tokens use a ServiceCallout policy to call `https://oauth2.googleapis.com/tokeninfo` and verify `aud` and `scope`).

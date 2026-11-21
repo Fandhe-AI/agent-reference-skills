@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/generative-ai-app-builder/docs/serving-con
 
 # Serving configs for media recommendation apps
 
-A serving config holds the settings used when generating media recommendations in Agent Search (formerly Vertex AI Search). Every app gets a default serving config automatically; only media recommendation apps allow modifying serving configs or creating several.
+A serving config holds the settings used when generating media recommendations in Agent Search (formerly Vertex AI Search). Every app gets a default serving config automatically. Only media recommendation apps let you create additional serving configs and change the media recommendation settings on this page (boost/bury, demotion, diversity). A search app keeps its single default serving config `default_search`, to which you attach serving controls (for example boost controls) with `engines.servingConfigs.patch`, as the example below does.
 
 ## Signature / Usage
 
@@ -38,8 +38,8 @@ curl -X PATCH \
   - Recommendation diversity: diversify recommendations to reduce the likelihood that similar content is shown in a recommendation panel.
 - Default serving config IDs: for recommendations apps, the serving config's ID is the same as the engine ID; for search apps, the default serving config's ID is `default_search`.
 - The default serving config ID is specified when making `recommend` or `search` API calls. To get recommendations from a specific serving config, specify its ID in the `recommend` request.
-- Search apps and custom recommendations apps don't allow you to modify serving configs or create additional ones. Only media recommendation apps have modifiable serving configs and allow multiple serving configs.
-- The borrowed snippet comes from the search-app serving controls guide, which updates the `boostControlIds` of the `default_search` serving config with `engines.servingConfigs.patch`. The serving configs page says that search apps don't allow you to modify serving configs; both statements are kept as the sources write them.
+- What search apps cannot do: the serving configs page says "However, search and custom recommendations apps don't allow you to modify serving configs or create additional serving configs. Only media recommendation apps have modifiable serving configs and allow multiple serving configs." and "For any media recommendations app, you can create multiple serving configs with different settings for recommendations boost/bury, demotion, and diversity." The create, edit and delete steps above (demotion and diversity settings, more than one serving config) therefore apply to media recommendation apps only.
+- What search apps can do: the serving controls guide says "To change the results of a request, first create a serving control. Then, attach that control to the *serving config* of a search app." and "A serving control only affects requests served by the app if the control is attached to the app's serving config." Its examples attach controls to the existing `default_search` serving config with `engines.servingConfigs.patch` (`v1alpha`) by updating `boostControlIds`, `filterControlIds`, `synonymsControlIds`, `redirectControlIds` or `promoteControlIds` with the matching `update_mask`; the borrowed snippet above is the boost case.
 - Deleting a serving config is destructive; try it in a disposable app or project first.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/serving-configs (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/configure-serving-controls (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

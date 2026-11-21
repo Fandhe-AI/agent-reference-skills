@@ -128,7 +128,7 @@ def get_operation_sample(operation_name: str) -> operations_pb2.Operation:
 
 ### Poll an operation (REST)
 
-Calls `operations.get` repeatedly with a backoff of 10 seconds between requests; stop the polling job (`Control+Z`) after the status shows `"done": true`. For example, `OPERATION_NAME` is `projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789`.
+Calls `operations.get` repeatedly with a backoff of 10 seconds between requests; stop the polling loop with `Ctrl+C` after the status shows `"done": true` (`Ctrl+Z` only suspends the job, which keeps sending requests if it is resumed). For example, `OPERATION_NAME` is `projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789`.
 
 ```bash
 while true; \
@@ -238,7 +238,7 @@ def cancel_operation_sample(operation_name: str) -> None:
 - Long running operations can't be filtered or paginated in Agent Search: when you call `operations.list` you can't use the `filter`, `pageSize` or `pageToken` fields. The Python list sample still has an `operations_filter` argument (default `None`); the source does not say how it interacts with this restriction.
 - The REST list call uses the data store resource (`.../dataStores/DATA_STORE_ID/operations`); the Python samples use `DocumentServiceClient` and Application Default Credentials.
 - Corrected from the official docs: the source writes `curl -X post` in the cancel example; changed to `curl -X POST` (the Discovery document `discoveryengine.v1` defines every `operations.cancel` method with `httpMethod` `POST`). The source tags the cancel response sample `bash`; it is tagged `json` here (the content is unchanged).
-- The source says to stop the polling loop with `Control+Z`; the loop does not exit on its own when `"done": true` appears. Run it only against an operation you started yourself.
+- Corrected from the official docs: the source says "Stop the polling job (`Control+Z`) after the status shows `"done": true`." In a shell, `Control+Z` suspends the `while true` loop instead of ending it; the loop does not exit on its own when `"done": true` appears, so the page says to end it with `Ctrl+C`. Run it only against an operation you started yourself.
 - Cancelling an operation (for example an import) stops the job; do it in a disposable project first if unsure.
 - The cancel response sample in the source shows a `v1alpha` `ImportDocumentsMetadata` type although the request uses `v1`; kept as written.
 - Corrected from the official docs: the source's operations-list sample writes `"@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata",` with a trailing comma before the closing `}` of `metadata`; JSON does not allow trailing commas, so the comma is removed and the block is tagged `json`.

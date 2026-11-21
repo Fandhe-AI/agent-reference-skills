@@ -12,16 +12,18 @@ A Gemini Enterprise (formerly Agentspace) admin can use the API to manage fine-g
 
 Fetch the existing policy first to avoid overwriting current permissions, and copy the `etag` value from the response.
 
+Adapted (not in the official docs): the request adds the query parameter `options.requestedPolicyVersion=3` (`engines.getIamPolicy` in the `discoveryengine` `v1` Discovery document: "Requests for policies with any conditional role bindings must specify version 3."), so that bindings with a `condition` are returned in a form that can be written back.
+
 ```bash
 curl -X GET \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
-"https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID:getIamPolicy"
+"https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID:getIamPolicy?options.requestedPolicyVersion=3"
 ```
 
 ### Update the app IAM policy
 
-`setIamPolicy` replaces the whole policy. The source says "The `setIamPolicy` method replaces the existing policy. To avoid removing existing permissions, your request must include all the policy bindings you want to retain, in addition to any new or modified bindings." Edit the policy that `getIamPolicy` returned: keep every existing entry in `bindings` (with its `members` and any `condition`) and the returned `etag`, and add the new members to the `roles/discoveryengine.agentspaceUser` binding (or add this binding if it is missing):
+`setIamPolicy` replaces the whole policy. The source says "The `setIamPolicy` method replaces the existing policy. To avoid removing existing permissions, your request must include all the policy bindings you want to retain, in addition to any new or modified bindings." Edit the policy that `getIamPolicy` returned: keep every existing entry in `bindings` (with its `members` and any `condition`) and the returned `etag`; if the policy has any binding with a `condition`, also keep `"version": 3`. Add the new members to the `roles/discoveryengine.agentspaceUser` binding that has no `condition` (or to the binding whose `condition` is the one you intend for them); if no such binding exists, add a new binding. Do not add members to a binding of the same role that has a different `condition`, because that condition would then apply to them:
 
 Adapted (not in the official docs): the binding is shown as a fragment to merge into the retrieved policy instead of inside the request, and the Workload Identity Federation members include `projects/PROJECT_NUMBER/`, which the principal identifier format for workload identity pools requires.
 
@@ -79,6 +81,7 @@ curl -X POST \
 - Key term: in Gemini Enterprise, app and engine are used interchangeably in APIs; a Gemini Enterprise engine is a generic search engine whose `app_type` field is `APP_TYPE_INTRANET`.
 - `setIamPolicy` replaces the existing policy: the request must include all bindings you want to retain, in addition to new or modified ones. To revoke access, remove principals from the `members` array. Changes are subject to IAM propagation delay (it can take several minutes).
 - Corrected from the official docs: the update example sent `-d '{"policy": {"etag": "ETAG", "bindings": [{"role": "roles/discoveryengine.agentspaceUser", "members": [...]}]}}'`, a policy with only the new binding; sent as written it removes every other binding on the app. The page shows the binding as a fragment to merge and sends the full edited policy from `policy.json`. `ETAG` is the `etag` of the retrieved policy, which detects concurrent changes; it does not keep the other bindings.
+- Corrected from the official docs: the get example requests `.../engines/APP_ID:getIamPolicy` without a policy version. The `discoveryengine` `v1` Discovery document says for `options.requestedPolicyVersion`: "Requests for policies with any conditional role bindings must specify version 3."; the request adds `?options.requestedPolicyVersion=3`, and a policy with conditional bindings is written back with `"version": 3` and the returned `etag`.
 - Corrected from the official docs: the members were `principal://iam.googleapis.com/locations/global/workloadIdentityPools/POOL_ID/subject/SUBJECT_ID` and `principalSet://iam.googleapis.com/locations/global/workloadIdentityPools/POOL_ID/attribute.NAME/VALUE`; the IAM principal identifier formats are `principal://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/subject/SUBJECT_ATTRIBUTE_VALUE` and `principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/attribute.ATTRIBUTE_NAME/ATTRIBUTE_VALUE` (https://docs.cloud.google.com/iam/docs/principal-identifiers; details in `gcp-foundation`).
 - Member forms: the source's `principal` / `principalSet` members use `workloadIdentityPools` (Workload Identity Federation), whereas the share-agents page uses `workforcePools` for Workforce Identity Federation principals. The source's example result for `setIamPolicy` uses `roles/discoveryengine.user` rather than `roles/discoveryengine.agentspaceUser`; the example output blocks are omitted here.
 - To delete an app that has an IAM policy, remove users from the policy first (see the best practices for deleting an app with an IAM policy on the delete-app page); try deletion in a disposable project first.

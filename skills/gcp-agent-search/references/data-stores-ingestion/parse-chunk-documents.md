@@ -120,18 +120,12 @@ curl -X GET \
 
 ### Import a pre-parsed document: metadata row (JSON Lines, `structData`)
 
+The source says: "Each row of the metadata file must follow the structData format:". In the JSON Lines metadata file, each document's object is one line (one JSON object per line):
+
+Adapted (not in the official docs): the source shows this row as a multi-line object; it is written on one line here, as a JSON Lines row must be.
+
 ```json
-{
-  "id": "DOCUMENT_ID",
-  "structData": {
-    "category": "CATEGORY",
-    "updated": "YYYY-MM-DD"
-  },
-  "content": {
-    "mimeType": "application/json",
-    "uri": "gs://PARSED_DOC_FILE"
-  }
-}
+{"id": "DOCUMENT_ID", "structData": {"category": "CATEGORY", "updated": "YYYY-MM-DD"}, "content": {"mimeType": "application/json", "uri": "gs://PARSED_DOC_FILE"}}
 ```
 
 ### Bring your own chunks: file schema (Preview)
@@ -236,6 +230,7 @@ curl -X POST \
 - Corrected from the official docs: both OCR examples pass `"useNativeText": "false"` (a JSON string); `useNativeText` is `boolean` in the `discoveryengine` Discovery documents (`v1`, `v1beta`, `v1alpha`), and the source itself says to set it "to true" and that the default is `false`, so the examples here use `false`.
 - The chunking fragment above is a request fragment with placeholders, so it is tagged `text`; replace the placeholders in a real request.
 - Corrected from the official docs: the source's chunking fragment writes `"includeAncestorHeadings": HEADINGS_BOOLEAN,` with a trailing comma before the closing `}` of `layoutBasedChunkingConfig`; JSON does not allow trailing commas, so the comma is removed.
+- Corrected from the official docs: the pre-parsed document metadata row was shown as a multi-line object (`{` / `"id": "DOCUMENT_ID",` / `"structData": {...}` / `"content": {...}` / `}` on separate lines); JSON Lines requires one complete object per line, so the row is written on one line with the same keys and values.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/parse-chunk-documents (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the example "Specify parser overrides for file types" had a trailing comma after the `ocrParsingConfig` object inside `pdf` (the source reads `"useNativeText": "false"` then `},` then `},`); the comma after the inner brace was removed.
 

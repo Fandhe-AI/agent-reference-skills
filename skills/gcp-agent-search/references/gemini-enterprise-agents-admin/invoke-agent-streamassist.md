@@ -12,11 +12,13 @@ To call a specific registered agent of a Gemini Enterprise app (formerly Agentsp
 
 The `ENGINE_ID` segment of the engine `name` is the `APP_ID` required in the call.
 
+Adapted (not in the official docs): the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table).
+
 ```bash
 curl -X GET \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
-"https://LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines"
+"https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines"
 ```
 
 ### Find the agent ID
@@ -29,11 +31,13 @@ projects/{project}/locations/{location}/collections/{collection}/engines/{engine
 
 List the registered agents on the `v1alpha` endpoint:
 
+Adapted (not in the official docs): the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table).
+
 ```bash
 curl -X GET \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
-"https://LOCATION-discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant/agents"
+"https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant/agents"
 ```
 
 ### Request body
@@ -56,11 +60,13 @@ curl -X GET \
 
 ### Call streamAssist (REST)
 
+Adapted (not in the official docs): the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table).
+
 ```bash
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
-"https://LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant:streamAssist" \
+"https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant:streamAssist" \
   -d '{
     "query": {
       "text": "List all contact cards."
@@ -76,6 +82,8 @@ curl -X POST \
 ```
 
 ### Call streamAssist (Python)
+
+Adapted (not in the official docs): the loop also skips replies whose `grounded_content.content.thought` is true, as the sample's own comment says (`AssistantContent.thought` in the `discoveryengine` `v1` Discovery document: "Optional. Indicates if the part is thought from the model.").
 
 ```python
 # Install library: pip install google-cloud-discoveryengine
@@ -119,7 +127,7 @@ request = discoveryengine.StreamAssistRequest(
 for response in client.stream_assist(request=request):
     for reply in response.answer.replies:
         # Filter out model reasoning fragments (thought: true)
-        if hasattr(reply, "grounded_content") and reply.grounded_content.content:
+        if hasattr(reply, "grounded_content") and reply.grounded_content.content and not reply.grounded_content.content.thought:
             print(reply.grounded_content.content.text, end="", flush=True)
 
 print()
@@ -129,11 +137,13 @@ print()
 
 Pass the `session` string from `sessionInfo` of the previous response.
 
+Adapted (not in the official docs): the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table).
+
 ```bash
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
-"https://LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant:streamAssist" \
+"https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant:streamAssist" \
   -d '{
     "session": "projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/sessions/SESSION_ID",
     "query": {
@@ -161,6 +171,16 @@ curl -X POST \
 | Supported agent types | Core Assistant, Deep Research, Workflow Builder chat agents (formerly low-code), and Workflow Builder workflows |
 | Required IAM permission | `discoveryengine.assistants.assist` |
 | Required OAuth scope | `https://www.googleapis.com/auth/cloud-platform` |
+
+### Placeholders
+
+| Placeholder | Description |
+|---|---|
+| `ENDPOINT_LOCATION` | The location prefix of the hostname (added; see Notes): `us` or `eu`. If your app resides in the `global` location, omit the location prefix from the hostname: send the request to `https://discoveryengine.googleapis.com/...` instead of `https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/...`. |
+| `LOCATION` | The multi-region of the app in the resource path (`locations/LOCATION`): `global`, `us`, or `eu`. The hostname uses `ENDPOINT_LOCATION` (see Notes for the source's wording). |
+| `PROJECT_ID` | Your Google Cloud project ID. |
+| `APP_ID` | Your Gemini Enterprise engine ID. |
+| `AGENT_ID` | The numeric agent ID. |
 
 ### Request fields
 
@@ -196,14 +216,15 @@ curl -X POST \
 ## Notes
 
 - Before you begin: enable the Discovery Engine API (`discoveryengine.googleapis.com`); the principal needs a role granting `discoveryengine.assistants.assist`, such as Discovery Engine Editor (`roles/discoveryengine.editor`) or Gemini Enterprise Admin (`roles/discoveryengine.agentspaceAdmin`); the app (engine) must exist and contain at least one registered agent; with Application Default Credentials send the quota project header `-H "X-Goog-User-Project: PROJECT_ID"`.
-- `LOCATION` is `global`, `us` or `eu` and is used in both the hostname and the resource path; for an app in `global`, omit the location prefix from the hostname (`discoveryengine.googleapis.com`). The engine ID typically has a numeric suffix (for example `my-app_1234567890`).
+- The source says: "`LOCATION` : The multi-region for both the hostname and resource path (`global`, `us`, or `eu`). If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The engine ID typically has a numeric suffix (for example `my-app_1234567890`).
 - Registered agents use a long numeric ID (for example `15492003793394502655`). The `agents` collection is served only on `v1alpha`; listing it on `v1` or `v1beta` returns HTTP `404 Not Found`. Each agent resource has `name`, `displayName`, `state` (such as `ENABLED` or `PRIVATE`) and a definition object (such as `a2aAgentDefinition`, `lowCodeAgentDefinition` or `workflowAgentDefinition`).
 - If the `session` field is omitted or the session ID is `-`, the API generates a new, isolated session.
 - Calling a workflow: send the same request with the workflow's ID as `agentId`; each call starts a manual run. The published version runs (unpublished changes do not affect callers; a never-published workflow runs its draft). The owner and admins can call it; other users can call a published workflow after it is shared with them; only the owner or an admin can call a never-published workflow (others get `HTTP 403`). The workflow must have exactly one manual trigger. You cannot set the manual trigger's input variables through `streamAssist`: a required input makes the run fail even with a default value, optional inputs are empty and defaults are not applied; the query text is passed to the workflow's LLM nodes.
 - Limitations: A2A or ADK agents registered to a Gemini Enterprise app are not supported through `streamAssist` (call an A2A agent through its registry A2A endpoint instead: https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-a2a). `streamAssist` is optimized for conversational queries and read-only retrieval over connectors; programmatic execution of mutative tools and actions (such as email drafting, calendar event creation or chat messaging) is not supported and may result in silent failures or ungrounded execution loops. If an agent relies on internal connectors or data stores (such as Document Q&A agents), invoking it without configured data sources returns a "no data sources configured" response rather than an API error.
-- The Python sample's comment says "Filter out model reasoning fragments (thought: true)", but the loop prints the text of every reply that has `grounded_content`; it does not test the `thought` flag (`AssistantContent.thought` in the `discoveryengine.v1` Discovery document: "Optional. Indicates if the part is thought from the model."). Check that flag before presenting output to end users, as the response-elements table says.
+- Corrected from the official docs: the REST examples write the host as `"https://LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/..."` (and `/v1alpha/` for the agent list), with the same `LOCATION` in the host and the path. Substituting `global` gives `global-discoveryengine.googleapis.com`, which contradicts the source's own instruction to omit the prefix for `global` apps (as the Python sample does with `if location != "global"`). The host prefix is the separate placeholder `ENDPOINT_LOCATION`.
+- Corrected from the official docs: the Python sample's comment says "Filter out model reasoning fragments (thought: true)", but the source's condition is `if hasattr(reply, "grounded_content") and reply.grounded_content.content:`, which prints thought fragments too. The condition adds `and not reply.grounded_content.content.thought` (`AssistantContent.thought` in the `discoveryengine` `v1` Discovery document; `google-cloud-discoveryengine` is not pinned for this skill set, so the attribute name follows the REST field `thought`).
 - The twin's REST call and Python blocks end with a whitespace-only line, which is omitted here. The Python sample uses the `google-cloud-discoveryengine` client library (`discoveryengine_v1`).
-- Source inconsistency (global host): for a `global` app (`ENDPOINT_LOCATION` = `global` on those pages), the Gemini Enterprise pages on app IAM policies and ADK / A2A agent registration show example commands with `https://global-discoveryengine.googleapis.com/...`, while this page says "If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The `discoveryengine` `v1` / `v1beta` / `v1alpha` Discovery documents give the `rootUrl` `https://discoveryengine.googleapis.com/`. Both forms are kept as written.
+- Source inconsistency (global host): for a `global` app (`ENDPOINT_LOCATION` = `global` on those pages), the Gemini Enterprise pages on app IAM policies and ADK / A2A agent registration show example commands with `https://global-discoveryengine.googleapis.com/...`, while this page says "If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The `discoveryengine` `v1` / `v1beta` / `v1alpha` Discovery documents give the `rootUrl` `https://discoveryengine.googleapis.com/`. This page follows its own source rule: `ENDPOINT_LOCATION` is `us` or `eu`, and a `global` app uses `discoveryengine.googleapis.com` (see the Corrected line above); the other pages keep their `global-` form as written.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-streamassist (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
