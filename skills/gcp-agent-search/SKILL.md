@@ -9,7 +9,7 @@ user-invocable: false
 
 Google Cloud (GCP) の検索・アンサー生成・社内エージェント基盤スキル。Agent Search（旧 Vertex AI Search。API は引き続き Discovery Engine、`discoveryengine.googleapis.com`）と Gemini Enterprise（旧 Agentspace）を扱う。
 
-分割投入中: 以下の収録範囲と機械生成の層は完成形の内容。分割投入中のため、未投入のカテゴリ（`rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。未投入の機能は、投入までは公式ドキュメント（https://docs.cloud.google.com/ ）を引く。
+分割投入中: 以下の収録範囲と機械生成の層は完成形の内容。分割投入中のため、未投入のカテゴリ（`rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access` / `gemini-enterprise-connectors-data-stores`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。未投入の機能は、投入までは公式ドキュメント（https://docs.cloud.google.com/ ）を引く。
 
 - Agent Search: app（engine）・data store・取り込み（website / 非構造化 / 構造化 / FHIR）・スキーマ・parse と chunk・ドメイン検証・search / `searchLite`・filter・boost・`streamAnswer`・check grounding・`summarySpec`・snippets・ranking API・custom ranking・serving controls・user events・autocomplete・CMEK・データソースのアクセス制御・VPC Service Controls・Organization Policy
 - Gemini Enterprise: エディションとライセンス・app 作成・Assistant 設定・コネクタと data store（Cloud Storage・BigQuery・Knowledge Catalog・custom MCP server）・ADK / A2A agent の登録と共有・`streamAssist` による agent 呼び出し（登録した ADK / A2A agent は非対応）・Agent Registry からの取り込み・app 単位の IAM policy・identity provider（Workforce Identity Federation）
@@ -37,9 +37,6 @@ skills/gcp-agent-search/
     gemini-enterprise-overview-apps/     # 7 ページ: クイックスタート・エディション・app・ライセンス・agents 概要
       README.md
       <page>.md
-    gemini-enterprise-connectors-data-stores/  # 7 ページ: コネクタ・data store・custom MCP server
-      README.md
-      <page>.md
     gemini-enterprise-agents-admin/      # 6 ページ: ADK / A2A agent の登録・共有・呼び出し・IAM
       README.md
       <page>.md
@@ -56,7 +53,7 @@ skills/gcp-agent-search/
 3. 検索の挙動の調整（filter・boost・ranking・serving controls・relevance filter）は `search-query-results`（後続 PR で投入） と `ranking-serving-controls`（後続 PR で投入）、生成回答（`streamAnswer`・summary・grounding）は `answers-summaries`
 4. エージェントの登録・共有・呼び出しは `gemini-enterprise-agents-admin`。Agent Runtime 上に ADK agent を作る側は `gcp-agent-platform`（予定を含む他スキルは下記「他スキルとの使い分け」）
 
-未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access`）の探索手順は投入時に追加する。それまで上の手順が未投入カテゴリを指すときは、該当する公式ガイド（https://docs.cloud.google.com/ 配下）を引く。gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access` / `gemini-enterprise-connectors-data-stores`）の探索手順は投入時に追加する。それまで上の手順が未投入カテゴリを指すときは、該当する公式ガイド（https://docs.cloud.google.com/ 配下）を引く。gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -71,11 +68,10 @@ skills/gcp-agent-search/
 | agentic retrieval のストリーミング・回答生成モデルのバージョン・safety settings と fallback | answers-summaries | [references/answers-summaries/README.md](references/answers-summaries/README.md) |
 | Gemini Enterprise のクイックスタート・エディション・app 作成・ライセンスの配布と割り当て | gemini-enterprise-overview-apps | [references/gemini-enterprise-overview-apps/README.md](references/gemini-enterprise-overview-apps/README.md) |
 | agent の種類・Agent Gallery・Assistant の設定とチャット | gemini-enterprise-overview-apps | [references/gemini-enterprise-overview-apps/README.md](references/gemini-enterprise-overview-apps/README.md) |
-| コネクタと data store の概念・同期の種類とスケジュール・Cloud Storage / BigQuery / Knowledge Catalog の接続・custom MCP server | gemini-enterprise-connectors-data-stores | [references/gemini-enterprise-connectors-data-stores/README.md](references/gemini-enterprise-connectors-data-stores/README.md) |
 | ADK agent・A2A agent の登録と管理・Agent Registry からの取り込み・agent の共有と所有権の移転 | gemini-enterprise-agents-admin | [references/gemini-enterprise-agents-admin/README.md](references/gemini-enterprise-agents-admin/README.md) |
 | `streamAssist` での agent 呼び出し（Core Assistant・Deep Research・Workflow Builder の chat agent / workflow。登録した ADK / A2A agent は非対応）・app 単位の IAM policy（`getIamPolicy` / `setIamPolicy`） | gemini-enterprise-agents-admin | [references/gemini-enterprise-agents-admin/README.md](references/gemini-enterprise-agents-admin/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access`。収録済みのページは各カテゴリの README.md の索引で確認する
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access` / `gemini-enterprise-connectors-data-stores`。収録済みのページは各カテゴリの README.md の索引で確認する
 
 ## 他スキルとの使い分け
 
@@ -100,7 +96,7 @@ skills/gcp-agent-search/
 
 次は収録していない。必要なときは公式ドキュメントを確認する（https://docs.cloud.google.com/ 配下）。
 
-- Gemini Enterprise のコネクタ別ページ 331 件（主要コネクタの概要は `gemini-enterprise-connectors-data-stores/introduction-to-connectors-and-data-stores.md` のみ収録）
+- Gemini Enterprise のコネクタ別ページ 331 件（主要コネクタの概要は `gemini-enterprise-connectors-data-stores/introduction-to-connectors-and-data-stores.md`（後続 PR で投入） のみ収録）
 - Retail API / AI Commerce Search（`gcp-ai-apis`（予定）の担当）
 - 料金（取得していない。公式の料金ページを確認する）
 - Console の操作手順の細部（各ページの Notes に省略した形式を記載）
