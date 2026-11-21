@@ -136,6 +136,8 @@ gcloud network-services agent-gateways import AGENT_GATEWAY_NAME \
  --project=PROJECT_ID
 ```
 
+Creating the gateway attaches no content inspection: a Client-to-Agent gateway with no `CONTENT_AUTHZ` authorization policy lets inbound requests pass through uninspected (Notes). If the deployment relies on Model Armor or semantic governance, attach that policy before you connect agents or send inbound traffic, and confirm that it runs in enforcement mode, not audit (dry-run) mode (see "Enforcement and audit mode" in [govern.md](./govern.md)). The attachment steps are not on this page; the source points to https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/configure-model-armor, https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/delegate-authorization#configure-authz-ma and https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/policies/configure-semantic-governance.
+
 ## Notes
 
 - Required APIs:
