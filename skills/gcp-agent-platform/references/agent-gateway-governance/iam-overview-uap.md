@@ -74,7 +74,8 @@ Use dry-run (`iamEnforcementMode: "DRY_RUN"`, or **Audit-only** in the console) 
   - Rule effect: Allow or deny. Deny rules override allow rules.
   - Destination resources: Registered (registries, MCP servers, agents, endpoints in an Agent Registry registry) or unregistered (specified in CEL with host and path attributes).
   - Conditions: CEL expressions in `conditions` defining target resource scope and access criteria; the effect applies only when the whole expression is `true`.
-  - Permissions: In IAP V2 with UAPs, `iap.googleapis.com/resources.egressViaIAP` is always granted on the destination resource; set in `operation.permissions` in policy files.
+  - Permissions: `iap.googleapis.com/resources.egressViaIAP` is the permission that UAP rules grant or deny ("to control egress, you add the permission `iap.googleapis.com/resources.egressViaIAP` to a UAP rule"); set it in `operation.permissions` in policy files. A call is allowed only when an allow rule whose condition matches grants it, and deny rules override allow rules (bullets below).
+  - Source inconsistency: the source's Permissions section says the permission "is always granted on the destination resource", while the same page says connections are blocked unless an explicit IAM policy grants access. Both are kept here; do not read "always granted" as access without an allow rule.
 - The CEL attribute tables are the source's attribute table (flattened in the Markdown twin), split by destination resource type under the same headings as the source.
 - UAPs as a feature are in Preview; UAPs that include only the `iap.googleapis.com/resources.egressViaIAP` permission are in General Availability.
 - By default all connections are blocked unless an explicit IAM policy grants access. A typical policy has at least one allow rule and one deny rule; deny rules override allow rules.

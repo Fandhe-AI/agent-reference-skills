@@ -175,6 +175,7 @@ deniedPermissions:
 |---|---|---|
 | `roles/agentregistry.viewer` (Agent Registry API Viewer) | Parent project or registry resource | Let the parent agent look up the subagent's endpoint at runtime. |
 | `roles/aiplatform.user` (Agent Platform User) | The target subagent's reasoning engine resource | Let the parent agent send messages to the subagent. |
+| `projects/PROJECT_ID/roles/agentInvoker` (custom role from the A2A steps above: `aiplatform.reasoningEngines.query` and `aiplatform.reasoningEngines.get` only) | The target agent's reasoning engine resource (Agent B) | Least-privilege alternative to `roles/aiplatform.user` for calling the subagent. |
 
 ## Notes
 
@@ -197,6 +198,7 @@ deniedPermissions:
 - SDK names checked against google-cloud-agentplatform 2.10.0 (module `agentplatform`): `agentplatform.Client(project=..., location=..., http_options=...)`, `client.runtimes.create(agent=..., config=...)` and `client.runtimes.update(...)`, `types.IdentityType.AGENT_IDENTITY` (enum value `AGENT_IDENTITY`; "The `service_account` field must not be set."), `agentplatform.frameworks.AdkApp`, the config fields `identity_type`, `requirements`, `staging_bucket` and `env_vars`, and `spec.effective_identity` on the returned resource all exist.
 - Corrected from the official docs: the requirement `"google-cloud-agentplatform[adk,runtimes]"` names an extra that does not exist. The 2.10.0 package metadata declares the extras `a2a`, `adk`, `ag2`, `agent-engines`, `all`, `bigquery`, `evaluation`, `langchain`, `live` and `llama-index` (pip warns about an unknown extra and ignores it); `client.runtimes` raises "The 'runtimes' module requires 'additional packages'. Please install them using pip install google-cloud-aiplatform[agent_engines]" (`agentplatform/_genai/client.py`), and the `adk` extra itself requires `google-cloud-agentplatform[agent_engines]`, so the page uses `[adk,agent_engines]`.
 - The Agent Identity API REST reference is in `gcp-foundation`.
+- Source inconsistency: the A2A delegation role list names `roles/aiplatform.user` on the subagent's resource, while the same page's A2A steps say "do not grant project-wide permissions" and grant a custom role with only `aiplatform.reasoningEngines.query` and `aiplatform.reasoningEngines.get` on Agent B's resource. The source's row is kept and the `agentInvoker` row is added (not in the official docs); `roles/aiplatform.user` grants more than calling the agent needs.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/agent-identity (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -81,7 +81,7 @@ async for event in app.async_stream_query(
 
 ### Deploy
 
-Before you deploy, enable the Agent Platform API (`aiplatform.googleapis.com`) in the project, which needs the `serviceusage.services.enable` permission (Notes), and create the Cloud Storage bucket that you pass as `STAGING_BUCKET` (steps in [Create a staging bucket](setup.md#create-a-staging-bucket)). The source's Before you begin section shows only the note on the enable permission, not a command; with gcloud, the command shown on other pages of the source is `gcloud services enable aiplatform.googleapis.com`.
+Before you deploy, enable the Agent Platform API (`aiplatform.googleapis.com`) in the project, which needs the `serviceusage.services.enable` permission (Notes), and create the Cloud Storage bucket that you pass as `STAGING_BUCKET` (steps in [Create a staging bucket](setup.md#create-a-staging-bucket)). The source's Before you begin section shows only the note on the enable permission, not a command; with gcloud, the command shown on other pages of the source is `gcloud services enable aiplatform.googleapis.com`; run it as `gcloud services enable aiplatform.googleapis.com --project=PROJECT_ID` (not in the official docs), so the API is enabled in the `PROJECT_ID` that the SDK client uses.
 
 ```python
 from vertexai import types
