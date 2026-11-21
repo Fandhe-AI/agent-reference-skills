@@ -33,7 +33,7 @@ gcloud network-services agent-gateways export AGENT_GATEWAY_NAME \
  --project=PROJECT_ID
 ```
 
-In the exported file keep `protocols`, `registries`, `description` and `labels`, remove output-only fields (`createTime`, `updateTime`, `agentGatewayCard`, `selfLink`), and point `agentConnectivityTemplate` at the new template (project number, not project ID):
+In the exported file keep `protocols`, `googleManaged.governedAccessPath` (it cannot be changed after the gateway is created; the example below shows an Agent-to-Anywhere gateway, so keep the exported value such as `CLIENT_TO_AGENT` for other gateways), `registries`, `description` and `labels`, remove output-only fields (`createTime`, `updateTime`, `agentGatewayCard`, `selfLink`), and point `agentConnectivityTemplate` at the new template (project number, not project ID):
 
 ```yaml
 name: projects/PROJECT_NUMBER/locations/LOCATION/agentGateways/AGENT_GATEWAY_NAME

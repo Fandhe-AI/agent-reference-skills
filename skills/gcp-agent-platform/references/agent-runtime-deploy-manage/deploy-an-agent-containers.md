@@ -10,6 +10,8 @@ Deploy to Agent Runtime from a `Dockerfile` in your source files, or from a cont
 
 ### Dockerfile (Python example)
 
+Adapted (not in the official docs): `COPY . .` became `COPY agent.py main.py ./`, the runtime files of the example file structure below, so a local build does not copy other files in the build context (such as `.env` or local credentials) into the image.
+
 ```docker
 FROM python:3.13-slim
 WORKDIR /app
@@ -17,7 +19,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY agent.py main.py ./
 
 EXPOSE 8080
 
@@ -108,6 +110,7 @@ curl -X POST \
 - The source also shows Go, TypeScript and Java Dockerfiles; they differ only in the build stage and `CMD` (all `EXPOSE 8080`, listening on `0.0.0.0`). Omitted here.
 - The source's REST example for a Dockerfile deployment (`tar -czf /tmp/source.tar.gz Dockerfile main.py requirements.txt` followed by a `curl` whose `-d` JSON embeds `$(base64 < /tmp/source.tar.gz | tr -d '\n')`) is omitted: the `curl` runs even when `tar` fails, the whole base64-encoded archive becomes one command-line argument (which can exceed the OS argument-length limit), and the file list leaves out the `agent.py` of the example file structure. The request is `POST https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines` with `displayName`, `spec.sourceCodeSpec.inlineSource.sourceArchive` and `spec.sourceCodeSpec.imageSpec` (`{}`) as described above; the archive holds the `Dockerfile` and every file the container needs at start-up at its root (for the example file structure: `Dockerfile`, `agent.py`, `main.py`, `requirements.txt`, the same list as `source_packages` in the SDK example). If you script it, stop when `tar` fails and send the JSON body from a file (`curl --data-binary @FILE`) instead of a command-line argument.
 - Try deployments in a disposable project first; each deployment builds and runs a container.
+- Corrected from the official docs: the Dockerfile copied the whole build context with `COPY . .`. With the SDK `source_packages` deployment only the listed files are uploaded, but the same Dockerfile used in a local `docker build` would copy every file in the directory; list the files your server needs (or add a `.dockerignore`).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
