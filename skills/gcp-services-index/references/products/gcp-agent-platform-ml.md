@@ -14,11 +14,11 @@ Owner skill: `gcp-agent-platform-ml` (status: 未収録（予定）). gcloud gro
 | Visual Inspection AI | — | — | — | `visualinspection.` | 5 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/visualinspection | 未収録（予定） |
 
 ```bash
-gcloud help
+gcloud --help
 gcloud colab --help
 ```
 
-The first command lists all groups; the second lists the commands of one group (replace `colab` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name).
+The first command shows the top-level help, which lists the GA command groups; the second lists the commands of one group (replace `colab` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name). Every top-level group, including the alpha- and beta-only groups, is listed with its owner skill in `../gcloud-groups/assignment.md` (from `gcloud meta list-commands`).
 
 ## Notes
 

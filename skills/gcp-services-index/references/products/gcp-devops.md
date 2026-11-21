@@ -25,11 +25,11 @@ Owner skill: `gcp-devops` (status: 収録済み). gcloud groups: `app-lifecycle-
 | Workload Manager | `workloadmanager.googleapis.com` (v1) | Workload Manager is a service that provides tooling for enterprise workloads to automate the deployment and validation of your workloads against best practices and recommendations. | `workload-manager` | `workloadmanager.` | 10 | — | — | https://cloud.google.com/workload-manager/docs | 収録済み |
 
 ```bash
-gcloud help
+gcloud --help
 gcloud app-lifecycle-manager --help
 ```
 
-The first command lists all groups; the second lists the commands of one group (replace `app-lifecycle-manager` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name).
+The first command shows the top-level help, which lists the GA command groups; the second lists the commands of one group (replace `app-lifecycle-manager` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name). Every top-level group, including the alpha- and beta-only groups, is listed with its owner skill in `../gcloud-groups/assignment.md` (from `gcloud meta list-commands`).
 
 ## Notes
 

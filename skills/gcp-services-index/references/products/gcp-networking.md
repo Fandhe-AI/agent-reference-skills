@@ -25,11 +25,11 @@ Owner skill: `gcp-networking` (status: 収録済み). gcloud groups: `dns`, `edg
 | Service Extensions | — | — | — | `networkactions.` | 1 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/networkactions | 収録済み |
 
 ```bash
-gcloud help
+gcloud --help
 gcloud dns --help
 ```
 
-The first command lists all groups; the second lists the commands of one group (replace `dns` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name).
+The first command shows the top-level help, which lists the GA command groups; the second lists the commands of one group (replace `dns` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name). Every top-level group, including the alpha- and beta-only groups, is listed with its owner skill in `../gcloud-groups/assignment.md` (from `gcloud meta list-commands`).
 
 ## Notes
 

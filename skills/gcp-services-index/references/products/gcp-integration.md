@@ -15,10 +15,10 @@ Owner skill: `gcp-integration` (status: 収録済み). gcloud groups: —.
 | Data Connectors | — | — | — | `dataconnectors.` | 6 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/dataconnectors | 収録済み |
 
 ```bash
-gcloud help
+gcloud --help
 ```
 
-The command lists all groups.
+The command shows the top-level help, which lists the GA command groups. Every top-level group, including the alpha- and beta-only groups, is listed with its owner skill in `../gcloud-groups/assignment.md` (from `gcloud meta list-commands`).
 
 ## Notes
 

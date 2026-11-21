@@ -54,11 +54,11 @@ Owner skill: `gcp-foundation` (status: 収録済み). gcloud groups: `active-dir
 | Workload Certificate | — | — | — | `workloadcertificate.` | 5 | — | — | https://docs.cloud.google.com/iam/docs/roles-permissions/workloadcertificate | 収録済み |
 
 ```bash
-gcloud help
+gcloud --help
 gcloud active-directory --help
 ```
 
-The first command lists all groups; the second lists the commands of one group (replace `active-directory` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name).
+The first command shows the top-level help, which lists the GA command groups; the second lists the commands of one group (replace `active-directory` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name). Every top-level group, including the alpha- and beta-only groups, is listed with its owner skill in `../gcloud-groups/assignment.md` (from `gcloud meta list-commands`).
 
 ## Notes
 
