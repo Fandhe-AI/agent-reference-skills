@@ -124,6 +124,8 @@ agent = Agent(
 
 ### Sessions
 
+The session and memory examples are for a single user (not in the official docs). In a shared service, set `user_id` on the server side from the authenticated principal, not from a value the client sends, and use an existing `session_id` only after confirming that the session's `user_id` matches it (Notes).
+
 ```python
 def session_service_builder():
   from google.adk.sessions import InMemorySessionService
@@ -267,6 +269,7 @@ print(response)
 - Corrected from the official docs: `get_exchange_rate` put the model-supplied `currency_date` in the URL as given; the example validates it with `strptime("%Y-%m-%d")`, which also accepts dates without zero padding such as `2023-1-5`, so it sends the normalized `date().isoformat()` value.
 - Corrected from the official docs: the `Agent` rebuilt with `tools=[get_exchange_rate]` did not pass `generate_content_config`, so the safety settings of the first example were dropped for it and for the Sessions example that uses it (google-adk 2.15.0 `google/adk/agents/llm_agent.py`: `generate_content_config: types.GenerateContentConfig | None = None`, `Agent: TypeAlias = LlmAgent`).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-adk-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- `user_id` and sessions: in google-adk 2.15.0, `BaseSessionService.get_session` takes `app_name`, `user_id` and `session_id`, and `VertexAiSessionService.get_session` (`google/adk/sessions/vertex_ai_session_service.py`, the service the deployed `AdkApp` uses) raises `ValueError` "Session {session_id} does not belong to user {user_id}." when they do not match; it does not check who the caller is, so `user_id` must come from the authenticated principal.
 
 ## Related
 

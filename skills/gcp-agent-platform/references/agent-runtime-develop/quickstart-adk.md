@@ -112,6 +112,8 @@ remote_agent = client.agent_engines.create(
 
 ### Use the deployed agent
 
+This example is for a single user (not in the official docs). In a shared service, set `user_id` on the server side from the authenticated principal, not from a value the client sends, and use an existing `session_id` only after confirming that the session's `user_id` matches it.
+
 ```python
 async for event in remote_agent.async_stream_query(
     user_id="USER_ID",
