@@ -24,8 +24,10 @@ Contact Center AI Platform (CCAI Platform) is an AI-driven Contact Center as a S
 
 If you haven't enabled the CCAI Platform API for the project, the console shows the **Contact Center AI Platform API** page with an **Enable** button when you open **CCAI Platform**. The service name `contactcenteraiplatform.googleapis.com` is the one used on the audit logging page.
 
+Adapted (not in the official docs): the help example's placeholder service `my-consumed-service` is replaced with `contactcenteraiplatform.googleapis.com`, the CCAI Platform API this step enables.
+
 ```bash
-gcloud services enable my-consumed-service
+gcloud services enable contactcenteraiplatform.googleapis.com
 ```
 
 ### Create a CCAI Platform instance
@@ -107,7 +109,8 @@ Users of the CCAI Platform portal are allocated roles that determine their permi
 - SDKs: the Web SDK offers instant web calls, scheduled calls, queue deflection, chat support, proactive triggers (by page URL, time on page, number of visits), mobile web support and Direct Access Points. The iOS and Android SDKs offer VoIP calls, PSTN fallback calls, scheduled calls (15-minute slots based on agent availability), SmartActions, SMS SmartActions, call deflections and Direct Access Points; the Android SDK also converts calls to the main support number made from the device dialer into Mobile calls.
 - Working from home: recommended bandwidth is 2 Mbps upload and 2 Mbps download per agent, with a minimum of 1 Mbps per agent. Use a hard-wired connection, a Core i5 or higher processor and at least 8 GB RAM, disable browser extensions that block third-party integrations (for example AdBlock, Ghostery), and use a wired headset. If you use IP allow-listing, see the IP address allow listing page for the CCAI Platform IP addresses.
 - The source also shows Console click-paths, headset brands and links to the pages for hours of operation, IVR messages, bulk user management and chat shortcuts; they are omitted here.
-- Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/services/enable (gcloud 593.0.0 help); gcloud has no group for CCAI Platform, and the source shows the Console only. Replace `my-consumed-service` with `contactcenteraiplatform.googleapis.com`.
+- Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/services/enable (gcloud 593.0.0 help); gcloud has no group for CCAI Platform, and the source shows the Console only.
+- Adapted from the official docs: the help example is `gcloud services enable my-consumed-service`, which names a placeholder service rather than the CCAI Platform API; the page enables `contactcenteraiplatform.googleapis.com` (the API name on the audit logging page, https://docs.cloud.google.com/contact-center/ccai-platform/docs/audit-logging).
 - The role IDs `roles/contactcenteraiplatform.admin` and `roles/serviceusage.serviceUsageAdmin` are the ones the custom constraints page links for these two display names.
 - The instance is a tenant of the `contactcenteraiplatform.googleapis.com` API (Discovery document `v1alpha1`: `ContactCenter` resource with `customerDomainPrefix`, `privateAccess`, `advancedReportingEnabled`).
 - Quickstart clean up: deleting a project deletes everything in the project, and custom project IDs are lost; to keep URLs that use the project ID, delete selected resources instead of the whole project. Try the quickstart in a disposable project. The quickstart creates test users with real email addresses that receive invitations; use addresses you control.
@@ -122,6 +125,7 @@ Users of the CCAI Platform portal are allocated roles that determine their permi
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/setup-agents-channels (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/user-roles-permissions (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/ccaip-custom-constraints (role IDs; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/audit-logging (service name `contactcenteraiplatform.googleapis.com`; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

@@ -1,4 +1,4 @@
-# CCAI Platform Virtual Agents
+# ccai-platform-virtual-agents
 
 | Name | Description | Path |
 |------|-------------|------|

@@ -92,6 +92,8 @@ questions, execute the tool {@TOOL: end_session}(reason="success").
 
 ### After-LLM callback appending a static message
 
+Adapted (not in the official docs): the callback returns `None` (keeps the model response) when `llm_response.content` is missing or has no parts, instead of iterating `llm_response.content.parts` unconditionally.
+
 ```python
 SURVEY_MESSAGE = "Click here to take our post call survey."
 
@@ -99,6 +101,8 @@ def after_model_callback(
     callback_context: CallbackContext,
     llm_response: LlmResponse
 ) -> Optional[LlmResponse]:
+  if llm_response.content is None or not llm_response.content.parts:
+    return None
   for index, part in enumerate(llm_response.content.parts):
     if part.has_function_call('end_session'):
       return LlmResponse.from_parts(parts=[
@@ -111,6 +115,7 @@ def after_model_callback(
 
 ## Notes
 
+- Adapted from the official docs: the callback iterates `enumerate(llm_response.content.parts)` without checking that `content` and `parts` are set. In ADK, `LlmResponse.content` is `types.Content | None` (`google-adk` 2.15.0 `llm_response.py`) and `Content.parts` is optional (`google-genai` 3.6.1 `types.py`); this is an analogy not confirmed for the CX Agent Studio runtime, so the guard is defensive. The page returns `None` first, which keeps the model response as the `after_model_callback` sample on the callbacks page describes.
 - The tool has a mocked response; a real weather application would access an external server.
 - Instruction reference syntax: `{@AGENT: Agent name}` for agents, `{@TOOL: tool_name}` for tools, `{variable_name}` for variables. The source's Farewell agent instruction is "You are the Farewell Agent. Your ONLY task is to provide a polite goodbye message."
 - Agent roles: the root agent greets and delegates; the Weather agent answers weather questions; the Farewell agent completes the conversation. Descriptions used: "Handles simple greetings and delegates to other agents", "Handles any weather related questions from the user", "Handles user farewells and goodbyes".

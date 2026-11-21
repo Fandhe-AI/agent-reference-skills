@@ -156,6 +156,8 @@ def before_tool_callback(
 
 ### Custom payload from after_model_callback
 
+Adapted (not in the official docs): the callback returns `None` (keeps the model response) when `llm_response.content` is missing or has no parts, instead of reading `parts[0]` unconditionally, and the new response keeps all original parts in order (and the content's `role`) and appends the payload, instead of keeping only the first text part.
+
 ```python
 import json
 
@@ -163,6 +165,8 @@ def after_model_callback(callback_context: CallbackContext, llm_response: LlmRes
  """
  Adds a custom payload to every model response which is a text
  """
+ if llm_response.content is None or not llm_response.content.parts:
+   return None
  if (llm_response.content.parts[0].text is not None):
    # construct payload
    payload_dict = { "custom_payload_key": "custom_payload_value"}
@@ -170,12 +174,12 @@ def after_model_callback(callback_context: CallbackContext, llm_response: LlmRes
 
    new_parts = []
    # Keep the origial agent response part, as model only sees text in the historical context.
-   new_parts.append(Part(text=llm_response.content.parts[0].text))
+   new_parts.extend(llm_response.content.parts)
 
    # Append custom payload
    new_parts.append(Part.from_json(data=payload_json_string))
 
-   return LlmResponse(content=Content(parts=new_parts))
+   return LlmResponse(content=Content(role=llm_response.content.role, parts=new_parts))
 ```
 
 ## Notes
@@ -184,6 +188,7 @@ def after_model_callback(callback_context: CallbackContext, llm_response: LlmRes
 - Create a callback: open the agent settings, **Add code**, select a callback type, provide Python code, **Save**. Classes and functions available to callback code are in the Python runtime reference; the channel or modality of a conversation can be checked with the `_session` global variable.
 - Custom payloads: supplementary non-textual structured data (typically JSON) in an agent's response, for example agent escalation/handoff routing instructions (such as a queue), or rich content and client-side actions (image URLs, quick-reply chips). They can be returned alone deterministically, with an LLM-generated text response, or with a static text response. The payload value is not visible to the LLM. Payloads are generated and set only in callbacks (`before_model_callback` or `after_model_callback`), as a Blob with `mime_type` `application/json`, created with `Part.from_json(data=payload_string)`.
 - At runtime the payload is populated as a Struct in the `payload` field of both `RunSession` and `BidiRunSession` of the `ces` v1 SessionService (https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/reference/rpc/google.cloud.ces.v1#google.cloud.ces.v1.SessionService.RunSession).
+- Corrected from the official docs: the custom payload sample reads `if (llm_response.content.parts[0].text is not None):` without checking that `content` and `parts` exist, so it raises `IndexError` on a response with an empty parts list (and fails if `content` or `parts` is unset; in ADK, `LlmResponse.content` is `types.Content | None` in `google-adk` 2.15.0 `llm_response.py`, which is an analogy not confirmed for the CX Agent Studio runtime), and rebuilds the response as `new_parts.append(Part(text=llm_response.content.parts[0].text))` plus the payload in `LlmResponse(content=Content(parts=new_parts))`, which drops every other part (later text parts, function calls) and the content's `role`. The page returns `None` when there are no parts (the `after_model_callback` sample above says returning `None` keeps the response as-is), copies all parts in order with `new_parts.extend(llm_response.content.parts)`, and passes `role=llm_response.content.role`.
 - The source's `before_tool_callback` sample overrides the tool and returns a mocked result; the `before_model_callback` sample skips the LLM call and forces a function call.
 - The source also has code samples for `before_agent_callback` (set a default `username` variable), `after_agent_callback` (increment a per-agent counter), `after_tool_callback` (override a `get_user_info` response) and a `before_model_callback` custom payload when an `escalate` tool is called; they are omitted here.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/callback (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

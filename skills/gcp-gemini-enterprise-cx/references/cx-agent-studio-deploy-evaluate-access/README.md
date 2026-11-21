@@ -1,4 +1,4 @@
-# CX Agent Studio: deploy, evaluate, access
+# cx-agent-studio-deploy-evaluate-access
 
 | Name | Description | Path |
 |------|-------------|------|

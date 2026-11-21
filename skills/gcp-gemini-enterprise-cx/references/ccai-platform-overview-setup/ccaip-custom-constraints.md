@@ -98,6 +98,7 @@ With the `AGENT` example condition enforced: creating or updating an instance wi
 - The source shows the Console and gcloud only; the Console steps for creating a constraint and the `gcloud init` block are omitted.
 - Creating private access instances is covered on the get-started page; Private Service Connect is covered on the VPC Service Controls page.
 - Discovery (`contactcenteraiplatform.v1alpha1`): `ContactCenter.privateAccess` is a `PrivateAccess` object with `ingressSettings` and `egressSettings` (lists of `Component` with `name` and `serviceAttachmentNames`) and `pscSetting`.
+- The `startsWith` example condition `resource.name.startsWith("projects/my-project")` in the Supported resources and operations table is copied as written; that prefix also matches other projects whose ID begins with `my-project` (for example `projects/my-project2`). To match one project only, end the prefix with `/` (`"projects/my-project/"`).
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/ccaip-custom-constraints (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

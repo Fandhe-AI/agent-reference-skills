@@ -16,9 +16,12 @@ Open the IAM page in the Google Cloud console. To add a principal: click the add
 
 When adding or editing a principal, create a conditional role binding. The following condition provides access to a specific agent application as well as the top-level resources within the project that the agent application needs:
 
+Adapted (not in the official docs): the app clause `resource.name.startsWith(".../apps/APP_ID")` is split into an exact match for the app and a prefix ending in `/` for its child resources, so the binding no longer also covers other apps whose ID starts with `APP_ID`.
+
 ```text
 resource.name == "projects/PROJECT_ID" ||
-resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/apps/APP_ID") ||
+resource.name == "projects/PROJECT_ID/locations/LOCATION_ID/apps/APP_ID" ||
+resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/apps/APP_ID/") ||
 resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/operations") ||
 resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/sipDomains") ||
 resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/omnichannels") ||
@@ -85,6 +88,7 @@ Ability to manage environments and deploy specific App Versions to them. Base ro
 
 ## Notes
 
+- Adapted from the official docs: the source condition writes `resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/apps/APP_ID")`. A prefix without the trailing `/` also matches `.../apps/APP_ID2` and its children, so it grants access to every app whose ID begins with the same string. The page uses `resource.name == ".../apps/APP_ID"` for the app itself and `resource.name.startsWith(".../apps/APP_ID/")` for its child resources. The other `startsWith` clauses end in a fixed collection name (`operations`, `sipDomains`, `omnichannels`, `dataStores`, `routes`, `endpointConfigs`) and are kept as written.
 - The Admin role gives full access to all CX Agent Studio resources, including deleting apps, conversations and evaluation data and updating security settings; grant it sparingly and prefer the narrower editor roles or the Client role for services that only call `runSession`.
 - The role and permission identifiers use the `ces.googleapis.com/...` form exactly as the source writes them. In IAM bindings use the role IDs given next to each heading (`roles/ces.admin`, `roles/ces.viewer`, `roles/ces.client`, `roles/ces.appEditor`, `roles/ces.agentEditor`, `roles/ces.toolsEditor`, `roles/ces.guardrailsEditor`, `roles/ces.evalsEditor`, `roles/ces.securitySettingsEditor`, `roles/ces.deploymentEditor`); the IAM roles and permissions reference writes permissions as `ces.apps.create`, `contactcenterinsights.conversations.get` and so on.
 - The IAM roles and permissions reference does not list some permissions named in this source: `ces.agents.updateCallbacks`, `ces.agents.updateInstructions`, `ces.agents.updateTools`, `ces.agents.updateGeneral`, the tag binding permissions (`ces.apps.createTagBinding`, `ces.apps.deleteTagBinding`, `ces.apps.listTagBindings`, `ces.apps.listEffectiveTags`) and the `ces.scheduledEvaluationRuns.*`, `ces.omnichannels.*`, `ces.routes.*`, `ces.endpointConfigs.*` and `ces.sipDomains.*` permissions; the role contents there may differ from the lists above.
