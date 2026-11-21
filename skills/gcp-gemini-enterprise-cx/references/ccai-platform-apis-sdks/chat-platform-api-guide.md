@@ -12,6 +12,7 @@ End-to-end flow for a backend service that connects a customer-owned chat experi
 
 - Apps API credentials from **Settings > Developer Settings > API Credentials**; don't expose the secret in browser or mobile-client code.
 - Base URL `https://YOUR_SUBDOMAIN.YOUR_DOMAIN/apps/api/v1`.
+- For every request that targets a `chat_id` or carries a user ID (creating the chat with `end_user_id`, messages, escalations and deflection choices, ending the chat, end-user updates, attachments, custom data, CSAT and ratings), your backend first checks that the authenticated user owns that `chat_id`, and derives every user ID it sends (`end_user_id`, `from_user_id`, `ended_by_user_id`) from the authenticated session and the end-user ID it stored for that user, never from a value the browser sends. This is not stated in the official docs; for server-side end-user authentication, see [web-sdk-v3-authenticate.md](./web-sdk-v3-authenticate.md).
 - A public HTTPS webhook endpoint configured in developer settings, with a primary secret generated. The webhooks page says CCAI Platform "begins delivering events after webhooks are enabled and a webhook URL and primary secret are set" and calls the secondary secret "An optional second token" that lets you rotate secrets without missing events; generate it too if you plan to rotate secrets (webhooks.md).
 - The queue or menu new chats enter; for a queue-selection virtual agent, configure it and assign it to the entry queue before creating chats.
 - A stable end-user identifier, and storage for the CCAI Platform end-user ID the API returns.
@@ -98,8 +99,6 @@ Store at least the chat ID, event type, event timestamp, message sender / type /
 ### Send a text message
 
 `POST /apps/api/v1/chats/{chat_id}/message`. Your webhook endpoint also receives a message event for messages your own application sent.
-
-For this step, ending the chat and updating the end-user identity, your backend first checks that the authenticated user owns `chat_id`, and derives `from_user_id` (and `ended_by_user_id`) from the authenticated session and the end-user ID it stored for that user, never from a value the browser sends; otherwise one user could act on another user's chat. These checks are not stated in the official docs; for server-side end-user authentication, see [web-sdk-v3-authenticate.md](./web-sdk-v3-authenticate.md).
 
 ```json
 {
