@@ -62,11 +62,11 @@ curl -X GET \
 
 ### Call streamAssist (REST)
 
-Adapted (not in the official docs): the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table). Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+Adapted (not in the official docs): the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table). Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--no-buffer` prints streamed chunks as they arrive.
 
 ```bash
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
-curl -X POST \
+curl --no-buffer -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant:streamAssist" \
@@ -140,11 +140,11 @@ print()
 
 Pass the `session` string from `sessionInfo` of the previous response.
 
-Adapted (not in the official docs): the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table). Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+Adapted (not in the official docs): the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table). Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--no-buffer` prints streamed chunks as they arrive.
 
 ```bash
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
-curl -X POST \
+curl --no-buffer -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant:streamAssist" \
@@ -228,7 +228,7 @@ curl -X POST \
 - Corrected from the official docs: the REST examples write the host as `"https://LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/..."` (and `/v1alpha/` for the agent list), with the same `LOCATION` in the host and the path. Substituting `global` gives `global-discoveryengine.googleapis.com`, which contradicts the source's own instruction to omit the prefix for `global` apps (as the Python sample does with `if location != "global"`). The host prefix is the separate placeholder `ENDPOINT_LOCATION`.
 - Corrected from the official docs: the Python sample's comment says "Filter out model reasoning fragments (thought: true)", but the source's condition is `if hasattr(reply, "grounded_content") and reply.grounded_content.content:`, which prints thought fragments too. The condition adds `and not reply.grounded_content.content.thought` (`AssistantContent.thought` in the `discoveryengine` `v1` Discovery document; `google-cloud-discoveryengine` is not pinned for this skill set, so the attribute name follows the REST field `thought`).
 - The twin's REST call and Python blocks end with a whitespace-only line, which is omitted here. The Python sample uses the `google-cloud-discoveryengine` client library (`discoveryengine_v1`).
-- Source inconsistency (global host): for a `global` app (`ENDPOINT_LOCATION` = `global` on those pages), the Gemini Enterprise pages on app IAM policies and ADK / A2A agent registration show example commands with `https://global-discoveryengine.googleapis.com/...`, while this page says "If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The `discoveryengine` `v1` / `v1beta` / `v1alpha` Discovery documents give the `rootUrl` `https://discoveryengine.googleapis.com/`. This page follows its own source rule: `ENDPOINT_LOCATION` is `us` or `eu`, and a `global` app uses `discoveryengine.googleapis.com` (see the Corrected line above); the other pages keep their `global-` form as written.
+- Source inconsistency (global host): the app IAM and ADK / A2A registration pages use `https://global-discoveryengine.googleapis.com/...` for a `global` app, while this page says "If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The Discovery documents' `rootUrl` is `https://discoveryengine.googleapis.com/`. This page follows its own rule (`ENDPOINT_LOCATION` is `us` or `eu`; see the Corrected line above); the other pages keep `global-` as written.
 - Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-streamassist (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

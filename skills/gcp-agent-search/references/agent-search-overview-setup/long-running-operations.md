@@ -23,7 +23,7 @@ curl -X GET \
 
 ### List long-running operations (Python)
 
-Adapted (not in the official docs): the source sample also takes an `operations_filter` argument, tells you to create the filter in AIP-160 syntax and passes it as `filter=operations_filter` in `ListOperationsRequest`; that argument, its comment lines and the then-unused `from typing import Optional` import are removed, because the same page says `operations.list` in Agent Search can't use the `filter` field. The rest of the sample is unchanged.
+Adapted (not in the official docs): the source sample also takes an `operations_filter` argument, tells you to create the filter in AIP-160 syntax and passes it as `filter=operations_filter` in `ListOperationsRequest`; that argument, its comment lines and the then-unused `from typing import Optional` import are removed, because the same page says `operations.list` in Agent Search can't use the `filter` field. `search_engine_id` / `YOUR_SEARCH_ENGINE_ID` are renamed `data_store_id` / `YOUR_DATA_STORE_ID`, because the value goes in the `dataStores/` segment. The rest of the sample is unchanged.
 
 ```python
 from google.cloud import discoveryengine
@@ -32,19 +32,19 @@ from google.longrunning import operations_pb2
 # TODO(developer): Uncomment these variables before running the sample.
 # project_id = "YOUR_PROJECT_ID"
 # location = "YOUR_PROCESSOR_LOCATION"  # Options: "global"
-# search_engine_id = "YOUR_SEARCH_ENGINE_ID"
+# data_store_id = "YOUR_DATA_STORE_ID"
 
 
 def list_operations_sample(
     project_id: str,
     location: str,
-    search_engine_id: str,
+    data_store_id: str,
 ) -> operations_pb2.ListOperationsResponse:
     # Create a client
     client = discoveryengine.DocumentServiceClient()
 
     # The full resource name of the search engine branch.
-    name = f"projects/{project_id}/locations/{location}/collections/default_collection/dataStores/{search_engine_id}"
+    name = f"projects/{project_id}/locations/{location}/collections/default_collection/dataStores/{data_store_id}"
 
     # Make ListOperations request
     request = operations_pb2.ListOperationsRequest(
@@ -131,13 +131,13 @@ def get_operation_sample(operation_name: str) -> operations_pb2.Operation:
 
 Calls `operations.get` repeatedly with a backoff of 10 seconds between requests; stop the polling loop with `Ctrl+C` after the status shows `"done": true` (`Ctrl+Z` only suspends the job, which keeps sending requests if it is resumed). For example, `OPERATION_NAME` is `projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789`.
 
-Adapted (not in the official docs): The access token is read into `TOKEN` in the loop condition on each pass (the loop stops if `gcloud` fails or prints nothing, and a token that expires during a long poll is refreshed) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+Adapted (not in the official docs): The access token is read into `TOKEN` in the loop condition on each pass (the loop stops if `gcloud` fails or prints nothing, and a token that expires during a long poll is refreshed) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `curl --fail-with-body` with `|| { ...; break; }` stops the loop on an HTTP error such as 404 or 403.
 
 ```bash
 while TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ]; \
-    do curl -X GET \
+    do curl --fail-with-body -X GET \
     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
-    "https://discoveryengine.googleapis.com/v1/OPERATION_NAME"; \
+    "https://discoveryengine.googleapis.com/v1/OPERATION_NAME" || { echo "request failed" >&2; break; }; \
     sleep 10; \
     done
 ```
@@ -246,11 +246,11 @@ def cancel_operation_sample(operation_name: str) -> None:
 - The record of an operation is kept for approximately 30 days after the operation finishes; you can't view or list an operation after that time.
 - Long running operations can't be filtered or paginated in Agent Search: when you call `operations.list` you can't use the `filter`, `pageSize` or `pageToken` fields.
 - Corrected from the official docs: the source says "Long running operations can't be filtered or paginated in Agent Search. That is, when you call the `operations.list` method, you can't use the `filter`, `pageSize`, or `pageToken` fields.", yet its own Python list sample contains `# Create filter in https://google.aip.dev/160 syntax`, `# operations_filter = "YOUR_FILTER"`, the parameter `operations_filter: Optional[str] = None,` and `filter=operations_filter,` in `ListOperationsRequest`. The source keeps both; the sample on this page drops the filter argument (and `from typing import Optional`, which only that parameter used) so that it follows the stated restriction.
-- Corrected from the official docs: the source says "`DATA_STORE_ID`: The ID of the Agent Search data store that was created with your engine. In the Google Cloud console URL, the data store ID appears after `engines/` and before `/data`." The `engines/` segment names the app (engine), and the app and its data store can have different IDs, while the request path is `dataStores/DATA_STORE_ID/operations`; the search app creation page of the same documentation set (create-engine-es, see Source) gets the data store ID from the console "In the Google Cloud console, go to the **AI Applications** page and in the navigation menu, click **Data Stores**." ... "On the **Data** page for your data store, get the data store ID." The page follows that procedure.
-- The Python samples otherwise keep the source's code (the list sample without the filter argument, see above): they name the argument `search_engine_id` but put it in the `dataStores/` segment of the resource name (`.../collections/default_collection/dataStores/{search_engine_id}`), so pass the data store ID there, not the app (engine) ID.
+- Corrected from the official docs: the source says "`DATA_STORE_ID`: The ID of the Agent Search data store that was created with your engine. In the Google Cloud console URL, the data store ID appears after `engines/` and before `/data`." The `engines/` segment names the app, whose ID can differ from its data store's, while the path is `dataStores/DATA_STORE_ID/operations`; the page takes the data store ID from the console's **Data Stores** page, as create-engine-es (see Source) does.
+- Corrected from the official docs: the list sample's `search_engine_id` (`# search_engine_id = "YOUR_SEARCH_ENGINE_ID"`) goes in the `dataStores/` segment, so it is renamed `data_store_id`. The other samples' `Example:` comments keep `{search_engine_id}`; pass the data store ID there, not the app ID.
 - The REST list call uses the data store resource (`.../dataStores/DATA_STORE_ID/operations`); the Python samples use `DocumentServiceClient` and Application Default Credentials.
 - Corrected from the official docs: the source writes `curl -X post` in the cancel example; changed to `curl -X POST` (the Discovery document `discoveryengine.v1` defines every `operations.cancel` method with `httpMethod` `POST`). The source tags the cancel response sample `bash`; it is tagged `json` here (the content is unchanged).
-- Corrected from the official docs: the source says "Stop the polling job (`Control+Z`) after the status shows `"done": true`." In a shell, `Control+Z` suspends the `while true` loop instead of ending it; the loop does not exit on its own when `"done": true` appears, so the page says to end it with `Ctrl+C`. Run it only against an operation you started yourself.
+- Corrected from the official docs: the source says "Stop the polling job (`Control+Z`) after the status shows `"done": true`." In a shell, `Control+Z` suspends the loop instead of ending it; the loop does not exit on its own when `"done": true` appears, so the page says to end it with `Ctrl+C`. Run it only against an operation you started yourself.
 - Cancelling an operation (for example an import) stops the job; do it in a disposable project first if unsure.
 - The cancel response sample in the source shows a `v1alpha` `ImportDocumentsMetadata` type although the request uses `v1`; kept as written.
 - Corrected from the official docs: the source's operations-list sample writes `"@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata",` with a trailing comma before the closing `}` of `metadata`; JSON does not allow trailing commas, so the comma is removed and the block is tagged `json`.

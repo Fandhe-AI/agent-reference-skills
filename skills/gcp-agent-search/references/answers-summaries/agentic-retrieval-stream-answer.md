@@ -71,7 +71,7 @@ projects/*/locations/*/collections/*/engines/YOUR_AI_MODE_ENGINE/servingConfigs/
 
 Run the command by itself and type the query text on one line at the prompt; `jq` (required) encodes `QUERY` as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the query.
 
-Adapted (not in the official docs): the request body is built with `jq -n --arg query "$QUERY" '{...}'` from the text read by `IFS= read -r QUERY`, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"QUERY"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in the query cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+Adapted (not in the official docs): the request body is built with `jq -n --arg query "$QUERY" '{...}'` from the text read by `IFS= read -r QUERY`, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"QUERY"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in the query cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--no-buffer` prints streamed chunks as they arrive.
 
 ```bash
 IFS= read -r QUERY && [ -n "$QUERY" ] && BODY=$(jq -n --arg query "$QUERY" '{
@@ -83,7 +83,7 @@ IFS= read -r QUERY && [ -n "$QUERY" ] && BODY=$(jq -n --arg query "$QUERY" '{
       }') &&
 TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 printf '%s' "$BODY" |
-curl -X POST -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
+curl --no-buffer -X POST -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
   -H "Content-Type: application/json" \
   "https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/engines/APP_ID/servingConfigs/SERVING_CONFIG_ID:streamAnswer" \
   --data @-
