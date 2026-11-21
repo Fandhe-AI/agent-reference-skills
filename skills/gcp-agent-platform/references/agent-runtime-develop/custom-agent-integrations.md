@@ -18,6 +18,8 @@ pip install openinference-instrumentation-langchain==0.1.34 "openinference-instr
 
 The class below also imports `langchain_google_vertexai` and `langgraph.prebuilt`: install `langchain-google-vertexai` and `langgraph` as well (PyPI distribution names; see Notes). List the same packages in the deployment `requirements` (see deploy-an-agent-configuration.md in the agent-runtime-deploy-manage category) so that `set_up` can import them in Agent Runtime.
 
+The exporter writes spans to the project `self.project` as the principal that `google.auth.default()` returns when the agent runs (the identity the agent is deployed with: agent identity, the default service agent or a custom service account; see setup.md). That principal needs Cloud Trace Agent (`roles/cloudtrace.agent`) on `self.project` (not in the official docs); otherwise authentication succeeds but the span export fails.
+
 Adapted (not in the official docs): added `from openinference.instrumentation import TraceConfig` and passed `config=TraceConfig(hide_inputs=True, hide_outputs=True)` to `LangChainInstrumentor().instrument()`, so prompts, model responses and tool inputs / outputs are masked in the spans exported to Cloud Trace instead of being readable by everyone with trace access.
 
 ```python
@@ -203,6 +205,7 @@ credentials = google.oauth2.credentials.Credentials(
   - Identity providers (External accounts (workload identity federation)): Identity Platform, Firebase Authentication or any OIDC provider.
 - Roles:
   - `roles/secretmanager.secretAccessor`: Grant to the agent's service account (through the Google Cloud console) to read secrets.
+  - `roles/cloudtrace.agent` (Cloud Trace Agent; not in the official docs for this page): Grant to the principal the agent runs as, on the project the exporter writes to (`self.project`), for the Cloud Trace example. The IAM roles-permissions page for `cloudtrace` (https://docs.cloud.google.com/iam/docs/roles-permissions/cloudtrace) describes it as "For service accounts. Provides ability to write traces by sending the data to Stackdriver Trace" and lists the permissions `cloudtrace.traces.patch` and `telemetry.traces.write`.
 - Tracing: import and initialize OpenTelemetry instrumentation in `.set_up`. The OpenLLMetry variant installs `opentelemetry-instrumentation-langchain==0.38.10` and replaces the instrumentor lines with `from opentelemetry.instrumentation.langchain import LangchainInstrumentor` and `LangchainInstrumentor().instrument()`; the rest of the class is unchanged. `TraceConfig` belongs to OpenInference and does not apply to it: in opentelemetry-instrumentation-langchain 0.38.10, `should_send_prompts()` (`opentelemetry/instrumentation/langchain/utils.py`) reads `os.getenv("TRACELOOP_TRACE_CONTENT") or "true"`, and the package README says "To disable logging, set the `TRACELOOP_TRACE_CONTENT` environment variable to `false`." Source mentions OpenTelemetry Google Cloud Integration combined with OpenInference or OpenLLMetry.
 - Environment variables: make them available through `os.environ` during development and define them at deployment time (see the deploy guide, "Define environment variables").
 - Secret Manager: the source's template carries `self.secret_id = secret_id`, which is undefined; replaced in the Adapted block above.
