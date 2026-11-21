@@ -12,7 +12,7 @@ End-to-end flow for a backend service that connects a customer-owned chat experi
 
 - Apps API credentials from **Settings > Developer Settings > API Credentials**; don't expose the secret in browser or mobile-client code.
 - Base URL `https://YOUR_SUBDOMAIN.YOUR_DOMAIN/apps/api/v1`.
-- A public HTTPS webhook endpoint configured in developer settings, with primary and secondary secrets generated.
+- A public HTTPS webhook endpoint configured in developer settings, with a primary secret generated. The webhooks page says CCAI Platform "begins delivering events after webhooks are enabled and a webhook URL and primary secret are set" and calls the secondary secret "An optional second token" that lets you rotate secrets without missing events; generate it too if you plan to rotate secrets (webhooks.md).
 - The queue or menu new chats enter; for a queue-selection virtual agent, configure it and assign it to the entry queue before creating chats.
 - A stable end-user identifier, and storage for the CCAI Platform end-user ID the API returns.
 - Retries and backoff: CCAI Platform rate-limits the Apps API; avoid bursts for a single tenant.
@@ -172,6 +172,8 @@ Photo message request body:
 - The message endpoint accepts `type`, `content` and `media_id` as flat values; a nested object in `content` is discarded and the media reference is lost. Use the `video` message type and the video `media_id` for video; `media_id` is a sibling of `content`.
 - The source also shows a Ruby webhook-verification handler (HMAC-SHA256, 5-minute timestamp window, constant-time comparison) that is not reproduced.
 - Adapted from the official docs: `{chat_id}` in the curl URL `https://YOUR_SUBDOMAIN.YOUR_DOMAIN/apps/api/v1/chats/{chat_id}` became `CHAT_ID`.
+- Source inconsistency: this guide's prerequisites say "Generate and store the webhook primary and secondary secrets.", while the webhooks page makes only the primary secret required ("Contact Center AI Platform begins delivering events after webhooks are enabled and a webhook URL and primary secret are set.") and the secondary secret optional ("Optional: In the **Secondary Secret** section, click **Generate**"). The page follows the webhooks page: primary required, secondary for rotation.
+- Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/webhooks (retrieved 2026-11-21; primary and secondary secret requirements)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/chat-platform-api-guide (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

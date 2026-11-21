@@ -37,9 +37,9 @@ resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/routes") ||
 resource.name.startsWith("projects/PROJECT_ID/locations/LOCATION_ID/endpointConfigs")
 ```
 
-To access Customer Experience Insights, also grant Customer Experience Insights roles in addition to the conditional grant.
-
 ### Customer Experience Insights permissions
+
+Access to Customer Experience Insights is a separate decision from the single-app bindings above. The source says: "In order to have access to Customer Experience Insights, you should grant Customer Experience Insights roles in addition to conditional granting." The CX Insights roles `roles/contactcenterinsights.viewer` and `roles/contactcenterinsights.admin` granted on the project are not limited by the app condition: they give access to every CX Insights conversation in the project, including conversations of other apps. To give a user only part of the conversations, CX Insights documents authorized views (Preview, fine-grained access control): the user gets a role such as `roles/contactcenterinsights.authorizedViewer` on an authorized view whose filter limits the data (see the fine-grained access control overview in the Customer Experience Insights docs, https://docs.cloud.google.com/gemini-enterprise-cx/insights/overview-of-fine-grained-access-control). Whether the CX Agent Studio integration with CX Insights works through authorized views is not stated in the official docs.
 
 CX Agent Studio integrates with CX Insights. Principals that access CX Agent Studio need the IAM permissions `contactcenterinsights.conversations.get` and `contactcenterinsights.conversations.list` (use these IDs in the `includedPermissions` of a custom role). The child roles of `ces.googleapis.com/admin` and `ces.googleapis.com/viewer` (`roles/ces.admin`, `roles/ces.viewer`) include them automatically; custom roles must include them. Alternatively grant a CX Insights role: `contactcenterinsights.googleapis.com/viewer` (IAM role ID `roles/contactcenterinsights.viewer`; read-only access to conversations) or `contactcenterinsights.googleapis.com/admin` (IAM role ID `roles/contactcenterinsights.admin`; full access to conversations). You may also need the Discovery engine setup steps from the CX Insights documentation.
 

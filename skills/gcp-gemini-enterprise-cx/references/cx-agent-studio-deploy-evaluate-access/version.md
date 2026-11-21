@@ -23,7 +23,10 @@ Changes apply immediately to the working draft version. To inspect uncommitted c
 - Delete: overflow menu on the version row, **Delete**, then confirm.
 - Restore: overflow menu on the version row, **Restore**, then confirm.
 
-If the current configuration has changes since the last version was saved, restoring first creates an automatic system version (authored by `system@google.com`) to save the unsaved work, so you can "revert a revert". If there are no changes to the current configuration, the restore is a no-op.
+Restore is for going back to a previous version ("To restore or revert to a previous version"). Two separate rules apply:
+
+- Automatic backup: only if the current application configuration has changes since the last version was saved does restoring first create an automatic system version (authored by `system@google.com`) that saves the unsaved work, so you can "revert a revert". Without unsaved changes, no automatic version is created.
+- No-op: the source says "If there are no changes to the current application configuration, the restore is a no-op." It does not say what "no changes" is compared with, and it does not say that restoring an older, different version after you saved is a no-op (see Notes).
 
 ### Versions and deployments
 
@@ -43,6 +46,7 @@ projects/PROJECT_ID/locations/REGION_ID/apps/APPLICATION_ID/deployments/DEPLOYME
 
 ## Notes
 
+- The source's restore paragraph is "If there are changes to the current application configuration since the last version was saved, restoring to a previous version first creates an automatic system version (authored by `system@google.com`) to save any unsaved work. This behavior lets you "revert a revert" if a mistake is made. If there are no changes to the current application configuration, the restore is a no-op." The last sentence is kept as written; the source does not define the comparison it refers to, and the page does not read it as preventing the restore of an older snapshot after saving.
 - Snippet taken from https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/deploy/api-access (the deployment resource-name pattern).
 - Deleting a version requires confirmation; try it in a disposable project first.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/version (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
