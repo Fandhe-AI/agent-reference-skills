@@ -10,8 +10,10 @@ Use the `AdkApp` class of the Agent Platform SDK for Python to create ADK agents
 
 ### Define the model and optional settings
 
+Adapted (not in the official docs): the model ID `gemini-2.0-flash` is replaced with `gemini-3.5-flash` (the model the Agent Runtime ADK quickstart uses), because the Agent Platform model versions page lists `gemini-2.0-flash` under "Retired models" with retirement date June 1, 2026.
+
 ```python
-model = "gemini-2.0-flash"
+model = "gemini-3.5-flash"
 ```
 
 Adapted (not in the official docs): the threshold `types.HarmBlockThreshold.OFF` is replaced with `types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE`, so the example keeps the dangerous-content filter on for the agent it configures; `BLOCK_MEDIUM_AND_ABOVE` is a member of `HarmBlockThreshold` in google-genai 3.6.1.
@@ -157,7 +159,7 @@ async for event in app.async_stream_query(
 
 ### Memories
 
-Adapted (not in the official docs): in instruction item 1, the sentence telling the agent to provide a hypothetical tool execution outcome is replaced with one that reports only real tool results; this agent has only `PreloadMemoryTool`, so the original wording makes it claim vehicle actions it cannot perform.
+Adapted (not in the official docs): in instruction item 1, the sentence telling the agent to provide a hypothetical tool execution outcome is replaced with one that reports only real tool results; this agent has only `PreloadMemoryTool`, so the original wording makes it claim vehicle actions it cannot perform. Also, `model="gemini-2.0-flash"` is replaced with `model="gemini-3.5-flash"`, because that model ID is listed as retired (see the model definition above).
 
 ```python
 from google.adk.agents import Agent
@@ -165,7 +167,7 @@ from google.adk.tools.preload_memory_tool import PreloadMemoryTool
 from vertexai.agent_engines import AdkApp
 
 agent = Agent(
-    model="gemini-2.0-flash",
+    model="gemini-3.5-flash",
     name='stateful_agent',
     instruction="""You are a Vehicle Voice Agent, designed to assist users with information and in-vehicle actions.
 
@@ -244,6 +246,7 @@ print(response)
 - The source also shows sample response dictionaries and the rest of the memory test walkthrough (the follow-up message and the new-session test), which are omitted.
 - Corrected from the official docs: `get_exchange_rate` called `requests.get(f"https://api.frankfurter.app/{currency_date}", params={"from": currency_from, "to": currency_to})` with no timeout and returned `response.json()` without checking the HTTP status.
 - Corrected from the official docs: the Memories example's instruction item 1 ended "You don't have the outcome of the actual tool execution, so provide a hypothetical tool execution outcome."
+- Corrected from the official docs: the source writes `model = "gemini-2.0-flash"` and, in the Memories example, `model="gemini-2.0-flash",`. The model versions page lists `gemini-2.0-flash` in its "Retired models" table ("`gemini-2.0-flash` | February 5, 2025 | June 1, 2026 | `gemini-3.5-flash-lite`": release date, retirement date, recommended upgrade; https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-versions, retrieved 2026-11-21). Both examples use `gemini-3.5-flash` instead, the model in the ADK quickstart (`model="gemini-3.5-flash"`, https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/quickstart-adk, retrieved 2026-11-21), which the model versions page lists as available ("May 19, 2026 | May 19, 2027 or later").
 - Corrected from the official docs: `get_exchange_rate` put `currency_date` into the URL path (`f"https://api.frankfurter.app/{currency_date}"`) without checking it.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-adk-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

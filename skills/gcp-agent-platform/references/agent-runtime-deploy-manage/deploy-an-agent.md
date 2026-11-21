@@ -10,7 +10,7 @@ Deploying an agent on Agent Runtime (formerly Vertex AI Agent Engine) makes it a
 
 ### Deploy from an agent object (Agent Platform SDK)
 
-This fence is a signature-like template that lists the `config` options: `client` is an `agentplatform.Client` from the `google-cloud-agentplatform` package (install it as described in [setup.md](../agent-runtime-develop/setup.md); `client = agentplatform.Client(project="PROJECT_ID", location="LOCATION")`, as in [manage-deployed-agents.md](./manage-deployed-agents.md); the official deploy page does not create it), `local_agent` is the agent object you built (see Create an agent, https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-agent), and each value (`staging_bucket`, `requirements`, `extra_packages`, `gcs_dir_name`, `display_name`, `description`, `labels`, `env_vars`, `build_options`, `identity_type`, `service_account`, `min_instances`, `max_instances`, `resource_limits`, `container_concurrency`, `encryption_spec`, `agent_framework`) is a same-named variable you assign; the official example lists them as names without assigning them (example values are in [deploy-an-agent-configuration.md](./deploy-an-agent-configuration.md)).
+This fence is a signature-like template that lists the `config` options: `client` is an `agentplatform.Client` from the `google-cloud-agentplatform` package (install it as described in `agent-runtime-develop/setup.md`, "Install the SDK" (https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/setup); `client = agentplatform.Client(project="PROJECT_ID", location="LOCATION")`, as in [manage-deployed-agents.md](./manage-deployed-agents.md); the official deploy page does not create it), `local_agent` is the agent object you built (see Create an agent, https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-agent), and each value (`staging_bucket`, `requirements`, `extra_packages`, `gcs_dir_name`, `display_name`, `description`, `labels`, `env_vars`, `build_options`, `identity_type`, `service_account`, `min_instances`, `max_instances`, `resource_limits`, `container_concurrency`, `encryption_spec`, `agent_framework`) is a same-named variable you assign; the official example lists them as names without assigning them (example values are in [deploy-an-agent-configuration.md](./deploy-an-agent-configuration.md)).
 
 Adapted (not in the official docs): added `"staging_bucket": staging_bucket,` (a `gs://BUCKET_NAME` URI) to `config`; deploying from an agent object requires a staging bucket, because the SDK writes the pickled agent to it.
 
@@ -79,7 +79,7 @@ remote_agent = client.runtimes.create(
 )
 ```
 
-`class_methods` example:
+`class_methods` example (a template: `method_name`, `param1` and `param2` stand for your own method and its parameters). For the example `agent.py` above, which defines `ask(self, question: str)`, declare the method that you want to call after deployment with the name `ask`, the standard mode `api_mode` `""` (the synchronous mode: `_STANDARD_API_MODE = ""` in google-cloud-agentplatform 2.10.0) and a `question` string parameter, in the same shape: `{"name": "ask", "api_mode": "", "parameters": {"type": "object", "properties": {"question": {"type": "string"}}, "required": ["question"]}}`. The same `class_methods` list applies to the Developer Connect and public Git examples below when they point at that `agent.py` (`entrypoint_object` `root_agent`):
 
 ```python
 class_methods = [
@@ -102,6 +102,8 @@ class_methods = [
 
 The link resource name has the format `projects/PROJECT_ID/locations/LOCATION/connections/CONNECTION_ID/gitRepositoryLinks/REPO_ID`; create it by following the Developer Connect "connect-repo" documentation.
 
+Adapted (not in the official docs): added the line `"class_methods": class_methods,` marked `# Required.`, as in the public Git example below, because google-cloud-agentplatform 2.10.0 raises `ValueError` when `developer_connect_source` is given without `class_methods` (see Notes).
+
 ```text
 remote_agent = client.runtimes.create(
     config={
@@ -112,6 +114,7 @@ remote_agent = client.runtimes.create(
         },
         "entrypoint_module": "agent",                   # Required.
         "entrypoint_object": "root_agent",              # Required.
+        "class_methods": class_methods,                 # Required.
         "requirements_file": "requirements.txt",        # Optional.
         # Other optional configs:
         # "env_vars": {...},
@@ -167,6 +170,7 @@ remote_agent.operation_schemas()
   - `developer_connect_source.dir` (`str`): The root directory of the agent code within the repository.
   - `entrypoint_module` (`str`): Python module containing the agent entrypoint, relative to `developer_connect_source.dir`.
   - `entrypoint_object` (`str`): Callable object in `entrypoint_module` that represents the agent application (for example, `root_agent`).
+  - `class_methods` (`list[dict]`): Exposed methods (`name`, `api_mode`, optional `parameters`). Not listed in the source's Developer Connect parameters, but required by google-cloud-agentplatform 2.10.0 (see the Corrected note below).
   - `requirements_file` (`str`): Optional: path to a pip requirements file relative to the source root. Defaults to `requirements.txt`.
 - Public Git repository parameters:
   - `git_source.url` (`str`): HTTPS URL of a public Git repository. Can't contain credentials, such as `user:password@`.
@@ -191,6 +195,7 @@ remote_agent.operation_schemas()
 - Agent Runtime was formerly named Vertex AI Agent Engine; the REST resource is still `reasoningEngines`.
 - Distance line: this is Google's ADK / Agent Runtime, not Claude Code / the Claude Agent SDK or OpenAI Agents.
 - Corrected from the official docs: the agent-object template's `config` had no `staging_bucket`; the setup page says a staging bucket is "Required" for "Deploy from agent object" ("the SDK writes your code to the bucket"), the Quickstart passes `"staging_bucket": "STAGING_BUCKET"`, and google-cloud-agentplatform 2.10.0 defines `staging_bucket` in the create config (`agentplatform/_genai/types/common.py`, "The GCS bucket to use for staging the artifacts needed").
+- Corrected from the official docs: the Developer Connect example passed only `developer_connect_source`, `entrypoint_module`, `entrypoint_object` and `requirements_file`. In google-cloud-agentplatform 2.10.0, `_set_source_code_spec` (`agentplatform/_genai/runtimes.py`, called by `client.runtimes.create` for `source_packages`, `developer_connect_source` and `git_source`) raises `ValueError` with the message "`class_methods` must be specified if `source_packages`, `developer_connect_source`, `git_source`, or `agent_config_source` is specified without a Dockerfile or `image_spec`." when `class_methods` is `None`; the public Git and source-file examples of the same page already mark `class_methods` as Required.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

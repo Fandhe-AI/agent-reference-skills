@@ -23,6 +23,8 @@ To enforce trust boundaries across human users, autonomous workloads and externa
 
 ### Example: IAM deny policy applied to agent identities
 
+The YAML below is the content of one deny rule, not a complete policy: in an IAM v2 deny policy, `deniedPrincipals` and `deniedPermissions` are fields of `rules[].denyRule` (Discovery `iam.v2`: `GoogleIamV2Policy.rules` is a list of `GoogleIamV2PolicyRule`, whose `denyRule` field is a `GoogleIamV2DenyRule` with `deniedPrincipals` and `deniedPermissions`), as the full deny policy JSON on the agent identity page also shows (`rules` → `denyRule` → `deniedPrincipals` / `deniedPermissions`). Put these two fields under `rules[].denyRule` in a policy file (JSON or YAML) and create the policy on an attachment point with `gcloud iam policies create POLICY_ID --attachment-point=ATTACHMENT_POINT --kind=denypolicies --policy-file=POLICY_FILE` (gcloud 593.0.0 help; its example attachment point is `cloudresourcemanager.googleapis.com/projects/123`). The attachment point is the full resource name of the resource the policy is attached to; for organizations and folders, use the numeric ID in the full resource name (Discovery `iam.v2`, `policies.createPolicy` `parent`).
+
 ```yaml
 deniedPrincipals:
   - principalSet://agents.global.org-ORGANIZATION_ID.system.id.goog/*
@@ -46,7 +48,7 @@ deniedPermissions:
 
 - The source includes an architecture diagram (not reproduced) mapping the three identities across ingress, runtime and egress trust boundaries.
 - Snippet taken from https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/agent-identity
-- The delegation page itself has no code; the deny policy YAML comes from the agent identity page. It denies every agent identity in the organization the listed permissions; adapt the scope before use and try it in a disposable project first.
+- The delegation page itself has no code; the deny policy YAML comes from the agent identity page. It denies every agent identity in the organization the listed permissions; adapt the scope before use and try it in a disposable project first. It is the source's fragment as written: only the `denyRule` fields, without the enclosing `rules` list (see the sentence before it).
 - The Agent Identity API REST reference is in `gcp-foundation`.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/identity-delegation-architecture (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

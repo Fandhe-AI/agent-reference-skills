@@ -66,13 +66,13 @@ print(response)
 
 Define a method such as `async_query` that returns a Python coroutine.
 
-Adapted (not in the official docs): the body is `return dumpd(await self.graph.ainvoke(**kwargs))` instead of `for chunk in self.graph.ainvoke(**kwargs): yield dumpd(chunk)`, because the source says `async_query` returns a coroutine and tests it with `response = await agent.async_query(...)`, while `yield` makes it an async generator; `ainvoke` on a LangGraph graph is awaited (google-adk 2.15.0 `LangGraphAgent` calls `await self.graph.ainvoke(...)`).
+Adapted (not in the official docs): the body is `return dumpd(await self.graph.ainvoke(**kwargs))` instead of `for chunk in self.graph.ainvoke(**kwargs): yield dumpd(chunk)`, because the source says `async_query` returns a coroutine and tests it with `response = await agent.async_query(...)`, while `yield` makes it an async generator; `ainvoke` on a LangGraph graph is awaited (google-adk 2.15.0 `LangGraphAgent` calls `await self.graph.ainvoke(...)`). Also, `from langchain.load.dump import dumpd` is replaced with `from langchain_core.load import dumpd`, because the `langchain` 1.x package has no `langchain.load` module (see Notes).
 
 ```python
 class AsyncAgent(CLASS_NAME):
 
     async def async_query(self, **kwargs):
-        from langchain.load.dump import dumpd
+        from langchain_core.load import dumpd
 
         return dumpd(await self.graph.ainvoke(**kwargs))
 
@@ -87,13 +87,15 @@ agent.set_up()
 
 ### Stream responses
 
+Adapted (not in the official docs): `from langchain.load.dump import dumpd` is replaced with `from langchain_core.load import dumpd`, because the `langchain` 1.x package has no `langchain.load` module (see Notes).
+
 ```python
 from typing import Iterable
 
 class StreamingAgent(CLASS_NAME):
 
     def stream_query(self, **kwargs) -> Iterable:
-        from langchain.load.dump import dumpd
+        from langchain_core.load import dumpd
 
         for chunk in self.graph.stream(**kwargs):
             yield dumpd(chunk)
@@ -245,6 +247,7 @@ print(json.dumps(error_result, indent=2))
 - Top-level `async for` / `await` (as the source writes them) runs in a notebook; in a plain Python script, put it inside an `async def` function and run it with `asyncio.run(...)`.
 - The source's printed error output (JSON with message "Invocation error in 'get_session': ...") is garbled in the twin and differs from the code's message format, so it is not reproduced.
 - The source also shows sample dictionary responses, the `async_query` test call and the streaming output samples.
+- Corrected from the official docs: the `async_query` and `stream_query` examples imported `from langchain.load.dump import dumpd`. The `langchain` 1.0.0 and 1.5.2 wheels (PyPI, checked 2026-11-21) contain no `langchain/load/` module (the 1.5.2 wheel's subpackages are `agents`, `chat_models`, `embeddings`, `mcp`, `messages`, `rate_limiters`, `tools`; 1.0.0 has the same without `mcp`), so the import raises `ModuleNotFoundError` with `langchain` 1.x. The `langchain-classic` package that the same SDK extra installs (1.0.8 checked) ships only `langchain_classic/`, not `langchain/`. `dumpd` is defined in `langchain_core/load/dump.py` and exported in `__all__` of `langchain_core/load/__init__.py` in both `langchain-core` 1.0.0 and 1.8.4. The `langchain` extra of google-cloud-aiplatform 2.10.0 (`google-cloud-aiplatform[agent_engines,langchain]`, see [setup.md](./setup.md)) requires `langchain<2.0.0,>=1.0.0` and `langchain-core<2.0.0,>=1.0.0`, and that SDK's own LangGraph template (`vertexai/agent_engines/templates/langgraph.py`) tries `from langchain_core.load import dumpd` first and falls back to `from langchain.load.dump import dumpd` only on `ImportError`.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-a-custom-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
