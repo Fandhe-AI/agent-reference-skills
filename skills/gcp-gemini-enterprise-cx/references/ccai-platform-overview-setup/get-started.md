@@ -53,6 +53,8 @@ Support center details and hours of operation, IVR messages and languages, opera
 
 ### Quickstart: create a sample contact center
 
+Run this quickstart only on the demo instance from step 1 or another non-production instance (the source: "Google provides non-production instances that you can use for trials, development, or demonstrations."), never on an instance that serves a live IVR: steps 4 and 5 add the `Support` and `Billing` menu items and their routing, and callers would hear the sample options while they exist. This restriction is not stated in the official docs.
+
 1. Ask your account manager for a demo CCAI Platform instance and provide your project name and ID. After provisioning, verify that you can sign in using the credentials provided.
 2. Sign in as an administrator, go to **Settings** > **Users & teams**, and click **+ Add Users**. Fill in **Email** (a valid address that can receive email), **First name**, **Last name** and **Role** (**Agent**). CCAI Platform emails an invitation to set the initial password; if it does not arrive, check spam folders. Repeat to create four users.
 3. Create two teams named `Billing Team` and `Support Team` with **+ Add a Team**, then add two agents to each team with **+ Add Agents**.

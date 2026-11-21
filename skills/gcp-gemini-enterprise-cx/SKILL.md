@@ -76,7 +76,7 @@ skills/gcp-gemini-enterprise-cx/
 
 - `google-gemini-api` — Gemini Developer API（aistudio.google.com）と Google GenAI SDK。本スキルは Google Cloud 上のコンタクトセンター向け製品
 - `gcp-agent-platform`（分割投入中で未配布。それまでは公式ドキュメント https://docs.cloud.google.com/ を引く） — Gemini Enterprise Agent Platform（旧 Vertex AI）。ADK・Agent Runtime（旧 Agent Engine）・Gemini モデルの利用。A2A のリモート sub-agent を Agent Runtime にデプロイする側の一般論は同スキル、本スキルは CX Agent Studio からの接続
-- `gcp-agent-search`（分割投入中で未配布。それまでは公式ドキュメント https://docs.cloud.google.com/ を引く） — Agent Search（旧 Vertex AI Search）と Gemini Enterprise（旧 Agentspace）。data store tool の接続先になる data store の作成・取り込みは同スキル
+- `gcp-agent-search` — Agent Search（旧 Vertex AI Search）と Gemini Enterprise（旧 Agentspace）。data store tool の接続先になる data store の作成・取り込みは同スキル
 - `gcp-ai-apis`（予定）— Dialogflow ES / CX API・Agent Assist・Speech-to-Text 等。本スキルの CX Agent Studio は Dialogflow CX の flow を再利用できるが、Dialogflow そのものの API は同スキル
 - `gcp-integration` — Application Integration と Integration Connectors。CX Agent Studio の Integration Connector tool が使う connection の作成は同スキル
 - `gcp-bigquery` — BigQuery。Insights の export 先テーブルのクエリ・権限は同スキル、本スキルは export の手順とスキーマ
