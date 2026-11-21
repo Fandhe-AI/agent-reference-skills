@@ -215,6 +215,7 @@ gcloud network-services agent-connectivity-templates delete CONNECTIVITY_TEMPLAT
 - The source also shows Console steps for each task.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/manage-agent-gateways (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the source lists `TelemetryPolicy` as a deletion blocker but gives no steps; the `TelemetryPolicy` commands come from the gcloud 593.0.0 help of `gcloud beta network-services telemetry-policies` (`list`, `export`, `import`, `delete`; the group is beta and alpha only), and `telemetryTarget.resources` is `TelemetryTarget.resources` in the Network Services API `networkservices.v1beta1` Discovery document. Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/monitor-agent-gateway (retrieved 2026-11-21).
+- CLI tracks (gcloud 593.0.0 help): `service-extensions authz-extensions` and `network-security authz-policies` (`list`, `describe`, `import`, `delete`) are GA (networkservices / networksecurity `v1`) as well as beta, so the GA commands from the source are kept; set-up-agent-gateway.md imports the extension with `gcloud beta` as its source does, and the `AuthzExtension` fields are the same in `networkservices` `v1` and `v1beta1` (Discovery). `network-services telemetry-policies` exists only in beta and alpha.
 
 ## Related
 

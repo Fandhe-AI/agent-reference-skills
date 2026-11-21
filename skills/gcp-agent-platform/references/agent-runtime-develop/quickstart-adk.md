@@ -93,7 +93,9 @@ async for event in app.async_stream_query(
 
 ### Deploy
 
-Before you deploy, make sure the Agent Platform API (`aiplatform.googleapis.com`) is enabled in the project (see the local test step), which needs the `serviceusage.services.enable` permission (Notes), and create the Cloud Storage bucket that you pass as `STAGING_BUCKET` (steps in [Create a staging bucket](setup.md#create-a-staging-bucket)). The source's Before you begin section shows only the note on the enable permission, not a command; with gcloud, the command shown on other pages of the source is `gcloud services enable aiplatform.googleapis.com`; run it as `gcloud services enable aiplatform.googleapis.com --project=PROJECT_ID` (not in the official docs), so the API is enabled in the `PROJECT_ID` that the SDK client uses.
+Before you deploy, make sure the Agent Platform API (`aiplatform.googleapis.com`) is enabled in the project (see the local test step), which needs the `serviceusage.services.enable` permission (Notes), and create the Cloud Storage bucket `gs://BUCKET_NAME` that you pass as `staging_bucket` (steps in [Create a staging bucket](setup.md#create-a-staging-bucket)). The source's Before you begin section shows only the note on the enable permission, not a command; with gcloud, the command shown on other pages of the source is `gcloud services enable aiplatform.googleapis.com`; run it as `gcloud services enable aiplatform.googleapis.com --project=PROJECT_ID` (not in the official docs), so the API is enabled in the `PROJECT_ID` that the SDK client uses.
+
+Adapted (not in the official docs): `"STAGING_BUCKET"` is written as `"gs://BUCKET_NAME"` (the bucket from [Create a staging bucket](setup.md#create-a-staging-bucket)), because google-cloud-aiplatform 2.10.0 rejects a value without the prefix (Notes).
 
 ```python
 from vertexai import types
@@ -102,7 +104,7 @@ remote_agent = client.agent_engines.create(
     agent=app,
     config={
         "requirements": ["google-cloud-aiplatform[agent_engines,adk]"],
-        "staging_bucket": "STAGING_BUCKET",
+        "staging_bucket": "gs://BUCKET_NAME",
         "identity_type": types.IdentityType.AGENT_IDENTITY,
     }
 )
@@ -131,7 +133,7 @@ remote_agent.delete(force=True)
 - `PROJECT_ID`: Google Cloud project ID under which you develop and deploy agents.
 - `LOCATION`: One of the supported regions for Agent Runtime.
 - `USER_ID`: User-defined ID with a character limit of 128.
-- `STAGING_BUCKET`: Cloud Storage bucket prefixed by `gs://`.
+- `BUCKET_NAME`: the staging bucket name; `staging_bucket` takes it prefixed by `gs://`.
 - Required roles:
   - `roles/aiplatform.user`: Agent Platform User.
   - `roles/storage.admin`: Storage Admin.
@@ -150,6 +152,7 @@ remote_agent.delete(force=True)
 - Local `AdkApp` settings (google-cloud-aiplatform 2.10.0): `AdkApp.__init__` (`vertexai/agent_engines/templates/adk.py`) stores `initializer.global_config.project` and `.location`. Without `vertexai.init(project=..., location=...)`, `initializer.py` resolves the project from `GOOGLE_CLOUD_PROJECT` / `CLOUD_ML_PROJECT_ID` or `google.auth.default()` and the location from `GOOGLE_CLOUD_REGION` / `CLOUD_ML_REGION`, else `us-central1`; it does not read `GOOGLE_CLOUD_LOCATION`. `set_up` then sets `GOOGLE_CLOUD_PROJECT` to the stored project, sets `GOOGLE_CLOUD_LOCATION` to the stored location only if it is not set yet, and sets `GOOGLE_GENAI_USE_VERTEXAI` and `GOOGLE_GENAI_USE_ENTERPRISE` to `"1"`, so model calls go to Agent Platform. google-genai 3.6.1 reads those four variables (`_api_client.py`). `vertexai.init` is `google.cloud.aiplatform.init` (keyword arguments `project`, `location`).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/quickstart-adk (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the `AdkApp` example started at `from google.adk.agents import Agent` and did not call `vertexai.init`.
+- Adapted from the official docs: the source writes `"staging_bucket": "STAGING_BUCKET"` (defined as "Cloud Storage bucket prefixed by `gs://`"). In google-cloud-aiplatform 2.10.0, `client.agent_engines.create` calls `_validate_staging_bucket_or_raise` (`vertexai/_genai/_agent_engines_utils.py`), which raises `ValueError` unless the value starts with `gs://`.
 
 ## Related
 
