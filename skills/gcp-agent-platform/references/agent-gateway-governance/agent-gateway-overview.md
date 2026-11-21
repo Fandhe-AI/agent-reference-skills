@@ -36,7 +36,7 @@ registries:
 ## Notes
 
 - Governed access paths:
-  - Client-to-Agent (ingress): Secures communications between clients (web apps, developer CLIs, external systems) and hosted agents or MCP tools. Frontend policy enforcement point that authenticates incoming user credentials and inspects prompts.
+  - Client-to-Agent (ingress): Secures communications between clients (web apps, developer CLIs, external systems) and hosted agents or MCP tools. Frontend policy enforcement point that authenticates incoming user credentials and inspects prompts (only when a `CONTENT_AUTHZ` authorization policy is attached to the gateway; without one, inbound requests pass through uninspected, and the policy blocks only in enforcement mode, not audit (dry-run) mode).
   - Agent-to-Anywhere (egress): Governs outbound requests from agents to external tools, remote MCP servers, SaaS APIs or downstream agents. Enforces workload-bound identity, destination registry compliance, IAM access policies and payload sanitization.
 - Deployment model details:
   - Agent Runtime and Gemini Enterprise: architecture: Google fully manages gateway management services and proxy infrastructure; no proxy setup or maintenance. Key capabilities: Built-in mTLS termination, IAP access policies, Model Armor prompt scanning and DLP, Semantic governance policies.
