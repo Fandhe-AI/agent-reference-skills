@@ -59,11 +59,16 @@ def get_exchange_rate(
     return response.json()
 ```
 
-The local `AdkApp` does not use `client`; it takes its project and location from the global configuration when it is created (not in the official docs; Notes). Before the next block, call `vertexai.init(project="PROJECT_ID", location="LOCATION")` so the local test uses the same project and region, and do not export a different `GOOGLE_CLOUD_LOCATION`, which `set_up` keeps and the model calls use.
+Before you run the next block, `unset GOOGLE_CLOUD_LOCATION` in the shell or set it to the same `LOCATION`: `set_up` keeps an existing value and the model calls use it (not in the official docs; Notes).
+
+Adapted (not in the official docs): added `import vertexai` and `vertexai.init(project="PROJECT_ID", location="LOCATION")` before the `AdkApp` is created, because the local `AdkApp` does not use `client` and takes its project and location from the global configuration (Notes).
 
 ```python
+import vertexai
 from google.adk.agents import Agent
 from vertexai import agent_engines
+
+vertexai.init(project="PROJECT_ID", location="LOCATION")
 
 agent = Agent(
     model="gemini-3.5-flash",
@@ -144,6 +149,7 @@ remote_agent.delete(force=True)
 - Corrected from the official docs: the client was `vertexai.Client(project="PROJECT_ID", location="LOCATION")` without `http_options`; `vertexai.Client` takes `http_options` in google-cloud-aiplatform 2.10.0 (`vertexai/_genai/client.py`).
 - Local `AdkApp` settings (google-cloud-aiplatform 2.10.0): `AdkApp.__init__` (`vertexai/agent_engines/templates/adk.py`) stores `initializer.global_config.project` and `.location`. Without `vertexai.init(project=..., location=...)`, `initializer.py` resolves the project from `GOOGLE_CLOUD_PROJECT` / `CLOUD_ML_PROJECT_ID` or `google.auth.default()` and the location from `GOOGLE_CLOUD_REGION` / `CLOUD_ML_REGION`, else `us-central1`; it does not read `GOOGLE_CLOUD_LOCATION`. `set_up` then sets `GOOGLE_CLOUD_PROJECT` to the stored project, sets `GOOGLE_CLOUD_LOCATION` to the stored location only if it is not set yet, and sets `GOOGLE_GENAI_USE_VERTEXAI` and `GOOGLE_GENAI_USE_ENTERPRISE` to `"1"`, so model calls go to Agent Platform. google-genai 3.6.1 reads those four variables (`_api_client.py`). `vertexai.init` is `google.cloud.aiplatform.init` (keyword arguments `project`, `location`).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/quickstart-adk (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the `AdkApp` example started at `from google.adk.agents import Agent` and did not call `vertexai.init`.
 
 ## Related
 

@@ -79,20 +79,19 @@ remote_agent = client.runtimes.create(
 )
 ```
 
-`class_methods` example (a template: `method_name`, `param1` and `param2` stand for your own method and its parameters). For the example `agent.py` above, which defines `ask(self, question: str)`, declare the method that you want to call after deployment with the name `ask`, the standard mode `api_mode` `""` (the synchronous mode: `_STANDARD_API_MODE = ""` in google-cloud-agentplatform 2.10.0) and a `question` string parameter, in the same shape: `{"name": "ask", "api_mode": "", "parameters": {"type": "object", "properties": {"question": {"type": "string"}}, "required": ["question"]}}`. The same `class_methods` list applies to the Developer Connect and public Git examples below when they point at that `agent.py` (`entrypoint_object` `root_agent`):
+Adapted (not in the official docs): the method is named `ask` with a required string parameter `question`, to match `ask(self, question: str)` in the example `agent.py` above; the source's template uses `method_name`, `param1` and `param2`. The same `class_methods` list applies to the Developer Connect and public Git examples below when they point at that `agent.py` (`entrypoint_object` `root_agent`).
 
 ```python
 class_methods = [
     {
-        "name": "method_name",
+        "name": "ask",
         "api_mode": "",  # Options: "", "async", "async_stream", "stream", "bidi_stream"
         "parameters": {
             "type": "object",
             "properties": {
-                "param1": {"type": "string", "description": "Description of param1"},
-                "param2": {"type": "integer"}
+                "question": {"type": "string"}
             },
-            "required": ["param1"]
+            "required": ["question"]
         }
     }
 ]
@@ -197,6 +196,7 @@ remote_agent.operation_schemas()
 - Corrected from the official docs: the agent-object template's `config` had no `staging_bucket`; the setup page says a staging bucket is "Required" for "Deploy from agent object" ("the SDK writes your code to the bucket"), the Quickstart passes `"staging_bucket": "STAGING_BUCKET"`, and google-cloud-agentplatform 2.10.0 defines `staging_bucket` in the create config (`agentplatform/_genai/types/common.py`, "The GCS bucket to use for staging the artifacts needed").
 - Corrected from the official docs: the Developer Connect example passed only `developer_connect_source`, `entrypoint_module`, `entrypoint_object` and `requirements_file`. In google-cloud-agentplatform 2.10.0, `_set_source_code_spec` (`agentplatform/_genai/runtimes.py`, called by `client.runtimes.create` for `source_packages`, `developer_connect_source` and `git_source`) raises `ValueError` with the message "`class_methods` must be specified if `source_packages`, `developer_connect_source`, `git_source`, or `agent_config_source` is specified without a Dockerfile or `image_spec`." when `class_methods` is `None`; the public Git and source-file examples of the same page already mark `class_methods` as Required.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the `class_methods` example declared `"name": "method_name"` with `param1` (string, required) and `param2` (integer). google-cloud-agentplatform 2.10.0 reads the method name from `name` and the mode from `api_mode` (`_METHOD_NAME_KEY_IN_SCHEMA`, `_MODE_KEY_IN_SCHEMA` in `agentplatform/_genai/_runtimes_utils.py`); `""` is `_STANDARD_API_MODE`.
 
 ## Related
 

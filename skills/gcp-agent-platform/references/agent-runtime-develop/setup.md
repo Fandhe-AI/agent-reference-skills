@@ -20,8 +20,10 @@ The client-based examples on the deploy and manage pages (`client = agentplatfor
 
 To use Agent2Agent (A2A) on Agent Platform, also install the a2a-sdk package:
 
+Adapted (not in the official docs): the brackets are a shell glob pattern (zsh stops with "no matches found" by default), so the requirement is quoted.
+
 ```bash
-pip install google-adk[a2a]
+pip install "google-adk[a2a]"
 ```
 
 ### Authenticate
@@ -151,6 +153,7 @@ gcloud artifacts repositories add-iam-policy-binding REPOSITORY \
 - `google-cloud-agentplatform` 2.10.0 (wheel METADATA): `Name: google-cloud-agentplatform`, `Provides-Extra` `agent-engines`, `a2a`, `adk`, `langchain`, `ag2`, `llama-index`, `evaluation`, `bigquery`, `live`, `all`; it does not depend on `google-cloud-aiplatform`.
 - Corrected from the official docs: the two Artifact Registry Reader examples granted the role at project level (`gcloud projects add-iam-policy-binding PROJECT_NUMBER --member="serviceAccount:service-PROJECT_NUMBER@gcp-sa-aiplatform-re.iam.gserviceaccount.com" --role="roles/artifactregistry.reader"` and the same with `AR_REPO_PROJECT_NUMBER` and the `gcp-sa-aiplatform` service agent), which lets the service agent read every repository in the project. The examples use `gcloud artifacts repositories add-iam-policy-binding`, whose gcloud 593.0.0 help lists the positional `REPOSITORY`, `--location`, the required `--member` and `--role`, and `--project` under GCLOUD WIDE FLAGS.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/setup (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the source writes `pip install google-adk[a2a]` unquoted.
 
 ## Related
 
