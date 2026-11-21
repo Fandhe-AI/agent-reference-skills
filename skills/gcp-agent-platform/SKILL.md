@@ -9,7 +9,7 @@ user-invocable: false
 
 Google Cloud (GCP) の Gemini Enterprise Agent Platform（以下 Agent Platform。旧 Vertex AI）のスキル。収録範囲は次のとおり。
 
-分割投入中: 以下の収録範囲と機械生成の層は完成形の内容。分割投入中のため、未投入のカテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-sdk` / `text-generation-structured-output` / `function-calling-thinking` / `grounding` / `context-cache-batch-inference` / `embeddings` / `live-api` / `model-garden-open-partner-models` / `tuning` / `evaluation` / `consumption-provisioned-throughput` / `safety-responsible-ai` / `security-iam-vpc-sc-cmek` / `ml-inference-registry-diagnostics` / `sessions-memory-bank` / `rag-engine` / `vector-search-agent-retrieval` / `gemini-cloud-assist-code-assist`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。未投入の機能は、投入までは公式ドキュメント（https://docs.cloud.google.com/ ）を引く。
+分割投入中: 以下の収録範囲と機械生成の層は完成形の内容。分割投入中のため、未投入のカテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-sdk` / `text-generation-structured-output` / `function-calling-thinking` / `grounding` / `context-cache-batch-inference` / `embeddings` / `live-api` / `model-garden-open-partner-models` / `tuning` / `evaluation` / `consumption-provisioned-throughput` / `safety-responsible-ai` / `security-iam-vpc-sc-cmek` / `ml-inference-registry-diagnostics` / `sessions-memory-bank` / `agent-gateway-governance` / `rag-engine` / `vector-search-agent-retrieval` / `gemini-cloud-assist-code-assist`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。未投入の機能は、投入までは公式ドキュメント（https://docs.cloud.google.com/ ）を引く。
 
 - 概要・セットアップ・認証・SDK（Google Gen AI SDK）・Gemini Developer API からの移行
 - Gemini モデルの利用（text generation・structured output・function calling・thinking・grounding・context caching・batch inference・embeddings・Live API）
@@ -37,7 +37,6 @@ skills/gcp-agent-platform/
   references/
     agent-runtime-develop/           # 8 ページ
     agent-runtime-deploy-manage/     # 6 ページ
-    agent-gateway-governance/        # 6 ページ
     agent-identity-registry/         # 8 ページ
 ```
 
@@ -54,7 +53,7 @@ skills/gcp-agent-platform/
 1. 概念・手順 → 下記マッピング表でカテゴリを選び、その README.md から個別ページを特定して Read する
 2. 旧名で探されたとき → Vertex AI は Agent Platform、Agent Engine は Agent Runtime、Vector Search 2.0 は Agent Retrieval を引く
 
-未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-sdk` / `text-generation-structured-output` / `function-calling-thinking` / `grounding` / `context-cache-batch-inference` / `embeddings` / `live-api` / `model-garden-open-partner-models` / `tuning` / `evaluation` / `consumption-provisioned-throughput` / `safety-responsible-ai` / `security-iam-vpc-sc-cmek` / `ml-inference-registry-diagnostics` / `sessions-memory-bank` / `rag-engine` / `vector-search-agent-retrieval` / `gemini-cloud-assist-code-assist`）の探索手順は投入時に追加する。それまで上の手順が未投入カテゴリを指すときは、該当する公式ガイド（https://docs.cloud.google.com/ 配下）を引く。gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-sdk` / `text-generation-structured-output` / `function-calling-thinking` / `grounding` / `context-cache-batch-inference` / `embeddings` / `live-api` / `model-garden-open-partner-models` / `tuning` / `evaluation` / `consumption-provisioned-throughput` / `safety-responsible-ai` / `security-iam-vpc-sc-cmek` / `ml-inference-registry-diagnostics` / `sessions-memory-bank` / `agent-gateway-governance` / `rag-engine` / `vector-search-agent-retrieval` / `gemini-cloud-assist-code-assist`）の探索手順は投入時に追加する。それまで上の手順が未投入カテゴリを指すときは、該当する公式ガイド（https://docs.cloud.google.com/ 配下）を引く。gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -62,10 +61,9 @@ skills/gcp-agent-platform/
 | --- | --- | --- |
 | Agent Runtime の概要・セットアップ・ADK / カスタムエージェントの開発 | agent-runtime-develop | [references/agent-runtime-develop/README.md](references/agent-runtime-develop/README.md) |
 | エージェントのデプロイ（コード / コンテナ）・設定・runtime contract・管理・呼び出し | agent-runtime-deploy-manage | [references/agent-runtime-deploy-manage/README.md](references/agent-runtime-deploy-manage/README.md) |
-| Agent Gateway のセットアップと管理・semantic governance・governance 用 IAM | agent-gateway-governance | [references/agent-gateway-governance/README.md](references/agent-gateway-governance/README.md) |
 | Agent Identity・Agent Registry・エージェントとツールの検索・identity delegation | agent-identity-registry | [references/agent-identity-registry/README.md](references/agent-identity-registry/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-sdk` / `text-generation-structured-output` / `function-calling-thinking` / `grounding` / `context-cache-batch-inference` / `embeddings` / `live-api` / `model-garden-open-partner-models` / `tuning` / `evaluation` / `consumption-provisioned-throughput` / `safety-responsible-ai` / `security-iam-vpc-sc-cmek` / `ml-inference-registry-diagnostics` / `sessions-memory-bank` / `rag-engine` / `vector-search-agent-retrieval` / `gemini-cloud-assist-code-assist`。収録済みのページは各カテゴリの README.md の索引で確認する
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-sdk` / `text-generation-structured-output` / `function-calling-thinking` / `grounding` / `context-cache-batch-inference` / `embeddings` / `live-api` / `model-garden-open-partner-models` / `tuning` / `evaluation` / `consumption-provisioned-throughput` / `safety-responsible-ai` / `security-iam-vpc-sc-cmek` / `ml-inference-registry-diagnostics` / `sessions-memory-bank` / `agent-gateway-governance` / `rag-engine` / `vector-search-agent-retrieval` / `gemini-cloud-assist-code-assist`。収録済みのページは各カテゴリの README.md の索引で確認する
 
 ## 他スキルとの使い分け
 
