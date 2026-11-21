@@ -35,13 +35,32 @@ gcloud access-context-manager perimeters create PERIMETER \
 - Optional, if you restricted Identity Platform, Cloud Storage or Firestore: add a condition that allows the users of the agent adapter to access those services, with an access level attribute of those users.
 - If your use case requires it, Private Google Access can allow access to restricted resources within a perimeter instead of an access level.
 
-A new access level takes effect only once it is attached to the perimeter (the source does not show this step). Attach it to the perimeter created above (`ACCESS_LEVEL` is the access level ID). To allow it for specific services only, use an ingress policy file with `--set-ingress-policies=YAML_FILE` instead (the format is in the Access Context Manager API reference). The help does not say whether that file is merged with the perimeter's existing ingress policies, so first read them with `gcloud access-context-manager perimeters describe PERIMETER --policy=9876543` and put them in the file together with the new rule (not stated in the official docs).
+An access level attached to the perimeter itself (`--add-access-levels`) has no field that selects services: the create-perimeter page applies access levels "to the service perimeter", so a request that meets the level can reach every restricted service in the perimeter, for example Cloud Storage if you restricted it (not stated in the official docs in these words). To let administrators reach only the CCAI Platform API, do not attach the access level to the perimeter; use it as the source of an ingress rule whose `ingressTo.operations` lists only `contactcenteraiplatform.googleapis.com` (the service name in the VPC Service Controls supported products list). Save the rule as `ingress.yaml` (`ADMIN_EMAIL_ADDRESS` is an administrator's user account, `ACCESS_LEVEL` the access level ID, `PROJECT_NUMBER` the project in the perimeter):
 
-Adapted (not in the official docs): the help example `gcloud access-context-manager perimeters update my-perimeter --add-resources=... --add-access-levels="accessPolicies/123/accessLevels/a_level" ...` is reduced to `--add-access-levels`, with `--policy` and the policy ID of the create example above.
+Adapted (not in the official docs): the first rule of the context-aware access example (`serviceAccount:my-sa@my-project.iam.gserviceaccount.com`, `accessPolicies/222/accessLevels/CorpDatacenters`, `bigquery.googleapis.com`, `resources: - "*"`) is changed to an administrator's user account, the access level of this page, `contactcenteraiplatform.googleapis.com` and the perimeter's project, and is written as a YAML file instead of `echo """...""" > ingress.yaml`.
+
+```yaml
+- ingressFrom:
+    identities:
+    - user:ADMIN_EMAIL_ADDRESS
+    sources:
+    - accessLevel: accessPolicies/9876543/accessLevels/ACCESS_LEVEL
+  ingressTo:
+    operations:
+    - serviceName: contactcenteraiplatform.googleapis.com
+      methodSelectors:
+      - method: "*"
+    resources:
+    - projects/PROJECT_NUMBER
+```
+
+Then apply the file. The help does not say whether `--set-ingress-policies` is merged with the perimeter's existing ingress policies, so first read them with `gcloud access-context-manager perimeters describe PERIMETER --policy=9876543` and put them in the file together with the new rule (not stated in the official docs).
+
+Adapted (not in the official docs): the source's `gcloud access-context-manager perimeters update Example --set-ingress-policies=ingress.yaml` has no `--policy` (the ingress and egress policies page says its gcloud commands "assume that a default access policy has been configured"); the page passes `--policy` and the policy ID of the create example above.
 
 ```bash
 gcloud access-context-manager perimeters update PERIMETER --policy=9876543 \
-    --add-access-levels="accessPolicies/9876543/accessLevels/ACCESS_LEVEL"
+    --set-ingress-policies=ingress.yaml
 ```
 
 ### Private Service Connect (Preview)
@@ -52,8 +71,8 @@ With Private Service Connect you can set up private ingress into your instance, 
 
 - Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/access-context-manager/perimeters/create (gcloud 593.0.0 help); the source uses the console.
 - Corrected from the official docs: the gcloud 593.0.0 help example `gcloud access-context-manager perimeters create --title=my_perimeter_title --resources=projects/12345 ...` has no perimeter ID, and the command fails with "argument --policy: PERIMETER must be specified." (SYNOPSIS: `gcloud access-context-manager perimeters create (PERIMETER : --policy=POLICY) --title=TITLE`; the PERIMETER positional "must be specified if any of the other arguments in this group are specified").
-- Snippet taken from https://docs.cloud.google.com/sdk/gcloud/reference/access-context-manager/perimeters/update (gcloud 593.0.0 help; `--add-access-levels`, `--set-ingress-policies`).
-- Adapted from the official docs: the `perimeters update` help example also adds resources, removes a restricted service and changes VPC accessible services; the page keeps only `--add-access-levels`.
+- Snippet taken from https://docs.cloud.google.com/vpc-service-controls/docs/context-aware-access (the ingress rule and the `perimeters update ... --set-ingress-policies=ingress.yaml` command); the `--add-access-levels` and `--set-ingress-policies` flags are from https://docs.cloud.google.com/sdk/gcloud/reference/access-context-manager/perimeters/update (gcloud 593.0.0 help).
+- Adapted from the official docs: the ingress rule replaces the source's service account, access level, `bigquery.googleapis.com` and `resources: - "*"` so that one administrator account, from the access level, reaches only the CCAI Platform API in the perimeter's project. The rule fields follow the ingress rules reference (`identities` or `identityType`, `sources`, `ingressTo.operations` with `serviceName` and `methodSelectors`, which is "Required if `serviceName` is not `"*"`", and `resources`); `user:USER_EMAIL_ADDRESS` is the user account identifier in the supported identities list. An earlier version of this page attached the access level with `--add-access-levels`, which applies to the whole perimeter.
 - Corrected from the official docs: the help example restricts `--restricted-services="storage.googleapis.com"`, which leaves the CCAI Platform API outside the perimeter and restricts Cloud Storage instead. The page uses `contactcenteraiplatform.googleapis.com`, the service the console steps select as **CCAI Platform API** (the audit logging page names the API `contactcenteraiplatform.googleapis.com`). Add `storage.googleapis.com` and the other agent adapter services only if you also intend to restrict them (see the next line).
 - The agent adapter depends on Identity Platform, Cloud Storage and Firestore. If you restrict those services in the perimeter, these APIs cannot be called from outside the perimeter, so you must allow access to them for your agent adapter users: `identitytoolkit.googleapis.com` and `securetoken.googleapis.com` (Identity Platform), `storage.googleapis.com` (Cloud Storage), `firestore.googleapis.com` (Firestore).
 - Private Service Connect is a Preview feature subject to the "Pre-GA Offerings Terms" in the General Service Terms section of the Service Specific Terms; Pre-GA features are available "as is" and might have limited support. Private access (Preview) also requires Private Service Connect for agents, managers and administrators to reach the instance (see https://docs.cloud.google.com/contact-center/ccai-platform/docs/get-started).
@@ -62,6 +81,12 @@ With Private Service Connect you can set up private ingress into your instance, 
 - The source shows the Console only; screenshots are omitted.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/vpc-service-controls (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/vpc-service-controls/docs/overview (perimeter and access level behavior; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/vpc-service-controls/docs/context-aware-access (ingress rule example; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/vpc-service-controls/docs/configuring-ingress-egress-policies (default access policy note; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/vpc-service-controls/docs/ingress-egress-rules (ingress rules reference; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities (`user:USER_EMAIL_ADDRESS`; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/vpc-service-controls/docs/supported-products (service name `contactcenteraiplatform.googleapis.com`; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/vpc-service-controls/docs/create-service-perimeters (access levels "that you want to apply to the service perimeter"; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/contactcenteraiplatform (role permissions; retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/vpc-service-controls (restricted services; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/set-up-psc (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

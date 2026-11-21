@@ -1,7 +1,9 @@
 ---
 name: gcp-gemini-enterprise-cx
 description: >
-  Google Cloud (GCP) の Gemini Enterprise for Customer Experience (CX Agent Studio, ces API) と CCAI Platform (contactcenteraiplatform, virtual agents, Web SDK v3) と Customer Experience Insights (旧 Contact Center AI Insights, Quality AI, BigQuery export)。agents / tools / A2A / MCP、evaluation、IAM・REST。製品専用の gcloud グループなし。Gemini Developer API は google-gemini-api、Dialogflow は gcp-ai-apis（予定）。
+  Google Cloud (GCP) の Gemini Enterprise for Customer Experience (ces)・CCAI Platform (contactcenteraiplatform)・Customer Experience Insights (contactcenterinsights)。CX Agent Studio の
+  agents / tools / A2A / MCP・evaluation、virtual agents・Web SDK v3、旧 Contact Center AI Insights・Quality AI・BigQuery export、IAM・REST。製品専用の
+  gcloud グループなし。Gemini Developer API は google-gemini-api、Dialogflow は gcp-ai-apis（予定）。
 user-invocable: false
 ---
 
