@@ -58,6 +58,7 @@ Click **Create**.
 - Pricing: in federated query mode, queries incur BigQuery compute costs when users run queries through the attached app; in data ingestion mode, importing data incurs BigQuery and Gemini Enterprise indexing costs even before the data store is attached to an app. See Gemini Enterprise pricing.
 - The source shows only Console steps (no REST, gcloud or client code); the SQL block above comes from the Knowledge Catalog page, which describes the same federated connector.
 - Snippet taken from https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-knowledge-catalog
+- The sample SQL is verbatim from the source; the question of that workflow ("How many sales did we have this month for all cold weather products?") asks for "this month", but the query counts orders of all periods. The source names no date column of `my-project.ecomm.orders`, so add a filter on its order-date column yourself to answer for this month.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-bigquery (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

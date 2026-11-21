@@ -55,6 +55,7 @@ In the console Gemini Enterprise page, click the app, click **Configurations**, 
 - Each cataloged data asset is stored as a metadata record called an *entry*. With enriched metadata (table schemas, column descriptions, business glossary terms, pre-verified sample queries called golden queries) the agent uses golden queries to prevent join hallucinations on complex schemas.
 - Knowledge Catalog itself is covered by the `gcp-knowledge-catalog` skill (formerly Dataplex Universal Catalog).
 - The source also shows a diagram and Console steps.
+- The sample SQL is verbatim from the source; its question asks for "this month", but the query counts orders of all periods. The source names no date column of `my-project.ecomm.orders`, so add a filter on its order-date column yourself to answer for this month.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-knowledge-catalog (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
