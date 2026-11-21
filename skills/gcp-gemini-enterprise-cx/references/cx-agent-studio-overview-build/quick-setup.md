@@ -25,25 +25,43 @@ Any later command or client library that needs these credentials, including the 
 
 ### Initialize the gcloud CLI
 
+Adapted (not in the official docs): the command runs only inside the dedicated directory that the setup fence created; otherwise it prints `Not in the setup's gcloud directory; stop here` and changes nothing.
+
 ```bash
-gcloud init
+if [ -n "${QS_CONFIG-}" ] && [ "${CLOUDSDK_CONFIG-}" = "$QS_CONFIG" ] && [ -f "$QS_CONFIG/.created-by-quick-setup" ]; then
+  gcloud init
+else
+  echo "Not in the setup's gcloud directory; stop here" >&2
+fi
 ```
 
 ### User account credentials for REST calls
 
 If `gcloud init` already authorized the account you intend to use, you can skip `gcloud auth login`.
 
+Adapted (not in the official docs): the command runs only inside the dedicated directory that the setup fence created; otherwise it prints `Not in the setup's gcloud directory; stop here` and changes nothing.
+
 ```bash
-gcloud auth login
+if [ -n "${QS_CONFIG-}" ] && [ "${CLOUDSDK_CONFIG-}" = "$QS_CONFIG" ] && [ -f "$QS_CONFIG/.created-by-quick-setup" ]; then
+  gcloud auth login
+else
+  echo "Not in the setup's gcloud directory; stop here" >&2
+fi
 ```
 
 ### Application default credentials for client libraries
 
 `set-quota-project` requires that "The existing application default credentials must have the serviceusage.services.use permission on the given project" (gcloud 593.0.0 help); `roles/serviceusage.serviceUsageConsumer` includes it.
 
+Adapted (not in the official docs): the command runs only inside the dedicated directory that the setup fence created; otherwise it prints `Not in the setup's gcloud directory; stop here` and changes nothing.
+
 ```bash
-gcloud auth application-default login
-gcloud auth application-default set-quota-project PROJECT_ID
+if [ -n "${QS_CONFIG-}" ] && [ "${CLOUDSDK_CONFIG-}" = "$QS_CONFIG" ] && [ -f "$QS_CONFIG/.created-by-quick-setup" ]; then
+  gcloud auth application-default login
+  gcloud auth application-default set-quota-project PROJECT_ID
+else
+  echo "Not in the setup's gcloud directory; stop here" >&2
+fi
 ```
 
 ### Cleanup
@@ -72,7 +90,8 @@ Optional: to also revoke the tokens on Google's side, run `gcloud auth applicati
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/serviceusage (`roles/serviceusage.serviceUsageConsumer`; retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/docs/authentication/application-default-credentials (ADC search order; retrieved 2026-11-14)
 - If you created the project with your user account you have the Owner basic role, which allows calling any API for the project; the source does not present this as a recommendation, so prefer granting narrower roles to other principals.
-- Added (not in the official docs): the dedicated directory. In gcloud 593.0.0, `_GetGlobalConfigDir` returns `CLOUDSDK_CONFIG` when it is set, else `~/.config/gcloud` (`%APPDATA%\gcloud` on Windows) (`lib/googlecloudsdk/core/config.py`), and the bundled google-auth 2.62.0 reads `os.environ[environment_vars.CLOUD_SDK_CONFIG_DIR]` (`CLOUDSDK_CONFIG`) in `get_config_path` and joins it with `application_default_credentials.json` in `get_application_default_credentials_path` (`lib/third_party/google/auth/_cloud_sdk.py`). The Node.js google-auth-library 11.3.4 also reads `process.env['CLOUDSDK_CONFIG']` before the default (`build/src/auth/googleauth.js`), while the Rust google-cloud-auth 1.19.0 `adc_path` uses `GOOGLE_APPLICATION_CREDENTIALS`, else `$HOME/.config/gcloud` or `%APPDATA%\gcloud` (`src/credentials.rs`). Run with an isolated `HOME` (no real login), `gcloud info` reported the new directory, `gcloud config set` wrote there, the bundled google-auth resolved the ADC path inside it, and the cleanup removed it while `$HOME/.config/gcloud` stayed unchanged (with `CLOUDSDK_CONFIG` set to an empty string, `gcloud info` reports `$HOME/.config/gcloud`, so the setup fence exports nothing unless the marked directory exists). A gcloud stub showed that the setup fence prints `Setup failed` and exports nothing when `mktemp` fails or prints an empty or nonexistent path, that the shell keeps running, that the cleanup runs no gcloud command, and that it removes nothing when `QS_CONFIG` is unset or differs, or when `CLOUDSDK_CONFIG` points to `$HOME/.config/gcloud` or to a directory without the marker. Run in an interactive child `bash` or `zsh` that exits after the cleanup, the setup and cleanup left the parent shell's `CLOUDSDK_CONFIG` and `GOOGLE_APPLICATION_CREDENTIALS` unchanged.
+- Added (not in the official docs): the dedicated directory. In gcloud 593.0.0, `_GetGlobalConfigDir` returns `CLOUDSDK_CONFIG` when it is set, else `~/.config/gcloud` (`%APPDATA%\gcloud` on Windows) (`lib/googlecloudsdk/core/config.py`), and the bundled google-auth 2.62.0 reads `os.environ[environment_vars.CLOUD_SDK_CONFIG_DIR]` (`CLOUDSDK_CONFIG`) in `get_config_path` and joins it with `application_default_credentials.json` in `get_application_default_credentials_path` (`lib/third_party/google/auth/_cloud_sdk.py`). The Node.js google-auth-library 11.3.4 also reads `process.env['CLOUDSDK_CONFIG']` before the default (`build/src/auth/googleauth.js`), while the Rust google-cloud-auth 1.19.0 `adc_path` uses `GOOGLE_APPLICATION_CREDENTIALS`, else `$HOME/.config/gcloud` or `%APPDATA%\gcloud` (`src/credentials.rs`). Run with an isolated `HOME` (no real login), `gcloud info` reported the new directory, `gcloud config set` wrote there, the bundled google-auth resolved the ADC path inside it, and the cleanup removed it while `$HOME/.config/gcloud` stayed unchanged (with `CLOUDSDK_CONFIG` set to an empty string, `gcloud info` reports `$HOME/.config/gcloud`, so the setup fence exports nothing unless the marked directory exists). A gcloud stub showed that the setup fence prints `Setup failed` and exports nothing when `mktemp` fails or prints an empty or nonexistent path, that the shell keeps running, that the guarded `gcloud init`, login and quota project blocks then call no gcloud command (also with an inherited `CLOUDSDK_CONFIG`), that the cleanup runs no gcloud command, and that it removes nothing when `QS_CONFIG` is unset or differs, or when `CLOUDSDK_CONFIG` points to `$HOME/.config/gcloud` or to a directory without the marker. Run in an interactive child `bash` or `zsh` that exits after the cleanup, the setup and cleanup left the parent shell's `CLOUDSDK_CONFIG` and `GOOGLE_APPLICATION_CREDENTIALS` unchanged.
+- Adapted from the official docs: `gcloud init`, `gcloud auth login`, `gcloud auth application-default login` and `set-quota-project` are wrapped in the same three checks as the cleanup (`QS_CONFIG` set, `CLOUDSDK_CONFIG` equal to it, marker file present), because a failed setup fence ends with exit status 0 and the next blocks would otherwise write to the default or inherited gcloud configuration.
 - Adapted from the official docs: the source's cleanup runs `gcloud auth revoke` "If you called `gcloud auth login`" and `gcloud auth application-default revoke` "If you called `gcloud auth application-default login`". The page's default cleanup is local only: it deletes the dedicated directory and runs no revoke, and the two revoke commands are an optional step because a user-account revoke acts on the server ("revokes the user account token on the server. If the revocation is successful, or if the token has already been revoked, this command removes the credential from the local machine."). The gcloud help does not say whether revoking one token also ends other sessions of the same account and OAuth client.
 - The source also shows Console steps and links to the client libraries page.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/quick/setup (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
