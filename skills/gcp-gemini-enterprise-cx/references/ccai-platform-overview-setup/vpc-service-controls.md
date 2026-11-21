@@ -54,7 +54,16 @@ Adapted (not in the official docs): the first rule of the context-aware access e
     - projects/PROJECT_NUMBER
 ```
 
-Then apply the file. The help does not say whether `--set-ingress-policies` is merged with the perimeter's existing ingress policies, so first read them with `gcloud access-context-manager perimeters describe PERIMETER --policy=9876543` and put them in the file together with the new rule (not stated in the official docs).
+`--set-ingress-policies` replaces all of the perimeter's ingress policies with the file contents. On an existing perimeter, first look at its current ingress policies and copy the ones you keep into `ingress.yaml` together with the new rule:
+
+Adapted (not in the official docs): a `describe` step that shows the perimeter's current ingress policies (`status.ingressPolicies`) before they are replaced.
+
+```bash
+gcloud access-context-manager perimeters describe PERIMETER --policy=9876543 \
+  --format="yaml(status.ingressPolicies)"
+```
+
+Before you apply the file, check that every rule in that output that you want to keep is also in `ingress.yaml`; a rule that is not in the file is removed. Then apply it:
 
 Adapted (not in the official docs): the source's `gcloud access-context-manager perimeters update Example --set-ingress-policies=ingress.yaml` has no `--policy` (the ingress and egress policies page says its gcloud commands "assume that a default access policy has been configured"); the page passes `--policy` and the policy ID of the create example above.
 
@@ -86,6 +95,7 @@ With Private Service Connect you can set up private ingress into your instance, 
 - Source: https://docs.cloud.google.com/vpc-service-controls/docs/service-perimeters (Private Google Access for networks protected by a perimeter; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/vpc-service-controls/docs/context-aware-access (ingress rule example; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/vpc-service-controls/docs/configuring-ingress-egress-policies (default access policy note; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the source applies `ingress.yaml` with `--set-ingress-policies` without reading the existing rules. In gcloud 593.0.0 the flag is one of a pair, `[--clear-ingress-policies | --set-ingress-policies=YAML_FILE]` ("These flags modify the enforced IngressPolicies of this ServicePerimeter."; `--clear-ingress-policies`: "Empties existing enforced Ingress Policies."; `--set-ingress-policies`: "Path to a file containing a list of Ingress Policies."), with no flag that adds or removes single ingress policies, and the command's code (`lib/googlecloudsdk/api_lib/accesscontextmanager/zones.py`) sets the field to the file's list with `_SetIfNotNone('ingressPolicies', ingress_policies, config, mask)`, so a file with only the new rule removes the other ingress policies. The page adds the `describe` step and the check before applying.
 - Source: https://docs.cloud.google.com/vpc-service-controls/docs/ingress-egress-rules (ingress rules reference; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/vpc-service-controls/docs/supported-identities (`user:USER_EMAIL_ADDRESS`; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/vpc-service-controls/docs/supported-products (service name `contactcenteraiplatform.googleapis.com`; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)

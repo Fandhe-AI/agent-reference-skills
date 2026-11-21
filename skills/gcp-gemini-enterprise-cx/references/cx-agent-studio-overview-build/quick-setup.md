@@ -10,13 +10,15 @@ Required setup steps to start using CX Agent Studio: a Google Cloud project with
 
 ### Initialize the gcloud CLI
 
+Before `gcloud init`, note the accounts that already have credentials with `gcloud auth list` ("lists credentialed accounts", gcloud 593.0.0 help). `gcloud init` can add credentials itself (help: "Authorizes gcloud and other SDK tools to access Google Cloud using your user account credentials, or from an account of your choosing whose credentials are already available."), so record the list before it, and treat as added by this setup only accounts that are not in this first list.
+
 ```bash
 gcloud init
 ```
 
 ### User account credentials for REST calls
 
-Before you sign in, note the accounts that already have credentials with `gcloud auth list` ("lists credentialed accounts", gcloud 593.0.0 help), so that you can tell later which account this setup added. If you sign in with an account that is already in that list, gcloud reuses it (help: "If valid credentials for an account are already available from a prior authorization, the account is set to active without rerunning the flow."), and the cleanup below must not revoke it.
+If `gcloud init` already authorized the account you intend to use, you can skip `gcloud auth login`. If you sign in with an account that is already in the list you recorded before `gcloud init`, gcloud reuses it (help: "If valid credentials for an account are already available from a prior authorization, the account is set to active without rerunning the flow."), and the cleanup below must not revoke it.
 
 ```bash
 gcloud auth login
@@ -32,9 +34,17 @@ Adapted (not in the official docs): this check is not in the source. It asks gcl
 if gcloud auth application-default print-access-token >/dev/null 2>&1; then echo "ADC found: reuse it"; else echo "No working ADC found"; fi
 ```
 
-If the check fails but you know an ADC file exists (for example its credentials have expired), do not run the login either; restore or repair that ADC first, because the login would overwrite it.
+If the check fails, an ADC file can still exist (for example when its credentials have expired), so check for one before you log in. The ADC page lists the default file as `$HOME/.config/gcloud/application_default_credentials.json` on Linux and macOS and `%APPDATA%\gcloud\application_default_credentials.json` on Windows, and `GOOGLE_APPLICATION_CREDENTIALS` can point to another credential file.
 
-If the check printed `No working ADC found` and you have no ADC file, create new ADC for this setup:
+Adapted (not in the official docs): this check is not in the source. It only tests whether the variable is set and whether the default file exists (Linux and macOS); it prints neither the variable's value nor the file's contents.
+
+```bash
+if [ -n "${GOOGLE_APPLICATION_CREDENTIALS-}" ]; then echo "GOOGLE_APPLICATION_CREDENTIALS is set: fix that ADC, do not log in"; elif [ -e "$HOME/.config/gcloud/application_default_credentials.json" ]; then echo "ADC file exists: fix it, do not log in"; else echo "No ADC file at the default location"; fi
+```
+
+On Windows, check whether `%APPDATA%\gcloud\application_default_credentials.json` exists instead. If either check finds ADC, or you cannot confirm that no ADC file exists, do not run the login; fix the existing ADC instead, because the login would overwrite it.
+
+If the first check printed `No working ADC found` and the second printed `No ADC file at the default location` (or, on Windows, the file does not exist), create new ADC for this setup:
 
 ```bash
 gcloud auth application-default login
@@ -50,7 +60,7 @@ gcloud auth application-default set-quota-project PROJECT_ID
 
 The source offers these only "If you called `gcloud auth login`" and "If you called `gcloud auth application-default login`". Run each one only for credentials this setup created. If you reused a gcloud login or Application Default Credentials (ADC) that you already had, skip the matching command, because revoking them also stops the other tools and applications that use them.
 
-Adapted (not in the official docs): `ACCOUNT` was added, so only an account that this setup added is revoked: one that `gcloud auth list` shows now but did not show before `gcloud auth login`. If you signed in again with an account that was already in the earlier list, do not revoke it. Without an account, the command revokes the currently active account.
+Adapted (not in the official docs): `ACCOUNT` was added, so only an account that this setup added is revoked: one that `gcloud auth list` shows now but did not show in the list you recorded before `gcloud init`. If you signed in again with an account that was already in the earlier list, do not revoke it. Without an account, the command revokes the currently active account.
 
 ```bash
 gcloud auth revoke ACCOUNT
@@ -71,10 +81,11 @@ gcloud auth application-default revoke
 - In Cloud Shell you are already logged in to gcloud.
 - The source says: "The `GOOGLE_APPLICATION_CREDENTIALS` environment variable must not be set in order for your application default credentials to be used by client libraries." This applies to the user-account credentials that `gcloud auth application-default login` creates: ADC searches the `GOOGLE_APPLICATION_CREDENTIALS` environment variable first, then the credential file created by `gcloud auth application-default login`, then the attached service account from the metadata server, so a set variable takes precedence over that login file. Unset the variable only when you want client libraries to use the `gcloud auth application-default login` credentials; if it points to a credential configuration you rely on (for example Workload Identity Federation), keep it set. ADC in general is covered by the gcp-foundation skill.
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/serviceusage (`roles/serviceusage.serviceUsageConsumer`; retrieved 2026-11-14)
-- Source: https://docs.cloud.google.com/docs/authentication/application-default-credentials (ADC search order; retrieved 2026-11-14)
+- Source: https://docs.cloud.google.com/docs/authentication/application-default-credentials (ADC search order and default file locations; retrieved 2026-11-14, file locations rechecked 2026-11-21)
 - If you created the project with your user account you have the Owner basic role, which allows calling any API for the project; the source does not present this as a recommendation, so prefer granting narrower roles to other principals.
 - `gcloud auth login` and `gcloud auth application-default login` store credentials in your user directory; the revoke commands remove them.
 - Adapted from the official docs: the source's cleanup command `gcloud auth revoke` has no account, and gcloud 593.0.0 help says "If no account is specified, this command revokes credentials for the currently active account, effectively logging out of that account." The page passes `ACCOUNT` (help: `gcloud auth revoke [ACCOUNTS ...]`, "Accounts whose credentials are to be revoked."). `gcloud auth application-default revoke` has no positional argument or account flag of its own (help: `gcloud auth application-default revoke [GCLOUD_WIDE_FLAG ...]`) and "Revokes Application Default Credentials that have been previously generated by gcloud auth application-default login and deletes the local credential file"; the page limits it only by running it when you signed in for this setup.
+- Added (not in the official docs): the ADC file check. The default file locations are from the ADC page ("The location depends on your operating system:" "Linux, macOS: `$HOME/.config/gcloud/application_default_credentials.json`", "Windows: `%APPDATA%\gcloud\application_default_credentials.json`"), which also says "You can use the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to provide the location of a credential JSON file"; the check uses `[ -n ... ]` and `[ -e ... ]` only, so no credential is printed.
 - Added (not in the official docs): the ADC check. gcloud 593.0.0 help does not give the ADC file's path (`application-default login` puts the credentials "in the well-known location for Application Default Credentials (ADC)"), so the page does not test a path; it uses `gcloud auth application-default print-access-token`, which "generates and prints an access token for the current Application Default Credential (ADC)" (and the help says the ADC can also come from "setting the GOOGLE_APPLICATION_CREDENTIALS environment variable", which the check also counts as existing ADC). A failed check does not prove that no ADC file exists, for example when its credentials no longer work.
 - Added (not in the official docs): the steps that separate reused credentials from new ones. The source runs `gcloud auth application-default login` and `set-quota-project` together and cleans up "If you called" each login command; it does not say to check `gcloud auth list` before signing in, to skip `set-quota-project` for existing ADC, or to keep an account that was already credentialed. `gcloud auth list` and the quoted help text are from gcloud 593.0.0.
 - The source also shows Console steps and links to the client libraries page.
