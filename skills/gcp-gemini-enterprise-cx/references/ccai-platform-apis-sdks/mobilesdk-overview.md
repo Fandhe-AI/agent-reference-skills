@@ -23,7 +23,9 @@ Set the environment values in `.env` (for example `API_KEY=your_api_key`, no quo
 
 Requirements for importing the module, with the platform labels corrected (the source swaps them, see Notes): a JWT signing API endpoint; for Android, your project's `minSdkVersion` must be 21 or later (the Android SDK guide also requires "Android 5.0 (API level 21, Lollipop) or later"); for iOS, your project's deployment target must be iOS 13.0 or later (the iOS SDK guide lists "iOS 12.0+" for the native SDK, see Notes).
 
-Copy `example/lib/ujet` into your project's `lib`; copy `UJETModule.kt`, `Application.kt`, `firebase\MyFirebaseMessagingService.kt` and `firebase\FirebaseTokenManager.kt` from `example/android/app/src/main/kotlin/co/ujet/flutter_example_app` next to your `MainActivity` (change their package declarations); drag `example/ios/Runner/UJETModule.swift` into Xcode. Edit `_getUserData` in `example/lib/ujet/ujet_module.dart` to return the end-user information:
+Copy `example/lib/ujet` into your project's `lib`; copy `UJETModule.kt`, `Application.kt`, `firebase\MyFirebaseMessagingService.kt` and `firebase\FirebaseTokenManager.kt` from `example/android/app/src/main/kotlin/co/ujet/flutter_example_app` next to your `MainActivity` (change their package declarations); drag `example/ios/Runner/UJETModule.swift` into Xcode. Edit `_getUserData` in `example/lib/ujet/ujet_module.dart` to return the end-user information.
+
+The values below are the source's fixed example values and must be replaced before use: if every installation returns `identifier` `id1234`, every end user is signed as the same CCAI Platform account and sees the same chats and history. Return the identifier, name, email and phone of the end user who is signed in to your app now, taken from your app's own authenticated session; the official docs do not show how to read them, because that depends on your app's authentication. The identifier that is actually signed should come from your signing server's own authenticated session, not from the value the app sends (not stated in the official docs; see Notes and web-sdk-v3-authenticate.md).
 
 ```dart
 static Future<Map<String, String?>> _getUserData() async {
@@ -89,7 +91,9 @@ Update `UJET.initialize({})` in `src/screens/Home.tsx` and `ujet_company_key`, `
 
 ### React Native: import the module
 
-Copy `app/src/native_modules/UJETInterfaces.ts`, `app/src/native_modules/UJETNativeModule.ts`, `app/ios/UJETModule.h`, `app/ios/UJETModule.m` and `app/android/src/main/java/com/sampleapp/UJETModule.kt` into your project. In `UJETNativeModule.ts`, remove `import AsyncStorage from '@react-native-async-storage/async-storage';`, update `SIGNING_BASE_URL` to your signing endpoint, and edit `getUserData`:
+Copy `app/src/native_modules/UJETInterfaces.ts`, `app/src/native_modules/UJETNativeModule.ts`, `app/ios/UJETModule.h`, `app/ios/UJETModule.m` and `app/android/src/main/java/com/sampleapp/UJETModule.kt` into your project. In `UJETNativeModule.ts`, remove `import AsyncStorage from '@react-native-async-storage/async-storage';`, update `SIGNING_BASE_URL` to your signing endpoint, and edit `getUserData`.
+
+As in the Flutter example, the values below are the source's fixed example values and must be replaced before use: if every installation returns `identifier` `id1234`, every end user is signed as the same CCAI Platform account and sees the same chats and history. Return the identifier, name, email and phone of the end user who is signed in to your app now, taken from your app's own authenticated session; the official docs do not show how to read them, because that depends on your app's authentication. The identifier that is actually signed should come from your signing server's own authenticated session, not from the value the app sends (not stated in the official docs; see Notes and web-sdk-v3-authenticate.md).
 
 ```typescript
 async function getUserData({ name: anonymousName }: SignPayloadData): Promise<Object> {

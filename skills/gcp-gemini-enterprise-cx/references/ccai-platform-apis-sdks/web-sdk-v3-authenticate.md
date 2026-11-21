@@ -38,15 +38,18 @@ token = jwt_encode(header, payload, COMPANY_SECRET)
 
 ### Example (endpoint `/auth/token`)
 
-Express (Node.js):
+Express (Node.js). Before you start the server, set the `COMPANY_NAME` environment variable to your company name, the value the token sets as `iss` (the source describes `iss` only as "optional, your company name" and does not say where in the portal that value is shown), and `COMPANY_SECRET` to the Company Secret from **Settings > Developer Settings**:
 
-Adapted (not in the official docs): `COMPANY_SECRET` is read from the `COMPANY_SECRET` environment variable and the server fails at start-up if it is missing (the source assigns the literal `'__read_from_config__'`), and the handler rejects requests without `req.user`, or whose `req.user.id` is not a non-empty string, with `401` (the source issues a token without the required `identifier` for them), and the handler sets `Cache-Control: no-store` (with Express `res.set`) on every response, including the `401`, so a per-user token is not stored by a browser or shared cache and reused after the user changes.
+Adapted (not in the official docs): `COMPANY_NAME` and `COMPANY_SECRET` are read from the `COMPANY_NAME` and `COMPANY_SECRET` environment variables and the server fails at start-up if either is missing (the source assigns the example literal `'AMCE'` and the placeholder `'__read_from_config__'`), and the handler rejects requests without `req.user`, or whose `req.user.id` is not a non-empty string, with `401` (the source issues a token without the required `identifier` for them), and the handler sets `Cache-Control: no-store` (with Express `res.set`) on every response, including the `401`, so a per-user token is not stored by a browser or shared cache and reused after the user changes.
 
 ```javascript
 const express = require('express')
 const jwt = require('jsonwebtoken')
 
-const COMPANY_NAME = 'AMCE'
+const COMPANY_NAME = process.env.COMPANY_NAME
+if (!COMPANY_NAME) {
+  throw new Error('COMPANY_NAME is not set')
+}
 const COMPANY_SECRET = process.env.COMPANY_SECRET
 if (!COMPANY_SECRET) {
   throw new Error('COMPANY_SECRET is not set')
@@ -141,6 +144,7 @@ To reinitialize the web SDK, call `UJET.initialize` again after successful authe
 ## Notes
 
 - The source also shows a Flask (Python) example using `joserfc`; it is left out because it mixes JavaScript syntax into Python (`if (request.user) {`, `payload.identifier = request.user.id,` on a `dict`, a closing `}`), so it does not parse, and it reads `request.user`, which the example does not define. Use the Express example as the pattern. In the Express example, `your_session_middleware` and `req.user` stand for your own session handling.
+- Corrected from the official docs: the Express example writes `const COMPANY_NAME = 'AMCE'`, so every token it signs carries the example value `AMCE` as `iss` instead of your company name (the source's payload template uses `"iss": "{YOUR_COMPANY_NAME}"`). The page reads `COMPANY_NAME` from the environment, like `COMPANY_SECRET`, and refuses to start without it.
 - Adapted from the official docs: the source writes `const COMPANY_SECRET = '__read_from_config__'` and passes that literal to `jwt.sign`, so a copied server signs tokens with a public placeholder string that does not match the company secret registered in CCAI Platform. The page reads the secret from server configuration (the `COMPANY_SECRET` environment variable, which you can populate from a secret store) and throws at start-up if it is not set.
 - Adapted from the official docs: the source states that "Even if the user is an anonymous user and has not yet authenticated, the identifier is required in order for the SDK to work as expected", yet its handler adds `identifier`, `name` and `email` only inside `if (req.user) { ... }` and signs the token either way, so an unauthenticated request gets a token without `identifier`. The page rejects requests without `req.user`, and requests whose session user has no identifier (`typeof req.user.id !== 'string' || req.user.id === ''`, which would otherwise sign a token with a missing or empty `identifier`), with `401`; the `if (req.user)` block is kept as written. To serve anonymous users instead, the server must put an identifier it issues itself (for example one per guest session; the source does not say how to generate it) into `identifier` before signing.
 - Corrected from the official docs: the source handler answers with `res.json({ token })` and sets no cache directive, although the `GET /auth/token` response carries a JWT with the session user's `identifier`, `name` and `email`; a cached response could hand one user's token to the next user of the browser or of a shared cache. The page adds `res.set('Cache-Control', 'no-store')` as the first line of the handler, so it applies to the token response and to the `401` response.
