@@ -31,7 +31,7 @@ client = vertexai.Client(
 
 ### Develop the agent
 
-Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data. Also, `currency_date` is checked to be `latest` or a `YYYY-MM-DD` date (`datetime.datetime.strptime(currency_date, "%Y-%m-%d")` raises `ValueError` otherwise) before it is put in the URL path, so a model-supplied value cannot point the request at another path or query.
+Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data. Also, `currency_date` is checked to be `latest` or a `YYYY-MM-DD` date (`datetime.datetime.strptime(currency_date, "%Y-%m-%d")` raises `ValueError` otherwise) and the parsed date, normalized with `.date().isoformat()` (for example `2023-1-5` becomes `2023-01-05`), is what goes in the URL path, so a model-supplied value cannot point the request at another path or query and the request always uses the `YYYY-MM-DD` form.
 ```python
 def get_exchange_rate(
     currency_from: str = "USD",
@@ -43,7 +43,9 @@ def get_exchange_rate(
     import requests
 
     if currency_date != "latest":
-        datetime.datetime.strptime(currency_date, "%Y-%m-%d")
+        currency_date = datetime.datetime.strptime(
+            currency_date, "%Y-%m-%d"
+        ).date().isoformat()
 
     response = requests.get(
         f"https://api.frankfurter.app/{currency_date}",
@@ -131,6 +133,7 @@ remote_agent.delete(force=True)
 - The source also shows Colab and Cloud Shell authentication (Cloud Shell needs no action).
 - Corrected from the official docs: `get_exchange_rate` called `requests.get(f"https://api.frankfurter.app/{currency_date}", params={"from": currency_from, "to": currency_to})` with no timeout and returned `response.json()` without checking the HTTP status.
 - Corrected from the official docs: `get_exchange_rate` put `currency_date` into the URL path (`f"https://api.frankfurter.app/{currency_date}"`) without checking it.
+- Corrected from the official docs: `get_exchange_rate` put the model-supplied `currency_date` in the URL as given; the example validates it with `strptime("%Y-%m-%d")`, which also accepts dates without zero padding such as `2023-1-5`, so it sends the normalized `date().isoformat()` value.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/quickstart-adk (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

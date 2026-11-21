@@ -64,7 +64,7 @@ async for event in app.async_stream_query(
 
 ### Define and use a tool
 
-Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data. Also, `currency_date` is checked to be `latest` or a `YYYY-MM-DD` date (`datetime.datetime.strptime(currency_date, "%Y-%m-%d")` raises `ValueError` otherwise) before it is put in the URL path, so a model-supplied value cannot point the request at another path or query.
+Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data. Also, `currency_date` is checked to be `latest` or a `YYYY-MM-DD` date (`datetime.datetime.strptime(currency_date, "%Y-%m-%d")` raises `ValueError` otherwise) and the parsed date, normalized with `.date().isoformat()` (for example `2023-1-5` becomes `2023-01-05`), is what goes in the URL path, so a model-supplied value cannot point the request at another path or query and the request always uses the `YYYY-MM-DD` form.
 ```python
 def get_exchange_rate(
     currency_from: str = "USD",
@@ -94,7 +94,9 @@ def get_exchange_rate(
     import requests
 
     if currency_date != "latest":
-        datetime.datetime.strptime(currency_date, "%Y-%m-%d")
+        currency_date = datetime.datetime.strptime(
+            currency_date, "%Y-%m-%d"
+        ).date().isoformat()
     response = requests.get(
         f"https://api.frankfurter.app/{currency_date}",
         params={"from": currency_from, "to": currency_to},
@@ -104,6 +106,8 @@ def get_exchange_rate(
     return response.json()
 ```
 
+Adapted (not in the official docs): added `generate_content_config=generate_content_config`, so the agent rebuilt with the tool keeps the safety settings defined above (the Sessions example below uses this `agent`); `generate_content_config` is a field of `LlmAgent` (`Agent` is an alias of it) in google-adk 2.15.0.
+
 ```python
 from google.adk.agents import Agent
 
@@ -111,6 +115,7 @@ agent = Agent(
     model=model,                     # Required.
     name='currency_exchange_agent',  # Required.
     tools=[get_exchange_rate],       # Optional.
+    generate_content_config=generate_content_config,  # Optional.
 )
 
 ```
@@ -249,6 +254,8 @@ print(response)
 - Corrected from the official docs: the source writes `model = "gemini-2.0-flash"` and, in the Memories example, `model="gemini-2.0-flash",`. The model versions page lists `gemini-2.0-flash` in its "Retired models" table ("`gemini-2.0-flash` | February 5, 2025 | June 1, 2026 | `gemini-3.5-flash-lite`": release date, retirement date, recommended upgrade; https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-versions, retrieved 2026-11-21). Both examples use `gemini-3.5-flash` instead, the model in the ADK quickstart (`model="gemini-3.5-flash"`, https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/quickstart-adk, retrieved 2026-11-21), which the model versions page lists as available ("May 19, 2026 | May 19, 2027 or later").
 - Corrected from the official docs: `get_exchange_rate` put `currency_date` into the URL path (`f"https://api.frankfurter.app/{currency_date}"`) without checking it.
 - `async_add_session_to_memory(session=initial_session)` passes the session dictionary created before the conversation, as the source does. In google-cloud-aiplatform 2.10.0 (`vertexai/agent_engines/templates/adk.py`, `AdkApp.async_add_session_to_memory`), a session with no events (a new session from `async_create_session` has `events` empty: google-adk 2.15.0 `Session.events` defaults to an empty list) is re-read with `async_get_session(user_id=session.user_id, session_id=session.id)` before memories are generated ("Get the latest version of the session in case it was updated."), so the events added by `async_stream_query` are included. With a session object that already holds events, re-read it first with `await app.async_get_session(user_id="USER_ID", session_id=...)`.
+- Corrected from the official docs: `get_exchange_rate` put the model-supplied `currency_date` in the URL as given; the example validates it with `strptime("%Y-%m-%d")`, which also accepts dates without zero padding such as `2023-1-5`, so it sends the normalized `date().isoformat()` value.
+- Corrected from the official docs: the `Agent` rebuilt with `tools=[get_exchange_rate]` did not pass `generate_content_config`, so the safety settings of the first example were dropped for it and for the Sessions example that uses it (google-adk 2.15.0 `google/adk/agents/llm_agent.py`: `generate_content_config: types.GenerateContentConfig | None = None`, `Agent: TypeAlias = LlmAgent`).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-adk-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
