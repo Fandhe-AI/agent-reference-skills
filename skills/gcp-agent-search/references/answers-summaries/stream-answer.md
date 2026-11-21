@@ -12,14 +12,15 @@ The streaming answer method (`streamAnswer`) has most of the features of the `an
 
 This basic command shows the required input only; the options are left at their defaults. Typically each response contains one sentence of the answer.
 
-Run the command by itself and type the query text on one line at the prompt; `jq` (required) encodes `QUERY` as a JSON string. A line that follows the command in the same paste or script is read as the query.
+Run the command by itself and type the query text on one line at the prompt; `jq` (required) encodes `QUERY` as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the query.
 
-Adapted (not in the official docs): the request body is built with `jq -n --arg query "$QUERY" '{...}'` from the text read by `IFS= read -r QUERY` and sent on standard input with `--data @-`, instead of putting `"QUERY"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in the query cannot break the shell quoting or the JSON; every other field is unchanged.
+Adapted (not in the official docs): the request body is built with `jq -n --arg query "$QUERY" '{...}'` from the text read by `IFS= read -r QUERY`, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"QUERY"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in the query cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs.
 
 ```bash
-IFS= read -r QUERY && jq -n --arg query "$QUERY" '{
+IFS= read -r QUERY && [ -n "$QUERY" ] && BODY=$(jq -n --arg query "$QUERY" '{
         "query": { "text": $query}
-      }' |
+      }') &&
+printf '%s' "$BODY" |
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
   -H "Content-Type: application/json" \
   "https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/engines/APP_ID/servingConfigs/default_search:streamAnswer" \

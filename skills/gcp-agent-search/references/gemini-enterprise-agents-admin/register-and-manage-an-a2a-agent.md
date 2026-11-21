@@ -55,17 +55,27 @@ gcloud run services add-iam-policy-binding SERVICE_NAME \
 
 Uses the `agents.create` method (`v1alpha`) with the required fields only. If you added an authorization resource (see Notes), add `"authorizationConfig": {"agentAuthorization": "projects/PROJECT_ID/locations/LOCATION/authorizations/AUTH_ID"}` to the body next to `a2aAgentDefinition`; without OAuth, leave it out.
 
-Run the command by itself and type each value on its own line at the prompts, in this order: `AGENT_NAME`, `AGENT_DISPLAY_NAME`, `AGENT_DESCRIPTION`, then `CAPABILITIES` as one line of JSON object (for example `{"streaming": true}`) and `SKILLS` as one line of JSON array of `AgentSkill` objects. `jq` (required) builds the Agent Card, serializes it to the `jsonAgentCard` string and encodes the other values as JSON strings; nothing is sent if a value is missing or `CAPABILITIES` / `SKILLS` is not valid JSON. A line that follows the command in the same paste or script is read as a value.
+Run the command by itself and type each value on its own line at the prompts, in this order: `AGENT_NAME`, `AGENT_DISPLAY_NAME`, `AGENT_DESCRIPTION`, `PROTOCOLVERSION`, `AGENT_URL`, `AGENT_VERSION`, `INPUT_MODE`, `OUTPUT_MODE`, then `CAPABILITIES` as one line of JSON object (for example `{"streaming": true}`) and `SKILLS` as one line of JSON array of `AgentSkill` objects. `jq` (required) builds the Agent Card, serializes it to the `jsonAgentCard` string and encodes the other values as JSON strings; nothing is sent if a value is missing or empty, if `CAPABILITIES` is not a JSON object, or if `SKILLS` is not a JSON array of objects. A line that follows the command in the same paste or script is read as a value.
 
-Adapted (not in the official docs): the source writes the request body inside the single-quoted `-d '...'` argument, with `"AGENT_NAME"`, `"AGENT_DISPLAY_NAME"` and `"AGENT_DESCRIPTION"` as placeholders and the Agent Card as a hand-escaped string in `jsonAgentCard`. Here the card is built with `jq -cn` (same field names and order, same `PROTOCOLVERSION`, `AGENT_URL`, `AGENT_VERSION`, `INPUT_MODE` and `OUTPUT_MODE` placeholders; `CAPABILITIES` and `SKILLS` now take a whole JSON object and array through `--argjson`) and passed as a string with `--arg card`, the outer body is built with `jq -n --arg ...` from values read by one `IFS= read -r` each and sent with `--data @-`, so apostrophes, double quotes and backslashes cannot break the shell quoting, the JSON or the card string. The `authorizationConfig` object is removed from this required-fields example (see the sentence above for when to add it).
+Adapted (not in the official docs): the source writes the request body inside the single-quoted `-d '...'` argument, with `"AGENT_NAME"`, `"AGENT_DISPLAY_NAME"` and `"AGENT_DESCRIPTION"` as placeholders and the Agent Card as a hand-escaped string in `jsonAgentCard`. Here the card is built with `jq -cn` (same field names and order; `PROTOCOLVERSION`, `AGENT_URL`, `AGENT_VERSION`, `INPUT_MODE` and `OUTPUT_MODE` are read and passed with `--arg`; `CAPABILITIES` and `SKILLS` now take a whole JSON object and array through `--argjson`) and passed as a string with `--arg card`, the outer body is built with `jq -n --arg ...` from values read by one `IFS= read -r` each and sent with `--data @-`, so apostrophes, double quotes and backslashes cannot break the shell quoting, the JSON or the card string. Before anything is sent, `[ -n ... ]` rejects an empty string value, and the card step stops with `error(...)` (non-zero exit, so the `&&` chain ends) when `CAPABILITIES` is not an object or `SKILLS` is not an array of objects; `--argjson` itself rejects text that is not JSON. The `authorizationConfig` object is removed from this required-fields example (see the sentence above for when to add it). The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs.
 
 ```bash
 IFS= read -r AGENT_NAME && IFS= read -r AGENT_DISPLAY_NAME && IFS= read -r AGENT_DESCRIPTION &&
+IFS= read -r PROTOCOLVERSION && IFS= read -r AGENT_URL && IFS= read -r AGENT_VERSION &&
+IFS= read -r INPUT_MODE && IFS= read -r OUTPUT_MODE &&
 IFS= read -r CAPABILITIES && IFS= read -r SKILLS &&
+[ -n "$AGENT_NAME" ] && [ -n "$AGENT_DISPLAY_NAME" ] && [ -n "$AGENT_DESCRIPTION" ] &&
+[ -n "$PROTOCOLVERSION" ] && [ -n "$AGENT_URL" ] && [ -n "$AGENT_VERSION" ] &&
+[ -n "$INPUT_MODE" ] && [ -n "$OUTPUT_MODE" ] &&
 CARD=$(jq -cn --arg agent_name "$AGENT_NAME" --arg agent_description "$AGENT_DESCRIPTION" \
-  --argjson capabilities "$CAPABILITIES" --argjson skills "$SKILLS" \
-  '{"protocolVersion":"PROTOCOLVERSION","name":$agent_name,"description":$agent_description,"url":"AGENT_URL","version":"AGENT_VERSION","defaultInputModes":["INPUT_MODE"],"defaultOutputModes":["OUTPUT_MODE"],"capabilities":$capabilities,"skills":$skills}') &&
-jq -n --arg agent_name "$AGENT_NAME" --arg agent_display_name "$AGENT_DISPLAY_NAME" \
+  --arg protocol_version "$PROTOCOLVERSION" --arg agent_url "$AGENT_URL" --arg agent_version "$AGENT_VERSION" \
+  --arg input_mode "$INPUT_MODE" --arg output_mode "$OUTPUT_MODE" \
+  --argjson capabilities "$CAPABILITIES" --argjson skills "$SKILLS" '
+if ($capabilities | type) != "object" then error("CAPABILITIES must be a JSON object")
+elif ($skills | type) != "array" or any($skills[]; type != "object") then error("SKILLS must be a JSON array of objects")
+else {"protocolVersion":$protocol_version,"name":$agent_name,"description":$agent_description,"url":$agent_url,"version":$agent_version,"defaultInputModes":[$input_mode],"defaultOutputModes":[$output_mode],"capabilities":$capabilities,"skills":$skills}
+end') &&
+BODY=$(jq -n --arg agent_name "$AGENT_NAME" --arg agent_display_name "$AGENT_DISPLAY_NAME" \
   --arg agent_description "$AGENT_DESCRIPTION" --arg card "$CARD" '
 {
   "name": $agent_name,
@@ -75,7 +85,8 @@ jq -n --arg agent_name "$AGENT_NAME" --arg agent_display_name "$AGENT_DISPLAY_NA
     "jsonAgentCard": $card
   }
 }
-' |
+') &&
+printf '%s' "$BODY" |
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
@@ -275,6 +286,7 @@ gcloud agent-identity auth-providers add-iam-policy-binding AUTH_PROVIDER_NAME \
 | `AGENT_NAME` | The unique identifier for the agent. |
 | `PROTOCOLVERSION` | The A2A protocol version the agent supports. |
 | `AGENT_URL` | The endpoint URL of the agent. |
+| `AGENT_VERSION` | The version of the agent. |
 | `INPUT_MODE` / `OUTPUT_MODE` | Default input / output media type, for example `text/plain`, `application/json` or `image/png`. |
 | `CAPABILITIES` | A JSON object of supported A2A features, for example `"streaming": true` or `"pushNotifications": false`. In the example above, type it as one whole JSON object, for example `{"streaming": true}`. |
 | `SKILLS` | A list of `AgentSkill` objects the agent offers. In the example above, type it as one JSON array, for example `[{"id":"chat","name":"Chat Skill","description":"Chat with the Gemini agent.","tags":["chat"]}]`; `jq` escapes it inside the `jsonAgentCard` string. |
@@ -303,7 +315,7 @@ gcloud agent-identity auth-providers add-iam-policy-binding AUTH_PROVIDER_NAME \
 - Distance: this is Google's A2A / Agent Runtime integration, not Claude Code or OpenAI Agents.
 - Calling the agent: the streamAssist page states "A2A or ADK agents registered to a Gemini Enterprise app are not supported through `streamAssist`." To call an A2A agent directly, use its registry A2A endpoint: https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-a2a (https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-streamassist).
 - Source inconsistency (global host): for `ENDPOINT_LOCATION` = `global`, the Gemini Enterprise pages on app IAM policies and ADK / A2A agent registration show example commands with `https://global-discoveryengine.googleapis.com/...`, while the streamAssist page says "If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The `discoveryengine` `v1` / `v1beta` / `v1alpha` Discovery documents give the `rootUrl` `https://discoveryengine.googleapis.com/`. Both forms are kept as written. `ENDPOINT_LOCATION` (or the `LOCATION` prefix of the host) sets only the hostname; the `locations/...` segment of the resource path is a separate value.
-- Corrected from the official docs: the source's register command is `-d '` followed by a body with `"name": "AGENT_NAME"`, `"displayName": "AGENT_DISPLAY_NAME"`, `"description": "AGENT_DESCRIPTION"`, `"jsonAgentCard": "{\"protocolVersion\":\"PROTOCOLVERSION\",...,\"capabilities\":{ CAPABILITIES },\"skills\":[SKILLS]}"` and `"authorizationConfig": {"agentAuthorization": "projects/PROJECT_ID/locations/LOCATION/authorizations/AUTH_ID"}`. Free text with an apostrophe ends the shell quoting, `"` or `\` breaks the JSON, and `SKILLS` objects pasted into the card string must be escaped by hand, so the card and the body are built with `jq` and sent with `--data @-`. The source introduces the command with "The following command uses only the required fields." while it includes `authorizationConfig`, which the Discovery document marks "Optional. The authorizations that are required by the agent." and which the source's own example command leaves out, so it is removed from the example and described as an optional addition.
+- Corrected from the official docs: the source's register command is `-d '` followed by a body with `"name": "AGENT_NAME"`, `"displayName": "AGENT_DISPLAY_NAME"`, `"description": "AGENT_DESCRIPTION"`, `"jsonAgentCard": "{\"protocolVersion\":\"PROTOCOLVERSION\",...,\"capabilities\":{ CAPABILITIES },\"skills\":[SKILLS]}"` and `"authorizationConfig": {"agentAuthorization": "projects/PROJECT_ID/locations/LOCATION/authorizations/AUTH_ID"}`. Free text with an apostrophe ends the shell quoting, `"` or `\` breaks the JSON, and `SKILLS` objects pasted into the card string must be escaped by hand, so the card and the body are built with `jq` and sent with `--data @-`; the card's other string placeholders (`\"protocolVersion\":\"PROTOCOLVERSION\"`, `\"url\":\"AGENT_URL\"`, `\"version\":\"AGENT_VERSION\"`, `\"defaultInputModes\":[\"INPUT_MODE\"]`, `\"defaultOutputModes\":[\"OUTPUT_MODE\"]` in the source) are read and passed with `--arg` for the same reason. The source introduces the command with "The following command uses only the required fields." while it includes `authorizationConfig`, which the Discovery document marks "Optional. The authorizations that are required by the agent." and which the source's own example command leaves out, so it is removed from the example and described as an optional addition.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/register-and-manage-an-a2a-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

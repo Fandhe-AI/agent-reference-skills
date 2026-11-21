@@ -12,16 +12,17 @@ Agent Search is designed with Google's AI Principles in mind and has built-in sa
 
 Customers can enable and disable safety filters using the API. The source's request for website search (`servingConfigs/default_config:search`) is left out; see Notes.
 
-Run the command by itself and type the query text on one line at the prompt; `jq` (required) encodes `FREE_TEXT` as a JSON string. A line that follows the command in the same paste or script is read as the query.
+Run the command by itself and type the query text on one line at the prompt; `jq` (required) encodes `FREE_TEXT` as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the query.
 
-Adapted (not in the official docs): used camelCase boolean `safeSearch: true`, replaced the body `serving_config` placeholder with the full serving config resource name that the field requires, and removed the trailing comma. Also, the request body is built with `jq -n --arg free_text "$FREE_TEXT" '{...}'` from the text read by `IFS= read -r FREE_TEXT` and sent on standard input with `--data @-`, instead of putting `"FREE_TEXT"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in the query cannot break the shell quoting or the JSON; every other field is unchanged.
+Adapted (not in the official docs): used camelCase boolean `safeSearch: true`, replaced the body `serving_config` placeholder with the full serving config resource name that the field requires, and removed the trailing comma. Also, the request body is built with `jq -n --arg free_text "$FREE_TEXT" '{...}'` from the text read by `IFS= read -r FREE_TEXT`, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"FREE_TEXT"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in the query cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs.
 
 ```bash
-IFS= read -r FREE_TEXT && jq -n --arg free_text "$FREE_TEXT" '{
+IFS= read -r FREE_TEXT && [ -n "$FREE_TEXT" ] && BODY=$(jq -n --arg free_text "$FREE_TEXT" '{
   "query": { "input": $free_text},
   "servingConfig": "projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/servingConfigs/SERVING_CONFIG_ID",
   "safeSearch": true
-}' |
+}') &&
+printf '%s' "$BODY" |
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \

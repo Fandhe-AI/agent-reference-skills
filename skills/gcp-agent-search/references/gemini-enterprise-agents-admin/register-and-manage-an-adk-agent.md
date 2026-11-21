@@ -24,46 +24,51 @@ https://accounts.google.com/o/oauth2/v2/auth?client_id=OAUTH_CLIENT_ID&redirect_
 
 ### Add an authorization resource (optional)
 
-Needed only if the agent must access Google Cloud resources on behalf of a user. The example reads the OAuth client secret without echo, builds the JSON body with `jq` from standard input and sends it to `curl` on standard input, so the secret does not appear in the shell history or in any process argument (requires `jq`). The block is a single `if` command: run it and type the secret at the silent prompt. The request is built and sent only if `read` succeeds and the secret is not empty; otherwise the block prints a message and sends nothing. Run the block by itself: if more lines follow it in the same paste or script, `read` takes the next line as the secret.
+Needed only if the agent must access Google Cloud resources on behalf of a user. The example reads the OAuth client secret without echo, builds the JSON body with `jq` from standard input and sends it to `curl` on standard input, so the secret does not appear in the shell history or in any process argument (requires `jq`, and curl 7.76.0 or later for `--fail-with-body`). The block is a single `if` command: run it, type `OAUTH_AUTH_URI` (the authorization URL built above) and `OAUTH_TOKEN_URI` on their own lines at the prompts, then the secret at the silent prompt. The request is built and sent only if every `read` succeeds and none of the three values is empty; otherwise the block prints a message and sends nothing. The block's exit status is non-zero (1) when nothing was sent, when curl fails, or when the server returns an HTTP status of 400 or greater. Run the block by itself: if more lines follow it in the same paste or script, `read` takes them as the values.
 
-Adapted (not in the official docs): instead of writing `"clientSecret": "OAUTH_CLIENT_SECRET"` in the `curl -d` argument, the secret is read with `read -rs`, piped by the `printf` builtin into `jq -Rs` (which places it as `"clientSecret": .`) and the body is sent with `curl ... --data @-`; the build-and-send runs inside `if read -rs OAUTH_CLIENT_SECRET && [ -n "$OAUTH_CLIENT_SECRET" ]; then ... else ... fi`, so a cancelled or empty input sends nothing, and `unset` on the `fi` line clears the variable afterwards. The URL, headers and every other body field are unchanged.
+Adapted (not in the official docs): instead of writing `"clientSecret": "OAUTH_CLIENT_SECRET"` in the `curl -d` argument, the secret is read with `read -rs`, piped by the `printf` builtin into `jq -Rs` (which places it as `"clientSecret": .`) and the body is sent with `curl ... --data @-`; the build-and-send runs inside `if ... read -rs OAUTH_CLIENT_SECRET && [ -n "$OAUTH_CLIENT_SECRET" ]; then ... else ... fi`, so a cancelled or empty input sends nothing, and `unset` on the `fi` line clears the variable afterwards. `OAUTH_AUTH_URI` and `OAUTH_TOKEN_URI` are also read with `IFS= read -r` (checked to be non-empty in the same `if`) and passed with `jq --arg`, instead of being pasted into the single-quoted `jq` program, so an apostrophe in a URL cannot break the shell quoting. `curl --fail-with-body` makes an HTTP status of 400 or greater a failure (exit code 22), and the block keeps that status: `rc=$?` after the request (`rc=1` when nothing is sent), then `unset`, then `[ "$rc" -eq 0 ]` as the last command, which sets the exit status (0, or 1 on failure) without exiting an interactive shell. The URL, headers and every other body field are unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs.
 
 ```bash
-if read -rs OAUTH_CLIENT_SECRET && [ -n "$OAUTH_CLIENT_SECRET" ]; then
-printf '%s' "$OAUTH_CLIENT_SECRET" | jq -Rs '{
+if IFS= read -r OAUTH_AUTH_URI && IFS= read -r OAUTH_TOKEN_URI && read -rs OAUTH_CLIENT_SECRET &&
+  [ -n "$OAUTH_AUTH_URI" ] && [ -n "$OAUTH_TOKEN_URI" ] && [ -n "$OAUTH_CLIENT_SECRET" ]; then
+BODY=$(printf '%s' "$OAUTH_CLIENT_SECRET" | jq -Rs --arg authorization_uri "$OAUTH_AUTH_URI" --arg token_uri "$OAUTH_TOKEN_URI" '{
       "name": "projects/PROJECT_NUMBER/locations/LOCATION/authorizations/AUTH_ID",
       "serverSideOauth2": {
          "clientId": "OAUTH_CLIENT_ID",
          "clientSecret": .,
-         "authorizationUri": "OAUTH_AUTH_URI",
-         "tokenUri": "OAUTH_TOKEN_URI"
+         "authorizationUri": $authorization_uri,
+         "tokenUri": $token_uri
       }
-   }' | curl -X POST \
+   }') &&
+printf '%s' "$BODY" | curl --fail-with-body -X POST \
    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
    -H "Content-Type: application/json" \
    -H "X-Goog-User-Project: PROJECT_ID" \
    "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1alpha/projects/PROJECT_NUMBER/locations/LOCATION/authorizations?authorizationId=AUTH_ID" \
    --data @-
+rc=$?
 else
-  echo "No client secret entered; authorization request not sent." >&2
-fi; unset OAUTH_CLIENT_SECRET
+  echo "A value is empty or the input ended; authorization request not sent." >&2
+  rc=1
+fi; unset OAUTH_CLIENT_SECRET BODY; [ "$rc" -eq 0 ]
 ```
 
 ### Register an ADK agent
 
 The `authorizationConfig` object is needed only when you created an authorization resource (see above) so that the agent can access Google Cloud resources on behalf of the user; if the agent doesn't need OAuth, omit `authorizationConfig` (and its `toolAuthorizations` entry) from the body.
 
-Run the command by itself and type each value on its own line at the prompts, in this order: `DISPLAY_NAME`, `DESCRIPTION`; `jq` (required) encodes each one as a JSON string, and nothing is sent if a value is missing. A line that follows the command in the same paste or script is read as a value.
+Run the command by itself and type each value on its own line at the prompts, in this order: `DISPLAY_NAME`, `DESCRIPTION`, `ICON_URI`; `jq` (required) encodes each one as a JSON string, and nothing is sent if a value is missing or empty. A line that follows the command in the same paste or script is read as a value.
 
-Adapted (not in the official docs): the two `locations/global` segments (the engine path in the URL and the `toolAuthorizations` entry) are replaced with `locations/LOCATION`, so the request names the app and the authorization resource in the location where they were created; with `LOCATION` = `global` the request is the same as the source's. The project in the `reasoningEngine` value is the separate placeholder `RUNTIME_PROJECT_ID` (the source writes `PROJECT_ID`, the same placeholder as the app's project in the URL), because the Agent Runtime agent can be hosted in a different project. Also, the request body is built with `jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DISPLAY_NAME`, `DESCRIPTION`) and sent on standard input with `--data @-`, instead of putting `"DISPLAY_NAME"`, `"DESCRIPTION"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged.
+Adapted (not in the official docs): the two `locations/global` segments (the engine path in the URL and the `toolAuthorizations` entry) are replaced with `locations/LOCATION`, so the request names the app and the authorization resource in the location where they were created; with `LOCATION` = `global` the request is the same as the source's. The project in the `reasoningEngine` value is the separate placeholder `RUNTIME_PROJECT_ID` (the source writes `PROJECT_ID`, the same placeholder as the app's project in the URL), because the Agent Runtime agent can be hosted in a different project. Also, the request body is built with `jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" --arg icon_uri "$ICON_URI" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DISPLAY_NAME`, `DESCRIPTION`, `ICON_URI`), checked to be non-empty with `[ -n ... ]` after all of them are read, and sent on standard input with `--data @-`, instead of putting `"DISPLAY_NAME"`, `"DESCRIPTION"`, `"ICON_URI"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs.
 
 ```bash
-IFS= read -r DISPLAY_NAME && IFS= read -r DESCRIPTION &&
-jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{
+IFS= read -r DISPLAY_NAME && IFS= read -r DESCRIPTION && IFS= read -r ICON_URI &&
+[ -n "$DISPLAY_NAME" ] && [ -n "$DESCRIPTION" ] && [ -n "$ICON_URI" ] &&
+BODY=$(jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" --arg icon_uri "$ICON_URI" '{
          "displayName": $display_name,
          "description": $description,
          "icon": {
-            "uri": "ICON_URI"
+            "uri": $icon_uri
          },
          "adkAgentDefinition": {
             "provisionedReasoningEngine": {
@@ -75,7 +80,8 @@ jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{
                "projects/PROJECT_NUMBER/locations/LOCATION/authorizations/AUTH_ID"
             ]
          }
-      }' |
+      }') &&
+printf '%s' "$BODY" |
    curl -X POST \
       -H "Authorization: Bearer $(gcloud auth print-access-token)" \
       -H "Content-Type: application/json" \
@@ -111,13 +117,14 @@ curl -X GET \
 
 ### Update an ADK agent
 
-Run the command by itself and type each value on its own line at the prompts, in this order: `DISPLAY_NAME`, `DESCRIPTION`; `jq` (required) encodes each one as a JSON string, and nothing is sent if a value is missing. A line that follows the command in the same paste or script is read as a value.
+Run the command by itself and type each value on its own line at the prompts, in this order: `DISPLAY_NAME`, `DESCRIPTION`; `jq` (required) encodes each one as a JSON string, and nothing is sent if a value is missing or empty. A line that follows the command in the same paste or script is read as a value.
 
-Adapted (not in the official docs): the `reasoningEngine` string, which the source breaks across lines inside the quotes (`.../reasoningEngine` / `s/RESOURCE_ID"`), is joined into one line, and the trailing comma after the `provisionedReasoningEngine` object is removed, so the body is valid JSON. The project in the `reasoningEngine` value is the separate placeholder `RUNTIME_PROJECT_ID` (the source writes `PROJECT_ID`, the same placeholder as the `X-Goog-User-Project` header), because the Agent Runtime agent can be hosted in a different project. Also, the request body is built with `jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DISPLAY_NAME`, `DESCRIPTION`) and sent on standard input with `--data @-`, instead of putting `"DISPLAY_NAME"`, `"DESCRIPTION"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged.
+Adapted (not in the official docs): the `reasoningEngine` string, which the source breaks across lines inside the quotes (`.../reasoningEngine` / `s/RESOURCE_ID"`), is joined into one line, and the trailing comma after the `provisionedReasoningEngine` object is removed, so the body is valid JSON. The project in the `reasoningEngine` value is the separate placeholder `RUNTIME_PROJECT_ID` (the source writes `PROJECT_ID`, the same placeholder as the `X-Goog-User-Project` header), because the Agent Runtime agent can be hosted in a different project. Also, the request body is built with `jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DISPLAY_NAME`, `DESCRIPTION`), rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"DISPLAY_NAME"`, `"DESCRIPTION"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs.
 
 ```bash
 IFS= read -r DISPLAY_NAME && IFS= read -r DESCRIPTION &&
-jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{
+[ -n "$DISPLAY_NAME" ] && [ -n "$DESCRIPTION" ] &&
+BODY=$(jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{
          "displayName": $display_name,
          "description": $description,
          "adkAgentDefinition": {
@@ -126,7 +133,8 @@ jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{
             "projects/RUNTIME_PROJECT_ID/locations/RESOURCE_LOCATION/reasoningEngines/RESOURCE_ID"
          }
       }
-   }' |
+   }') &&
+printf '%s' "$BODY" |
 curl -X PATCH \
    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
    -H "Content-Type: application/json" \
@@ -199,7 +207,7 @@ curl -X DELETE \
 - Update: "You can update all fields during the agent registration. However, the following fields must be updated:" `displayName`, `description` and `reasoningEngine` (as the source writes it). `DISPLAY_NAME` and `DESCRIPTION` are marked required in the placeholder list.
 - Corrected from the official docs: the source's register example writes `.../locations/global/collections/default_collection/engines/APP_ID/assistants/default_assistant/agents` and `"projects/PROJECT_NUMBER/locations/global/authorizations/AUTH_ID"` while its host is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` with `us` / `eu` / `global`. The same source creates the authorization resource as `"name": "projects/PROJECT_NUMBER/locations/LOCATION/authorizations/AUTH_ID"` and lists, views and deletes agents of the same app at `.../locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant/agents`; the A2A registration page registers at the same path with `locations/LOCATION` and references `"agentAuthorization": "projects/PROJECT_ID/locations/LOCATION/authorizations/AUTH_ID"`. The example above therefore uses `locations/LOCATION` in both places.
 - Corrected from the official docs: the register and update examples write `"reasoningEngine": "projects/PROJECT_ID/locations/RESOURCE_LOCATION/reasoningEngines/RESOURCE_ID"` and define `PROJECT_ID` as "the ID of your Google Cloud project", the same placeholder as the app's project in the register URL and the `X-Goog-User-Project` header. The same source says "You can connect ADK agents hosted in a different Google Cloud" project and "If your ADK agent is hosted in a different Google Cloud project than your Gemini Enterprise app, you must grant necessary permissions." The examples therefore use `RUNTIME_PROJECT_ID` for the Agent Runtime project; the source does not name a separate placeholder.
-- Adapted from the official docs: the source's authorization request writes `"clientSecret": "OAUTH_CLIENT_SECRET"` inside the `curl -d '{...}'` argument, so the real secret would land in the shell history and in the process arguments of `curl`. The example reads it with `read -rs`, builds the body with `jq -Rs` from standard input and sends it with `--data @-` only when `read` succeeds and the value is non-empty (otherwise it prints `No client secret entered; authorization request not sent.` to standard error and sends nothing), then unsets the variable (tested with `jq` 1.7.1: the resulting body equals the source's body with the secret substituted, including quotes, backslashes and `$` in the secret).
+- Adapted from the official docs: the source's authorization request writes `"clientSecret": "OAUTH_CLIENT_SECRET"` inside the `curl -d '{...}'` argument, so the real secret would land in the shell history and in the process arguments of `curl`. The example reads it with `read -rs`, builds the body with `jq -Rs` from standard input and sends it with `--data @-` only when every `read` succeeds and the two URLs and the secret are non-empty (otherwise it prints `A value is empty or the input ended; authorization request not sent.` to standard error and sends nothing), then unsets the variable (tested with `jq` 1.7.1: the resulting body equals the source's body with the secret substituted, including quotes, backslashes and `$` in the secret). The source also writes `"authorizationUri": "OAUTH_AUTH_URI"` and `"tokenUri": "OAUTH_TOKEN_URI"` in that argument; the example reads both URLs with `IFS= read -r` and passes them with `jq --arg`. The source's `curl -X POST` reports success whatever the HTTP status; the example adds `--fail-with-body` and ends with a non-zero status after `unset` when the request failed (local `man curl`, curl 8.7.1: "(HTTP) Return an error on server errors where the HTTP response code is 400 or greater)." ... "This option is mutually exclusive to -f, --fail. Added in 7.76.0.").
 - Calling the agent: the streamAssist page states "A2A or ADK agents registered to a Gemini Enterprise app are not supported through `streamAssist`." (https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-streamassist); a registered ADK agent is used from the Gemini Enterprise web app.
 - Delete removes the agent registration from the app; try it in a disposable project first. The source's example result is a long-running-style response `{"name": ".../operations/delete-agent-12345678901234567890", "done": true}`.
 - Corrected from the official docs: the source's PATCH example splits the string `"projects/PROJECT_ID/locations/RESOURCE_LOCATION/reasoningEngine` / `s/RESOURCE_ID"` across two lines (a raw line break inside a JSON string is invalid) and leaves a trailing comma (`},` before the closing brace). The `discoveryengine.v1alpha` Discovery document gives the format `projects/{project}/locations/{location}/reasoningEngines/{reasoning_engine}`; the body above joins the string to that form and removes the comma, keeping the source's other lines and indentation.
@@ -209,7 +217,7 @@ curl -X DELETE \
 - Agents are Google ADK / Agent Runtime agents, not Claude Code or Agent SDK agents.
 - The source also shows Console steps for registering, updating and the authorization form, and a sample `fun_facts` agent in the `adk-samples` repository.
 - Source inconsistency (global host): for `ENDPOINT_LOCATION` = `global`, the Gemini Enterprise pages on app IAM policies and ADK / A2A agent registration show example commands with `https://global-discoveryengine.googleapis.com/...`, while the streamAssist page says "If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The `discoveryengine` `v1` / `v1beta` / `v1alpha` Discovery documents give the `rootUrl` `https://discoveryengine.googleapis.com/`. Both forms are kept as written. `ENDPOINT_LOCATION` (or the `LOCATION` prefix of the host) sets only the hostname; the `locations/...` segment of the resource path is a separate value.
-- Corrected from the official docs: the source writes free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"displayName": "DISPLAY_NAME"`, `"description": "DESCRIPTION"`). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"` or `\` makes the JSON invalid, so the body is built with `jq --arg` from standard input and sent with `--data @-`.
+- Corrected from the official docs: the source writes free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"displayName": "DISPLAY_NAME"`, `"description": "DESCRIPTION"`, and in the register example `"uri": "ICON_URI"`). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"` or `\` makes the JSON invalid, so the body is built with `jq --arg` from standard input and sent with `--data @-`.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/register-and-manage-an-adk-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

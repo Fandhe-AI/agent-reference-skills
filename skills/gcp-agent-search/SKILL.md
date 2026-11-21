@@ -9,6 +9,8 @@ user-invocable: false
 
 Google Cloud (GCP) の検索・アンサー生成・社内エージェント基盤スキル。Agent Search（旧 Vertex AI Search。API は引き続き Discovery Engine、`discoveryengine.googleapis.com`）と Gemini Enterprise（旧 Agentspace）を扱う。
 
+分割投入中: 以下の収録範囲と機械生成の層は完成形の内容。分割投入中のため、未投入のカテゴリ（`rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access` / `gemini-enterprise-overview-apps` / `gemini-enterprise-connectors-data-stores`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。未投入の機能は、投入までは公式ドキュメント（https://docs.cloud.google.com/ ）を引く。
+
 - Agent Search: app（engine）・data store・取り込み（website / 非構造化 / 構造化 / FHIR）・スキーマ・parse と chunk・ドメイン検証・search / `searchLite`・filter・boost・`streamAnswer`・check grounding・`summarySpec`・snippets・ranking API・custom ranking・serving controls・user events・autocomplete・CMEK・データソースのアクセス制御・VPC Service Controls・Organization Policy
 - Gemini Enterprise: エディションとライセンス・app 作成・Assistant 設定・コネクタと data store（Cloud Storage・BigQuery・Knowledge Catalog・custom MCP server）・ADK / A2A agent の登録と共有・`streamAssist` による agent 呼び出し（登録した ADK / A2A agent は非対応）・Agent Registry からの取り込み・app 単位の IAM policy・identity provider（Workforce Identity Federation）
 - 機械生成: REST（Discovery）`discoveryengine` 1 API、メッセージスキーマ 1688 件、IAM（`roles/discoveryengine.*`）

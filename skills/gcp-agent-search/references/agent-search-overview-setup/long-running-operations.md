@@ -20,9 +20,9 @@ curl -X GET \
 
 ### List long-running operations (Python)
 
-```python
-from typing import Optional
+Adapted (not in the official docs): the source sample also takes an `operations_filter` argument, tells you to create the filter in AIP-160 syntax and passes it as `filter=operations_filter` in `ListOperationsRequest`; that argument, its comment lines and the then-unused `from typing import Optional` import are removed, because the same page says `operations.list` in Agent Search can't use the `filter` field. The rest of the sample is unchanged.
 
+```python
 from google.cloud import discoveryengine
 from google.longrunning import operations_pb2
 
@@ -31,15 +31,11 @@ from google.longrunning import operations_pb2
 # location = "YOUR_PROCESSOR_LOCATION"  # Options: "global"
 # search_engine_id = "YOUR_SEARCH_ENGINE_ID"
 
-# Create filter in https://google.aip.dev/160 syntax
-# operations_filter = "YOUR_FILTER"
-
 
 def list_operations_sample(
     project_id: str,
     location: str,
     search_engine_id: str,
-    operations_filter: Optional[str] = None,
 ) -> operations_pb2.ListOperationsResponse:
     # Create a client
     client = discoveryengine.DocumentServiceClient()
@@ -50,7 +46,6 @@ def list_operations_sample(
     # Make ListOperations request
     request = operations_pb2.ListOperationsRequest(
         name=name,
-        filter=operations_filter,
     )
 
     # Make ListOperations request
@@ -240,9 +235,10 @@ def cancel_operation_sample(operation_name: str) -> None:
   - Empty JSON object: Successful cancellation request
   - `operations.get` returns error `"code": 1`: The operation was cancelled (`CANCELLED` status code)
 - The record of an operation is kept for approximately 30 days after the operation finishes; you can't view or list an operation after that time.
-- Long running operations can't be filtered or paginated in Agent Search: when you call `operations.list` you can't use the `filter`, `pageSize` or `pageToken` fields. The Python list sample still has an `operations_filter` argument (default `None`); the source does not say how it interacts with this restriction.
+- Long running operations can't be filtered or paginated in Agent Search: when you call `operations.list` you can't use the `filter`, `pageSize` or `pageToken` fields.
+- Corrected from the official docs: the source says "Long running operations can't be filtered or paginated in Agent Search. That is, when you call the `operations.list` method, you can't use the `filter`, `pageSize`, or `pageToken` fields.", yet its own Python list sample contains `# Create filter in https://google.aip.dev/160 syntax`, `# operations_filter = "YOUR_FILTER"`, the parameter `operations_filter: Optional[str] = None,` and `filter=operations_filter,` in `ListOperationsRequest`. The source keeps both; the sample on this page drops the filter argument (and `from typing import Optional`, which only that parameter used) so that it follows the stated restriction.
 - Corrected from the official docs: the source says "`DATA_STORE_ID`: The ID of the Agent Search data store that was created with your engine. In the Google Cloud console URL, the data store ID appears after `engines/` and before `/data`." The `engines/` segment names the app (engine), and the app and its data store can have different IDs, while the request path is `dataStores/DATA_STORE_ID/operations`; the search app creation page of the same documentation set (create-engine-es, see Source) gets the data store ID from the console "In the Google Cloud console, go to the **AI Applications** page and in the navigation menu, click **Data Stores**." ... "On the **Data** page for your data store, get the data store ID." The page follows that procedure.
-- The Python samples are kept as written: they name the argument `search_engine_id` but put it in the `dataStores/` segment of the resource name (`.../collections/default_collection/dataStores/{search_engine_id}`), so pass the data store ID there, not the app (engine) ID.
+- The Python samples otherwise keep the source's code (the list sample without the filter argument, see above): they name the argument `search_engine_id` but put it in the `dataStores/` segment of the resource name (`.../collections/default_collection/dataStores/{search_engine_id}`), so pass the data store ID there, not the app (engine) ID.
 - The REST list call uses the data store resource (`.../dataStores/DATA_STORE_ID/operations`); the Python samples use `DocumentServiceClient` and Application Default Credentials.
 - Corrected from the official docs: the source writes `curl -X post` in the cancel example; changed to `curl -X POST` (the Discovery document `discoveryengine.v1` defines every `operations.cancel` method with `httpMethod` `POST`). The source tags the cancel response sample `bash`; it is tagged `json` here (the content is unchanged).
 - Corrected from the official docs: the source says "Stop the polling job (`Control+Z`) after the status shows `"done": true`." In a shell, `Control+Z` suspends the `while true` loop instead of ending it; the loop does not exit on its own when `"done": true` appears, so the page says to end it with `Ctrl+C`. Run it only against an operation you started yourself.

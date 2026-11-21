@@ -75,16 +75,18 @@ How Agent Search (formerly Vertex AI Search) determines the schema of a structur
 
 Step 1: prepare the schema object. Step 2: create a data store (empty schema).
 
-Run the command by itself and type `DATA_STORE_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first. A line that follows the command in the same paste or script is read as the value.
+Run the command by itself and type `DATA_STORE_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the value.
 
-Adapted (not in the official docs): the request body is built with `jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DATA_STORE_DISPLAY_NAME`) and sent on standard input with `--data @-`, instead of putting `"DATA_STORE_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged.
+Adapted (not in the official docs): the request body is built with `jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DATA_STORE_DISPLAY_NAME`), rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"DATA_STORE_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs.
 
 ```bash
 IFS= read -r DATA_STORE_DISPLAY_NAME &&
-jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{
+[ -n "$DATA_STORE_DISPLAY_NAME" ] &&
+BODY=$(jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{
   "displayName": $data_store_display_name,
   "industryVertical": "INDUSTRY_VERTICAL"
-}' |
+}') &&
+printf '%s' "$BODY" |
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
@@ -97,14 +99,22 @@ curl -X POST \
 
 Step 3: provide the schema with `schemas.patch`.
 
+Save the schema object (`JSON_SCHEMA_OBJECT`, for example the one below) in a JSON file. Run the command by itself and type the path to that file (`SCHEMA_FILE`) on one line at the prompt; the path is used as typed (`~` is not expanded). `jq` (required) checks that the file holds exactly one JSON value and that it is an object, then wraps it in `structSchema`; nothing is sent if the path is empty, the file can't be read or parsed, or it does not hold one JSON object. A line that follows the command in the same paste or script is read as the path.
+
+Adapted (not in the official docs): the source pastes `JSON_SCHEMA_OBJECT` into the single-quoted `-d '{...}'` argument. Here the schema is read from the file named by `IFS= read -r SCHEMA_FILE`, checked with `jq -s -e 'length == 1 and (.[0] | type) == "object"'` (non-zero exit otherwise, so the `&&` chain ends before anything is sent), wrapped with `jq -n --slurpfile s "$SCHEMA_FILE" '{"structSchema": $s[0]}'` and sent on standard input with `--data @-`, so an apostrophe in the schema (for example in a description) cannot break the shell quoting; the URL and headers are unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs.
+
 ```bash
+IFS= read -r SCHEMA_FILE && [ -n "$SCHEMA_FILE" ] &&
+jq -s -e 'length == 1 and (.[0] | type) == "object"' "$SCHEMA_FILE" > /dev/null &&
+BODY=$(jq -n --slurpfile s "$SCHEMA_FILE" '{
+  "structSchema": $s[0]
+}') &&
+printf '%s' "$BODY" |
 curl -X PATCH \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
 "https://discoveryengine.googleapis.com/v1beta/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/schemas/default_schema" \
--d '{
-  "structSchema": JSON_SCHEMA_OBJECT
-}'
+--data @-
 ```
 
 `JSON_SCHEMA_OBJECT` example:
@@ -169,6 +179,7 @@ Step 4 (optional): review the schema with "View a schema definition".
 - Source inconsistencies kept as written: the text names `keyPropertyValues` where the schema field is `keyPropertyMapping`, and `datatime_detection` for `datetime_detection`. The source's separate field-list snippet for `recommendationsFilterable` contains `...` and is omitted.
 - The source also includes a sample command with its result and Colab notebook links, which are omitted.
 - Corrected from the official docs: the source writes free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"displayName": "DATA_STORE_DISPLAY_NAME"`). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"` or `\` makes the JSON invalid, so the body is built with `jq --arg` from standard input and sent with `--data @-`.
+- Corrected from the official docs: the source's `schemas.patch` command ends with `-d '{` / `"structSchema": JSON_SCHEMA_OBJECT` / `}'`, so the whole schema is pasted inside single quotes; a schema that contains an apostrophe (valid in JSON strings) ends the shell quoting and the rest is parsed as shell syntax. The example reads the schema from a JSON file with `jq --slurpfile`, after checking that the file holds one JSON object, and sends the body with `--data @-`.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/provide-schema (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -12,16 +12,18 @@ Overview of Agent Search (formerly Vertex AI Search) apps and data stores: how a
 
 Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/provide-schema. The source page itself has no code block. Replace `INDUSTRY_VERTICAL` with `GENERIC` or `MEDIA`; `DATA_STORE_ID` can contain only lowercase letters, digits, underscores, and hyphens.
 
-Run the command by itself and type `DATA_STORE_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first. A line that follows the command in the same paste or script is read as the value.
+Run the command by itself and type `DATA_STORE_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the value.
 
-Adapted (not in the official docs): the request body is built with `jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DATA_STORE_DISPLAY_NAME`) and sent on standard input with `--data @-`, instead of putting `"DATA_STORE_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged.
+Adapted (not in the official docs): the request body is built with `jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DATA_STORE_DISPLAY_NAME`), rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"DATA_STORE_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs.
 
 ```bash
 IFS= read -r DATA_STORE_DISPLAY_NAME &&
-jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{
+[ -n "$DATA_STORE_DISPLAY_NAME" ] &&
+BODY=$(jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{
   "displayName": $data_store_display_name,
   "industryVertical": "INDUSTRY_VERTICAL"
-}' |
+}') &&
+printf '%s' "$BODY" |
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
