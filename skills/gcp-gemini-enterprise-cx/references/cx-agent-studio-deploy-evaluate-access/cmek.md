@@ -23,13 +23,13 @@ How to verify that CX Agent Studio (`ces`) data is protected with CMEK is not de
 
 The following request applies to Customer Experience Insights only. It returns the Insights `encryptionSpec` of a location (the key Insights uses for Insights data), not a CX Agent Studio setting:
 
-Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; the command runs in a subshell that starts with `set +x`, so a shell trace (`set -x`) does not print the token and `TOKEN` does not stay in your shell.
 
 ```bash
-TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+( set +x; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X GET \
     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
-    "https://contactcenterinsights.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION_ID/encryptionSpec"
+    "https://contactcenterinsights.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION_ID/encryptionSpec" )
 ```
 
 ## Notes
@@ -46,7 +46,7 @@ curl -X GET \
 - The request above is the Insights CMEK page's "Check CMEK Settings" example ("Use GetEncryptionSpec API to check the encryption key configured for a location."); that page is about Insights data. A successful response shows only the Insights setting.
 - Source inconsistency: this page says key management "(create, enable, and revoke) is handled using the Conversational Insights API", while the linked Customer Experience Insights CMEK page says "To create keys, you use the KMS service" and revokes access by disabling the KMS key version or removing the role; the Conversational Insights API calls it shows (`encryptionSpec:initialize`, GetEncryptionSpec) only configure and check which key Insights uses. The page keeps the quote and follows the CMEK page for which API does what.
 - The Customer Experience Insights CMEK page warns: "If you have revoked the key for more than 30 days, the Insights data encrypted by that key will be lost." Try key operations in a disposable project first.
-- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). The subshell with `set +x` keeps the token out of `set -x` / `bash -x` traces.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/cmek (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
