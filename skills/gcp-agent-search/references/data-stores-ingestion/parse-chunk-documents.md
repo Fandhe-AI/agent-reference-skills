@@ -10,10 +10,10 @@ How to configure parsing and chunking for unstructured data stores in Agent Sear
 
 ### Default parser: OCR (data store creation)
 
-Adapted (not in the official docs): `"useNativeText": "false"` is written as the JSON boolean `false`, because `useNativeText` is a boolean field in the Discovery document. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell.
+Adapted (not in the official docs): `"useNativeText": "false"` is written as the JSON boolean `false`, because `useNativeText` is a boolean field in the Discovery document. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
 
 ```bash
-( set +x; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+( set +x; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl --fail-with-body -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
@@ -38,10 +38,10 @@ curl --fail-with-body -X POST \
 
 `parsingConfigOverrides` keys are `pdf`, `html`, `docx`, `pptx`, `xlsm`, `xlsx`; each value is `ocrParsingConfig`, `layoutParsingConfig` (`{}`) or `digitalParsingConfig` (`{}`). Files of other types use the default parser (digital if none is set).
 
-Adapted (not in the official docs): the trailing comma after the closing brace of `ocrParsingConfig` inside the `pdf` object is removed, because it makes the JSON request body invalid, and `"useNativeText": "false"` is written as the JSON boolean `false` (a boolean field in the Discovery document). `"chunkingConfig": {"layoutBasedChunkingConfig": {}}` is added to `documentProcessingConfig`, because the `html` override uses the layout parser, which needs document chunking, and chunking can't be turned on after the data store is created. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell.
+Adapted (not in the official docs): the trailing comma after the closing brace of `ocrParsingConfig` inside the `pdf` object is removed, because it makes the JSON request body invalid, and `"useNativeText": "false"` is written as the JSON boolean `false` (a boolean field in the Discovery document). `"chunkingConfig": {"layoutBasedChunkingConfig": {}}` is added to `documentProcessingConfig`, because the `html` override uses the layout parser, which needs document chunking, and chunking can't be turned on after the data store is created. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
 
 ```bash
-( set +x; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+( set +x; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl --fail-with-body -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
@@ -72,10 +72,10 @@ curl --fail-with-body -X POST \
 
 ### Layout parser: exclude HTML content, with layout-based chunking
 
-Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell.
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
 
 ```bash
-( set +x; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+( set +x; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl --fail-with-body -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
@@ -120,10 +120,10 @@ Adapted (not in the official docs): the trailing comma after `"includeAncestorHe
 
 ### Get a parsed document as JSON (v1alpha)
 
-Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell.
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
 
 ```bash
-( set +x; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+( set +x; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl --fail-with-body -X GET \
     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
     "https://discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/branches/0/documents/DOCUMENT_ID:getProcessedDocument?processed_document_type=PARSED_DOCUMENT" )
@@ -162,10 +162,10 @@ Adapted (not in the official docs): the source shows this row as a multi-line ob
 
 ### List a document's chunks (v1alpha)
 
-Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell.
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
 
 ```bash
-( set +x; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+( set +x; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl --fail-with-body -X GET \
     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
     "https://discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/branches/0/documents/DOCUMENT_ID/chunks" )
@@ -173,10 +173,10 @@ curl --fail-with-body -X GET \
 
 ### Return chunks in a search request
 
-Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell.
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
 
 ```bash
-( set +x; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+( set +x; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl --fail-with-body -X POST \
 -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
@@ -248,7 +248,7 @@ curl --fail-with-body -X POST \
 - The chunking fragment above is a request fragment with placeholders, so it is tagged `text`; replace the placeholders in a real request.
 - Corrected from the official docs: the source's chunking fragment writes `"includeAncestorHeadings": HEADINGS_BOOLEAN,` with a trailing comma before the closing `}` of `layoutBasedChunkingConfig`; JSON does not allow trailing commas, so the comma is removed.
 - Corrected from the official docs: the pre-parsed document metadata row was shown as a multi-line object (`{` / `"id": "DOCUMENT_ID",` / `"structData": {...}` / `"content": {...}` / `}` on separate lines); JSON Lines requires one complete object per line, so the row is written on one line with the same keys and values.
-- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero. The command runs in a subshell that starts with `set +x`, so `set -x` tracing does not print the token, and `TOKEN` does not stay in the calling shell.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero. The command runs in a subshell that starts with `set +x`, so `set -x` tracing does not print the token, and `TOKEN` does not stay in the calling shell. `unset TOKEN` at its start also drops an `export` of that variable in the calling shell, so the value is not put in the environment of `curl` and the other commands.
 - Corrected from the official docs: the source's parser-overrides example sets `"html": {"layoutParsingConfig": {}}` without chunking, but the same page says "The layout parser is available only when using document chunking for RAG." and "Document chunking can't be turned on or off after data store creation." The example adds the `chunkingConfig` block exactly as the source's exclude-HTML example writes it (`"chunkingConfig": {` / `"layoutBasedChunkingConfig": {}` / `}`). In the `discoveryengine` `v1` Discovery document, `chunkingConfig` ("Whether chunking mode is enabled.") and `parsingConfigOverrides` are both fields of `DocumentProcessingConfig`, and `layoutBasedChunkingConfig` is a field of `ChunkingConfig`.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/parse-chunk-documents (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the example "Specify parser overrides for file types" had a trailing comma after the `ocrParsingConfig` object inside `pdf` (the source reads `"useNativeText": "false"` then `},` then `},`); the comma after the inner brace was removed.
