@@ -139,7 +139,7 @@ Replace the following:
 
 With the SIP REFER method you can pass useful information using the header properties.
 
-Adapted (not in the official docs): added the missing commas between properties so the payload is valid JSON.
+Adapted (not in the official docs): added the missing commas between properties so the payload is valid JSON, and renamed the two duplicate `x-header` keys to `x-header-1` and `x-header-2` so neither header is lost.
 
 ```json
 {
@@ -150,8 +150,8 @@ Adapted (not in the official docs): added the missing commas between properties 
        "sip_uri": "sip:1-999-123-4567@voip-provider.example.net",
        "sip_refer": true,
        "sip_parameters": {
-       "x-header": "value",
-       "x-header": "value"
+       "x-header-1": "value",
+       "x-header-2": "value"
        }
     }
 }
@@ -267,7 +267,7 @@ Adapted (not in the official docs): removed the `## optional` comment after `end
 ## Notes
 
 - Corrected from the official docs: the SIP REFER example omitted the commas after `"deflection_type" : "sip"`, `"sip_uri": "sip:1-999-123-4567@voip-provider.example.net"` and `"sip_refer": true`.
-- The SIP REFER example repeats the `x-header` key twice inside `sip_parameters` (`"x-header": "value", "x-header": "value"`). JSON syntax allows duplicate keys, but most JSON parsers keep only one of the values, so use a distinct header name for each header you pass. The keys are left as the source writes them because the source does not say what the second header name should be.
+- Corrected from the official docs: the SIP REFER example repeats the `x-header` key twice inside `sip_parameters` (`"x-header": "value", "x-header": "value"`); most JSON parsers keep only one of duplicate keys, so the keys were renamed to the dummy names `x-header-1` and `x-header-2`. Replace them with the SIP header names you pass; the source does not name them.
 - Corrected from the official docs: the content card example had `"event_params": {} # for deep-link click event` (the source's comment says `event_params` is for the deep-link click event).
 - Corrected from the official docs: the End User Event example had `"end_user_name": "consumer 1"   ## optional` (the parameter table also marks `end_user_name` as optional).
 - The SIP endpoint transfer example is tagged `text` because `SIP_RINGING_TIMEOUT` is an unquoted placeholder in the source.

@@ -15,7 +15,7 @@ Google Cloud (GCP) のカスタマーエクスペリエンス（コンタクト�
 
 加えて REST（Discovery）3 API と IAM のロール・権限を機械生成で収録する。分割投入中のため、未投入のカテゴリ（`rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
 
-参照本文は英語（公式ドキュメントの原語）。**gcloud のグループはこれらのプロダクトに無い**ため `references/gcloud/`（後続 PR で投入） は無く、手順の正は REST とコンソール（`gcloud auth print-access-token` は REST 呼び出しの bearer token を得るためだけに使う）。
+参照本文は英語（公式ドキュメントの原語）。**gcloud のグループはこれらのプロダクトに無い**ため本スキルは gcloud のカテゴリを持たず、手順の正は REST とコンソール（`gcloud auth print-access-token` は REST 呼び出しの bearer token を得るためだけに使う）。
 
 製品名の変更: Contact Center AI Insights → Customer Experience Insights。API 名（`contactcenterinsights`）・IAM ロール接頭辞は旧名のまま。
 
@@ -52,7 +52,7 @@ skills/gcp-gemini-enterprise-cx/
 3. CX Agent Studio のロール・条件付きバインディングは `cx-agent-studio-deploy-evaluate-access/access-control.md`、Insights の閲覧範囲の制御は `insights-quality-export-access/`（後続 PR で投入） の fine-grained access control の 2 ページ
 4. Dialogflow や Agent Assist は他スキル（下記「他スキルとの使い分け」）
 
-未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access`）の探索手順は投入時に追加する。それまで上の手順が未投入カテゴリを指すときは、該当する公式ガイド（https://docs.cloud.google.com/ 配下）を引く。gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 

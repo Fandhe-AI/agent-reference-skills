@@ -64,14 +64,16 @@ If the tool is successful, present the weather report clearly.
 
 ### Variable update tool
 
-`set_variable` (in this tool) and `CallbackContext`, `LlmResponse`, `Part` and `Optional` (in the callback below) are used without being defined or imported: the [Callbacks](./callback.md) page says only that "In your Python callback code, you have access to certain classes and functions that help you write the code", the [Variables](./variable.md) page documents updating a variable with `context.state[...]`, and where `set_variable` comes from is not stated in the official docs, so the examples assume the CX Agent Studio Python runtime provides these names.
+The tool updates the variable through `context`: the [Variables](./variable.md) page says "A global variable called `context` is available to use in your Python tool code" and shows `context.state["variable_name"] = value`. `CallbackContext`, `LlmResponse`, `Part` and `Optional` (in the callback below) are used without being defined or imported: the [Callbacks](./callback.md) page says only that "In your Python callback code, you have access to certain classes and functions that help you write the code", so the callback example assumes the CX Agent Studio Python runtime provides these names.
+
+Adapted (not in the official docs): replaced `set_variable("username", username)`, which no retrieved official page defines, with the `context.state[...]` assignment that the Variables page documents.
 
 ```python
 from typing import Optional
 
 def update_username(username: str) -> Optional[str]:
   """Updates the current user's name"""
-  set_variable("username", username)
+  context.state["username"] = username
 ```
 
 ### Instruction sentence referencing the variable
@@ -115,6 +117,7 @@ def after_model_callback(
 
 ## Notes
 
+- Corrected from the official docs: the tool body is `set_variable("username", username)`; `set_variable` is not defined or imported in the example and no other retrieved official page defines it, while the Variables page documents `context.state["variable_name"] = value` with the global `context` available in Python tool code, so the body was replaced with `context.state["username"] = username`.
 - Adapted from the official docs: the callback iterates `enumerate(llm_response.content.parts)` without checking that `content` and `parts` are set. In ADK, `LlmResponse.content` is `types.Content | None` (`google-adk` 2.15.0 `llm_response.py`) and `Content.parts` is optional (`google-genai` 3.6.1 `types.py`); this is an analogy not confirmed for the CX Agent Studio runtime, so the guard is defensive. The page returns `None` first, which keeps the model response as the `after_model_callback` sample on the callbacks page describes.
 - The tool has a mocked response; a real weather application would access an external server.
 - Instruction reference syntax: `{@AGENT: Agent name}` for agents, `{@TOOL: tool_name}` for tools, `{variable_name}` for variables. The source's Farewell agent instruction is "You are the Farewell Agent. Your ONLY task is to provide a polite goodbye message."

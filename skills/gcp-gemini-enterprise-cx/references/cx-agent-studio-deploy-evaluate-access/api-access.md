@@ -40,12 +40,11 @@ POST https://ces.googleapis.com/v1/projects/PROJECT_ID/locations/REGION_ID/apps/
 
 Request JSON body (save as `request.json`):
 
-Adapted (not in the official docs): removed the trailing comma after the `deployment` field so the body is valid JSON.
+Adapted (not in the official docs): removed `config.session`, which the `ces` REST request schema does not define (the URL path carries the session), and the trailing comma after the `deployment` field so the body is valid JSON.
 
 ```json
 {
   "config": {
-    "session": "projects/PROJECT_ID/locations/REGION_ID/apps/APPLICATION_ID/sessions/SESSION_ID",
     "deployment": "projects/PROJECT_ID/locations/REGION_ID/apps/APPLICATION_ID/deployments/DEPLOYMENT_ID"
   },
   "inputs": [
@@ -189,9 +188,9 @@ If you use `ces.us.rep.googleapis.com` or `ces.eu.rep.googleapis.com`, you don't
 
 ## Notes
 
-- Adapted from the official docs: the source request body ends the `deployment` line with a trailing comma (`"deployment": "projects/...deployments/DEPLOYMENT_ID",`), which is invalid JSON; the comma was removed. The source fences the body without a language tag.
+- Corrected from the official docs: the source request body sets `"session": "projects/PROJECT_ID/locations/REGION_ID/apps/APPLICATION_ID/sessions/SESSION_ID"` inside `config` and ends the `deployment` line with a trailing comma (`"deployment": "projects/...deployments/DEPLOYMENT_ID",`), which is invalid JSON. Both were removed: `SessionConfig` in the Discovery document (`ces.v1`, `ces.v1beta`) defines `deployment`, `entryAgent`, `timeZone` and other fields but no `session`, and the URL path carries the session (`v1/{+session}:runSession`). The source fences the body without a language tag.
 - The `outputs` response block is tagged `text` because the source elides `diagnosticInfo` with `{...}`.
-- `config.session` is not a field of the request body schema in the Discovery document (`ces.v1`, `ces.v1beta`); the URL path carries it (`{+session}`). The example keeps `config.session` as written (its only change is the trailing comma noted above).
+- The source's client-library samples set the session on the config (Python `config = ces_v1.SessionConfig(session=session_name)`, Node.js `const config = {session: sessionName};`), and so does the Node.js `BidiRunSession` sample below (`config: {session: sessionName}`, its first WebSocket message), which is kept as written. The `config.session` removal applies only to the REST JSON body, whose schema is the Discovery document's `RunSessionRequest`.
 - The gRPC `x-goog-request-params` snippet is a fragment and is tagged `text`: it does not import `SessionServiceClient` and assigns `stream` without declaring it. The source's full Node.js `runSession` sample imports the client with `import {AgentServiceClient, SessionServiceClient} from '../src/v1';` (a path inside the client library repository).
 - The source also shows a PowerShell form of the request, `runSession` samples in Java, Python and Node.js, and `BidiRunSession` samples in Go, Java and Python. They were omitted; the Python `runSession` sample also updates the app's root agent before running a session.
 - The Node.js `BidiRunSession` sample is shown with the `locations/us` endpoint path and sends a hard-coded session name; replace the app resource name with your own. It authenticates through Application Default Credentials (`GoogleAuth`).

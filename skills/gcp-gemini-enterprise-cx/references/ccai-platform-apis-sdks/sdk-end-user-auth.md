@@ -41,6 +41,8 @@ Sign the payload on your server so `company_secret` stays hidden from the client
 
 The authentication handler posts the payload to your server and passes the signed token back through the callback:
 
+Adapted (not in the official docs): replaced the fixed host `https://company.com` with the placeholder `YOUR_SIGNING_ENDPOINT` for your own signing server, so user identifiers are not posted to a host you do not control.
+
 ```javascript
 $(function() {
   UJET.initialize({
@@ -49,7 +51,7 @@ $(function() {
       authentication(callback) {
         $.ajax({
           type: 'POST',
-          url: 'https://company.com/api/ujet/sign',
+          url: 'https://YOUR_SIGNING_ENDPOINT/api/ujet/sign',
           data: JSON.stringify({
             payload: {
               identifier: 'UNIQUE-Identifier',
@@ -88,7 +90,10 @@ When a user starts as a guest and verifies identity mid-session (for example thr
 
 Web SDK reinitialization (call after successful authentication and the Apps API update):
 
+Adapted (not in the official docs): replaced the fixed host `https://your.company.com` with the placeholder `YOUR_SIGNING_ENDPOINT` for your own signing server, so user identifiers are not posted to a host you do not control.
+
 ```javascript
+// Call this after successful authentication and the CCAI Platform Apps API update
 UJET.initialize({
   // ...include your existing parameters
   handlers: {
@@ -96,7 +101,7 @@ UJET.initialize({
       // Fetch the new JWT for the newly authenticated user
       $.ajax({
         type: 'POST',
-        url: 'https://your.company.com/api/ujet/sign',
+        url: 'https://YOUR_SIGNING_ENDPOINT/api/ujet/sign',
         data: JSON.stringify({
           payload: {
             identifier: 'AUTHENTICATED-USER-UUID',
@@ -137,6 +142,7 @@ UJET.initialize({
 - "Don't use an email address as the identifier." Email addresses can change and might not be unique; use a UUID.
 - Reinitializing keeps routing, history and CRM records tied to the authenticated user instead of an anonymous guest session, and prevents data leakage.
 - The source's Ruby on Rails signing example (`routes.rb` with `post 'ujet/sign' => "ujet#sign"` and a `UjetController#sign` that calls `JWT.encode(payload, ujet_secret)`) is left out: it reads `payload = body["payload"]`, and `body` is not defined anywhere in the example, so it does not run as written and the correct accessor is not given by the source. It also sets the identifier, name and email to constants and keeps the secret in a string literal (`ujet_secret = "COMPANY_SECRET"`, with the comment "In production, securely store and call your secret (e.g., via environment variables)").
+- Adapted from the official docs: the source web SDK examples post the payload to `https://company.com/api/ujet/sign` (initialization) and `https://your.company.com/api/ujet/sign` (reinitialization); both hosts were replaced with `https://YOUR_SIGNING_ENDPOINT/api/ujet/sign`. `YOUR_SIGNING_ENDPOINT` must be your own server that signs the JWT (the source's server example serves `/api/ujet/sign`), never a host you do not operate, because the request carries the end user's identifier and name.
 - The web SDK examples send the `identifier` from the browser to the signing endpoint. Derive the identifier from your authenticated session on the server (the Express example in web-sdk-v3-authenticate.md uses `req.user`) rather than signing whatever the client sends, and load the company secret from environment variables or a secret store.
 - The source also shows iOS (Objective-C) and Android (Java, Retrofit) signing callbacks. Identifiers such as `UJET` appear as written in the source.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/sdk-end-user-auth (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

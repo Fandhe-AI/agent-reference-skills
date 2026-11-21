@@ -34,7 +34,8 @@ To troubleshoot, set up a private uptime check to verify the Service Directory c
 
 ### Limitations
 
-- Tools and callbacks can't send requests to arbitrary HTTP endpoints when VPC Service Controls is enabled (risk of exfiltrating data outside the perimeter); configure Service Directory for private network access.
+- "Tools and callbacks are not able to send requests to arbitrary HTTP endpoints when VPC Service Controls is enabled, as this may risk exfiltrating data outside the VPC Service Controls perimeter." The source then says "You have to configure Service Directory for private network access"; the Service Directory section describes it only for tools: CX Agent Studio "can connect to OpenAPI tools targets inside your VPC network".
+- Callbacks: the Callbacks page says "Callbacks cannot directly access private IP addresses or resolve private DNS domains, even if Service Directory is configured. If you need to access resources within a private network, you must use a tool type that supports Private network access (such as OpenAPI or MCP tools) instead." and "Callbacks can only access endpoints that are publicly available on the internet." (https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/callback, retrieved 2026-11-21).
 - Audio recordings cannot be written to Cloud Storage buckets outside the perimeter.
 - Conversations cannot be written to BigQuery datasets outside the perimeter.
 - Sensitive Data Protection redaction templates outside the perimeter cause failures in redacting conversation contents.
@@ -45,6 +46,7 @@ To troubleshoot, set up a private uptime check to verify the Service Directory c
 
 ### Other
 
+- Source inconsistency: the source names "Tools and callbacks" in the limitation and answers it with "You have to configure Service Directory for private network access", while the Callbacks page says callbacks cannot reach private IP addresses or private DNS domains "even if Service Directory is configured". Both are kept as written; the Service Directory steps on this page apply to tools.
 - The service account address in the fenced block is copied as written in the source (`service-agent-project-number` stands for the agent project's number).
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/vpc-service-controls (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
