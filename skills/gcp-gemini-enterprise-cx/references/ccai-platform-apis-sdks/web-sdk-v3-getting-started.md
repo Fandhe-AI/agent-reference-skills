@@ -10,7 +10,9 @@ The web SDK builds on the headless web SDK, so all headless client methods are a
 
 ### Basic example
 
-Adapted (not in the official docs): `{your_ccaas_host}web-sdk/v3/widget.js` became `{your_ccaas_host}/web-sdk/v3/widget.js` because the host is written as `https://{your_ccaas_host}` and the same page's install section uses `https://{your_ccaas_host}/web-sdk/v3/headless.js`; `getAuthToken` throws when the response is not `ok` or has no non-empty `token`, so the promise passed to the SDK rejects instead of resolving with an error body.
+Before you use the example, replace `COMPANY_KEY` with the Company Key you copy from the portal (see "Get the company key" below) and `{your_ccaas_host}` with your CCAI Platform host, in both the `<script src>` and the `host` option. A static HTML page does not expand shell-style placeholders such as `$COMPANY_ID`; the browser passes them to the SDK as literal strings.
+
+Adapted (not in the official docs): `{your_ccaas_host}web-sdk/v3/widget.js` became `{your_ccaas_host}/web-sdk/v3/widget.js` because the host is written as `https://{your_ccaas_host}` and the same page's install section uses `https://{your_ccaas_host}/web-sdk/v3/headless.js`; `getAuthToken` throws when the response is not `ok` or has no non-empty `token`, so the promise passed to the SDK rejects instead of resolving with an error body; `companyId: "$COMPANY_ID"` and `host: "$HOST"` became `companyId: "COMPANY_KEY"` and `host: "https://{your_ccaas_host}"`, the placeholders the same page uses in its `new UJET(options)` and headless examples.
 
 ```html
 <!DOCTYPE html>
@@ -28,8 +30,8 @@ Adapted (not in the official docs): `{your_ccaas_host}web-sdk/v3/widget.js` beca
   <script src="https://{your_ccaas_host}/web-sdk/v3/widget.js"></script>
   <script>
     var ccaas = new UJET({
-      companyId: "$COMPANY_ID",
-      host: "$HOST",
+      companyId: "COMPANY_KEY",
+      host: "https://{your_ccaas_host}",
       authenticate: getAuthToken
     });
     ccaas.mount("#ccaas-widget");
@@ -154,6 +156,7 @@ const company = await client.getCompany()
 ## Notes
 
 - Corrected from the official docs: the basic example loads `<script src="https://{your_ccaas_host}web-sdk/v3/widget.js"></script>` (no `/` between the host and the path); the same page writes the host as `https://{your_ccaas_host}` and loads the headless script from `https://{your_ccaas_host}/web-sdk/v3/headless.js`.
+- Corrected from the official docs: the basic example passes `companyId: "$COMPANY_ID"` and `host: "$HOST"`. The same page's "Get the company key" steps copy the Company Key as `COMPANY_KEY` ("Initialize the web SDK with your `COMPANY_KEY`"), its `new UJET(options)` snippet uses `companyId: "{COMPANY_KEY}"` and `host: "https://{your_ccaas_host}"`, and the headless install example uses `companyId: "COMPANY_KEY"`; the basic example on this page uses `COMPANY_KEY` and `https://{your_ccaas_host}`.
 - Corrected from the official docs: the three token callbacks (`return fetch('/auth/token').then(function(resp) { ... return resp.json(); });` in the basic example, and `const data = await resp.json()` followed by `return { token: data.token }` in the authentication and headless install examples) never check `resp.ok` or the token. `fetch` resolves on HTTP errors such as `401`, so the SDK receives the error JSON or `{ token: undefined }` as the authentication result. The headless guide types the callback as `authenticate: () => Promise<TokenResponse>`, so the page throws (a rejected promise) on a non-`ok` response or a missing token.
 - Keep `COMPANY_SECRET` on your server; only `COMPANY_KEY` goes into the widget options. The token endpoint is described in web-sdk-v3-authenticate.md.
 - If your production server has a content security policy, add `https://{your_ccaas_host}` to `script-src` and `frame-src`; for the headless install, add `https://{your_ccaas_host}/` to `frame-src`.
