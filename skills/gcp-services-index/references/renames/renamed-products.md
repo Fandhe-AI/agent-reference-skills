@@ -9,7 +9,7 @@ source: https://docs.cloud.google.com/functions/docs/release-notes
 | Current name | Former name | Owner skill | Date | Evidence |
 |---|---|---|---|---|
 | Cloud Run functions | Cloud Functions | `gcp-run` | 2024-08-21 | https://docs.cloud.google.com/functions/docs/release-notes |
-| Knowledge Catalog | Dataplex Universal Catalog | `gcp-bigquery` | 2026-04-10 | https://docs.cloud.google.com/dataplex/docs/release-notes |
+| Knowledge Catalog | Dataplex Universal Catalog | `gcp-knowledge-catalog` | 2026-04-10 | https://docs.cloud.google.com/dataplex/docs/release-notes |
 | Managed Service for Apache Spark | Dataproc | `gcp-data-pipelines` | 2026-04-22 | https://docs.cloud.google.com/dataproc/docs/release-notes |
 | Managed Service for Apache Airflow | Cloud Composer | `gcp-data-pipelines` | 2026-04-15 | https://docs.cloud.google.com/composer/docs/release-notes |
 | Fraud Defense (reCAPTCHA remains a part) | reCAPTCHA Enterprise | `gcp-ai-apis` | 2026-04-22 | https://docs.cloud.google.com/recaptcha/docs/release-notes |

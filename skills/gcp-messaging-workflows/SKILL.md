@@ -195,7 +195,7 @@ skills/gcp-messaging-workflows/
 - `gcp-client-libraries` — Node.js / Python / Rust のクライアントライブラリ共通パターンと Pub/Sub エミュレーター。本スキルは各ガイド内のコード
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `gcp-integration` — Application Integration・Integration Connectors・Data Connectors。Workflows と Application Integration の選択はこちら。「コネクタ」は名前が衝突し、Workflows のコネクタ（`workflows-connectors-callbacks-triggers`）と Kafka Connect のコネクタ（`kafka-connect-schema-registry`）は本スキル、Integration Connectors は `gcp-integration`
-- `gcp-bigquery`（予定）— Pub/Sub の export 先となる BigQuery のデータセット側
+- `gcp-bigquery` — Pub/Sub の export 先となる BigQuery のデータセット側
 - `gcp-data-pipelines`（予定）— Dataflow・Composer・Orchestration Pipelines。`gcloud orchestration-pipelines` は本スキルに無い
 - `gcp-devops` — Cloud Build の trigger・Artifact Registry
 - `gcp-iac` — Terraform

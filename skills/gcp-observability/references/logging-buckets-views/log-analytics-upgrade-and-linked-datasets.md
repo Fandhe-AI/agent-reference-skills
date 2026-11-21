@@ -68,7 +68,7 @@ gcloud logging operations describe OPERATION_ID --location=LOCATION --project=PR
 - Don't update any other property when upgrading; for example, an `update` call that changes retention and upgrades the bucket fails.
 - A log bucket can be linked to at most one BigQuery dataset.
 - `links create` takes several minutes. In the console, after Logging shows the linked dataset name it might take several minutes before BigQuery recognizes the dataset; the dataset name must be unique in the selected region.
-- You can't delete a bucket that has links; see [delete-and-restore-log-bucket.md](./delete-and-restore-log-bucket.md). BigQuery datasets are covered by `gcp-bigquery` (planned).
+- You can't delete a bucket that has links; see [delete-and-restore-log-bucket.md](./delete-and-restore-log-bucket.md). BigQuery datasets are covered by the `gcp-bigquery` skill.
 - Required role: Logs Configuration Writer (`roles/logging.configWriter`). For upgrade troubleshooting see https://docs.cloud.google.com/logging/docs/analyze/troubleshoot-upgrade-bucket.
 - The source also shows the Google Cloud console steps.
 - Source: https://docs.cloud.google.com/logging/docs/buckets (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)

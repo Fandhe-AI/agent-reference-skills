@@ -217,7 +217,7 @@ skills/gcp-security/
 - `gcp-iac` — Terraform
 - `gcp-ai-apis`（予定）— Sensitive Data Protection（DLP）・reCAPTCHA
 - `gcp-messaging-workflows`— Pub/Sub
-- `gcp-bigquery`（予定）— BigQuery
+- `gcp-bigquery` — BigQuery
 - `cloudflare-workers` — Cloudflare Workers の secrets は別物。Secret Manager は Google Cloud のシークレット管理
 - `vercel` — Vercel の環境変数は別物。Secret Manager は Google Cloud のシークレット管理
 - `supabase` / `better-auth` — Supabase Auth・Better Auth は別物。Identity Platform は Google Cloud の CIAM

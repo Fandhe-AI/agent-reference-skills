@@ -143,7 +143,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Cyber Insurance Hub | `gcp-security-compliance` | `riskmanager` |
 | Data Catalog | `gcp-bigquery` | `datacatalog` |
 | Data Connectors | `gcp-integration` | `dataconnectors` |
-| Data Lineage API | `gcp-bigquery` | `datalineage` |
+| Data Lineage API | `gcp-knowledge-catalog` | `datalineage` |
 | Data Pipelines | `gcp-data-pipelines` | `datapipelines` |
 | Data Security Posture Management | `gcp-security-compliance` | `dspm` |
 | Data Studio | 対象外 | `datastudio` |
@@ -153,7 +153,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Database Migration Service | `gcp-databases-relational` | `datamigration` |
 | Dataflow | `gcp-data-pipelines` | `dataflow` |
 | Dataform | `gcp-bigquery` | `dataform` |
-| Dataplex Universal Catalog (now Knowledge Catalog) | `gcp-bigquery` | `dataplex` |
+| Dataplex Universal Catalog (now Knowledge Catalog) | `gcp-knowledge-catalog` | `dataplex` |
 | Dataprep by Trifacta | `gcp-bigquery` | `dataprep` |
 | Dataproc (now Managed Service for Apache Spark) | `gcp-data-pipelines` | `dataproc` |
 | Dataproc Metastore | `gcp-data-pipelines` | `metastore` |
@@ -242,8 +242,8 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Identity-Aware Proxy | `gcp-security` | `iap` |
 | Infrastructure Manager | `gcp-iac` | `config` |
 | Knative serving | `gcp-gke` | `kuberun` |
-| Knowledge Catalog | `gcp-bigquery` | `dataplex` |
-| Knowledge Catalog (formerly Dataplex Universal Catalog) | `gcp-bigquery` | `dataplex` |
+| Knowledge Catalog | `gcp-knowledge-catalog` | `dataplex` |
+| Knowledge Catalog (formerly Dataplex Universal Catalog) | `gcp-knowledge-catalog` | `dataplex` |
 | KRM API Hosting | `gcp-gke` | `krmapihosting` |
 | Kubernetes Metadata API | `gcp-gke` | `kubernetesmetadata` |
 | Live Stream | `gcp-ai-apis` | `livestream` |

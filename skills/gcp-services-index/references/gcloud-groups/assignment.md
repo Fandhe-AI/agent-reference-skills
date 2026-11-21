@@ -63,9 +63,9 @@ All 172 top-level groups of gcloud 593.0.0 (141 have GA commands).
 | `data-fusion` | `gcp-data-pipelines` | 0 | 0 | 16 |
 | `database-migration` | `gcp-databases-relational` | 60 | 27 | 0 |
 | `dataflow` | `gcp-data-pipelines` | 28 | 22 | 25 |
-| `datalineage` | `gcp-bigquery` | 21 | 21 | 21 |
+| `datalineage` | `gcp-knowledge-catalog` | 21 | 21 | 21 |
 | `datapipelines` | `gcp-data-pipelines` | 0 | 0 | 11 |
-| `dataplex` | `gcp-bigquery` | 167 | 173 | 0 |
+| `dataplex` | `gcp-knowledge-catalog` | 167 | 173 | 0 |
 | `dataproc` | `gcp-data-pipelines` | 92 | 82 | 107 |
 | `datastore` | `gcp-databases-nosql` | 13 | 13 | 13 |
 | `datastream` | `gcp-data-pipelines` | 39 | 0 | 33 |

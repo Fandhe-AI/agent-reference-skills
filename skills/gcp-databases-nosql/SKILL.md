@@ -179,7 +179,7 @@ skills/gcp-databases-nosql/
 - `cloudflare-storage` — Cloudflare Workers KV / D1 / R2。本スキルの Firestore / Bigtable / Memorystore とは別基盤
 - `upstash` — ホスト型 Redis（Upstash Redis）・Vector・QStash。Memorystore for Redis / Valkey / Redis Cluster とは別プロダクト
 - Firebase client SDK（Web / iOS / Android から Firestore を使う SDK）と Firebase コンソールのセットアップは対象外（別計画の `firebase-*`）。本スキルは Google Cloud 側の Firestore（サーバークライアントライブラリ・gcloud・IAM・Security Rules の概念）のみ
-- BigQuery は `gcp-bigquery`（予定）が担当。本スキルでは扱わない
+- BigQuery は `gcp-bigquery` が担当。本スキルでは扱わない
 
 ## 対象外
 
@@ -191,7 +191,7 @@ skills/gcp-databases-nosql/
 - Bigtable のクライアントライブラリごとの API リファレンス・HBase client・Dataflow / Beam / Spark 等の連携コネクター — 連携先の領域
 - Memorystore for Redis / Valkey / Memcached の言語別クライアントのライブラリリファレンス
 - Redis Enterprise Cloud — Google Cloud 上のパートナー提供サービス（IAM ロールのみ機械生成分に含む）
-- BigQuery — `gcp-bigquery`（予定）
+- BigQuery — `gcp-bigquery`
 
 ## 鮮度・ライセンス・既知の制約
 

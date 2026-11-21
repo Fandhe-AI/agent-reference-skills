@@ -10,12 +10,52 @@ Message types referenced by the methods listed under `references/rest/biglake/`.
 
 ### `AuditConfig`
 
-- Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": \[ { "service": "allServices", "audit_log_configs": \[ { "log_type": "DATA_READ", "exempted_members": \[ "user:jose@example.com" \] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } \] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": \[ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": \[ "user:aliya@example.com" \] } \] } \] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.
+- Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. The `Policy` example of this description is shown below with the REST JSON field names. For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.
 - Version: v1
+
+Adapted (not in the official docs): the `Policy` example of the Discovery `AuditConfig` description, with the proto field names `audit_configs`, `audit_log_configs`, `log_type` and `exempted_members` written as the REST JSON names `auditConfigs`, `auditLogConfigs`, `logType` and `exemptedMembers` (see Notes).
+
+```json
+{
+  "auditConfigs": [
+    {
+      "service": "allServices",
+      "auditLogConfigs": [
+        {
+          "logType": "DATA_READ",
+          "exemptedMembers": [
+            "user:jose@example.com"
+          ]
+        },
+        {
+          "logType": "DATA_WRITE"
+        },
+        {
+          "logType": "ADMIN_READ"
+        }
+      ]
+    },
+    {
+      "service": "sampleservice.googleapis.com",
+      "auditLogConfigs": [
+        {
+          "logType": "DATA_READ"
+        },
+        {
+          "logType": "DATA_WRITE",
+          "exemptedMembers": [
+            "user:aliya@example.com"
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
 
 ### `AuditLogConfig`
 
-- Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": \[ { "log_type": "DATA_READ", "exempted_members": \[ "user:jose@example.com" \] }, { "log_type": "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while exempting jose@example.com from DATA_READ logging.
+- Provides the configuration for logging a type of permissions. Example (two `AuditLogConfig` values, the elements of `auditLogConfigs` in an `AuditConfig`, with REST JSON field names; example corrected, see Notes): `{ "logType": "DATA_READ", "exemptedMembers": [ "user:jose@example.com" ] }` and `{ "logType": "DATA_WRITE" }`. This enables 'DATA_READ' and 'DATA_WRITE' logging, while exempting jose@example.com from DATA_READ logging.
 - Version: v1
 
 ### `Binding`
@@ -68,7 +108,7 @@ Message types referenced by the methods listed under `references/rest/biglake/`.
 - An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the IAM documentation (https://cloud.google.com/iam/help/conditions/resource-policies). The JSON and YAML examples of this description are shown below. For a description of IAM and its features, see the IAM documentation (https://cloud.google.com/iam/docs/).
 - Version: v1
 
-JSON example from the Discovery description (as a JSON block; the trailing comma after the `condition.expression` value is removed; see Notes):
+Adapted (not in the official docs): the JSON example of the Discovery `Policy` description, quoted as a JSON block; only the trailing comma after the `condition.expression` value is removed, so that the block is valid JSON (see Notes).
 
 ```json
 {
@@ -262,20 +302,20 @@ A JSON value that matches the table (not a request to send as is). The values ar
 | Field | Type | Description |
 |---|---|---|
 | `catalogs` | `array<Catalog>` | The catalogs from the specified project. |
-| `nextPageToken` | string | A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages. |
+| `nextPageToken` | string | A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages. In REST, pass the value as the `pageToken` parameter of the next request to the same method (`page_token` is the proto field name). |
 
 ### `ListDatabasesResponse` fields
 
 | Field | Type | Description |
 |---|---|---|
 | `databases` | `array<Database>` | The databases from the specified catalog. |
-| `nextPageToken` | string | A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages. |
+| `nextPageToken` | string | A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages. In REST, pass the value as the `pageToken` parameter of the next request to the same method (`page_token` is the proto field name). |
 
 ### `ListTablesResponse` fields
 
 | Field | Type | Description |
 |---|---|---|
-| `nextPageToken` | string | A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages. |
+| `nextPageToken` | string | A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages. In REST, pass the value as the `pageToken` parameter of the next request to the same method (`page_token` is the proto field name). |
 | `tables` | `array<Table>` | The tables from the specified database. |
 
 ### `Policy` fields
@@ -343,7 +383,9 @@ A JSON value that matches the table (not a request to send as is). The values ar
 ## Notes
 
 - Generated from the Discovery document(s) v1 of `biglake` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Adapted from the Discovery document: the `AuditConfig` description embeds an "Example Policy with multiple AuditConfigs" in one line with the proto field names (`audit_configs`, `audit_log_configs`, `log_type`, `exempted_members`); this page shows it as a JSON block of a `Policy` with the REST JSON (camelCase) field names; the values are unchanged.
 - Corrected from the Discovery document: the JSON example in the `Policy` description (the `google.iam.v1` text shared by the IAM methods) has a trailing comma after the `condition.expression` value (`"expression": "request.time < timestamp('2020-10-01T00:00:00.000Z')", } }`), which is not valid JSON; the same comma is in the proto comment. This page shows the example as a JSON block without that comma. The Discovery text of the YAML example has lost its line breaks and indentation, so the YAML block is taken from the proto comment (`google/iam/v1/policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/policy.proto, commit `5ce0245`, retrieved 2026-11-21).
+- Corrected from the Discovery document: the `AuditLogConfig` description gives the example `{ "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] }`, which is the `auditLogConfigs` array of the parent `AuditConfig` written with proto field names, not an `AuditLogConfig` value; the table shows the two array elements as `AuditLogConfig` values with the REST JSON (camelCase) field names `logType` and `exemptedMembers` (a whole `AuditConfig` with the same values in REST JSON: `{ "service": "allServices", "auditLogConfigs": [ { "logType": "DATA_READ", "exemptedMembers": [ "user:jose@example.com" ] }, { "logType": "DATA_WRITE" } ] }`).
 - Corrected from the Discovery document: the `TestIamPermissionsResponse.permissions` description reads "A subset of `TestPermissionsRequest.permissions` that the caller is allowed."; the same text is in the `google.iam.v1` proto, where the request message of `TestIamPermissions` is `TestIamPermissionsRequest` (`google/iam/v1/iam_policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/iam_policy.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Source: https://biglake.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
