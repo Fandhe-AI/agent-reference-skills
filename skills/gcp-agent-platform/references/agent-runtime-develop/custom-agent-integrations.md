@@ -16,6 +16,8 @@ Adapted (not in the official docs): added `"openinference-instrumentation>=0.1.8
 pip install openinference-instrumentation-langchain==0.1.34 "openinference-instrumentation>=0.1.82" opentelemetry-exporter-gcp-trace
 ```
 
+The class below also imports `langchain_google_vertexai` and `langgraph.prebuilt`: install `langchain-google-vertexai` and `langgraph` as well (PyPI distribution names; see Notes). List the same packages in the deployment `requirements` (see deploy-an-agent-configuration.md in the agent-runtime-deploy-manage category) so that `set_up` can import them in Agent Runtime.
+
 Adapted (not in the official docs): added `from openinference.instrumentation import TraceConfig` and passed `config=TraceConfig(hide_inputs=True, hide_outputs=True)` to `LangChainInstrumentor().instrument()`, so prompts, model responses and tool inputs / outputs are masked in the spans exported to Cloud Trace instead of being readable by everyone with trace access.
 
 ```python
@@ -87,6 +89,8 @@ pip install opentelemetry-instrumentation-langchain==0.38.10
 pip install google-cloud-secret-manager
 ```
 
+The class below also imports `langchain_anthropic` and `langgraph.prebuilt`: install `langchain-anthropic` and `langgraph` as well. List the same packages in the deployment `requirements` (see deploy-an-agent-configuration.md in the agent-runtime-deploy-manage category) so that `set_up` can import them in Agent Runtime.
+
 Adapted (not in the official docs): removed `self.secret_id = secret_id` because `secret_id` is not a parameter of `__init__` (it raises `NameError`) and the secret name is written out in `set_up`. Moved the key from `model_kwargs={"api_key": ...}` to the `api_key=` constructor argument, because langchain-anthropic 1.7.12 reads the client key from the `anthropic_api_key` field (alias `api_key`) and sends `model_kwargs` as request parameters.
 
 ```python
@@ -133,6 +137,8 @@ credentials, project = google.auth.default(
     scopes=["https://www.googleapis.com/auth/cloud-platform"]
 )
 ```
+
+The class below imports `langchain_openai` and `langgraph.prebuilt`: install `langchain-openai` and `langgraph` (`google.auth` comes with the Agent Platform SDK). List the same packages in the deployment `requirements` (see deploy-an-agent-configuration.md in the agent-runtime-deploy-manage category) so that `set_up` can import them in Agent Runtime.
 
 Adapted (not in the official docs): removed the default value `= "meta/llama3-405b-instruct-maas"` from `model`, because a parameter with a default cannot precede parameters without defaults (`SyntaxError`), and added `import google.auth.transport.requests`, because `import google.auth` alone does not load the `transport.requests` submodule that `creds.refresh(...)` uses; pass the model name when instantiating.
 
@@ -206,6 +212,7 @@ credentials = google.oauth2.credentials.Credentials(
 - Corrected from the official docs: the ADC template had `model: str = "meta/llama3-405b-instruct-maas",` before non-default parameters and `import google.auth` without `import google.auth.transport.requests`; the Secret Manager template had `self.secret_id = secret_id # <- new`; the OAuth access-token snippet used `google.oauth2.credentials` without an import; the Secret Manager template passed `model_kwargs={"api_key": secret_version.payload.data.decode()},  # <- new`, and in langchain-anthropic 1.7.12 (`langchain_anthropic/chat_models.py`) the client key is `anthropic_api_key: SecretStr = Field(default=SecretStr(""), alias="api_key")` while `model_kwargs` is merged into the request payload (`**self.model_kwargs`).
 - Corrected from the official docs: the install command was `pip install openinference-instrumentation-langchain==0.1.34` only; its dependency `openinference-instrumentation>=0.1.17` (METADATA `Requires-Dist`, no upper bound) allows 0.1.17, in which `hide_inputs` does not mask `llm.prompts` (see the TraceConfig note above).
 - Corrected from the official docs: the same install command did not install the Cloud Trace exporter that `set_up` imports (`from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter`). The PyPI distribution `opentelemetry-exporter-gcp-trace` (1.15.0 checked 2026-11-21) contains `opentelemetry/exporter/cloud_trace/__init__.py` with `class CloudTraceSpanExporter` and requires `google-cloud-trace~=1.1` (module `google.cloud.trace_v2`, also imported in `set_up`), `opentelemetry-api~=1.30` and `opentelemetry-sdk~=1.30` (modules `opentelemetry.trace` and `opentelemetry.sdk.trace`). Neither the `agent_engines` extra of google-cloud-aiplatform 2.10.0 nor the `agent-engines` extra of google-cloud-agentplatform 2.10.0 lists it. The remaining imports of the template are `google.auth` (google-auth, a dependency of both SDKs), `vertexai` (google-cloud-aiplatform), `langgraph.prebuilt` (`langgraph`, pulled in by the `langchain` extra of google-cloud-aiplatform 2.10.0) and `langchain_google_vertexai`, whose package `langchain-google-vertexai` is in none of those extras (the deploy guide lists it among the packages to pin); install it too.
+- Packages for the framework imports (wheels checked on PyPI 2026-11-21): `langchain_google_vertexai` is in `langchain-google-vertexai` (3.3.0; its `__init__.py` exports `ChatVertexAI` and marks it `# Deprecated` in `__all__`), `langchain_anthropic` in `langchain-anthropic` (1.7.12), `langchain_openai` in `langchain-openai` (1.8.5), and `langgraph.prebuilt` in `langgraph-prebuilt`, which `langgraph` 1.2.24 requires (`langgraph-prebuilt<1.2.0,>=1.1.3`). `google.cloud.secretmanager` is in `google-cloud-secret-manager` (2.32.0) and `google.cloud.trace_v2` in `google-cloud-trace` (1.21.0). Of these, only `langgraph` is pulled in by an SDK extra (the `langchain` extra of google-cloud-aiplatform 2.10.0); the official page installs none of the framework packages.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-a-custom-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

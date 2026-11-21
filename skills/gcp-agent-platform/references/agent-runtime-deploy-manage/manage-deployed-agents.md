@@ -68,6 +68,10 @@ curl -X GET \
 
 Update one or more fields (at least one). Updating versioned fields creates a new revision. Takes a few seconds to a few minutes.
 
+With `agent=UPDATED_AGENT`, the SDK packages the new agent object again, so `config` needs a staging bucket as for deploying an agent object. For a metadata-only update (for example `display_name` or `description`), omit `agent`: the existing instance is then used (google-cloud-agentplatform 2.10.0 `Runtimes.update` docstring: "If it is not specified, the existing instance will be used."), and `requirements` and `extra_packages` must be left out too ("requirements must be None if agent is None.", "extra_packages must be None if agent is None.").
+
+Adapted (not in the official docs): added `"staging_bucket": STAGING_BUCKET,` (a `gs://BUCKET_NAME` URI) to `config`, because an update that passes `agent` requires it.
+
 ```python
 import agentplatform
 
@@ -80,6 +84,7 @@ client.runtimes.update(
     name=RESOURCE_NAME,                    # Required.
     agent=UPDATED_AGENT,                   # Optional.
     config={                                                # Optional.
+        "staging_bucket": STAGING_BUCKET,
         "requirements": REQUIREMENTS,      # Optional.
         "display_name": "DISPLAY_NAME",    # Optional.
         "description": "DESCRIPTION",      # Optional.
@@ -169,6 +174,7 @@ curl -X DELETE \
 - Telemetry (Console): after enabling traces during development, use the **Telemetry configuration** column to toggle OpenTelemetry traces and logs, logging of prompt inputs and response outputs, container scaling / resources / concurrency (recommended `2 * CPU + 1`, default `9`), and Memory Bank Generation / Retrieval / Retention settings (editing requires `aiplatform.reasoningEngines.update`). If telemetry collection is disabled, redeploy and update the Vertex AI SDK to `>= 1.126.1` to see the Observability options.
 - `updateMask` (`update_mask` in the source) is a comma-separated list of fields to update. Successful list / get / patch / delete calls return a 2xx status.
 - Corrected from the official docs: the PATCH URL was `"https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID?update_mask="display_name,description""`; the shell joins the adjacent quoted and unquoted parts into `...?update_mask=display_name,description`. The Discovery document (`aiplatform.v1`, `reasoningEngines.patch`) names the query parameter `updateMask` (a `google-fieldmask`), so the example uses `updateMask=displayName,description`.
+- Corrected from the official docs: the update example passed `agent=UPDATED_AGENT` with a `config` that had no `staging_bucket`. In google-cloud-agentplatform 2.10.0 (`agentplatform/_genai/runtimes.py`), `update` documents "ValueError: If `config.staging_bucket` was not set when `runtime` is specified.", and with an agent object `_set_package_spec` calls `_validate_staging_bucket_or_raise`, which raises "Please provide a `staging_bucket` in `client.runtimes.create(...)`." (`_runtimes_utils.py`). `STAGING_BUCKET` is a variable holding a `gs://BUCKET_NAME` URI.
 - The Python `update` / `delete` templates use `RESOURCE_NAME`, `UPDATED_AGENT`, `REQUIREMENTS` and `EXTRA_PACKAGES` as variables for your own values (for example `RESOURCE_NAME = "projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID"`).
 - The source also shows Console steps and PowerShell variants.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/manage-revisions-and-traffic (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

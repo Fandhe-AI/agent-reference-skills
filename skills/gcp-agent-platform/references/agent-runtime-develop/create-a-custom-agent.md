@@ -40,6 +40,8 @@ class CLASS_NAME:
         return self.graph.invoke(**kwargs)
 ```
 
+The template imports `langchain_google_vertexai` (PyPI `langchain-google-vertexai`, which no Agent Platform SDK extra installs) and `langgraph.prebuilt` (from `langgraph`, pulled in by the `langchain` extra in [setup.md](./setup.md)); install them and list them in the deployment `requirements` as well.
+
 Instantiate and test locally (`model` is the model name string and `get_exchange_rate` is a tool function you define, for example the one in [quickstart-adk.md](./quickstart-adk.md); the source does not define either in this snippet or in the async and streaming examples below):
 
 ```python
