@@ -33,10 +33,10 @@ https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCA
 
 and `/api/run_sse` (streaming), which takes the same caller-chosen `userId` and `sessionId`; the same single-user limit and the same server-side checks apply:
 
-Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success, and `--no-buffer`, so the server-sent events are printed as they arrive.
 
 ```bash
-curl --fail-with-body \
+curl --fail-with-body --no-buffer \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
 https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID/api/run_sse -d '{
@@ -87,6 +87,7 @@ https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCA
 - The source also shows the console steps in detail.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/use-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the source's `curl` commands have no `--fail-with-body`.
+- Adapted from the official docs: the `/api/run_sse` `curl` has no `--no-buffer` (`-N`, "Disable buffering of the output stream" in `curl --help all`); without it, curl buffers its output and the streamed events can appear late.
 
 ## Related
 

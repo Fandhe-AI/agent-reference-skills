@@ -110,7 +110,7 @@ remote_agent = client.runtimes.create(
 )
 ```
 
-Managed ADK agent (`AdkApp`, `agent_framework="google-adk"`):
+Managed ADK agent (`AdkApp`, `agent_framework="google-adk"`). Only `AdkApp` supports the default probe. In this agent-object example, `agent_framework` is detected from the object (`AdkApp` sets the class attribute `agent_framework = "google-adk"` in google-cloud-aiplatform 2.10.0 and google-cloud-agentplatform 2.10.0). When the agent is not passed as an object, set `"agent_framework": "google-adk"` in `config` explicitly, because for source files it "defaults to `custom`" (not in the official docs for this example):
 
 ```text
 remote_agent = client.runtimes.create(

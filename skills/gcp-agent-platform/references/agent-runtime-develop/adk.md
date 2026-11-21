@@ -10,7 +10,7 @@ ADK is an open-source agent development framework for building, debugging and de
 
 ### Minimal ADK agent (snippet)
 
-`get_exchange_rate` is the tool function defined in the Develop the agent step of [quickstart-adk.md](./quickstart-adk.md); the official quickstart defines it in a separate block before this one.
+`get_exchange_rate` is the tool function defined in the Develop the agent step of [quickstart-adk.md](./quickstart-adk.md); the official quickstart defines it in a separate block before this one. Run the quickstart's initialization from that step first: `vertexai.init(project="PROJECT_ID", location="LOCATION")`, and `unset GOOGLE_CLOUD_LOCATION` or set it to the same `LOCATION`, because `AdkApp` takes its project and location from the `vertexai.init` global configuration when it is created (not in the official docs; see the Notes of quickstart-adk.md).
 
 ```python
 from google.adk.agents import Agent
