@@ -1,0 +1,240 @@
+---
+source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-adk-agent
+---
+
+# Develop an ADK agent for Agent Runtime
+
+Use the `AdkApp` class of the Agent Platform SDK for Python to create ADK agents that return exchange rates and manage stateful interactions: define the model, add tools, and manage sessions and memories. `AdkApp` uses in-memory sessions and memory when running locally and cloud-based managed sessions and Agent Platform Memory Bank after deployment to Agent Runtime.
+
+## Signature / Usage
+
+### Define the model and optional settings
+
+```python
+model = "gemini-2.0-flash"
+```
+
+```python
+from google.genai import types
+
+safety_settings = [
+    types.SafetySetting(
+        category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold=types.HarmBlockThreshold.OFF,
+    ),
+]
+```
+
+```python
+from google.genai import types
+
+generate_content_config = types.GenerateContentConfig(
+   safety_settings=safety_settings,
+   temperature=0.28,
+   max_output_tokens=1000,
+   top_p=0.95,
+)
+```
+
+### Create the app and test locally
+
+```python
+from google.adk.agents import Agent
+from vertexai.agent_engines import AdkApp
+
+agent = Agent(
+   model=model,                                      # Required.
+   name='currency_exchange_agent',                   # Required.
+   generate_content_config=generate_content_config,  # Optional.
+)
+app = AdkApp(agent=agent)
+```
+
+```python
+async for event in app.async_stream_query(
+   user_id="USER_ID",  # Required
+   message="What is the exchange rate from US dollars to Swedish currency?",
+):
+   print(event)
+```
+
+### Define and use a tool
+
+```python
+def get_exchange_rate(
+    currency_from: str = "USD",
+    currency_to: str = "EUR",
+    currency_date: str = "latest",
+):
+    """Retrieves the exchange rate between two currencies on a specified date.
+
+    Uses the Frankfurter API (https://api.frankfurter.app/) to obtain
+    exchange rate data.
+
+    Args:
+        currency_from: The base currency (3-letter currency code).
+            Defaults to "USD" (US Dollar).
+        currency_to: The target currency (3-letter currency code).
+            Defaults to "EUR" (Euro).
+        currency_date: The date for which to retrieve the exchange rate.
+            Defaults to "latest" for the most recent exchange rate data.
+            Can be specified in YYYY-MM-DD format for historical rates.
+
+    Returns:
+        dict: A dictionary containing the exchange rate information.
+            Example: {"amount": 1.0, "base": "USD", "date": "2023-11-24",
+                "rates": {"EUR": 0.95534}}
+    """
+    import requests
+    response = requests.get(
+        f"https://api.frankfurter.app/{currency_date}",
+        params={"from": currency_from, "to": currency_to},
+    )
+    return response.json()
+```
+
+```python
+from google.adk.agents import Agent
+
+agent = Agent(
+    model=model,                     # Required.
+    name='currency_exchange_agent',  # Required.
+    tools=[get_exchange_rate],       # Optional.
+)
+
+```
+
+### Sessions
+
+```python
+def session_service_builder():
+  from google.adk.sessions import InMemorySessionService
+
+  return InMemorySessionService()
+```
+
+```python
+from vertexai.agent_engines import AdkApp
+
+app = AdkApp(
+   agent=agent,                                      # Required.
+   session_service_builder=session_service_builder,  # Optional.
+)
+```
+
+```python
+session = await app.async_create_session(user_id="USER_ID")
+print(session)
+```
+
+```python
+await app.async_list_sessions(user_id="USER_ID")
+```
+
+```python
+session = await app.async_get_session(user_id="USER_ID", session_id="SESSION_ID")
+```
+
+Adapted (not in the official docs): `session_id=SESSION_ID` is written as the string `"SESSION_ID"`, because the bare name is undefined; the same page passes `session_id="SESSION_ID"` to `async_get_session`.
+
+```python
+async for event in app.async_stream_query(
+    user_id="USER_ID",
+    session_id="SESSION_ID", # Optional. you can pass in the session_id when querying the agent
+    message="What is the exchange rate from US dollars to Swedish currency on 2025-04-03?",
+):
+    print(event)
+```
+
+### Memories
+
+```python
+from google.adk.agents import Agent
+from google.adk.tools.preload_memory_tool import PreloadMemoryTool
+from vertexai.agent_engines import AdkApp
+
+agent = Agent(
+    model="gemini-2.0-flash",
+    name='stateful_agent',
+    instruction="""You are a Vehicle Voice Agent, designed to assist users with information and in-vehicle actions.
+
+1.  **Direct Action:** If a user requests a specific vehicle function (e.g., "turn on the AC"), execute it immediately using the corresponding tool. You don't have the outcome of the actual tool execution, so provide a hypothetical tool execution outcome.
+2.  **Information Retrieval:** Respond concisely to general information requests with your own knowledge (e.g., restaurant recommendation).
+3.  **Clarity:** When necessary, try to seek clarification to better understand the user's needs and preference before taking an action.
+4.  **Brevity:** Limit responses to under 30 words.
+""",
+    tools=[PreloadMemoryTool()],
+)
+
+app = AdkApp(agent=agent)
+```
+
+```python
+def memory_service_builder():
+  from google.adk.memory import InMemoryMemoryService
+
+  return InMemoryMemoryService()
+```
+
+```python
+from vertexai.agent_engines import AdkApp
+
+app = AdkApp(
+   agent=agent,                                    # Required.
+   memory_service_builder=memory_service_builder,  # Optional.
+)
+```
+
+Create a session and interact with the agent, generate memories from the session, then search them:
+
+Adapted (not in the official docs): `initial_session.id` is written as `initial_session["id"]`, because `AdkApp.async_create_session` returns the session serialized with `model_dump(mode="json")` (a dictionary) in google-cloud-aiplatform 2.10.0, and the source itself says the session is created as a dictionary.
+
+```python
+initial_session = await app.async_create_session(user_id="USER_ID")
+
+async for event in app.async_stream_query(
+    user_id="USER_ID",
+    session_id=initial_session["id"],
+    message="Can you update the temperature to my preferred temperature?",
+):
+    print(event)
+```
+
+```python
+await app.async_add_session_to_memory(session=initial_session)
+```
+
+```python
+response = await app.async_search_memory(
+    user_id="USER_ID",
+    query="Fix the temperature!",
+)
+print(response)
+```
+
+## Notes
+
+- `AdkApp(agent=...)`: Wraps an ADK `Agent` for local testing and deployment.
+- `session_service_builder`: Optional function returning a session service; overrides the managed session service.
+- `memory_service_builder`: Optional function returning a `BaseMemoryService`; overrides the default memory service.
+- `async_stream_query(user_id, message, session_id)`: Streams events; `session_id` is optional.
+- `async_create_session` / `async_list_sessions` / `async_get_session`: Session management; the session is the dictionary form of an ADK session object.
+- `async_add_session_to_memory` / `async_search_memory`: Generate and search memories.
+- `USER_ID`: User-defined ID with a character limit of 128 (for example `user-123`).
+- `PreloadMemoryTool`: Retrieves memories at the start of each turn and injects them into the model request context before the user turn.
+- `vertexai.agent_engines.AdkApp` is the Agent Runtime SDK module, not the deprecated generative AI module. SDK version 2.0.1 refactored `agent_engines` into client-based modules (see [runtime.md](./runtime.md)).
+- `HarmBlockThreshold.OFF` in the safety example turns the safety filter off for that category; the source shows it as an example of configuring safety settings.
+- With a custom in-memory session or memory service, state might not stay in sync after deployment to Agent Runtime; the source only recommends customizing if you can synchronize state across instances in a deployed environment.
+- Write tool docstrings that fully describe parameters, behavior and return values; the model uses them to choose a function. Test functions locally first. The tool calls an external API with a fixed URL (Frankfurter).
+- Corrected from the official docs: the source writes `session_id=SESSION_ID, # Optional.` and `session_id=initial_session.id,`.
+- The source's follow-up examples also read `session.id` / `initial_session.id` from the dictionary returned by `async_create_session`; those blocks are not reproduced.
+- The top-level `await` / `async for` statements run in a notebook; in a plain Python script, put them inside an `async def` function and run it with `asyncio.run(...)`.
+- The source's memory test creates `new_session` but then queries with `session_id=initial_session.id`; that walkthrough block is not reproduced here.
+- The source also shows sample response dictionaries and the rest of the memory test walkthrough (the follow-up message and the new-session test), which are omitted.
+- Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-adk-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+
+## Related
+
+- [quickstart-adk.md](./quickstart-adk.md)
+- [adk.md](./adk.md)
+- [create-a-custom-agent.md](./create-a-custom-agent.md)
