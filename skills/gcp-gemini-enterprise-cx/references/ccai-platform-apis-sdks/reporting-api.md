@@ -60,6 +60,7 @@ The CCAI Platform portal reports and API requests are two ways to look at metric
 - The source also shows two diagrams (call API schema and call lifecycle) that are not reproduced.
 - Snippet taken from https://docs.cloud.google.com/contact-center/ccai-platform/docs/chat-platform-api-guide (the page has no code of its own).
 - Adapted from the official docs: `{chat_id}` in `https://YOUR_SUBDOMAIN.YOUR_DOMAIN/apps/api/v1/chats/{chat_id}` became `CHAT_ID`.
+- Source inconsistency: the source defines **Conference Time** and **Third Party Talk Time** identically (`/calls.participants[]['connected_at']` and `/calls.participants[]['ended_at']`, with the note "Overlap of agent participants connected & ended times" for both). Both are kept as written. From these definitions alone, third-party talk time cannot be told apart from conference time, and the source does not say which participants count as a third party; no other retrieved page of the CCAI Platform docs defines these two metrics.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/reporting-api (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -21,6 +21,8 @@ Set the environment values in `.env` (for example `API_KEY=your_api_key`, no quo
 
 ### Flutter: import the module
 
+Requirements for importing the module, with the platform labels corrected (the source swaps them, see Notes): a JWT signing API endpoint; for Android, your project's `minSdkVersion` must be 21 or later (the Android SDK guide also requires "Android 5.0 (API level 21, Lollipop) or later"); for iOS, your project's deployment target must be iOS 13.0 or later (the iOS SDK guide lists "iOS 12.0+" for the native SDK, see Notes).
+
 Copy `example/lib/ujet` into your project's `lib`; copy `UJETModule.kt`, `Application.kt`, `firebase\MyFirebaseMessagingService.kt` and `firebase\FirebaseTokenManager.kt` from `example/android/app/src/main/kotlin/co/ujet/flutter_example_app` next to your `MainActivity` (change their package declarations); drag `example/ios/Runner/UJETModule.swift` into Xcode. Edit `_getUserData` in `example/lib/ujet/ujet_module.dart` to return the end-user information:
 
 ```dart
@@ -123,11 +125,14 @@ Continue with React Native for Android (https://docs.cloud.google.com/contact-ce
 ## Notes
 
 - Known issues with Flutter: screenshots are not captured using the screenshot SmartActions (Google is working to fix this); the Co-browse screen is not projected from the agent side during a co-browse session (iOS only; Google recommends disabling the impeller engine).
-- The source states "For Android, your project's deployment target must be iOS 13.0 or later" and "For iOS, your project's `minSdkVersion` must be 21 or later"; the platform labels look swapped (an iOS deployment target and an Android `minSdkVersion`), recorded here as written.
+- Corrected from the official docs: the source states "For Android, your project's deployment target must be iOS 13.0 or later" and "For iOS, your project's `minSdkVersion` must be 21 or later". A deployment target of iOS 13.0 is an iOS setting and `minSdkVersion` is an Android setting, and the Android SDK guide requires "Android 5.0 (API level 21, Lollipop) or later", so the page gives Android `minSdkVersion` 21 and iOS deployment target 13.0.
+- Source inconsistency: this page requires an iOS deployment target of "iOS 13.0 or later" for the Flutter module, while the iOS SDK guide's requirements list "iOS 12.0+" for the native iOS SDK. Both are kept as written; the official docs do not say whether the Flutter module needs the higher target.
 - The sample `getUserData` / `_getUserData` return hard-coded values; replace them with the signed-in end user's data, and keep the company secret on your server (JWT signing endpoint) rather than in the app. Your signing server should take the identifier from its own authenticated session rather than sign whatever identifier the app sends (not stated in the official docs; see web-sdk-v3-authenticate.md).
 - The source says "enter the following code in the terminal" before the Flutter `UJET.init` / `UJET.start` lines; they are Dart code, not shell commands.
 - Corrected from the official docs: the React Native server command block ends with `npm start` immediately followed by three stray backticks on the same line; the command is `npm start`. The block is tagged `text` because its line `Edit .env` is an instruction (edit the `.env` file), not a shell command.
 - Flutter and React Native are not required; use the Android SDK guide (https://docs.cloud.google.com/contact-center/ccai-platform/docs/android-sdk-guide) or iOS SDK guide (https://docs.cloud.google.com/contact-center/ccai-platform/docs/ios-sdk-guide) for native integration.
+- Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/android-sdk-guide (Android requirements; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/ios-sdk-guide (iOS requirements; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/mobileSDK-overview (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
