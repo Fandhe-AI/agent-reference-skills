@@ -86,7 +86,7 @@ curl -q --fail-with-body --no-buffer -X POST \
 
 ### Call streamAssist (Python)
 
-Adapted (not in the official docs): the loop also skips replies whose `grounded_content.content.thought` is true, as the sample's own comment says (`AssistantContent.thought` in the `discoveryengine` `v1` Discovery document: "Optional. Indicates if the part is thought from the model.").
+Adapted (not in the official docs): the loop also skips replies whose `grounded_content.content.thought` is true, as the sample's own comment says (`AssistantContent.thought` in the `discoveryengine` `v1` Discovery document: "Optional. Indicates if the part is thought from the model."). After the loop it checks the last response's `answer.state` (Discovery `AssistAnswer.state`: "Assist operation has failed." / "Assist operation has been skipped."), raising on `FAILED` and printing `answer.assist_skipped_reasons` on `SKIPPED`; these snake_case names follow the Discovery fields `state` and `assistSkippedReasons` and were not checked against the `google-cloud-discoveryengine` source.
 
 ```python
 # Install library: pip install google-cloud-discoveryengine
@@ -127,13 +127,19 @@ request = discoveryengine.StreamAssistRequest(
     ),
 )
 
+answer = None
 for response in client.stream_assist(request=request):
+    answer = response.answer
     for reply in response.answer.replies:
         # Filter out model reasoning fragments (thought: true)
         if hasattr(reply, "grounded_content") and reply.grounded_content.content and not reply.grounded_content.content.thought:
             print(reply.grounded_content.content.text, end="", flush=True)
 
 print()
+if answer is not None and answer.state.name == "FAILED":
+    raise RuntimeError("streamAssist answer state: FAILED")
+if answer is not None and answer.state.name == "SKIPPED":
+    print("Skipped:", [r.name for r in answer.assist_skipped_reasons])
 ```
 
 ### Continue the conversation in the same session
