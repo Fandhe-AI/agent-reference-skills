@@ -80,6 +80,8 @@ Response shape (the `diagnosticInfo` content is elided in the source):
 
 ### Call BidiRunSession (Node.js, WebSocket)
 
+The `console.log` calls that print the sent queries and the received messages are for local debugging with test data only; a deployed client that passes real user input should log only metadata such as the session ID and the connection state, not conversation content.
+
 ```javascript
 import {GoogleAuth} from 'google-gax';
 import {WebSocket} from 'ws';
@@ -194,6 +196,7 @@ If you use `ces.us.rep.googleapis.com` or `ces.eu.rep.googleapis.com`, you don't
 - The gRPC `x-goog-request-params` snippet is a fragment and is tagged `text`: it does not import `SessionServiceClient` and assigns `stream` without declaring it. The source's full Node.js `runSession` sample imports the client with `import {AgentServiceClient, SessionServiceClient} from '../src/v1';` (a path inside the client library repository).
 - The source also shows a PowerShell form of the request, `runSession` samples in Java, Python and Node.js, and `BidiRunSession` samples in Go, Java and Python. They were omitted; the Python `runSession` sample also updates the app's root agent before running a session.
 - The Node.js `BidiRunSession` sample is shown with the `locations/us` endpoint path and sends a hard-coded session name; replace the app resource name with your own. It authenticates through Application Default Credentials (`GoogleAuth`).
+- Logging: the Node.js `BidiRunSession` sample prints the config, both queries (``console.log(`Sending query: ${queryJson}`)``) and every received message (``console.log(`Received message: ${message}`)``). Use these prints only for local debugging with test data; in a deployed client that handles real user conversations, log metadata (session ID, connection open / close, error codes) and not the conversation text, which can contain personal data.
 - The sample `curl` command uses user credentials from `gcloud`; use a service account for production (see the CX Agent Studio authentication page).
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/deploy/api-access (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

@@ -74,6 +74,8 @@ interface ClientOption {
 
 ### Enable logging
 
+The source enables the console logger "During implementation and testing"; keep it to local debugging with test data, because the source does not say whether the SDK log records end-user chat content, and do not enable it for real users.
+
 ```javascript
 import {Logger, consoleLoggerHandler } from '@ujet/websdk-headless'
 Logger.addHandler(consoleLoggerHandler)
@@ -172,6 +174,7 @@ client.destroy()
 
 - "Google only supports the latest three minor versions of the headless web SDK. To receive support, your website must be using one of these versions of the headless web SDK."
 - Installing the headless web SDK needs the support of your organization's web development team.
+- Logging: the source introduces `Logger.addHandler(consoleLoggerHandler)` for gathering "additional information in the console log" "During implementation and testing" and does not list what is logged. Use it only for local debugging with test data; in production, log metadata (connection state, error codes) and not conversation content.
 - Most `Client` methods propagate HTTP errors as thrown exceptions; wrap calls in `try/catch` unless the method's documentation notes otherwise.
 - `.destroy` removes the iframe and all event listeners. The list of emitted events is on https://docs.cloud.google.com/contact-center/ccai-platform/docs/headless-web-events and the API on https://docs.cloud.google.com/contact-center/ccai-platform/docs/headless-web-api.
 - The source also shows the default Screen Share dialog HTML template, the message-variable mapping (`$title`, `$content`, `$allow`, `$deny`, `$end`) and the default English message JSON.
