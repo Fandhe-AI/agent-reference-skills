@@ -10,6 +10,8 @@ Agent Search offers multiple model versions for generating answers, selectable w
 
 Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/get-search-summaries: a search request that specifies `preview` as the model version.
 
+Adapted (not in the official docs): added `"summaryResultCount": 3` to `summarySpec` and `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}` to `contentSearchSpec`, the values of the source's own summary example, because the source's summary procedure says a summary request "specifies values for `summaryResultCount` and `maxExtractiveAnswerCount`"; the model version and every other field are unchanged.
+
 ```bash
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -19,10 +21,12 @@ curl -X POST \
   "query": "what is bigquery",
   "contentSearchSpec": {
     "summarySpec": {
+      "summaryResultCount": 3,
       "modelSpec": {
         "version": "preview"
       }
-    }
+    },
+    "extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}
   }
 }'
 ```
@@ -47,6 +51,7 @@ curl -X POST \
 - The streaming answer method supports only Gemini models ([stream-answer.md](./stream-answer.md)).
 - Former names: Agent Search was Vertex AI Search (API still Discovery Engine); Agent Platform was Vertex AI.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/answer-generation-models (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Corrected from the official docs: the source's model-version example sends only `"summarySpec": {"modelSpec": {"version": "preview"}}`, while the same page says "to get a summary, you must also get extractive answers with your search results" and "To get a search summary, follow these steps: 1. Submit a search request that includes `contentSearchSpec.summarySpec` and specifies values for `summaryResultCount` and `maxExtractiveAnswerCount`." Its own summary example uses `"summaryResultCount": 3` and `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}`, so the example adds those two values. The `discoveryengine.v1` Discovery document describes `summaryResultCount` only as "The number of top results to generate the summary from." and does not say what happens when it is unset.
 - Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/get-search-summaries (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
