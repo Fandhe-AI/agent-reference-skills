@@ -46,6 +46,8 @@ Some requests read or write Cloud Storage objects on the caller's behalf, so the
 
 - `https://www.googleapis.com/auth/cloud-platform` (access to all project resources)
 
+The scope description is the source's wording. The scope limits which Google Cloud APIs the access token can be used with; it does not grant access by itself. What the request can actually read or write, in CX Agent Studio and on the Cloud Storage objects, is decided by the IAM roles of the principal the token belongs to, so grant that principal only the CX Agent Studio and Cloud Storage roles it needs (this page of the official docs does not spell out the relationship).
+
 ### Roles
 
 Role names are copied as the source writes them (`ces.googleapis.com/...`), with the IAM role ID next to each. Each role lists its permissions in two groups: the IAM permission IDs that the IAM roles and permissions reference confirms for that role (the `ces.apps.create` form, usable in a custom role's `includedPermissions`), and the permissions that appear only in the product guide, kept in the guide's `ces.googleapis.com/...` form because the IAM reference does not list them (do not put them into `includedPermissions` unless the IAM reference lists them). Every permission the guide names for a role appears in exactly one of the two groups, in the guide's order.

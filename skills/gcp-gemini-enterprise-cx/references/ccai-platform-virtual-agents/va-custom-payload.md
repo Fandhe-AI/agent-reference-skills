@@ -103,7 +103,9 @@ By end-user:
 
 ### Transfer a call to a phone number
 
-If the connection is successful, the virtual agent is removed from the call and the call continues. If it fails, a transfer failure message is played and the call continues with the virtual agent.
+If the connection is successful, the virtual agent is removed from the call and the call continues. If it fails, a transfer failure message is played and the call continues with the virtual agent. Replace `+1XXXXXXXXXX` with a destination number you control, such as a test line, and test the transfer with it before you configure a production destination.
+
+Adapted (not in the official docs): the source's destination `+16509424879` is replaced with the placeholder `+1XXXXXXXXXX`, because a dialable number copied from the example would transfer real customer calls to a line you do not control.
 
 ```json
 {
@@ -111,7 +113,7 @@ If the connection is successful, the virtual agent is removed from the call and 
     "type": "action",
     "action": "deflection",
     "deflection_type" : "phone",
-    "phone_number": "+16509424879"
+    "phone_number": "+1XXXXXXXXXX"
   }
 }
 ```
@@ -276,6 +278,7 @@ Adapted (not in the official docs): removed the `## optional` comment after `end
 - The `escalation_reason` value is reported in the dashboards. The same payload shape with `"menu_id": 100, "language": "ko"` is shown in the source for the end-user case (`"by_consumer"`).
 - Session variables are gathered per chat session and posted to the CRM as a comment when the virtual agent leaves the chat. In the source's example scenario the final payload uses `"type": "escalation"` while the other escalation examples use `"type": "action"` with `"action": "escalation"`; the source does not explain the difference.
 - Left out of this page: the complete JSON schema block with `|`-separated placeholder values, sticky button, image, video, document and complex view examples, the example scenario (one of its payloads is not valid JSON), and the CRM comment text examples.
+- Corrected from the official docs: the phone transfer example writes `"phone_number": "+16509424879"`, a dialable number in E.164 form that is not one of the numbers reserved for fiction or documentation; the page uses the placeholder `+1XXXXXXXXXX`.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/va-custom-payload (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
