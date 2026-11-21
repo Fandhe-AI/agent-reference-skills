@@ -87,7 +87,7 @@ remote_agent = client.runtimes.create(
 
 ### Keep-alive probe (Preview)
 
-Custom container or Dockerfile deployment:
+Custom container or Dockerfile deployment. The example is the Dockerfile form; for a prebuilt container image, replace `"source_packages"` and `"image_spec"` with `"container_spec": {"image_uri": "CONTAINER_IMAGE_URI"}` (as in [deploy-an-agent-containers.md](./deploy-an-agent-containers.md)) and keep `"keep_alive_probe"`. The comment in the example says `"image_uri"`, but in google-cloud-aiplatform 2.10.0 `image_uri` is a field of `container_spec` (`ReasoningEngineSpecContainerSpec`), not of `config`:
 
 ```text
 remote_agent = client.runtimes.create(
@@ -248,6 +248,7 @@ remote_agent = client.runtimes.create(
 - The `identity_type=AGENT_IDENTITY` example provisions a unique identity tied to the Agent Platform agent resource ID, independent of the framework.
 - Corrected from the official docs: the CMEK key name appears in the source as `` kms_key_name = "projects/`PROJECT_ID`/locations/`LOCATION`/keyRings/`KEY_RING`/cryptoKeys/`KEY_NAME`" ``; the backticks were removed.
 - Console, Java, Go forms and the pip git-branch requirement example (placeholders wrapped in backticks) are omitted.
+- Source inconsistency: the keep-alive example comments `# or set "image_uri" when deploying a prebuilt container image` next to `"image_spec": {}`; the container deployment guide and the SDK put `image_uri` inside `container_spec`.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

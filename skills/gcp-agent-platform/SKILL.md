@@ -1,7 +1,7 @@
 ---
 name: gcp-agent-platform
 description: >
-  Google Cloud (GCP) の Gemini Enterprise Agent Platform (旧 Vertex AI) の Gemini 推論 (function calling・grounding・context caching・embeddings・Live API)・Model Garden・tuning・evaluation・Provisioned Throughput・Agent Runtime (旧 Agent Engine)・Agent Gateway・Memory Bank・Agent Identity・Agent Registry・RAG Engine・Vector Search。gcloud ai。Gemini Developer API は google-gemini-api
+  Google Cloud (GCP) の Gemini Enterprise Agent Platform (旧 Vertex AI) の Agent Runtime (旧 Agent Engine)・Agent Gateway・Agent Identity・Agent Registry・Memory Bank・Gemini 推論 (function calling・grounding・context caching・embeddings・Live API)・Model Garden・tuning・evaluation・Provisioned Throughput・RAG Engine・Vector Search。gcloud ai。Gemini Developer API は google-gemini-api
 user-invocable: false
 ---
 

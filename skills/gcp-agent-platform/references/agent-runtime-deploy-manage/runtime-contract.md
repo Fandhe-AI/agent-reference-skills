@@ -12,7 +12,7 @@ Agent Runtime is independent of the application framework. A custom container or
 
 Requires `fastapi`, `uvicorn` and `pydantic`. It wraps an example `SimpleAgent`; replace it with your own agent, and list in `UNARY_METHODS` / `STREAM_METHODS` only the methods you register for each mode. The streaming endpoint iterates the result with `async for`, so this server works only with an asynchronous generator `stream_query` (as in `SimpleAgent`); a synchronous generator, such as the `stream_query` in create-a-custom-agent.md, is not handled.
 
-Adapted (not in the official docs): added the `UNARY_METHODS` / `STREAM_METHODS` allowlists and a `400` response for any `class_method` not in the allowlist of the endpoint, checked before `getattr`, because the source passes the request's `class_method` straight to `getattr(agent, ...)`, so a request could call any attribute of the agent object (for example `__init__` or an internal helper); also added `_is_message_input` and a `400` response, checked before the method is invoked, for an `input` that is not `{"message": <string>}`, because both allowed methods take one string `message` and any other `input` raises `TypeError` (for streaming, after the response has started).
+Adapted (not in the official docs): added the `UNARY_METHODS` / `STREAM_METHODS` allowlists and a `400` response for any `class_method` not in the allowlist of the endpoint, checked before `getattr`, because the source passes the request's `class_method` straight to `getattr(agent, ...)`, so a request could call any attribute of the agent object (for example `__init__` or an internal helper); also added `_is_message_input` and a `400` response, checked before the method is invoked, for an `input` that is not `{"message": <string>}`, because both allowed methods take one string `message` and any other `input` raises `TypeError` (for streaming, after the response has started); also, a synchronous method is run with `run_in_threadpool` (fastapi 0.165.0 `fastapi.concurrency`, re-exported from Starlette) instead of being called directly in the `async def` handler, which would block the event loop, and a chunk that cannot be encoded raises `RuntimeError` instead of `break`, so the stream ends with an error instead of looking complete.
 
 ```python
 import inspect
@@ -21,6 +21,7 @@ import logging
 import os
 import uvicorn
 from fastapi import FastAPI, encoders, responses
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -65,14 +66,14 @@ async def json_generator(output):
     async for chunk in output:
         encoded_chunk = _encode_chunk_to_json(chunk)
         if encoded_chunk is None:
-            break
+            raise RuntimeError("Failed to encode chunk")
         yield encoded_chunk
 
 async def _invoke_callable_or_raise(invocation_callable, invocation_payload):
     if inspect.iscoroutinefunction(invocation_callable):
         return await invocation_callable(**invocation_payload)
     else:
-        return invocation_callable(**invocation_payload)
+        return await run_in_threadpool(invocation_callable, **invocation_payload)
 
 @app.get("/")
 def health_check():
@@ -178,6 +179,7 @@ if __name__ == "__main__":
 - ADK: to support the full ADK feature set a proxy container must implement the methods defined by the ADK contract (see "Use an ADK agent"); the `AdkApp` template is a reference implementation. To have Google handle updates when you update ADK, use ADK's own deployment tooling instead of writing your own API server.
 - Adapted from the official docs: the source's endpoints call `method = getattr(agent, request.class_method)` for any requested name; the example above first rejects names outside `UNARY_METHODS` (`/api/reasoning_engine`) or `STREAM_METHODS` (`/api/stream_reasoning_engine`) with `400`. It also rejects with `400`, before invoking the method, an `input` that is not an object whose only key is `message` with a string value (the signature of `SimpleAgent.query` / `stream_query`); the source passes `request.input or {}` unchecked. Keep these sets equal to the methods declared in `classMethods` for each `api_mode`, and change the input check when your methods take other arguments.
 - The request-flow sequence diagram (iframe) is omitted; its text description is summarized above. The JSON request / response bodies in the source are inline code only, so they are in the Endpoints bullets instead of fenced blocks.
+- Corrected from the official docs: `_invoke_callable_or_raise` called a synchronous method directly (`return invocation_callable(**invocation_payload)`) inside the `async def` handlers, and `json_generator` ended the stream with `break` when `_encode_chunk_to_json` returned `None`. Raising inside the generator aborts the HTTP response after it has started, so the client sees an incomplete stream rather than a normal end; the source defines no error chunk format for the stream.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/runtime-contract (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
