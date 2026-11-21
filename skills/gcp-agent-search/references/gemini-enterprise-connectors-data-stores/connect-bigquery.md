@@ -17,13 +17,16 @@ Creates a Gemini Enterprise (formerly Agentspace) data store that connects to Bi
 
 Snippet taken from https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-knowledge-catalog: in its example workflow, after looking up table metadata in Knowledge Catalog, the agent formulates and executes a read-only SQL query through the federated BigQuery connector:
 
+Adapted (not in the official docs): `ORDER_DATE_COLUMN` is a placeholder for the order-date column (a `DATE`) of your table; the source query has no date filter, so it counted orders of all periods.
+
 ```sql
 -- Execute BigQuery read-only SQL
 SELECT COUNT(order_id) FROM `my-project.ecomm.orders`
 WHERE product_id IN (
   SELECT id FROM `my-project.ecomm.products`
   WHERE category IN ('Sweaters', 'Coats & Jackets')
-);
+)
+AND ORDER_DATE_COLUMN >= DATE_TRUNC(CURRENT_DATE(), MONTH);
 ```
 
 ### Before you begin
@@ -58,7 +61,7 @@ Click **Create**.
 - Pricing: in federated query mode, queries incur BigQuery compute costs when users run queries through the attached app; in data ingestion mode, importing data incurs BigQuery and Gemini Enterprise indexing costs even before the data store is attached to an app. See Gemini Enterprise pricing.
 - The source shows only Console steps (no REST, gcloud or client code); the SQL block above comes from the Knowledge Catalog page, which describes the same federated connector.
 - Snippet taken from https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-knowledge-catalog
-- The sample SQL is verbatim from the source; the question of that workflow ("How many sales did we have this month for all cold weather products?") asks for "this month", but the query counts orders of all periods. The source names no date column of `my-project.ecomm.orders`, so add a filter on its order-date column yourself to answer for this month.
+- Corrected from the official docs: the question asks for "this month", but the source query has no date filter; the source names no date column of `my-project.ecomm.orders`, so the filter uses the placeholder `ORDER_DATE_COLUMN`.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-bigquery (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

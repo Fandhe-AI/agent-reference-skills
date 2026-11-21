@@ -26,13 +26,16 @@ terms: "Cold Weather Products; category IN ('Sweaters', 'Coats & Jackets')"
 
 Step 4, query execution: the agent formulates and executes a read-only SQL query through the federated BigQuery connector.
 
+Adapted (not in the official docs): `ORDER_DATE_COLUMN` is a placeholder for the order-date column (a `DATE`) of your table; the source query has no date filter, so it counted orders of all periods.
+
 ```sql
 -- Execute BigQuery read-only SQL
 SELECT COUNT(order_id) FROM `my-project.ecomm.orders`
 WHERE product_id IN (
   SELECT id FROM `my-project.ecomm.products`
   WHERE category IN ('Sweaters', 'Coats & Jackets')
-);
+)
+AND ORDER_DATE_COLUMN >= DATE_TRUNC(CURRENT_DATE(), MONTH);
 ```
 
 ### Permissions (end-user credentials)
@@ -55,7 +58,7 @@ In the console Gemini Enterprise page, click the app, click **Configurations**, 
 - Each cataloged data asset is stored as a metadata record called an *entry*. With enriched metadata (table schemas, column descriptions, business glossary terms, pre-verified sample queries called golden queries) the agent uses golden queries to prevent join hallucinations on complex schemas.
 - Knowledge Catalog itself is covered by the `gcp-knowledge-catalog` skill (formerly Dataplex Universal Catalog).
 - The source also shows a diagram and Console steps.
-- The sample SQL is verbatim from the source; its question asks for "this month", but the query counts orders of all periods. The source names no date column of `my-project.ecomm.orders`, so add a filter on its order-date column yourself to answer for this month.
+- Corrected from the official docs: the question asks for "this month", but the source query has no date filter; the source names no date column of `my-project.ecomm.orders`, so the filter uses the placeholder `ORDER_DATE_COLUMN`.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/connectors/connect-knowledge-catalog (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

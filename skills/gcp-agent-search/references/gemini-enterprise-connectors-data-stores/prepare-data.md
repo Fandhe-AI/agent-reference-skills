@@ -28,11 +28,13 @@ Using `structData`:
 
 The first two lines use `jsonData` and the second two lines use `structData`.
 
+Adapted (not in the official docs): the `content.uri` of `doc-2` and `doc-3` is `test_doc_2.pdf` and `test_doc_3.pdf`, matching the title and metadata URI on the same line (see Notes).
+
 ```text
 {"id":"doc-0","jsonData":"{\"title\":\"test_doc_0\",\"uri\":\"https://test_doc_0.html\",\"description\":\"This document uses a blue color theme\",\"color_theme\":\"blue\"}","content":{"mimeType":"application/pdf","uri":"gs://test-bucket-12345678/test_doc_0.pdf"}}
 {"id":"doc-1","jsonData":"{\"title\":\"test_doc_1\",\"uri\":\"https://test_doc_1.html\",\"description\":\"This document uses a green color theme\",\"color_theme\":\"green\"}","content":{"mimeType":"application/pdf","uri":"gs://test-bucket-12345678/test_doc_1.pdf"}}
-{"id":"doc-2","structData":{"title":"test_doc_2","uri":"https://test_doc_2.html","description":"This document uses a red color theme","color_theme":"red"},"content":{"mimeType":"application/pdf","uri":"gs://test-bucket-12345678/test_doc_3.pdf"}}
-{"id":"doc-3","structData":{"title":"test_doc_3","uri":"https://test_doc_3.html","description":"This is document uses a yellow color theme","color_theme":"yellow"},"content":{"mimeType":"application/pdf","uri":"gs://test-bucket-12345678/test_doc_4.pdf"}}
+{"id":"doc-2","structData":{"title":"test_doc_2","uri":"https://test_doc_2.html","description":"This document uses a red color theme","color_theme":"red"},"content":{"mimeType":"application/pdf","uri":"gs://test-bucket-12345678/test_doc_2.pdf"}}
+{"id":"doc-3","structData":{"title":"test_doc_3","uri":"https://test_doc_3.html","description":"This is document uses a yellow color theme","color_theme":"yellow"},"content":{"mimeType":"application/pdf","uri":"gs://test-bucket-12345678/test_doc_3.pdf"}}
 ```
 
 ### Unstructured data: BigQuery metadata table schema
@@ -128,6 +130,7 @@ Each line represents a document made up of a set of fields.
 - Local JSON data can be uploaded directly with the API; Google recommends providing your own schema as a JSON object for better results.
 - Blended search limitations (several data stores connected to one app): see "About connecting multiple data stores".
 - The source twin writes the JSON Lines examples as indented blocks; they are tagged `text` here because a JSON Lines file with several lines or placeholders is not one valid JSON document.
+- Corrected from the official docs: the source's `doc-2` line (title `test_doc_2`) has `"uri":"gs://test-bucket-12345678/test_doc_3.pdf"` and its `doc-3` line (title `test_doc_3`) has `"uri":"gs://test-bucket-12345678/test_doc_4.pdf"`.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/connectors/prepare-data (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

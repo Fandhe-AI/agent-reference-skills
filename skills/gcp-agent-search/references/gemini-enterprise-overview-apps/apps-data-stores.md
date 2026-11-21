@@ -60,7 +60,7 @@ curl -q --fail-with-body -X POST \
 
 ## Notes
 
-- Method of creation: for third-party data you use the Google Cloud console, not the API, to create your app and ingest data; for other data you can use the console or the API. The create-app REST example attaches existing third-party (Slack) data stores (see create-app.md).
+- Method of creation: for third-party data you use the Google Cloud console, not the API, to create the connector and ingest data; an app that attaches an existing data store, third-party included, can be created in the console or with REST `engines.create` (create-app.md). For other data you can use the console or the API. Adapted from the official docs: the source says "to create your app and ingest data", while its create-app page attaches existing third-party data stores with REST.
 - You can't connect website data stores to Gemini Enterprise search and assistant apps.
 - Blended search is rate-limited in the Gemini Enterprise Standard and Gemini Enterprise Frontline editions. Unlimited and enhanced blended search requires the Gemini Enterprise Plus edition.
 - Changing connected data stores with `engines.patch`: an app connected to a single data store can't add or remove data stores, and can't replace its data store, through the API (error `Engines with a single data store cannot add or remove data stores`). An app with multiple data stores must keep at least two connected (error `Engines with multiple data stores can not remove data stores such that <2 data stores remain linked`); the same error is returned when connecting the first data store to an app that has none. Use the Google Cloud console, which can convert an app between single-data-store and multi-data-store configurations.
