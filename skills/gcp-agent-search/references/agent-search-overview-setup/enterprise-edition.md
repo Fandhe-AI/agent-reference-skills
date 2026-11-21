@@ -40,12 +40,14 @@ curl -X POST \
 
 ## Notes
 
-- Features that require Enterprise edition include: website search (both Standard and Enterprise editions), extractive answers, extractive segments, and core generative answers.
+- Features that require Enterprise edition include (source list): "Website search (both Standard and Enterprise editions)", extractive answers, extractive segments, and core generative answers. The parenthetical "(both Standard and Enterprise editions)" is not explained in the source.
+- Website search: the advanced features page says "turning on Enterprise edition features is required for website search. That is, Enterprise edition features are required for any Agent Search app that uses website data (basic website search and advanced website indexing). This setting can't be turned off for apps that are attached to website data stores." So both basic website search and advanced website indexing require Enterprise edition.
 - You can't turn off Enterprise edition for apps that are connected to a website data store.
 - Turning on Enterprise edition features can incur additional costs; see the Agent Search pricing page (https://docs.cloud.google.com/generative-ai-app-builder/pricing).
 - After turning Enterprise edition off, all features that require it stop working in the app within a few minutes; make sure the app doesn't need them first.
 - The source shows only Console steps; the REST snippet is borrowed.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/enterprise-edition (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/about-advanced-features (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

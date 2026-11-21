@@ -10,7 +10,7 @@ Create an Agent Search (formerly Vertex AI Search) search app, called an engine 
 
 ### REST
 
-Find your data store ID first (console **Data Stores** page, then the **Data** page of the data store). In Agent Search the term app can be used interchangeably with engine in the context of APIs. A data store can be attached to only one app and can't be removed from the app later (see Notes for the blended-search case).
+Find your data store ID first (console **Data Stores** page, then the **Data** page of the data store). In Agent Search the term app can be used interchangeably with engine in the context of APIs. Attaching data stores: for an app created with a single data store, the source says "If you attach only one data store, you cannot remove it or add other data stores to the app later." Sharing data stores between apps: the data stores guide says "Custom search apps have a many-to-many relationship with data stores." The REST step of this source also says "A data store can be attached to only one app"; see Notes for this inconsistency.
 
 ```bash
 curl -X POST \
@@ -138,11 +138,14 @@ def create_engine_sample(
   - `search_tier`: `SEARCH_TIER_STANDARD`, `SEARCH_TIER_ENTERPRISE`
   - `search_add_ons`: `SEARCH_ADD_ON_LLM`, `SEARCH_ADD_ON_UNSPECIFIED`
 - The industry vertical `GENERIC` is used to create custom search apps that contain structured, unstructured, website data stores, or multiple data stores (blended search).
-- Data store attachment: if you attach only one data store, you can't attach more later and can't remove it; attaching multiple data stores lets you update the attached data stores later, but the app always requires at least two data stores (see "About blended search" in the data stores guide). Source inconsistency: the REST step of the source says "A data store can be attached to only one app and can't be removed from the app later.", while the console step says "If you attach only one data store, you cannot remove it or add other data stores to the app later. Attaching multiple data stores lets you update the attached data stores later, but the app always requires at least two data stores." Both are kept as written.
+- Data stores attached to one app (this source, console step): "If you attach only one data store, you cannot remove it or add other data stores to the app later. Attaching multiple data stores lets you update the attached data stores later, but the app always requires at least two data stores." (see "About blended search" in the data stores guide).
+- Apps that share a data store (data stores guide, "Relationship between apps and data stores"): "Custom search apps have a many-to-many relationship with data stores. When multiple data stores are connected to a single custom search app, this is referred to as *blended search*." The same guide says a custom recommendations app "has a one-to-one connection with its data store", and media and healthcare search apps have "a many-to-one relationship with its data store. An app can only connect to one data store, whereas a given data store can be connected to several apps."
+- Source inconsistency: the REST step of this source says "A data store can be attached to only one app and can't be removed from the app later.", while the data stores guide says custom search apps have a many-to-many relationship with data stores. Both are kept as written; the source does not say which rule applies to a data store that another custom search app already uses.
 - Terraform: use the `discovery_engine_search_engine` resource of the `hashicorp/google` provider (https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/discovery_engine_search_engine).
 - The Python sample waits for the long-running operation with `operation.result()`; the Python sample comment lists `global` as the location value.
 - The REST method is `engines.create` (Discovery Engine API `v1`).
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-datastore-ingest (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

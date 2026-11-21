@@ -69,17 +69,22 @@ projects/*/locations/*/collections/*/engines/YOUR_AI_MODE_ENGINE/servingConfigs/
 
 ### Stream an answer using agentic retrieval
 
+Run the command by itself and type the query text on one line at the prompt; `jq` (required) encodes `QUERY` as a JSON string. A line that follows the command in the same paste or script is read as the query.
+
+Adapted (not in the official docs): the request body is built with `jq -n --arg query "$QUERY" '{...}'` from the text read by `IFS= read -r QUERY` and sent on standard input with `--data @-`, instead of putting `"QUERY"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in the query cannot break the shell quoting or the JSON; every other field is unchanged.
+
 ```bash
-curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-  -H "Content-Type: application/json" \
-  "https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/engines/APP_ID/servingConfigs/SERVING_CONFIG_ID:streamAnswer" \
-  -d '{
-        "query": { "text": "QUERY" },
+IFS= read -r QUERY && jq -n --arg query "$QUERY" '{
+        "query": { "text": $query },
         "session": "SESSION",
         "enableAgentInvocation": true,
         "userPseudoId": "USER_PSEUDO_ID",
         "reasoningEngine": "projects/PROJECT_NUMBER/locations/LOCATION_ID/reasoningEngines/REASONING_ENGINE_ID"
-      }'
+      }' |
+curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "Content-Type: application/json" \
+  "https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/engines/APP_ID/servingConfigs/SERVING_CONFIG_ID:streamAnswer" \
+  --data @-
 ```
 
 ## Options / Props
@@ -132,6 +137,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 - Former names: Agent Search was Vertex AI Search (API still Discovery Engine); Agent Runtime was Vertex AI Agent Engine.
 - The source also shows a long example response in protobuf text format, which is omitted.
 - The custom AI-mode configuration above is copied as the source writes it (a `protobuf` block in the source, `engine { ... }` followed by `engine_id: "SAMPLE_MULTI_SEARCH_RETRIEVAL"`). The `discoveryengine` `v1`, `v1beta` and `v1alpha` Discovery documents have no `engineConfig`, `answerAgent` or frame fields on `Engine` (its configuration fields there are `chatEngineConfig`, `searchEngineConfig`, `mediaRecommendationEngineConfig` and others), so no JSON request body for this configuration can be verified and none is shown. The `engines.create` method of the `v1` Discovery document takes `engineId` as a required query parameter ("Required. The ID to use for the Engine, which will become the final component of the Engine's resource name.") and marks `displayName` and `solutionType` as required `Engine` fields; the source's structure does not set `solutionType`.
+- Corrected from the official docs: the source writes the query placeholder inside the single-quoted `curl -d '{...}'` body (`"text": "QUERY"`). Replacing it with a query that contains an apostrophe ends the shell quoting, and a query with `"`, `\` or a line break makes the JSON invalid, so the body is built with `jq --arg` from standard input and sent with `--data @-`.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/agentic-retrieval-stream-answer (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/connectors/custom-mcp-server/set-up-custom-mcp-server (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
