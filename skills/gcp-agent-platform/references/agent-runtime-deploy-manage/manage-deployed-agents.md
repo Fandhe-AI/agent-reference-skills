@@ -62,12 +62,12 @@ remote_agent = client.runtimes.get(
 
 REST (`reasoningEngines.get`):
 
-Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+Adapted (not in the official docs): added `?fields=name,displayName`, so the response omits `spec` (which can hold environment variables), as in the list example; also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
 
 ```bash
 curl --fail-with-body -X GET \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-     "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID"
+     "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID?fields=name,displayName"
 ```
 
 ### Update a deployed agent
@@ -191,6 +191,7 @@ curl --fail-with-body -X DELETE \
 - Corrected from the official docs: the emergency-stop table and step (2) give `iamEnforcementMode: "ENFORCE"`; the IAM policy guide (iam-overview-uap.md) says to enforce by removing `iamEnforcementMode` from the authorization extension metadata (the console writes `iamEnforcementMode: "ENFORCED"` when creating a gateway). `"ENFORCE"` is the value the governance guide gives for `sgpEnforcementMode`. The table cell about `agent_gateway_config` adds the archive side effect described in the Notes below.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/manage-deployed-agents (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: both list examples used `print(agent)` and the REST list returned full resources. In google-cloud-agentplatform 2.10.0, `client.runtimes.list()` yields `types.Runtime`, whose `api_resource` is a `ReasoningEngine` with `name`, `display_name` and `spec` (`agentplatform/_genai/types/common.py`).
+- Adapted from the official docs: the REST get example returned the whole `ReasoningEngine`, including `spec` (deployment settings such as environment variables). `fields` is a top-level parameter of the `aiplatform.v1` Discovery document ("Selector specifying which fields to include in a partial response"), so it applies to `reasoningEngines.get` as well; request other fields only when you need them, and do not log a full response.
 - Adapted from the official docs: the source's `curl` commands have no `--fail-with-body`.
 
 ## Related
