@@ -108,8 +108,11 @@ Sign the payload on your server so `company_secret` stays hidden from the client
 
 The web SDK initialized with `UJET.initialize` calls the `handlers.authentication(callback)` handler you pass to it. As the source describes the contract, the handler sends `POST .../api/ujet/sign` to your signing server with the JSON body `{"payload": {...}}`, your server signs the payload and answers with JSON `{"token": ...}`, and the handler passes the signed token back with `callback({ token: result.token, user: { identifier, name } })`. This is a different contract from the web SDK v3 client (`new UJET({ authenticate: getAuthToken })`), which calls `GET /auth/token` with no body while the server builds the whole payload from its own session; the Express `GET /auth/token` example above does not serve the `UJET.initialize` client, but it shows the pattern for signing with `jsonwebtoken` and an environment-held secret.
 
-Two points not stated in the official docs:
+Your server sets the time claims itself: the source's server example (left out, see Notes) sets `payload["iat"] = Time.now.to_i` and `payload["exp"] = Time.now.to_i + 10.minutes # Valid for 10 minutes` on the server, and the web SDK v3 Express example above sets `'iat': now` and `'exp': now + 3600`.
 
+Points not stated in the official docs:
+
+- Build the payload to sign on the server: copy from the client's `payload` only the fields you need (for example the push token the SDK supplies) after validating them, and set `identifier`, `name`, `email`, `phone`, `iss`, `iat` and a bounded `exp` from your own session and configuration, overwriting any client-supplied value; never sign an `iat`, `exp` or `identifier` taken from the client, so the expiry and identity the server intends are the ones in the token. The official docs do not say which client-supplied fields are safe to keep.
 - Your server should decide the identifier from the authenticated session, sign it into the JWT, and return it together with the token, so that the client passes the same value to the SDK in `user.identifier` instead of a value it chose itself. The official docs define no response field for this.
 - If the sign request fails (an HTTP error, a network failure, or a response without a token), your app must handle the failure itself, for example by showing an error and not starting the chat. The official docs define no failure contract for `authentication(callback)`, and the outer `.catch()` of `UJET.initialize` does not receive the request's failure.
 
@@ -123,7 +126,7 @@ When a user starts as a guest and verifies identity mid-session (for example thr
 4. Generate a new JWT for the authenticated user and reinitialize the SDK by calling the initialization method again.
 5. If a virtual assistant was used, it should now escalate the consumer to the final destination queue.
 
-To reinitialize the web SDK, call `UJET.initialize` again after successful authentication and the Apps API update; this triggers the `authentication(callback)` handler to fetch the new token for the newly authenticated user. The handler follows the same contract as above (`POST .../api/ujet/sign` with `{"payload": {...}}`, `{"token": ...}` in the response, `callback({ token, user })`), with the identifier of the authenticated user decided by your server and the failure handled by your app.
+To reinitialize the web SDK, call `UJET.initialize` again after successful authentication and the Apps API update; this triggers the `authentication(callback)` handler to fetch the new token for the newly authenticated user. The handler follows the same contract as above (`POST .../api/ujet/sign` with `{"payload": {...}}`, `{"token": ...}` in the response, `callback({ token, user })`), with the payload built on the server as described above (validated client fields only, and `identifier`, `iat` and a bounded `exp` set by your server, never taken from the client) and the failure handled by your app.
 
 ## Options / Props
 
