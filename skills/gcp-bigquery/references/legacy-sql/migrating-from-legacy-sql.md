@@ -595,7 +595,9 @@ For more information, including examples of all wildcard functions, see
 
 In legacy SQL, the comma operator `,` has the non-standard meaning of
 [`UNION ALL BY NAME`](../googlesql-syntax/query-syntax-3.md#set-operators) when applied to tables. In GoogleSQL, the comma operator has the
-standard meaning of `JOIN`.
+standard meaning of `JOIN`. (`UNION ALL BY NAME` needs inputs with the same set of column names;
+for inputs with different columns, use `FULL OUTER UNION ALL BY NAME`, as described after the
+example below. Added; see Notes.)
 
 For example, consider the following legacy SQL query:
 
@@ -1820,6 +1822,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Changed from the official formatting: in the `SOME`, `EVERY`, `PARSE_IP` and `FORMAT_IP` rows of the function comparison table, the official page links function names inside the GoogleSQL expression; each expression is written as one code span and the links are moved to the remarks column, so that the code spans and the links don't overlap.
 - Added (not in the official docs): the note on `TABLE_DATE_RANGE_STRICT` recommends the simpler `_TABLE_SUFFIX` filter when the query need not fail for missing tables; a sentence is added that this query runs when only some daily tables are missing but can fail when no table matches the wildcard, as said for the version with a `WITH` clause, and that a separate statement that checks `INFORMATION_SCHEMA.TABLES` before the query can return `NULL` in that case; the scripting example checks the tables that way, but it raises an error for missing tables.
 - Added (not in the official docs): the text says that GoogleSQL supports subqueries "anywhere else in the query that expects an expression"; a sentence is added that some clauses take only constant expressions, such as the `count` of `LIMIT` and the `skip_rows` of `OFFSET` ("`INT64` constant expression", googlesql-syntax/query-syntax-3.md).
+- Added (not in the official docs): the introduction of "Comma operator with tables" says that the legacy SQL comma operator means `UNION ALL BY NAME`; a sentence is added that `UNION ALL BY NAME` needs inputs with the same set of column names and that inputs with different columns use `FULL OUTER UNION ALL BY NAME`, as the text after the example says.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
