@@ -134,6 +134,8 @@ Define a method such as `async_stream_query` that returns an asynchronous genera
 
 Prerequisite (not in the official docs): `get_state` and `get_state_history` read the graph's checkpoints, so the graph must be built with a checkpointer. The basic template's `set_up` calls `create_react_agent(model, tools=self.tools)` without one, and LangGraph then raises `ValueError("No checkpointer set")`. Pass `checkpointer=` to `create_react_agent` in `set_up` (for example `InMemorySaver()` from `langgraph.checkpoint.memory`, which keeps state only in the memory of one process), and call `query` / `stream_query` and the state methods with the same `config={"configurable": {"thread_id": "THREAD_ID"}}`.
 
+As written, these operations are for local or single-user use (not in the official docs): the caller supplies `thread_id`, and `get_state` / `get_state_history` return the state and history of whatever thread it names. Permission to call the deployed agent does not show who owns a thread. In a deployment that several users can call, check on the server side that the authenticated caller owns the `thread_id` before the agent reads or writes its state.
+
 Adapted (not in the official docs): `get_state` and `get_state_history` take `**kwargs`, because the source's bodies pass `**kwargs` that are not defined in those methods (`NameError`); the prebuilt LangGraph template in google-cloud-aiplatform 2.10.0 defines both methods with `**kwargs`.
 
 ```python
