@@ -10,12 +10,15 @@ Deploying an agent on Agent Runtime (formerly Vertex AI Agent Engine) makes it a
 
 ### Deploy from an agent object (Agent Platform SDK)
 
-This fence is a signature-like template that lists the `config` options: `client` is an `agentplatform.Client` (`client = agentplatform.Client(project="PROJECT_ID", location="LOCATION")`, as in [manage-deployed-agents.md](./manage-deployed-agents.md); the official deploy page does not create it), `local_agent` is the agent object you built (see Create an agent, https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-agent), and each value (`requirements`, `extra_packages`, `gcs_dir_name`, `display_name`, `description`, `labels`, `env_vars`, `build_options`, `identity_type`, `service_account`, `min_instances`, `max_instances`, `resource_limits`, `container_concurrency`, `encryption_spec`, `agent_framework`) is a same-named variable you assign; the official example lists them as names without assigning them (example values are in [deploy-an-agent-configuration.md](./deploy-an-agent-configuration.md)).
+This fence is a signature-like template that lists the `config` options: `client` is an `agentplatform.Client` from the `google-cloud-agentplatform` package (install it as described in [setup.md](../agent-runtime-develop/setup.md); `client = agentplatform.Client(project="PROJECT_ID", location="LOCATION")`, as in [manage-deployed-agents.md](./manage-deployed-agents.md); the official deploy page does not create it), `local_agent` is the agent object you built (see Create an agent, https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-agent), and each value (`staging_bucket`, `requirements`, `extra_packages`, `gcs_dir_name`, `display_name`, `description`, `labels`, `env_vars`, `build_options`, `identity_type`, `service_account`, `min_instances`, `max_instances`, `resource_limits`, `container_concurrency`, `encryption_spec`, `agent_framework`) is a same-named variable you assign; the official example lists them as names without assigning them (example values are in [deploy-an-agent-configuration.md](./deploy-an-agent-configuration.md)).
+
+Adapted (not in the official docs): added `"staging_bucket": staging_bucket,` (a `gs://BUCKET_NAME` URI) to `config`; deploying from an agent object requires a staging bucket, because the SDK writes the pickled agent to it.
 
 ```python
 remote_agent = client.runtimes.create(
     agent=local_agent,                                  # Optional.
     config={
+        "staging_bucket": staging_bucket,
         "requirements": requirements,                   # Optional.
         "extra_packages": extra_packages,               # Optional.
         "gcs_dir_name": gcs_dir_name,                   # Optional.
@@ -187,6 +190,7 @@ remote_agent.operation_schemas()
 - The Developer Connect and public Git examples are tagged `text` because their comments contain `{...}` elisions.
 - Agent Runtime was formerly named Vertex AI Agent Engine; the REST resource is still `reasoningEngines`.
 - Distance line: this is Google's ADK / Agent Runtime, not Claude Code / the Claude Agent SDK or OpenAI Agents.
+- Corrected from the official docs: the agent-object template's `config` had no `staging_bucket`; the setup page says a staging bucket is "Required" for "Deploy from agent object" ("the SDK writes your code to the bucket"), the Quickstart passes `"staging_bucket": "STAGING_BUCKET"`, and google-cloud-agentplatform 2.10.0 defines `staging_bucket` in the create config (`agentplatform/_genai/types/common.py`, "The GCS bucket to use for staging the artifacts needed").
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

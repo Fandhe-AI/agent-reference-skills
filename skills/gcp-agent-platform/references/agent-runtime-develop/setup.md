@@ -16,6 +16,8 @@ Adapted (not in the official docs): the requirement is quoted because an unquote
 pip install "google-cloud-aiplatform[agent_engines,adk,langchain,ag2,llama_index]>=1.112.0"
 ```
 
+The client-based examples on the deploy and manage pages (`client = agentplatform.Client(...)`, `client.runtimes.*`) use a different package: the standalone `google-cloud-agentplatform` package (module `agentplatform`), into which version 2.0.1 of the Agent Platform SDK moved the `agent_engines` module as `runtimes`, `sessions`, `sandboxes` and `memory_banks` (Agent Runtime overview, "Migration to the client-based SDK"). The command above installs `google-cloud-aiplatform` (module `vertexai`) and does not provide `import agentplatform`, so install `google-cloud-agentplatform` with pip as well before you run those examples (2.10.0 on PyPI as of 2026-11-18; its extras include `agent-engines`, `adk`, `a2a`, `langchain`, `ag2` and `llama-index`).
+
 To use Agent2Agent (A2A) on Agent Platform, also install the a2a-sdk package:
 
 ```bash
@@ -123,7 +125,7 @@ gcloud projects add-iam-policy-binding AR_REPO_PROJECT_NUMBER \
 - Staging bucket by deployment form:
   - Deploy from source files: Not required; the SDK uploads files directly.
   - Deploy from agent object: Required; the SDK writes your code to the bucket.
-- Cross-project custom service account: the organization policy `iam.disableCrossProjectServiceAccountUsage` must NOT be enforced in the project where the service account lives; grant the Service Account Token Creator role to `service-RESOURCE_PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com`, and grant the custom service account its roles in the deployment project.
+- Cross-project custom service account: the organization policy `iam.disableCrossProjectServiceAccountUsage` must NOT be enforced in the project where the service account lives; in that project, grant the Service Account Token Creator role on the custom service account to the Agent Platform Service Agent `service-RESOURCE_PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com`, where `RESOURCE_PROJECT_NUMBER` is the project number of the project where you plan to deploy the agent (the source: "the Agent Platform Service Agent (...) of the project where you plan to deploy the agent"), not of the project that owns the service account; then grant the custom service account its roles in the deployment project.
 - A bucket in the same project as the agents is strongly recommended; with a bucket in another project, manually grant the Agent Platform Service Agent (`service-PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com`) read permissions.
 - `gcloud beta services identity create` may show only the Vertex AI Service Agent in its response, but the Reasoning Engine Service Agent is also created. Find the principal `service-PROJECT_NUMBER@gcp-sa-aiplatform-re.iam.gserviceaccount.com` in IAM with "Include Google-provided role grants" checked.
 - `roles/storage.admin` grants full control of Cloud Storage buckets and objects in the project; the source asks for it for the deployer.
@@ -134,6 +136,7 @@ gcloud projects add-iam-policy-binding AR_REPO_PROJECT_NUMBER \
 - Adapted from the official docs: the source writes `pip install google-cloud-aiplatform[agent_engines,adk,langchain,ag2,llama_index]>=1.112.0` unquoted.
 - The source also shows Console steps for creating a bucket. Console click paths are omitted.
 - Corrected from the official docs: the staging bucket example was `gcloud storage buckets create gs://BUCKET_NAME --default-storage-class STORAGE_CLASS --location LOCATION`, which uses the gcloud default project instead of the `PROJECT_ID` passed to the SDK client.
+- `google-cloud-agentplatform` 2.10.0 (wheel METADATA): `Name: google-cloud-agentplatform`, `Provides-Extra` `agent-engines`, `a2a`, `adk`, `langchain`, `ag2`, `llama-index`, `evaluation`, `bigquery`, `live`, `all`; it does not depend on `google-cloud-aiplatform`.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/setup (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
