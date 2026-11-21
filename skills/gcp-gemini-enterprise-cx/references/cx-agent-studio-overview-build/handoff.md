@@ -12,10 +12,12 @@ Handoff rules deterministically control transfers between parent and child agent
 
 `CallbackContext` is used without an import: the [Callbacks](./callback.md) page of the official docs says only that "In your Python callback code, you have access to certain classes and functions that help you write the code" (see the Python runtime reference (https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/reference/python)), and whether it needs an import is not stated in the official docs; the example assumes the CX Agent Studio Python runtime provides it.
 
+Adapted (not in the official docs): the comment `callback_context.variables['variable_name]` lacks the closing quote and becomes a Python syntax error when uncommented; it is written `callback_context.variables['variable_name']`.
+
 ```python
 def should_trigger_transfer_callback(callback_context: CallbackContext) -> bool:
   # Access session variables using callback_context:
-  # callback_context.variables['variable_name]
+  # callback_context.variables['variable_name']
   return True
 ```
 
@@ -28,6 +30,7 @@ def should_trigger_transfer_callback(callback_context: CallbackContext) -> bool:
 - Limitation: only text, number and boolean variable types are supported for variable checks (list and custom object types are not).
 - Limitation: a rule that blocks handoffs can only use variables for its condition (not code).
 - A complex condition created through the API (multiple ANDs/ORs, grouping) appears read-only in the UI and can only be modified through the API.
+- Corrected from the official docs: the source's comment reads `# callback_context.variables['variable_name]` (no closing `'`), which is a syntax error once the line is uncommented; the page closes the string.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/handoff (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
