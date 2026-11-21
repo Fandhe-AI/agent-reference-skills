@@ -141,6 +141,8 @@ while true; \
 
 ### Poll an operation (Python)
 
+Adapted (not in the official docs): added a check that raises `ValueError` when `limit` is zero or negative; otherwise the loop never runs and `return operation` raises `UnboundLocalError`.
+
 ```python
 from time import sleep
 
@@ -155,6 +157,9 @@ from google.longrunning import operations_pb2
 def poll_operation_sample(
     operation_name: str, limit: int = 10
 ) -> operations_pb2.Operation:
+    if limit <= 0:
+        raise ValueError("limit must be a positive integer")
+
     # Create a client
     client = discoveryengine.DocumentServiceClient()
 
@@ -242,6 +247,7 @@ def cancel_operation_sample(operation_name: str) -> None:
 - Cancelling an operation (for example an import) stops the job; do it in a disposable project first if unsure.
 - The cancel response sample in the source shows a `v1alpha` `ImportDocumentsMetadata` type although the request uses `v1`; kept as written.
 - Corrected from the official docs: the source's operations-list sample writes `"@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata",` with a trailing comma before the closing `}` of `metadata`; JSON does not allow trailing commas, so the comma is removed and the block is tagged `json`.
+- Corrected from the official docs: `poll_operation_sample(operation_name, limit=10)` ran `for _ in range(limit):` and then `return operation` without checking `limit`; `limit` must be a positive integer.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/long-running-operations (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

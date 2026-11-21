@@ -267,7 +267,7 @@ gcloud agent-identity auth-providers add-iam-policy-binding AUTH_PROVIDER_NAME \
 | `AGENT_URL` | The endpoint URL of the agent. |
 | `INPUT_MODE` / `OUTPUT_MODE` | Default input / output media type, for example `text/plain`, `application/json` or `image/png`. |
 | `CAPABILITIES` | A JSON object of supported A2A features, for example `\"streaming\": true` or `\"pushNotifications\": false`. |
-| `SKILLS` | A list of `AgentSkill` objects the agent offers. |
+| `SKILLS` | A list of `AgentSkill` objects the agent offers. The example already has the array brackets (`"skills":[SKILLS]`), so replace `SKILLS` with the comma-separated objects only, not with a JSON array. |
 | `AUTH_ID` | The authorization resource ID created earlier (`authorizationConfig.agentAuthorization`). |
 
 ## Notes

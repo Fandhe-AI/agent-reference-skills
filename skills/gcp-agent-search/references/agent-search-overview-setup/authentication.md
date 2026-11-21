@@ -66,10 +66,12 @@ Grant the principal that will attach the service account the Service Account Use
 gcloud iam service-accounts add-iam-policy-binding SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com --member="user:USER_EMAIL" --role=roles/iam.serviceAccountUser
 ```
 
-Create a Compute Engine instance with the service account attached:
+Create a Compute Engine instance with the service account attached. Without `--scopes`, the instance gets the default scopes, which do not include `cloud-platform`; the example sets `--scopes=cloud-platform` and leaves what the service account can do to its IAM roles, so grant only the roles it needs:
+
+Adapted (not in the official docs): added `--scopes=cloud-platform`; gcloud 593.0.0 `compute instances create` help says "the level of access that a service account has is determined by a combination of access scopes and IAM roles so you must configure both access scopes and IAM roles", and its `default` alias list does not include `https://www.googleapis.com/auth/cloud-platform`.
 
 ```bash
-gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERVICE_ACCOUNT_EMAIL
+gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERVICE_ACCOUNT_EMAIL --scopes=cloud-platform
 ```
 
 ## Notes
@@ -83,6 +85,7 @@ gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERV
 - Authorization: after authenticating you must be authorized through IAM; see access-control.md.
 - The twin also shows a PowerShell variant of the REST request, omitted here.
 - Client-library code in this skill uses ADC, as the source does. Gemini Developer API keys (Google AI Studio) are a different product and are covered by the `google-gemini-api` skill.
+- Corrected from the official docs: the instance example was `gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERVICE_ACCOUNT_EMAIL`, which leaves the default access scopes; the Discovery Engine API needs the `cloud-platform` scope, and the service account's IAM roles still limit what it can do.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/authentication (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
