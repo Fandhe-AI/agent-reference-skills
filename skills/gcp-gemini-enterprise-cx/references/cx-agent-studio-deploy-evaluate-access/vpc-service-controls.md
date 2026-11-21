@@ -30,6 +30,16 @@ service-PROJECT_NUMBER@gcp-sa-ces.iam.gserviceaccount.com
 3. Grant `servicedirectory.viewer` and `servicedirectory.pscAuthorizedService` (IAM role IDs `roles/servicedirectory.viewer` and `roles/servicedirectory.pscAuthorizedService`) to that service account in the project where your Service Directory is located. If your Service Directory is in a different project than your agent application, also grant `servicedirectory.viewer` to it in the project that hosts your agent application.
 4. Provide the Service Directory service along with the URL and optional authentication information when creating the tool (a field in the tool's advanced settings).
 
+The official docs give no command for the grant in step 3. The CX Insights export page grants a project-level role to a CX service agent in this form:
+
+```bash
+gcloud projects add-iam-policy-binding RECEIVER_PROJECT \
+    --member=serviceAccount:service-PROJECT_NUMBER@gcp-sa-contactcenterinsights.iam.gserviceaccount.com \
+    --role=roles/bigquery.admin
+```
+
+For step 3, run it once per role with the Service Directory project in place of `RECEIVER_PROJECT`, `serviceAccount:service-PROJECT_NUMBER@gcp-sa-ces.iam.gserviceaccount.com` as `--member`, and `roles/servicedirectory.viewer` or `roles/servicedirectory.pscAuthorizedService` as `--role` (`--role` takes one role name).
+
 To troubleshoot, set up a private uptime check to verify the Service Directory configuration.
 
 ## Notes
@@ -50,6 +60,7 @@ To troubleshoot, set up a private uptime check to verify the Service Directory c
 
 - Source inconsistency: the source names "Tools and callbacks" in the limitation and answers it with "You have to configure Service Directory for private network access", while the Callbacks page says callbacks cannot reach private IP addresses or private DNS domains "even if Service Directory is configured". Both are kept as written; the Service Directory steps on this page apply to tools.
 - Corrected from the official docs: the source writes the address as `service-agent-project-number@gcp-sa-ces.iam.gserviceaccount.com`, which reads as if the whole `service-agent-project-number` part were the project number. The OpenAPI and MCP tool pages give the service agent as `service-{PROJECT_NUMBER}@gcp-sa-ces.iam.gserviceaccount.com` and the A2A tool page as `service-PROJECT_NUMBER@gcp-sa-ces.iam.gserviceaccount.com` (https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/tool/open-api, https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/tool/a2a-protocol, retrieved 2026-11-21); only `PROJECT_NUMBER` is replaced. The OpenAPI tool page links the service agent to the IAM service agents reference (https://docs.cloud.google.com/iam/docs/service-agents#customer-engagement-suite-service-account).
+- Snippet taken from https://docs.cloud.google.com/gemini-enterprise-cx/insights/export (the `gcloud projects add-iam-policy-binding` form for a CX service agent; its member and role are for BigQuery export, not for this page).
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/vpc-service-controls (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/vpc-service-controls/docs/overview (default denial and ingress rules / access levels; retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 

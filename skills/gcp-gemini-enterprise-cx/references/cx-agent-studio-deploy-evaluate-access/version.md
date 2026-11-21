@@ -44,10 +44,28 @@ A deployment is addressed by this resource name:
 projects/PROJECT_ID/locations/REGION_ID/apps/APPLICATION_ID/deployments/DEPLOYMENT_ID
 ```
 
+A `runSession` request selects the deployment with `config.deployment` in its JSON body (`POST https://ces.googleapis.com/v1/projects/PROJECT_ID/locations/REGION_ID/apps/APPLICATION_ID/sessions/SESSION_ID:runSession`):
+
+Adapted (not in the official docs): removed `config.session`, which the `ces` REST request schema does not define (the URL path carries the session), and the trailing comma after the `deployment` field so the body is valid JSON.
+
+```json
+{
+  "config": {
+    "deployment": "projects/PROJECT_ID/locations/REGION_ID/apps/APPLICATION_ID/deployments/DEPLOYMENT_ID"
+  },
+  "inputs": [
+    {
+      "text": "hi"
+    }
+  ]
+}
+```
+
 ## Notes
 
 - The source's restore paragraph is "If there are changes to the current application configuration since the last version was saved, restoring to a previous version first creates an automatic system version (authored by `system@google.com`) to save any unsaved work. This behavior lets you "revert a revert" if a mistake is made. If there are no changes to the current application configuration, the restore is a no-op." The last sentence is kept as written; the source does not define the comparison it refers to, and the page does not read it as preventing the restore of an older snapshot after saving.
-- Snippet taken from https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/deploy/api-access (the deployment resource-name pattern).
+- Snippet taken from https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/deploy/api-access (the deployment resource-name pattern and the `runSession` request body).
+- Corrected from the official docs: the source's request body sets `"session"` inside `config` and ends the `deployment` line with a trailing comma, which is invalid JSON; `SessionConfig` in the `ces` Discovery document has no `session` field, and the URL path carries the session. Both were removed, as on the API access page.
 - Deleting a version requires confirmation; try it in a disposable project first.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/version (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
