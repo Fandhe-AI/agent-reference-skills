@@ -37,6 +37,8 @@ for agent in client.runtimes.list(
 
 REST (`reasoningEngines.list`):
 
+These REST requests send the access token of the gcloud CLI's active account (`gcloud auth print-access-token` without `ACCOUNT`: "If not specified, the current active account will be used."), not the Application Default Credentials (ADC) that the SDK examples use. Run `gcloud auth login` and check the active account with `gcloud auth list` ("shows which account is active"), or use `gcloud auth application-default print-access-token` ("print an access token for your current Application Default Credentials") in its place to send the ADC token (gcloud 593.0.0 help).
+
 Adapted (not in the official docs): added the standard `fields` parameter ("Selector specifying which fields to include in a partial response", Discovery `aiplatform.v1`) so the list returns only names and display names, not each `spec`. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash

@@ -37,6 +37,8 @@ gcloud agent-registry mcp-servers search \
 
 Send a `POST` request to `agents:search` or `mcpServers:search` with the `searchString` field.
 
+These REST requests send the access token of the gcloud CLI's active account (`gcloud auth print-access-token` without `ACCOUNT`: "If not specified, the current active account will be used."), not the Application Default Credentials (ADC) that the SDK examples use. Run `gcloud auth login` and check the active account with `gcloud auth list` ("shows which account is active"), or use `gcloud auth application-default print-access-token` ("print an access token for your current Application Default Credentials") in its place to send the ADC token (gcloud 593.0.0 help).
+
 Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash

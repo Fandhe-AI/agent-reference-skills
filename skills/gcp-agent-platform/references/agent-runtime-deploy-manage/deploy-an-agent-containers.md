@@ -120,6 +120,8 @@ remote_agent = client.runtimes.create(
 
 ### Deploy from a container image: REST
 
+These REST requests send the access token of the gcloud CLI's active account (`gcloud auth print-access-token` without `ACCOUNT`: "If not specified, the current active account will be used."), not the Application Default Credentials (ADC) that the SDK examples use. Run `gcloud auth login` and check the active account with `gcloud auth list` ("shows which account is active"), or use `gcloud auth application-default print-access-token` ("print an access token for your current Application Default Credentials") in its place to send the ADC token (gcloud 593.0.0 help).
+
 Adapted (not in the official docs): added `spec.deploymentSpec.keepAliveProbe` (`httpGet.path`, `httpGet.port`, `maxSeconds`, field names of the `aiplatform.v1` Discovery document) with the same values as the SDK example above, and `spec.classMethods` with the same two operations. Each method declares `message` as a required string in `parameters`, in the shape of the `class_methods` example in deploy-an-agent.md, because the runtime-contract.md server returns `400` unless `input` is `{"message": <string>}`. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero. The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments; `-q` comes first so that curl does not read `.curlrc`, and the command runs in a subshell that starts with `set +x` and `set +a`, so shell tracing does not print the token, it is not exported to `curl`, and `TOKEN` does not stay in your shell.
 
 ```bash

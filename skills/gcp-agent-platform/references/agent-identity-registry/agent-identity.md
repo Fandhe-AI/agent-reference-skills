@@ -203,6 +203,7 @@ Adapted (not in the official docs): `projects/PROJECT_ID` in `effectiveIdentity`
 - Source inconsistency: the A2A delegation role list names `roles/aiplatform.user` on the subagent's resource, while the same page's A2A steps say "do not grant project-wide permissions" and grant a custom role with only `aiplatform.reasoningEngines.query` and `aiplatform.reasoningEngines.get` on Agent B's resource. The source's row is kept and the `agentInvoker` row is added (not in the official docs); `roles/aiplatform.user` grants more than calling the agent needs.
 - Corrected from the official docs: the `effectiveIdentity` example used `projects/PROJECT_ID`, while the same page builds agent principals as `principal://agents.global.org-ORGANIZATION_ID.system.id.goog/resources/aiplatform/projects/PROJECT_NUMBER/...` (the `add-iam-policy-binding` examples above).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/agent-identity (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- `reasoningEngines.getIamPolicy` is `POST` in the Discovery documents (`aiplatform.v1`: `httpMethod: POST`, path `v1/{+resource}:getIamPolicy`; `aiplatform.v1beta1`: `httpMethod: POST`, path `v1beta1/{+resource}:getIamPolicy`; query parameter `options.requestedPolicyVersion` in both), as listed under `aiplatform.projects.locations.reasoningEngines.getIamPolicy` in this skill's generated REST page `rest/aiplatform/aiplatform-9.md` (rest category).
 
 ## Related
 

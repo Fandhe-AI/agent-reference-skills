@@ -99,16 +99,16 @@ class_methods = [
 
 ### Deploy from Developer Connect (Python only)
 
-The link resource name has the format `projects/PROJECT_ID/locations/LOCATION/connections/CONNECTION_ID/gitRepositoryLinks/REPO_ID`; create it by following the Developer Connect "connect-repo" documentation.
+The link resource name has the format `projects/PROJECT_ID/locations/LOCATION/connections/CONNECTION_ID/gitRepositoryLinks/REPO_ID`; create it by following the Developer Connect "connect-repo" documentation. For reproducible deploys, set `revision` to a full commit SHA instead of a branch such as `main`, which can point to different code at each deploy; both Git examples below accept one (Options).
 
-Adapted (not in the official docs): added the line `"class_methods": class_methods,` marked `# Required.`, as in the public Git example below, because google-cloud-agentplatform 2.10.0 raises `ValueError` when `developer_connect_source` is given without `class_methods` (see Notes).
+Adapted (not in the official docs): added the line `"class_methods": class_methods,` marked `# Required.`, as in the public Git example below, because google-cloud-agentplatform 2.10.0 raises `ValueError` when `developer_connect_source` is given without `class_methods` (see Notes). `"revision": "main"` is written as `"revision": "COMMIT_SHA"` (a full commit SHA), so each deploy fetches the same code.
 
 ```text
 remote_agent = client.runtimes.create(
     config={
         "developer_connect_source": {                   # Required.
             "git_repository_link": "projects/PROJECT_ID/locations/LOCATION/connections/CONNECTION_ID/gitRepositoryLinks/REPO_ID",
-            "revision": "main",
+            "revision": "COMMIT_SHA",
             "dir": "path/to/dir",
         },
         "entrypoint_module": "agent",                   # Required.
@@ -124,12 +124,14 @@ remote_agent = client.runtimes.create(
 
 ### Deploy from a public Git repository (Python only)
 
+Adapted (not in the official docs): `"revision": "main"` is written as `"revision": "COMMIT_SHA"` (a full commit SHA; abbreviated SHAs are not supported), so each deploy fetches the same code.
+
 ```text
 remote_agent = client.runtimes.create(
     config={
         "git_source": {                                 # Required.
             "url": "https://github.com/OWNER/REPO.git", # Required.
-            "revision": "main",                         # Required.
+            "revision": "COMMIT_SHA",                   # Required.
             "dir": "path/to/dir",                       # Optional.
         },
         "entrypoint_module": "agent",                   # Required.
@@ -199,6 +201,7 @@ remote_agent.operation_schemas()
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the `class_methods` example declared `"name": "method_name"` with `param1` (string, required) and `param2` (integer). google-cloud-agentplatform 2.10.0 reads the method name from `name` and the mode from `api_mode` (`_METHOD_NAME_KEY_IN_SCHEMA`, `_MODE_KEY_IN_SCHEMA` in `agentplatform/_genai/_runtimes_utils.py`); `""` is `_STANDARD_API_MODE`.
 - `identity_type` and `service_account`: in google-cloud-agentplatform 2.10.0, `types.IdentityType.AGENT_IDENTITY` is documented as "Use Agent Identity. The `service_account` field must not be set." (`agentplatform/_genai/types/common.py`), and `runtimes.create` / `update` (`agentplatform/_genai/runtimes.py`) copy both fields into the runtime spec without checking them, so the SDK raises no error of its own; the rejection, if any, comes from the API, and its message is not in the SDK or the source.
+- Adapted from the official docs: both Git examples set `"revision": "main"`; they use `COMMIT_SHA` instead. The `aiplatform.v1` Discovery document and google-cloud-agentplatform 2.10.0 (`agentplatform/_genai/types/common.py`) describe the public Git `revision` as "a branch, a tag, or a full commit SHA. Abbreviated commit SHAs are not supported." and the Developer Connect `revision` as "a branch, a tag, a commit SHA, or any Git ref".
 
 ## Related
 
