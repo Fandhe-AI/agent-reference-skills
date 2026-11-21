@@ -760,7 +760,7 @@ equivalents.
 | `COUNT(DISTINCT x)` | [`COUNT(DISTINCT x)`](../googlesql-functions/aggregate_functions.md#count) for an exact count, or [`APPROX_COUNT_DISTINCT(x)`](../googlesql-functions/approximate_aggregate_functions.md#approx_count_distinct) for an approximate count | see [notes below](#count-function-comparison) |
 | `EXACT_COUNT_DISTINCT(x)` | [`COUNT(DISTINCT x)`](../googlesql-functions/aggregate_functions.md#count) | see [notes below](#count-function-comparison) |
 | `QUANTILES(x, boundaries)` | [`APPROX_QUANTILES(x, boundaries-1)`](../googlesql-functions/approximate_aggregate_functions.md#approx_quantiles) | `number` must be an `INT64` literal or query parameter, so `boundaries-1` stands for the value, not an expression to write: pass it as a literal, such as `APPROX_QUANTILES(x, 20)` for `QUANTILES(x, 21)`, or compute it beforehand and pass it as a query parameter (added; see Notes). The output needs to be [unnested](#removing-repetition-with-flatten). To select a quantile by its position, as in `NTH(11, QUANTILES(x, 21))`, use the [array subscript operator](../googlesql-syntax/operators.md#array-subscript-operator), such as `APPROX_QUANTILES(x, 20)[SAFE_ORDINAL(11)]`. If you expand the array into rows, keep the positions with `WITH OFFSET` and sort by the offset, because [`UNNEST` destroys the order of elements](../googlesql-syntax/query-syntax-1.md#unnest-operator) in the input array |
-| `TOP(x, num), COUNT(*)` | [`APPROX_TOP_COUNT(x, num)`](../googlesql-functions/approximate_aggregate_functions.md#approx_top_count) | `APPROX_TOP_COUNT` returns one `ARRAY<STRUCT>` value whose fields are `value` and `count`, while the legacy SQL query returns one row for each value; to get those rows, expand the array with `UNNEST`, select its `value` and `count` fields, and add `ORDER BY count DESC`, because the rows of a query without an outer `ORDER BY` have no fixed order |
+| `TOP(x, num), COUNT(*)` | [`APPROX_TOP_COUNT(x, num)`](../googlesql-functions/approximate_aggregate_functions.md#approx_top_count) | `APPROX_TOP_COUNT` returns one `ARRAY<STRUCT>` value whose fields are `value` and `count`, while the legacy SQL query returns one row for each value; to get those rows, expand the array with `UNNEST`, select its `value` and `count` fields, and add `ORDER BY count DESC`, because the rows of a query without an outer `ORDER BY` have no fixed order. `num` must be an `INT64` literal or query parameter (see `APPROX_TOP_COUNT`). Both functions return approximate results (`TOP` "may only return approximate results", legacy-sql/legacy-sql-1.md, TOP() function), and their results need not match, so use `APPROX_TOP_COUNT` where an approximation is acceptable; where exact counts and ranks are needed, use `GROUP BY x`, `COUNT(*)`, `ORDER BY` the count `DESC` and `LIMIT num`, the query that `TOP` simplifies (added; see Notes) |
 | `NTH(index, arr) WITHIN RECORD` | [`arr[SAFE_ORDINAL(index)]`](../googlesql-syntax/operators.md#array-subscript-operator) |   |
 | `COUNT(arr) WITHIN RECORD` | [`ARRAY_LENGTH(arr)`](../googlesql-functions/array_functions.md#array_length) | `ARRAY_LENGTH` counts every element, including `NULL` elements; to count only the non-`NULL` values, use `(SELECT COUNT(x) FROM UNNEST(arr) AS x)` for an array of scalar values, or `(SELECT COUNT(field) FROM UNNEST(record))` for a field in a repeated record. Use `ARRAY_LENGTH` only when no element can be `NULL`, and write `COALESCE(ARRAY_LENGTH(arr), 0)` when `arr` itself can be `NULL`, because `ARRAY_LENGTH` returns `NULL` for a `NULL` array while the `COUNT` forms return 0 |
 | `HOST(url)` | [`NET.HOST(url)`](../googlesql-functions/net_functions.md#nethost) | see [differences below](#url-function-comparison) |
@@ -1016,7 +1016,13 @@ LIMIT 5;
 
 This query returns `url` and `has_downloads` as top-level columns; they are not
 part of a `repository` record or struct. To return them as part of a struct, use
-the `STRUCT` operator:
+the `STRUCT` operator. Struct values can be `NULL` or can have `NULL` field values (see
+[typeless struct syntax](../googlesql-syntax/data-types.md#typeless-struct-syntax)), and the operator
+builds a struct from the two fields, so for a row whose `repository` is `NULL` the query returns a
+struct with two `NULL` fields, not a `NULL` struct, and a later `repository IS NULL` test no longer
+matches that row. If `repository` can be `NULL`, build the struct only for the other rows, such as
+`IF(repository IS NULL, NULL, STRUCT(repository.url, repository.has_downloads)) AS repository`; the
+example below assumes that `repository` is not `NULL` (added; see Notes):
 
 Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
@@ -1465,6 +1471,13 @@ the tables for the dates explicitly and combine them with `UNION ALL`. `UNION AL
 columns by position, while the wildcard table matches them by name, so select the needed columns
 by name in the same order and with the same types in every query of the union, or use
 `UNION ALL BY NAME` (see [set operators](../googlesql-syntax/query-syntax-3.md#set-operators)). (Added; see Notes.)
+`TABLE_DATE_RANGE` skips the dates that have no daily table, while a reference to a missing table
+fails with the `Not Found: Table` error that `TABLE_DATE_RANGE_STRICT` returns for a missing date
+(legacy-sql/legacy-sql-2.md, Table wildcard functions). So, to keep the behavior of
+`TABLE_DATE_RANGE`, first find the daily tables that exist, for example in the
+[`INFORMATION_SCHEMA.TABLES` view](../information-schema/tables.md), and list only those tables in
+the union; listing every date of the range, so that a missing table makes the query fail, matches
+`TABLE_DATE_RANGE_STRICT`. (Added; see Notes.)
 
 Adapted (not in the official docs): listed the suffixes of the dates in the range in a literal `IN` condition, so that the filter is a constant expression and limits the tables scanned to the tables for those dates. The first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
 
@@ -1835,6 +1848,9 @@ The permissions required to access the partition metadata differ between legacy 
 - Added (not in the official docs): the `STRFTIME_UTC_USEC` row passes `fmt` unchanged to `FORMAT_TIMESTAMP`; legacy-sql/legacy-sql-1.md points to the strftime function in C++ for the format, and the GoogleSQL format elements (googlesql-syntax/format-elements.md) have `%I`, `%M`, `%S` and `%p` but no `%r`, so a remark is added that `fmt` is unchanged only when GoogleSQL has its elements, and that `%r` is written as `%I:%M:%S %p`.
 - Added (not in the official docs): the text says that legacy SQL `COUNT(DISTINCT x)` returns an approximate count above a threshold; legacy-sql/legacy-sql-2.md says that the `COUNT([DISTINCT] field)` window function "produces exact results when used as a window function", so a sentence is added that the threshold applies to the aggregate function only.
 - Added (not in the official docs): the option to delete views `V` and `W` and recreate them under the same names now says what it means for authorized views, from access-control-iam/authorized-views.md: deleting the view removes its authorization, a deleted authorized view takes up to 24 hours to leave the list ("wait 24 hours before reusing its name or use a unique name"), and the recreated view needs to be authorized on the source dataset again; views with new names can be authorized and checked before the switch.
+- Added (not in the official docs): the `UNION ALL` alternative to the wildcard table now says to list only the daily tables that exist when translating `TABLE_DATE_RANGE`, which skips missing dates, because a reference to a missing table fails with the `Not Found: Table` error that legacy-sql/legacy-sql-2.md describes for `TABLE_DATE_RANGE_STRICT`; listing every date matches `TABLE_DATE_RANGE_STRICT`.
+- Added (not in the official docs): the `STRUCT` example for nested fields now says that the operator builds a struct with `NULL` fields, not a `NULL` struct, for a row whose `repository` is `NULL` (googlesql-syntax/data-types.md: "struct values can be `NULL`, or can have `NULL` field values"), and how to keep the `NULL`.
+- Added (not in the official docs): the `TOP(x, num), COUNT(*)` row now says that `num` of `APPROX_TOP_COUNT` must be an `INT64` literal or query parameter (googlesql-functions/approximate_aggregate_functions.md), that `TOP` and `APPROX_TOP_COUNT` both return approximate results, and that an exact translation uses `GROUP BY ... ORDER BY ... LIMIT`, which `TOP` simplifies (legacy-sql/legacy-sql-1.md).
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
