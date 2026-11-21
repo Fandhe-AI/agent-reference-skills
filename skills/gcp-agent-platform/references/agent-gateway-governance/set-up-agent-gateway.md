@@ -94,6 +94,8 @@ gcloud network-security authz-policies import AUTHORIZATION_POLICY_NAME \
 
 ### Egress gateway with Terraform
 
+This example creates only the gateway resource. Before the gateway can send any outbound traffic, attach an IAP authorization extension and an `AuthzPolicy` to it as in "Attach an IAP authorization policy (egress)" above: without an attached `AuthzPolicy`, an Agent-to-Anywhere gateway adopts a default-deny policy and blocks all outbound traffic.
+
 ```terraform
 resource "google_network_services_agent_gateway" "egress_gateway" {
   project   = "PROJECT_ID"

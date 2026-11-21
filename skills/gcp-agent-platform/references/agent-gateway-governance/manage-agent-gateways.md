@@ -106,7 +106,9 @@ gcloud service-extensions authz-extensions import AUTHZ_EXTENSION_NAME \
 
 ### Disassociate an Agent Runtime agent
 
-The console and gcloud do not support modifying Agent Runtime gateway bindings; clear `spec.deploymentSpec.agentGatewayConfig` with `reasoningEngines.patch`:
+The console and gcloud do not support modifying Agent Runtime gateway bindings; clear `spec.deploymentSpec.agentGatewayConfig` with `reasoningEngines.patch`.
+
+Before you run it: the request fails while a manual revision traffic split is active, so remove the split first; when it succeeds, it creates a new revision and irreversibly archives every previous revision of the agent, including any known-good revision you might roll back to.
 
 ```bash
 curl -X PATCH \
