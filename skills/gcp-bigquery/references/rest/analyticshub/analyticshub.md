@@ -1,12 +1,14 @@
 ---
-source: https://analyticshub.googleapis.com/$discovery/rest?version=v1
+source:
+  - https://analyticshub.googleapis.com/$discovery/rest?version=v1
+  - https://analyticshub.googleapis.com/$discovery/rest?version=v1beta1
 ---
 
 # Analytics Hub API REST API (analyticshub)
 
 ## Signature / Usage
 
-Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL, parameters and request / response types shown for a method come from the first version on its `Versions` line; for another version, see the Discovery document of that version under Source in Notes.
+Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, a type marked "same fields in ..." has one definition for those versions, but the types it references differ by version, and an unmarked type is the same in every listed version, including the types it references. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
 
 ### `analyticshub.organizations.locations.dataExchanges.list`
 
@@ -14,7 +16,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - `GET https://analyticshub.googleapis.com/v1/{+organization}/dataExchanges`
 - Lists all data exchanges from projects in a given organization and location.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `ListOrgDataExchangesResponse`
+- Request: —; Response: [`ListOrgDataExchangesResponse`](../../rest-schemas/analyticshub/analyticshub.md#listorgdataexchangesresponse) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `analyticshub.projects.locations.dataExchanges.create`
 
@@ -22,7 +24,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - `POST https://analyticshub.googleapis.com/v1/{+parent}/dataExchanges`
 - Creates a new data exchange.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `DataExchange`; Response: `DataExchange`
+- Request: [`DataExchange` (v1)](../../rest-schemas/analyticshub/analyticshub.md#dataexchange), [`DataExchange` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#dataexchange-v1beta1); Response: [`DataExchange` (v1)](../../rest-schemas/analyticshub/analyticshub.md#dataexchange), [`DataExchange` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#dataexchange-v1beta1)
 
 ### `analyticshub.projects.locations.dataExchanges.delete`
 
@@ -38,7 +40,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - `GET https://analyticshub.googleapis.com/v1/{+name}`
 - Gets the details of a data exchange.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `DataExchange`
+- Request: —; Response: [`DataExchange` (v1)](../../rest-schemas/analyticshub/analyticshub.md#dataexchange), [`DataExchange` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#dataexchange-v1beta1)
 
 ### `analyticshub.projects.locations.dataExchanges.getIamPolicy`
 
@@ -54,7 +56,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - `GET https://analyticshub.googleapis.com/v1/{+parent}/dataExchanges`
 - Lists all data exchanges in a given project and location.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `ListDataExchangesResponse`
+- Request: —; Response: [`ListDataExchangesResponse`](../../rest-schemas/analyticshub/analyticshub.md#listdataexchangesresponse) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `analyticshub.projects.locations.dataExchanges.listSubscriptions`
 
@@ -71,7 +73,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - `POST https://analyticshub.googleapis.com/v1/{+parent}/listings`
 - Creates a new listing.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `Listing`; Response: `Listing`
+- Request: [`Listing` (v1)](../../rest-schemas/analyticshub/analyticshub.md#listing), [`Listing` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#listing-v1beta1); Response: [`Listing` (v1)](../../rest-schemas/analyticshub/analyticshub.md#listing), [`Listing` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#listing-v1beta1)
 
 ### `analyticshub.projects.locations.dataExchanges.listings.delete`
 
@@ -87,7 +89,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - `GET https://analyticshub.googleapis.com/v1/{+name}`
 - Gets the details of a listing.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `Listing`
+- Request: —; Response: [`Listing` (v1)](../../rest-schemas/analyticshub/analyticshub.md#listing), [`Listing` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#listing-v1beta1)
 
 ### `analyticshub.projects.locations.dataExchanges.listings.getIamPolicy`
 
@@ -103,7 +105,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - `GET https://analyticshub.googleapis.com/v1/{+parent}/listings`
 - Lists all listings in the parent `projects/{projectsId}/locations/{locationsId}/dataExchanges/{dataExchangesId}`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `ListListingsResponse`
+- Request: —; Response: [`ListListingsResponse`](../../rest-schemas/analyticshub/analyticshub.md#listlistingsresponse) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `analyticshub.projects.locations.dataExchanges.listings.listSubscriptions`
 
@@ -120,7 +122,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - `PATCH https://analyticshub.googleapis.com/v1/{+name}`
 - Updates an existing listing.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `Listing`; Response: `Listing`
+- Request: [`Listing` (v1)](../../rest-schemas/analyticshub/analyticshub.md#listing), [`Listing` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#listing-v1beta1); Response: [`Listing` (v1)](../../rest-schemas/analyticshub/analyticshub.md#listing), [`Listing` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#listing-v1beta1)
 
 ### `analyticshub.projects.locations.dataExchanges.listings.setIamPolicy`
 
@@ -134,9 +136,9 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 
 - Versions: v1, v1beta1
 - `POST https://analyticshub.googleapis.com/v1/{+name}:subscribe`
-- Subscribes to a listing. A listing can reference a BigQuery dataset or a Pub/Sub topic. Subscribing to a listing for a BigQuery dataset creates a linked dataset (`destinationDataset` in `SubscribeListingRequest`); subscribing to a listing for a Pub/Sub topic creates a linked Pub/Sub subscription (`destinationPubsubSubscription`). (Corrected from the Discovery document; the original description is quoted in Notes.)
+- Subscribes to a listing. A listing can reference a BigQuery dataset or a Pub/Sub topic. Subscribing to a listing for a BigQuery dataset creates a linked dataset (`destinationDataset` in `SubscribeListingRequest`); subscribing to a listing for a Pub/Sub topic creates a linked Pub/Sub subscription (`destinationPubsubSubscription`). Pub/Sub subscriptions are v1 only: the v1beta1 `SubscribeListingRequest` has only `destinationDataset`, so with v1beta1 subscribe only to listings for a BigQuery dataset. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `SubscribeListingRequest`; Response: `SubscribeListingResponse`
+- Request: [`SubscribeListingRequest` (v1)](../../rest-schemas/analyticshub/analyticshub.md#subscribelistingrequest), [`SubscribeListingRequest` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#subscribelistingrequest-v1beta1); Response: [`SubscribeListingResponse` (v1)](../../rest-schemas/analyticshub/analyticshub.md#subscribelistingresponse), [`SubscribeListingResponse` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#subscribelistingresponse-v1beta1)
 
 ### `analyticshub.projects.locations.dataExchanges.listings.testIamPermissions`
 
@@ -152,7 +154,7 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - `PATCH https://analyticshub.googleapis.com/v1/{+name}`
 - Updates an existing data exchange.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `DataExchange`; Response: `DataExchange`
+- Request: [`DataExchange` (v1)](../../rest-schemas/analyticshub/analyticshub.md#dataexchange), [`DataExchange` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#dataexchange-v1beta1); Response: [`DataExchange` (v1)](../../rest-schemas/analyticshub/analyticshub.md#dataexchange), [`DataExchange` (v1beta1)](../../rest-schemas/analyticshub/analyticshub.md#dataexchange-v1beta1)
 
 ### `analyticshub.projects.locations.dataExchanges.queryTemplates.approve`
 
@@ -290,12 +292,14 @@ Base URL: `https://analyticshub.googleapis.com`. Methods are listed by `id`; the
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
 - Request: `SetIamPolicyRequest`; Response: `Policy`
 
-### Example request line
+### Example request
 
-Generated from the Discovery entry of `analyticshub.organizations.locations.dataExchanges.list` (not in the official docs); replace the `{...}` path variables (URL-encode query values). The request needs an OAuth 2.0 access token in an `Authorization: Bearer` header; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
+Generated from the Discovery entry of `analyticshub.organizations.locations.dataExchanges.list` (not in the official docs); replace the upper-case placeholders (path variables from the method's `flatPath`; URL-encode query values) and `ACCESS_TOKEN`. `ACCESS_TOKEN` is an OAuth 2.0 access token for a principal allowed to call the method; the Google Cloud client libraries (the gcp-client-libraries skill) obtain and send it:
 
 ```http
-GET https://analyticshub.googleapis.com/v1/{+organization}/dataExchanges
+GET /v1/organizations/ORGANIZATION/locations/LOCATION/dataExchanges HTTP/1.1
+Host: analyticshub.googleapis.com
+Authorization: Bearer ACCESS_TOKEN
 ```
 
 ## Options / Props
@@ -538,12 +542,12 @@ GET https://analyticshub.googleapis.com/v1/{+organization}/dataExchanges
 
 - Generated from the Discovery document(s) v1, v1beta1 of `analyticshub` (retrieved 2026-11-14). Resources on this page: organizations, projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when the description says that some requests must specify it (for example, `options.requestedPolicyVersion` must be 3 to get a policy with conditional role bindings). Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/analyticshub/`; they are the `schemas` section of the Discovery documents in Source.
 - Corrected from the Discovery document: the description of `analyticshub.projects.locations.dataExchanges.listings.list` is "Lists all listings in a given project and location.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Corrected from the Discovery document: the description of `analyticshub.projects.locations.dataExchanges.queryTemplates.list` is "Lists all QueryTemplates in a given project and location.", but the path pattern of `parent` is `^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+$`, so a call covers only that parent; the summary of this method on this page names that parent.
 - Path variables whose description starts with "Output only" are still required in the URL: they name the resource that the method acts on, so they are `yes` in the Required column: `name` in `analyticshub.projects.locations.dataExchanges.listings.patch`, `name` in `analyticshub.projects.locations.dataExchanges.patch`, `name` in `analyticshub.projects.locations.dataExchanges.queryTemplates.patch`. The Discovery document gives them the description of the resource field of the same name, and "Output only" applies to that field of the resource, not to the URL. In the parameter tables their description starts with "Required in the URL" in place of the leading "Output only".
 - Corrected from the Discovery document: the `parent` parameter of `analyticshub.projects.locations.dataExchanges.queryTemplates.create` and the `name` parameter of `analyticshub.projects.locations.dataExchanges.queryTemplates.get` are both described as "The parent resource path of the QueryTemplate" with an example that ends in the template ID (`create`: "Required. The parent resource path of the QueryTemplate. e.g. `projects/myproject/locations/us/dataExchanges/123/queryTemplates/myQueryTemplate`."; `get`: the same sentence with `myqueryTemplate`). The table cells for these two parameters are replaced with corrected descriptions. Their path patterns in the same document differ: `parent` of `create` is the data exchange (`^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+$`, for example `projects/myproject/locations/us/dataExchanges/123`), and the new template ID goes in the query parameter `queryTemplateId`; `name` of `get` is the full name of the template (`^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+/queryTemplates/[^/]+$`), as for `approve`, `delete` and `submit`.
-- Corrected from the Discovery document: the description of `analyticshub.projects.locations.dataExchanges.listings.subscribe` is "Subscribes to a listing. Currently, with Analytics Hub, you can create listings that reference only BigQuery datasets. Upon subscription to a listing for a BigQuery dataset, Analytics Hub creates a linked dataset in the subscriber's project." and is replaced on this page, because it says that listings can reference only BigQuery datasets, but its request type `SubscribeListingRequest` in the same document has both `destinationDataset` ("Input only. BigQuery destination dataset to create for the subscriber.") and `destinationPubsubSubscription` ("Input only. Destination Pub/Sub subscription to create for the subscriber."), and [analytics-hub-introduction.md](../../sharing-analytics-hub/analytics-hub-introduction.md) says that subscribing to a listing with a shared Pub/Sub topic creates a linked Pub/Sub subscription in the subscriber project. Subscribing to a listing for a BigQuery dataset creates a linked dataset; subscribing to a listing for a Pub/Sub topic creates a linked Pub/Sub subscription.
+- Corrected from the Discovery document: the description of `analyticshub.projects.locations.dataExchanges.listings.subscribe` is "Subscribes to a listing. Currently, with Analytics Hub, you can create listings that reference only BigQuery datasets. Upon subscription to a listing for a BigQuery dataset, Analytics Hub creates a linked dataset in the subscriber's project." and is replaced on this page, because it says that listings can reference only BigQuery datasets, but its request type `SubscribeListingRequest` in the v1 document has both `destinationDataset` ("Input only. BigQuery destination dataset to create for the subscriber.") and `destinationPubsubSubscription` ("Input only. Destination Pub/Sub subscription to create for the subscriber."), and [analytics-hub-introduction.md](../../sharing-analytics-hub/analytics-hub-introduction.md) says that subscribing to a listing with a shared Pub/Sub topic creates a linked Pub/Sub subscription in the subscriber project. Subscribing to a listing for a BigQuery dataset creates a linked dataset; subscribing to a listing for a Pub/Sub topic creates a linked Pub/Sub subscription. This applies to v1 only: the v1beta1 `SubscribeListingRequest` has only `destinationDataset`, so the v1beta1 method subscribes only to listings for a BigQuery dataset.
 - Corrected from the Discovery document: `analyticshub.projects.locations.dataExchanges.listSubscriptions` and `analyticshub.projects.locations.dataExchanges.listings.listSubscriptions` share the URL template `v1/{+resource}:listSubscriptions`, the description "Lists all subscriptions on a given Data Exchange or Listing." and the `resource` description "Required. Resource name of the requested target. This resource may be either a Listing or a DataExchange. e.g. projects/123/locations/us/dataExchanges/456 OR e.g. projects/123/locations/us/dataExchanges/456/listings/789". Their `resource` path patterns differ (`^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+$` and `^projects/[^/]+/locations/[^/]+/dataExchanges/[^/]+/listings/[^/]+$`), so on this page each method's description and `resource` example are limited to the resource its pattern accepts..
 - `analyticshub.projects.locations.dataExchanges.subscribe`, `analyticshub.projects.locations.subscriptions.delete` and `analyticshub.projects.locations.subscriptions.refresh` return a long-running `Operation`. The Discovery documents of this API define no `operations` resource, so this page lists no method that gets the operation. The returned `Operation` is its state at the time of the response: if `done` is `true`, either `error` or `response` is set; if `done` is `false`, the operation is still in progress, and the methods on this page and that first response alone cannot confirm that it finished or failed (official reference: https://docs.cloud.google.com/bigquery/docs/reference/analytics-hub/rest/v1/Operation , retrieved 2026-11-20).
 - Source: https://analyticshub.googleapis.com/$discovery/rest?version=v1, https://analyticshub.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)

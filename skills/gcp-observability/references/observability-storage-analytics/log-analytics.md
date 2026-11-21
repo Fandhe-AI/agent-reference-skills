@@ -48,7 +48,7 @@ Snippet taken from https://docs.cloud.google.com/logging/docs/analyze/query-and-
 ## Notes
 
 - Observability Analytics queries log views and analytics views, supports pipe syntax SQL, and can join log and trace data. Log views have a system-defined schema; you define the schema of analytics views.
-- A linked BigQuery dataset (after upgrading the log bucket) lets you query log data from BigQuery without exporting it. Creating one doesn't ingest data into BigQuery, and there are no BigQuery ingestion or storage costs for it; BigQuery analysis charges apply to SQL run on the linked dataset (BigQuery Studio, API, bq). BigQuery itself belongs to `gcp-bigquery` (planned).
+- A linked BigQuery dataset (after upgrading the log bucket) lets you query log data from BigQuery without exporting it. Creating one doesn't ingest data into BigQuery, and there are no BigQuery ingestion or storage costs for it; BigQuery analysis charges apply to SQL run on the linked dataset (BigQuery Studio, API, bq). BigQuery itself belongs to the `gcp-bigquery` skill.
 - Pricing: see the Google Cloud Observability pricing page (https://cloud.google.com/products/observability/pricing); routed data also incurs Cloud Storage, BigQuery and Pub/Sub pricing.
 - Upgrading a bucket doesn't affect Logs Explorer usage.
 - Logs can contain personal data or secrets; limit who gets Logs Viewer / Logs View Accessor roles.

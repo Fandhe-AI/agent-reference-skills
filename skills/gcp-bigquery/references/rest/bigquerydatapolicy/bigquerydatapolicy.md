@@ -8,7 +8,7 @@ source:
 
 ## Signature / Usage
 
-Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v2). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, and an unmarked type is the same in every listed version. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
+Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v2). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, a type marked "same fields in ..." has one definition for those versions, but the types it references differ by version, and an unmarked type is the same in every listed version, including the types it references. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.addGrantees`
 
@@ -56,7 +56,7 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 - `GET https://bigquerydatapolicy.googleapis.com/v2/{+parent}/dataPolicies`
 - List all of the data policies in the parent `projects/{projectsId}/locations/{locationsId}`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `ListDataPoliciesResponse`
+- Request: —; Response: [`ListDataPoliciesResponse`](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#listdatapoliciesresponse) (same fields in v2, v1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.patch`
 
@@ -80,7 +80,7 @@ Base URL: `https://bigquerydatapolicy.googleapis.com`. Methods are listed by `id
 - `POST https://bigquerydatapolicy.googleapis.com/v1/{+name}:rename`
 - Renames the id (display name) of the specified data policy.
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: `RenameDataPolicyRequest`; Response: `DataPolicy`
+- Request: `RenameDataPolicyRequest`; Response: [`DataPolicy` (v1)](../../rest-schemas/bigquerydatapolicy/bigquerydatapolicy.md#datapolicy-v1)
 
 ### `bigquerydatapolicy.projects.locations.dataPolicies.setIamPolicy`
 

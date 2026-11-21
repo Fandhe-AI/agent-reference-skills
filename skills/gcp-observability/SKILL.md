@@ -203,7 +203,7 @@ skills/gcp-observability/
 - `gcp-cli` — gcloud 全般のインストール・設定・認証・出力フォーマット
 - `gcp-client-libraries` — Node.js / Python / Rust のクライアントライブラリ共通パターン（認証・リトライ・ページネーション）。本スキルは Logging / Profiler / Error Reporting の個別ライブラリの使い方
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
-- `gcp-bigquery`（予定）— sink の宛先と linked dataset の BigQuery
+- `gcp-bigquery` — sink の宛先と linked dataset の BigQuery
 - `gcp-messaging-workflows`— sink / notification channel の宛先となる Pub/Sub
 - `gcp-devops` — Cloud Build・Artifact Registry
 - `gcp-iac` — Terraform
@@ -221,7 +221,7 @@ skills/gcp-observability/
 - 料金（取得していない）。各プロダクトの公式の料金ページで確認する
 - Cloud Debugger（停止済み。停止通知のみ `observability-overview/deprecations.md`）、MQL の個別手順（非推奨。概要と非推奨通知のみ）
 - Java / C# / PHP / C++ / Ruby の SDK（Go は Cloud Profiler の `profiling-go.md` のみ収録）、Terraform、Console の操作手順（各ページの Notes に省略した形式を記載）
-- Pub/Sub・BigQuery 側の設定（予定スキル）、Security Command Center・Access Transparency（`gcp-security-compliance`）
+- Pub/Sub 側の設定（`gcp-messaging-workflows`）・BigQuery 側の設定（`gcp-bigquery`）、Security Command Center・Access Transparency（`gcp-security-compliance`）
 - Personalized Service Health の REST（Discovery document なし）
 
 ## 鮮度・ライセンス・既知の制約

@@ -237,7 +237,7 @@ skills/gcp-devops/
 - `gcp-client-libraries` — Node.js / Python / Rust のクライアントライブラリ共通パターン
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `gcp-iac` — Infrastructure Manager・Terraform・Config Connector。Application Design Center は Terraform を生成するが、Terraform 自体はこちら。本スキルは Application Design Center の Terraform のインポート（`application-design-center`）
-- `gcp-bigquery`（予定）— BigQuery
+- `gcp-bigquery` — BigQuery
 - `gcp-agent-platform`（予定）— Agent Platform
 - `gcp-api-management`（予定）— Apigee・API Gateway
 - `github-docs` — GitHub Actions 自体。GitHub Actions から Google Cloud への認証は `gcp-foundation` の Workload Identity Federation

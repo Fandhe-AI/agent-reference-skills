@@ -8,7 +8,7 @@ source:
 
 ## Signature / Usage
 
-Base URL: `https://bigqueryconnection.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, and an unmarked type is the same in every listed version. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
+Base URL: `https://bigqueryconnection.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, a type marked "same fields in ..." has one definition for those versions, but the types it references differ by version, and an unmarked type is the same in every listed version, including the types it references. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
 
 ### `bigqueryconnection.projects.locations.connections.create`
 
@@ -48,7 +48,7 @@ Base URL: `https://bigqueryconnection.googleapis.com`. Methods are listed by `id
 - `GET https://bigqueryconnection.googleapis.com/v1/{+parent}/connections`
 - Returns a list of connections in the parent `projects/{projectsId}/locations/{locationsId}`. (Corrected from the Discovery document; the original description is quoted in Notes.)
 - Scopes: `https://www.googleapis.com/auth/bigquery`, `https://www.googleapis.com/auth/cloud-platform`
-- Request: —; Response: `ListConnectionsResponse`
+- Request: —; Response: [`ListConnectionsResponse`](../../rest-schemas/bigqueryconnection/bigqueryconnection.md#listconnectionsresponse) (same fields in v1, v1beta1; types it references differ by version, so follow the definition of the version you call in its field table)
 
 ### `bigqueryconnection.projects.locations.connections.patch`
 

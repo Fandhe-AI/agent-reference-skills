@@ -121,7 +121,7 @@ gcloud pubsub subscriptions create SUBSCRIPTION_ID \
 - Quotas: BigQuery subscriber throughput is limited per region (see Pub/Sub quotas and limits). Only the Storage Write API (gRPC) throughput quota is consumed; other Storage Write API quota considerations can be ignored.
 - Pricing is not copied; see https://cloud.google.com/pubsub/pricing#pubsub.
 - Snippet taken from https://docs.cloud.google.com/pubsub/docs/create-bigquery-subscription (the basic create command; the source page of this overview has no code).
-- BigQuery itself (tables, datasets, CDC prerequisites) is outside this skill; it belongs to the planned `gcp-bigquery`.
+- BigQuery itself (tables, datasets, CDC prerequisites) is outside this skill; it belongs to the `gcp-bigquery` skill.
 - Source: https://docs.cloud.google.com/pubsub/docs/bigquery (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

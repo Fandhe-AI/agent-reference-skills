@@ -73,11 +73,10 @@ These products are not covered by any gcp-* skill (status: 対象外). Use the o
 | Subscription Linking | `readerrevenuesubscriptionlinking.googleapis.com` (v1) | readerrevenuesubscriptionlinking.googleapis.com API. | — | `readerrevenuesubscriptionlinking.` | 3 | — | — | https://developers.google.com/news/subscribe/subscription-linking/overview | 対象外 |
 
 ```bash
-gcloud help
-gcloud <group> --help
+gcloud --help
 ```
 
-The first command lists all groups; the second lists the commands of one group.
+The command shows the top-level help, which lists the GA command groups. Every top-level group, including the alpha- and beta-only groups, is listed with its owner skill in `../gcloud-groups/assignment.md` (from `gcloud meta list-commands`).
 
 ## Notes
 

@@ -27,11 +27,11 @@ Owner skill: `gcp-security` (status: 収録済み). gcloud groups: `access-conte
 | Secret Manager | `secretmanager.googleapis.com` (v1, v1beta1, v1beta2) | Stores sensitive data such as API keys, passwords, and certificates. Provides convenience while improving security. | `secrets` | `secretmanager.` | 6 | — | — | https://cloud.google.com/secret-manager/ | 収録済み |
 
 ```bash
-gcloud help
-gcloud <group> --help
+gcloud --help
+gcloud access-context-manager --help
 ```
 
-The first command lists all groups; the second lists the commands of one group.
+The first command shows the top-level help, which lists the GA command groups; the second lists the commands of one group (replace `access-context-manager` with another group in the list above; a group without GA commands needs `gcloud alpha` or `gcloud beta` before its name). Every top-level group, including the alpha- and beta-only groups, is listed with its owner skill in `../gcloud-groups/assignment.md` (from `gcloud meta list-commands`).
 
 ## Notes
 

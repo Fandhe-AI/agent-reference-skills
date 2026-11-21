@@ -7,7 +7,7 @@
 | gcp-agent-platform-ml | Products owned by this skill (2) | [gcp-agent-platform-ml.md](./gcp-agent-platform-ml.md) |
 | gcp-ai-apis | Products owned by this skill (23) | [gcp-ai-apis.md](./gcp-ai-apis.md) |
 | gcp-api-management | Products owned by this skill (8) | [gcp-api-management.md](./gcp-api-management.md) |
-| gcp-bigquery | Products owned by this skill (16) | [gcp-bigquery.md](./gcp-bigquery.md) |
+| gcp-bigquery | Products owned by this skill (14) | [gcp-bigquery.md](./gcp-bigquery.md) |
 | gcp-compute | Products owned by this skill (10) | [gcp-compute.md](./gcp-compute.md) |
 | gcp-data-pipelines | Products owned by this skill (10) | [gcp-data-pipelines.md](./gcp-data-pipelines.md) |
 | gcp-databases-nosql | Products owned by this skill (6) | [gcp-databases-nosql.md](./gcp-databases-nosql.md) |
@@ -18,6 +18,7 @@
 | gcp-hybrid-migration | Products owned by this skill (7) | [gcp-hybrid-migration.md](./gcp-hybrid-migration.md) |
 | gcp-iac | Products owned by this skill (4) | [gcp-iac.md](./gcp-iac.md) |
 | gcp-integration | Products owned by this skill (3) | [gcp-integration.md](./gcp-integration.md) |
+| gcp-knowledge-catalog | Products owned by this skill (2) | [gcp-knowledge-catalog.md](./gcp-knowledge-catalog.md) |
 | gcp-messaging-workflows | Products owned by this skill (5) | [gcp-messaging-workflows.md](./gcp-messaging-workflows.md) |
 | gcp-networking | Products owned by this skill (13) | [gcp-networking.md](./gcp-networking.md) |
 | gcp-observability | Products owned by this skill (9) | [gcp-observability.md](./gcp-observability.md) |

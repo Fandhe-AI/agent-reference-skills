@@ -22,12 +22,52 @@ Message types referenced by the methods listed under `references/rest/analyticsh
 
 ### `AuditConfig`
 
-- Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": \[ { "service": "allServices", "audit_log_configs": \[ { "log_type": "DATA_READ", "exempted_members": \[ "user:jose@example.com" \] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } \] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": \[ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": \[ "user:aliya@example.com" \] } \] } \] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.
+- Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. The `Policy` example of this description is shown below with the REST JSON field names. For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.
 - Version: v1
+
+Adapted (not in the official docs): the `Policy` example of the Discovery `AuditConfig` description, with the proto field names `audit_configs`, `audit_log_configs`, `log_type` and `exempted_members` written as the REST JSON names `auditConfigs`, `auditLogConfigs`, `logType` and `exemptedMembers` (see Notes).
+
+```json
+{
+  "auditConfigs": [
+    {
+      "service": "allServices",
+      "auditLogConfigs": [
+        {
+          "logType": "DATA_READ",
+          "exemptedMembers": [
+            "user:jose@example.com"
+          ]
+        },
+        {
+          "logType": "DATA_WRITE"
+        },
+        {
+          "logType": "ADMIN_READ"
+        }
+      ]
+    },
+    {
+      "service": "sampleservice.googleapis.com",
+      "auditLogConfigs": [
+        {
+          "logType": "DATA_READ"
+        },
+        {
+          "logType": "DATA_WRITE",
+          "exemptedMembers": [
+            "user:aliya@example.com"
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
 
 ### `AuditLogConfig`
 
-- Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": \[ { "log_type": "DATA_READ", "exempted_members": \[ "user:jose@example.com" \] }, { "log_type": "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while exempting jose@example.com from DATA_READ logging.
+- Provides the configuration for logging a type of permissions. Example (two `AuditLogConfig` values, the elements of `auditLogConfigs` in an `AuditConfig`, with REST JSON field names; example corrected, see Notes): `{ "logType": "DATA_READ", "exemptedMembers": [ "user:jose@example.com" ] }` and `{ "logType": "DATA_WRITE" }`. This enables 'DATA_READ' and 'DATA_WRITE' logging, while exempting jose@example.com from DATA_READ logging.
 - Version: v1
 
 ### `AvroConfig`
@@ -122,7 +162,6 @@ Message types referenced by the methods listed under `references/rest/analyticsh
 
 ### `DestinationDatasetReference`
 
--
 - Version: v1
 
 ### `DestinationPubSubSubscription`
@@ -187,7 +226,6 @@ Message types referenced by the methods listed under `references/rest/analyticsh
 
 ### `GoogleCloudBigqueryDataexchangeV1beta1DestinationDatasetReference`
 
--
 - Version: v1beta1
 
 ### `GoogleCloudMarketplaceInfo`
@@ -280,7 +318,7 @@ Message types referenced by the methods listed under `references/rest/analyticsh
 - An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the IAM documentation (https://cloud.google.com/iam/help/conditions/resource-policies). The JSON and YAML examples of this description are shown below. For a description of IAM and its features, see the IAM documentation (https://cloud.google.com/iam/docs/).
 - Version: v1
 
-JSON example from the Discovery description (as a JSON block; the trailing comma after the `condition.expression` value is removed; see Notes):
+Adapted (not in the official docs): the JSON example of the Discovery `Policy` description, quoted as a JSON block; only the trailing comma after the `condition.expression` value is removed, so that the block is valid JSON (see Notes).
 
 ```json
 {
@@ -511,7 +549,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ### Example `AIInference` value
 
-Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0`, `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests).
+Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0` (`1` where the description allows only positive values), `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests).
 
 ```json
 {
@@ -601,7 +639,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `avroConfig` | AvroConfig | Optional. If set, message data will be written to Cloud Storage in Avro format. |
+| `avroConfig` | AvroConfig | Optional. If set, message data will be written to Cloud Storage in Avro format. Mutually exclusive with `textConfig` (proto `oneof output_format`; set at most one; see Notes). |
 | `bucket` | string | Required. User-provided name for the Cloud Storage bucket. The bucket must be created by the user. The bucket name must be without any prefix like "gs://". See the bucket naming requirements (https://cloud.google.com/storage/docs/buckets#naming). |
 | `filenameDatetimeFormat` | string | Optional. User-provided format string specifying how to represent datetimes in Cloud Storage filenames. See the datetime format guidance (https://cloud.google.com/pubsub/docs/create-cloudstorage-subscription#file_names). |
 | `filenamePrefix` | string | Optional. User-provided prefix for Cloud Storage filename. See the object naming requirements (https://cloud.google.com/storage/docs/objects#naming). |
@@ -610,7 +648,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `maxDuration` | string (google-duration) | Optional. File batching settings. If no max_duration setting is specified, a max_duration of 5 minutes will be set by default. max_duration is required regardless of whether other file batching settings are specified. The maximum duration that can elapse before a new Cloud Storage file is created. Min 1 minute, max 10 minutes, default 5 minutes. May not exceed the subscription's acknowledgement deadline. |
 | `maxMessages` | string (int64) | Optional. The maximum number of messages that can be written to a Cloud Storage file before a new file is created. Min 1000 messages. |
 | `serviceAccountEmail` | string | Optional. The service account to use to write to Cloud Storage. The subscription creator or updater that specifies this field must have `iam.serviceAccounts.actAs` permission on the service account. If not specified, the Pub/Sub service agent (https://cloud.google.com/iam/docs/service-agents), service-{project_number}@gcp-sa-pubsub.iam.gserviceaccount.com, is used. |
-| `textConfig` | TextConfig | Optional. If set, message data will be written to Cloud Storage in text format. |
+| `textConfig` | TextConfig | Optional. If set, message data will be written to Cloud Storage in text format. Mutually exclusive with `avroConfig` (proto `oneof output_format`; set at most one; see Notes). |
 
 ### `ColumnFamilyMapping` fields
 
@@ -826,8 +864,8 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `linkedDataset` | string | Output only. Name of the linked dataset, e.g. projects/subscriberproject/datasets/linked_dataset |
-| `linkedPubsubSubscription` | string | Output only. Name of the Pub/Sub subscription, e.g. projects/subscriberproject/subscriptions/sub_id (corrected: the Discovery document repeats `subscriptions`; see Notes) |
+| `linkedDataset` | string | Output only. Name of the linked dataset, e.g. projects/subscriberproject/datasets/linked_dataset Mutually exclusive with `linkedPubsubSubscription` (proto `oneof reference`; a response contains at most one; see Notes). |
+| `linkedPubsubSubscription` | string | Output only. Name of the Pub/Sub subscription, e.g. projects/subscriberproject/subscriptions/sub_id (corrected: the Discovery document repeats `subscriptions`; see Notes) Mutually exclusive with `linkedDataset` (proto `oneof reference`; a response contains at most one; see Notes). |
 | `listing` | string | Output only. Listing for which linked resource is created. |
 
 ### `ListDataExchangesResponse` fields
@@ -877,8 +915,8 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | Field | Type | Description |
 |---|---|---|
 | `allowOnlyMetadataSharing` | boolean | Optional. If true, the listing is only available to get the resource metadata. Listing is non subscribable. |
-| `bigqueryDataset` | BigQueryDatasetSource (definition for this version: [`BigQueryDatasetSource` (v1)](#bigquerydatasetsource)) | Shared dataset i.e. BigQuery dataset source. |
-| `categories` | `array<string>` | Optional. Categories of the listing. Up to five categories are allowed. Values: `CATEGORY_UNSPECIFIED`, `CATEGORY_OTHERS`, `CATEGORY_ADVERTISING_AND_MARKETING`, `CATEGORY_COMMERCE`, `CATEGORY_CLIMATE_AND_ENVIRONMENT`, `CATEGORY_DEMOGRAPHICS`, `CATEGORY_ECONOMICS`, `CATEGORY_EDUCATION`, `CATEGORY_ENERGY`, `CATEGORY_FINANCIAL`, `CATEGORY_GAMING`, `CATEGORY_GEOSPATIAL`, `CATEGORY_HEALTHCARE_AND_LIFE_SCIENCE`, `CATEGORY_MEDIA`, `CATEGORY_PUBLIC_SECTOR`, `CATEGORY_RETAIL`, `CATEGORY_SPORTS`, `CATEGORY_SCIENCE_AND_RESEARCH`, `CATEGORY_TRANSPORTATION_AND_LOGISTICS`, `CATEGORY_TRAVEL_AND_TOURISM`, `CATEGORY_GOOGLE_EARTH_ENGINE`. |
+| `bigqueryDataset` | BigQueryDatasetSource (definition for this version: [`BigQueryDatasetSource` (v1)](#bigquerydatasetsource)) | Shared dataset i.e. BigQuery dataset source. Mutually exclusive with `pubsubTopic` (proto `oneof source`; set at most one; see Notes). |
+| `categories` | `array<string enum>` | Optional. Categories of the listing. Up to five categories are allowed. Values: `CATEGORY_UNSPECIFIED`, `CATEGORY_OTHERS`, `CATEGORY_ADVERTISING_AND_MARKETING`, `CATEGORY_COMMERCE`, `CATEGORY_CLIMATE_AND_ENVIRONMENT`, `CATEGORY_DEMOGRAPHICS`, `CATEGORY_ECONOMICS`, `CATEGORY_EDUCATION`, `CATEGORY_ENERGY`, `CATEGORY_FINANCIAL`, `CATEGORY_GAMING`, `CATEGORY_GEOSPATIAL`, `CATEGORY_HEALTHCARE_AND_LIFE_SCIENCE`, `CATEGORY_MEDIA`, `CATEGORY_PUBLIC_SECTOR`, `CATEGORY_RETAIL`, `CATEGORY_SPORTS`, `CATEGORY_SCIENCE_AND_RESEARCH`, `CATEGORY_TRANSPORTATION_AND_LOGISTICS`, `CATEGORY_TRAVEL_AND_TOURISM`, `CATEGORY_GOOGLE_EARTH_ENGINE`. |
 | `commercialInfo` | GoogleCloudBigqueryAnalyticshubV1ListingCommercialInfo | Output only. Commercial info contains the information about the commercial data products associated with the listing. |
 | `dataProvider` | DataProvider | Optional. Details of the data provider who owns the source data. |
 | `description` | string | Optional. Short description of the listing. The description must not contain Unicode non-characters and C0 and C1 control codes except tabs (HT), new lines (LF), carriage returns (CR), and page breaks (FF). Default value is an empty string. Max length: 2000 bytes. |
@@ -890,7 +928,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | `name` | string | Output only. The resource name of the listing. e.g. `projects/myproject/locations/us/dataExchanges/123/listings/456` |
 | `primaryContact` | string | Optional. Email or URL of the primary point of contact of the listing. Max Length: 1000 bytes. |
 | `publisher` | Publisher | Optional. Details of the publisher who owns the listing and who can share the source data. |
-| `pubsubTopic` | PubSubTopicSource | Pub/Sub topic source. |
+| `pubsubTopic` | PubSubTopicSource | Pub/Sub topic source. Mutually exclusive with `bigqueryDataset` (proto `oneof source`; set at most one; see Notes). |
 | `requestAccess` | string | Optional. Email or URL of the request access of the listing. Subscribers can use this reference to request access. Max Length: 1000 bytes. |
 | `resourceType` | string enum | Output only. Listing shared asset type. Values: `SHARED_RESOURCE_TYPE_UNSPECIFIED`, `BIGQUERY_DATASET`, `PUBSUB_TOPIC`. |
 | `restrictedExportConfig` | RestrictedExportConfig | Optional. If set, restricted export configuration will be propagated and enforced on the linked dataset. |
@@ -903,7 +941,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 |---|---|---|
 | `allowOnlyMetadataSharing` | boolean | Optional. If true, the listing is only available to get the resource metadata. Listing is non subscribable. |
 | `bigqueryDataset` | BigQueryDatasetSource (definition for this version: [`BigQueryDatasetSource` (v1beta1)](#bigquerydatasetsource-v1beta1)) | Required. Shared dataset i.e. BigQuery dataset source. |
-| `categories` | `array<string>` | Optional. Categories of the listing. Up to five categories are allowed. Values: `CATEGORY_UNSPECIFIED`, `CATEGORY_OTHERS`, `CATEGORY_ADVERTISING_AND_MARKETING`, `CATEGORY_COMMERCE`, `CATEGORY_CLIMATE_AND_ENVIRONMENT`, `CATEGORY_DEMOGRAPHICS`, `CATEGORY_ECONOMICS`, `CATEGORY_EDUCATION`, `CATEGORY_ENERGY`, `CATEGORY_FINANCIAL`, `CATEGORY_GAMING`, `CATEGORY_GEOSPATIAL`, `CATEGORY_HEALTHCARE_AND_LIFE_SCIENCE`, `CATEGORY_MEDIA`, `CATEGORY_PUBLIC_SECTOR`, `CATEGORY_RETAIL`, `CATEGORY_SPORTS`, `CATEGORY_SCIENCE_AND_RESEARCH`, `CATEGORY_TRANSPORTATION_AND_LOGISTICS`, `CATEGORY_TRAVEL_AND_TOURISM`, `CATEGORY_GOOGLE_EARTH_ENGINE`. |
+| `categories` | `array<string enum>` | Optional. Categories of the listing. Up to five categories are allowed. Values: `CATEGORY_UNSPECIFIED`, `CATEGORY_OTHERS`, `CATEGORY_ADVERTISING_AND_MARKETING`, `CATEGORY_COMMERCE`, `CATEGORY_CLIMATE_AND_ENVIRONMENT`, `CATEGORY_DEMOGRAPHICS`, `CATEGORY_ECONOMICS`, `CATEGORY_EDUCATION`, `CATEGORY_ENERGY`, `CATEGORY_FINANCIAL`, `CATEGORY_GAMING`, `CATEGORY_GEOSPATIAL`, `CATEGORY_HEALTHCARE_AND_LIFE_SCIENCE`, `CATEGORY_MEDIA`, `CATEGORY_PUBLIC_SECTOR`, `CATEGORY_RETAIL`, `CATEGORY_SPORTS`, `CATEGORY_SCIENCE_AND_RESEARCH`, `CATEGORY_TRANSPORTATION_AND_LOGISTICS`, `CATEGORY_TRAVEL_AND_TOURISM`, `CATEGORY_GOOGLE_EARTH_ENGINE`. |
 | `dataProvider` | DataProvider | Optional. Details of the data provider who owns the source data. |
 | `description` | string | Optional. Short description of the listing. The description must not contain Unicode non-characters and C0 and C1 control codes except tabs (HT), new lines (LF), carriage returns (CR), and page breaks (FF). Default value is an empty string. Max length: 2000 bytes. |
 | `displayName` | string | Required. Human-readable display name of the listing. The display name must contain only Unicode letters, numbers (0-9), underscores (\_), dashes (-), spaces ( ), ampersands (&) and can't start or end with spaces. Default value is an empty string. Max length: 63 bytes. |
@@ -989,9 +1027,9 @@ Generated from the field types (not in the official docs): a JSON value that mat
 | Field | Type | Description |
 |---|---|---|
 | `attributes` | `map<string, string>` | Optional. Endpoint configuration attributes that can be used to control different aspects of the message delivery. The only currently supported attribute is `x-goog-version`, which you can use to change the format of the pushed message. This attribute indicates the version of the data expected by the endpoint. This controls the shape of the pushed message (i.e., its fields and metadata). If not present during the `CreateSubscription` call, it will default to the version of the Pub/Sub API used to make such call. If not present in a `ModifyPushConfig` call, its value will not be changed. `GetSubscription` calls will always return a valid version, even if the subscription was created without this attribute. The only supported values for the `x-goog-version` attribute are: \* `v1beta1`: uses the push format defined in the v1beta1 Pub/Sub API. \* `v1` or `v1beta2`: uses the push format defined in the v1 Pub/Sub API. For example: `attributes { "x-goog-version": "v1" }` |
-| `noWrapper` | NoWrapper | Optional. When set, the payload to the push endpoint is not wrapped. |
+| `noWrapper` | NoWrapper | Optional. When set, the payload to the push endpoint is not wrapped. Mutually exclusive with `pubsubWrapper` (proto `oneof wrapper`; set at most one; see Notes). |
 | `oidcToken` | OidcToken | Optional. If specified, Pub/Sub will generate and attach an OIDC JWT token as an `Authorization` header in the HTTP request for every pushed message. |
-| `pubsubWrapper` | PubsubWrapper | Optional. When set, the payload to the push endpoint is in the form of the JSON representation of a PubsubMessage (https://cloud.google.com/pubsub/docs/reference/rpc/google.pubsub.v1#pubsubmessage). |
+| `pubsubWrapper` | PubsubWrapper | Optional. When set, the payload to the push endpoint is in the form of the JSON representation of a PubsubMessage (https://cloud.google.com/pubsub/docs/reference/rpc/google.pubsub.v1#pubsubmessage). Mutually exclusive with `noWrapper` (proto `oneof wrapper`; set at most one; see Notes). |
 | `pushEndpoint` | string | Optional. A URL locating the endpoint to which messages should be pushed. For example, a Webhook endpoint might use `https://example.com/push`. |
 
 ### `QueryTemplate` fields
@@ -1064,8 +1102,8 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `routine` | string | Optional. Format: For routine: `projects/{projectId}/datasets/{datasetId}/routines/{routineId}` Example:"projects/test_project/datasets/test_dataset/routines/test_routine" |
-| `table` | string | Optional. Format: For table: `projects/{projectId}/datasets/{datasetId}/tables/{tableId}` Example:"projects/test_project/datasets/test_dataset/tables/test_table" |
+| `routine` | string | Optional. Format: For routine: `projects/{projectId}/datasets/{datasetId}/routines/{routineId}` Example:"projects/test_project/datasets/test_dataset/routines/test_routine" Mutually exclusive with `table` (proto `oneof resource`; set at most one; see Notes). |
+| `table` | string | Optional. Format: For table: `projects/{projectId}/datasets/{datasetId}/tables/{tableId}` Example:"projects/test_project/datasets/test_dataset/tables/test_table" Mutually exclusive with `routine` (proto `oneof resource`; set at most one; see Notes). |
 
 ### `SetIamPolicyRequest` fields
 
@@ -1078,8 +1116,8 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `dcrExchangeConfig` | DcrExchangeConfig | Data Clean Room (DCR), used for privacy-safe and secured data sharing. |
-| `defaultExchangeConfig` | DefaultExchangeConfig | Default Analytics Hub data exchange, used for secured data sharing. |
+| `dcrExchangeConfig` | DcrExchangeConfig | Data Clean Room (DCR), used for privacy-safe and secured data sharing. Mutually exclusive with `defaultExchangeConfig` (proto `oneof environment`; set at most one; see Notes). |
+| `defaultExchangeConfig` | DefaultExchangeConfig | Default Analytics Hub data exchange, used for secured data sharing. Mutually exclusive with `dcrExchangeConfig` (proto `oneof environment`; set at most one; see Notes). |
 
 ### `Status` fields
 
@@ -1093,7 +1131,7 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `allowedStoredProcedureTypes` | `array<string>` | Output only. Types of stored procedure supported to share. Values: `STORED_PROCEDURE_TYPE_UNSPECIFIED`, `SQL_PROCEDURE`. |
+| `allowedStoredProcedureTypes` | `array<string enum>` | Output only. Types of stored procedure supported to share. Values: `STORED_PROCEDURE_TYPE_UNSPECIFIED`, `SQL_PROCEDURE`. |
 | `enabled` | boolean | Optional. If true, enable sharing of stored procedure. |
 
 ### `SubscribeDataExchangeRequest` fields
@@ -1115,8 +1153,8 @@ Generated from the field types (not in the official docs): a JSON value that mat
 
 | Field | Type | Description |
 |---|---|---|
-| `destinationDataset` | DestinationDataset | Input only. BigQuery destination dataset to create for the subscriber. |
-| `destinationPubsubSubscription` | DestinationPubSubSubscription | Input only. Destination Pub/Sub subscription to create for the subscriber. |
+| `destinationDataset` | DestinationDataset | Input only. BigQuery destination dataset to create for the subscriber. Mutually exclusive with `destinationPubsubSubscription` (proto `oneof destination`; set at most one; see Notes). |
+| `destinationPubsubSubscription` | DestinationPubSubSubscription | Input only. Destination Pub/Sub subscription to create for the subscriber. Mutually exclusive with `destinationDataset` (proto `oneof destination`; set at most one; see Notes). |
 
 ### `SubscribeListingRequest` (v1beta1) fields
 
@@ -1136,12 +1174,12 @@ Generated from the field types (not in the official docs): a JSON value that mat
 |---|---|---|
 | `commercialInfo` | GoogleCloudBigqueryAnalyticshubV1SubscriptionCommercialInfo | Output only. This is set if this is a commercial subscription i.e. if this subscription was created from subscribing to a commercial listing. |
 | `creationTime` | string (google-datetime) | Output only. Timestamp when the subscription was created. |
-| `dataExchange` | string | Output only. Resource name of the source Data Exchange. e.g. projects/123/locations/us/dataExchanges/456 |
+| `dataExchange` | string | Output only. Resource name of the source Data Exchange. e.g. projects/123/locations/us/dataExchanges/456 Mutually exclusive with `listing` (proto `oneof resource_name`; a response contains at most one; see Notes). |
 | `destinationDataset` | DestinationDataset | Optional. BigQuery destination dataset to create for the subscriber. |
 | `lastModifyTime` | string (google-datetime) | Output only. Timestamp when the subscription was last modified. |
 | `linkedDatasetMap` | `map<string, LinkedResource>` | Output only. Map of listing resource names to associated linked resource, e.g. projects/123/locations/us/dataExchanges/456/listings/789 -> projects/123/datasets/my_dataset For listing-level subscriptions, this is a map of size 1. Only contains values if state == STATE_ACTIVE. |
 | `linkedResources` | `array<LinkedResource>` | Output only. Linked resources created in the subscription. Only contains values if state = STATE_ACTIVE. |
-| `listing` | string | Output only. Resource name of the source Listing. e.g. projects/123/locations/us/dataExchanges/456/listings/789 |
+| `listing` | string | Output only. Resource name of the source Listing. e.g. projects/123/locations/us/dataExchanges/456/listings/789 Mutually exclusive with `dataExchange` (proto `oneof resource_name`; a response contains at most one; see Notes). |
 | `logLinkedDatasetQueryUserEmail` | boolean | Output only. By default, false. If true, the Subscriber agreed to the email sharing mandate that is enabled for DataExchange/Listing. |
 | `name` | string | Output only. The resource name of the subscription. e.g. `projects/myproject/locations/us/subscriptions/123`. |
 | `organizationDisplayName` | string | Output only. Display name of the project of this subscription. |
@@ -1191,15 +1229,24 @@ Generated from the field types (not in the official docs): a JSON value that mat
 ## Notes
 
 - Generated from the Discovery document(s) v1, v1beta1 of `analyticshub` (retrieved 2026-11-14); a type with the same fields in several versions shows the preferred version; a type whose fields differ between versions is listed once per version (heading suffix `(version)`), and each type's `Version` line names the document it was taken from. A `$ref` resolves to the definition of the same version.
+- Adapted from the Discovery document: the `AuditConfig` description embeds an "Example Policy with multiple AuditConfigs" in one line with the proto field names (`audit_configs`, `audit_log_configs`, `log_type`, `exempted_members`); this page shows it as a JSON block of a `Policy` with the REST JSON (camelCase) field names; the values are unchanged.
 - Corrected from the Discovery document: the JSON example in the `Policy` description (the `google.iam.v1` text shared by the IAM methods) has a trailing comma after the `condition.expression` value (`"expression": "request.time < timestamp('2020-10-01T00:00:00.000Z')", } }`), which is not valid JSON; the same comma is in the proto comment. This page shows the example as a JSON block without that comma. The Discovery text of the YAML example has lost its line breaks and indentation, so the YAML block is taken from the proto comment (`google/iam/v1/policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/policy.proto, commit `5ce0245`, retrieved 2026-11-21).
 - Corrected from the source proto: the `table` format `projects//instances//tables/` of `BigtableConfig` (a Pub/Sub type in this document) lost its placeholders in the Discovery document; the proto comment reads "Values are of the form `projects/<project>/instances/<instance>/tables/<table>`." (`google/pubsub/v1/pubsub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/pubsub/v1/pubsub.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the official docs: the `LinkedResource.linkedPubsubSubscription` example `projects/subscriberproject/subscriptions/subscriptions/sub_id` repeats `subscriptions` (the proto comment in `google/cloud/bigquery/analyticshub/v1/analyticshub.proto` at googleapis commit `5ce0245` has the same text); a Pub/Sub subscription name has one `subscriptions` segment: the `GooglePubsubV1Subscription.name` description in the analyticshub.v1 Discovery document gives the format `projects/{project}/subscriptions/{sub}`, and the pubsub.v1 Discovery path pattern is `projects/[^/]+/subscriptions/[^/]+`.
 - Corrected from the source proto: the header formats in the `writeMetadata` description of `NoWrapper` (`x-goog-pubsub-:` and `:`) lost their placeholders in the Discovery document; the proto comment reads "When true, writes the Pub/Sub message metadata to `x-goog-pubsub-<KEY>:<VAL>` headers of the HTTP request. Writes the Pub/Sub message attributes to `<KEY>:<VAL>` headers of the HTTP request." (`google/cloud/bigquery/analyticshub/v1/pubsub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/analyticshub/v1/pubsub.proto, commit `5ce0245`, retrieved 2026-11-19).
 - Corrected from the source proto: the signature in the `code` description of `JavaScriptUDF` lost its angle-bracket parts in the Discovery document (`{(Object)>|null)}`, `{(Object)>}`, `{Object}` and `function (message, metadata)`); the proto comment reads `@return {(Object<string, (string | Object<string, string>)>|null)}`, `'attributes' : {Object<string, string>}`, `@param  {(Object<string, (string | Object<string, string>)>} Pub/Sub`, `@param  {Object<string, any>} metadata` and `function <function_name>(message, metadata) {` (backticks added). The first `@param` type in the proto has an unmatched opening parenthesis (`{(Object<...>)>}` with no closing `)`); the table drops that `(` so that the type expression is balanced, `{Object<string, (string | Object<string, string>)>}` (`google/cloud/bigquery/analyticshub/v1/pubsub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/analyticshub/v1/pubsub.proto, commit `5ce0245`, retrieved 2026-11-19).
+- Corrected from the Discovery document: the `AuditLogConfig` description gives the example `{ "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] }`, which is the `auditLogConfigs` array of the parent `AuditConfig` written with proto field names, not an `AuditLogConfig` value; the table shows the two array elements as `AuditLogConfig` values with the REST JSON (camelCase) field names `logType` and `exemptedMembers` (a whole `AuditConfig` with the same values in REST JSON: `{ "service": "allServices", "auditLogConfigs": [ { "logType": "DATA_READ", "exemptedMembers": [ "user:jose@example.com" ] }, { "logType": "DATA_WRITE" } ] }`).
 - Corrected from the Discovery document: the `TestIamPermissionsResponse.permissions` description reads "A subset of `TestPermissionsRequest.permissions` that the caller is allowed."; the same text is in the `google.iam.v1` proto, where the request message of `TestIamPermissions` is `TestIamPermissionsRequest` (`google/iam/v1/iam_policy.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/iam/v1/iam_policy.proto, commit `5ce0245`, retrieved 2026-11-21).
-- Descriptions are verbatim from Discovery, which drops angle-bracket placeholders of the source comments: a format such as `projects//locations/global` stands for `projects/{project}/locations/global` (likewise `"@.iam.gserviceaccount.com"` lost the account ID before `@`, and a name format ending in a collection such as `projects/*/locations/*/registrations/` lost its last ID), and an expression such as `... && in labels` lost its left operand (for example `'label_value' in labels`). Check the method or field in the product's REST reference before relying on such a format.
-- Deprecated: `MessageTransform.enabled` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "This field is deprecated, use the `disabled` field to disable transforms."
-- Deprecated: `QueryTemplate.proposer` (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "Deprecated: Use `primary_contact` instead." REST JSON field name: `primaryContact` (`primary_contact` in the description).
+- Deprecated: `MessageTransform.enabled` (v1) (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "This field is deprecated, use the `disabled` field to disable transforms."
+- Deprecated: `QueryTemplate.proposer` (v1) (`deprecated: true` in the Discovery document and its description). Replacement or status stated in the description: "Deprecated: Use `primary_contact` instead." REST JSON field name: `primaryContact` (`primary_contact` in the description).
+- Mutually exclusive fields of `CloudStorageConfig`: `textConfig`, `avroConfig` are the members of `oneof output_format` in the proto (`google/cloud/bigquery/analyticshub/v1/pubsub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/analyticshub/v1/pubsub.proto, commit `5ce0245`), so a message contains at most one of them (for output-only fields, the response contains at most one). The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `LinkedResource`: `linkedDataset`, `linkedPubsubSubscription` are the members of `oneof reference` in the proto (`google/cloud/bigquery/analyticshub/v1/analyticshub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/analyticshub/v1/analyticshub.proto, commit `5ce0245`), so a message contains at most one of them (for output-only fields, the response contains at most one). The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `Listing`: `bigqueryDataset`, `pubsubTopic` are the members of `oneof source` in the proto (`google/cloud/bigquery/analyticshub/v1/analyticshub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/analyticshub/v1/analyticshub.proto, commit `5ce0245`), so a message contains at most one of them (for output-only fields, the response contains at most one). The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `PushConfig`: `pubsubWrapper`, `noWrapper` are the members of `oneof wrapper` in the proto (`google/cloud/bigquery/analyticshub/v1/pubsub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/analyticshub/v1/pubsub.proto, commit `5ce0245`), so a message contains at most one of them (for output-only fields, the response contains at most one). The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `SelectedResource`: `table`, `routine` are the members of `oneof resource` in the proto (`google/cloud/bigquery/analyticshub/v1/analyticshub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/analyticshub/v1/analyticshub.proto, commit `5ce0245`), so a message contains at most one of them (for output-only fields, the response contains at most one). The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `SharingEnvironmentConfig`: `defaultExchangeConfig`, `dcrExchangeConfig` are the members of `oneof environment` in the proto (`google/cloud/bigquery/analyticshub/v1/analyticshub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/analyticshub/v1/analyticshub.proto, commit `5ce0245`), so a message contains at most one of them (for output-only fields, the response contains at most one). The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `SubscribeListingRequest`: `destinationDataset`, `destinationPubsubSubscription` are the members of `oneof destination` in the proto (`google/cloud/bigquery/analyticshub/v1/analyticshub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/analyticshub/v1/analyticshub.proto, commit `5ce0245`), so a message contains at most one of them (for output-only fields, the response contains at most one). The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `Subscription`: `listing`, `dataExchange` are the members of `oneof resource_name` in the proto (`google/cloud/bigquery/analyticshub/v1/analyticshub.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/analyticshub/v1/analyticshub.proto, commit `5ce0245`), so a message contains at most one of them (for output-only fields, the response contains at most one). The Discovery document has no notation for `oneof` and lists them as independent fields.
 - Source: https://analyticshub.googleapis.com/$discovery/rest?version=v1, https://analyticshub.googleapis.com/$discovery/rest?version=v1beta1 (https://developers.google.com/discovery)
 
 ## Related

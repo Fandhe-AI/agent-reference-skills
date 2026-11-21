@@ -230,7 +230,7 @@ Generated from the Discovery schema (not in the official docs); values show each
 
 ### Example `CheckValidCredsResponse` value
 
-Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0`, `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests).
+Generated from the field types (not in the official docs): a JSON value that matches the table, with empty strings, `0` (`1` where the description allows only positive values), `false`, empty arrays and objects, and for an enum its first value other than `*_UNSPECIFIED`. int64 values are JSON strings, as in the Discovery `format`. It shows the JSON shape only; it is not a request to send as is (fill in the values the method needs, and omit output-only fields in requests).
 
 ```json
 {
@@ -598,8 +598,8 @@ Generated from the field types (not in the official docs): a JSON value that mat
 - Deprecated: `DataSourceParameter.repeated` (its Discovery description). Replacement or status stated in the description: "This field has no effect."
 - Deprecated: `TransferConfig.userId` (its Discovery description). The Discovery document states no replacement.
 - Deprecated: `TransferRun.userId` (its Discovery description). The Discovery document states no replacement.
-- Mutually exclusive fields of `ScheduleOptionsV2`: `timeBasedSchedule`, `manualSchedule`, `eventDrivenSchedule` are the members of `oneof schedule` in the proto (`google/cloud/bigquery/datatransfer/v1/transfer.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/datatransfer/v1/transfer.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
-- Mutually exclusive fields of `StartManualTransferRunsRequest`: `requestedTimeRange`, `requestedRunTime` are the members of `oneof time` in the proto (`google/cloud/bigquery/datatransfer/v1/datatransfer.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/datatransfer/v1/datatransfer.proto, commit `5ce0245`), so a message sets at most one of them. The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `ScheduleOptionsV2`: `timeBasedSchedule`, `manualSchedule`, `eventDrivenSchedule` are the members of `oneof schedule` in the proto (`google/cloud/bigquery/datatransfer/v1/transfer.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/datatransfer/v1/transfer.proto, commit `5ce0245`), so a message contains at most one of them (for output-only fields, the response contains at most one). The Discovery document has no notation for `oneof` and lists them as independent fields.
+- Mutually exclusive fields of `StartManualTransferRunsRequest`: `requestedTimeRange`, `requestedRunTime` are the members of `oneof time` in the proto (`google/cloud/bigquery/datatransfer/v1/datatransfer.proto`, https://github.com/googleapis/googleapis/blob/5ce024537af135bb2a0d3228072dd660047956aa/google/cloud/bigquery/datatransfer/v1/datatransfer.proto, commit `5ce0245`), so a message contains at most one of them (for output-only fields, the response contains at most one). The Discovery document has no notation for `oneof` and lists them as independent fields.
 - Source: https://bigquerydatatransfer.googleapis.com/$discovery/rest?version=v1 (https://developers.google.com/discovery)
 
 ## Related

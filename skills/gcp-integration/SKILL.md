@@ -114,7 +114,7 @@ skills/gcp-integration/
 - `gcp-client-libraries` — Node.js / Python / Rust のクライアントライブラリ共通パターン
 - `gcp-services-index` — 製品名から担当スキルを引く索引。担当が不明なときの入口
 - `gcp-api-management`（予定）— Apigee・API Gateway。Apigee 連携のページは本スキルに無い
-- `gcp-bigquery`（予定）— コネクタ・task の接続先になる BigQuery
+- `gcp-bigquery` — コネクタ・task の接続先になる BigQuery
 - `gcp-agent-platform`（予定）— Gemini・AI エージェント関連の機能。Application Integration の AI 機能は本スキルに無い
 - `gcp-iac` — Terraform のサンプル
 - `gcp-devops` — Cloud Build・Cloud Deploy・Artifact Registry による CI/CD

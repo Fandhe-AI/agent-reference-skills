@@ -55,7 +55,7 @@ skills/gcp-bigquery/
         <api>[-<N>].md
     iam/                          # 機械生成: IAM roles-permissions reference（16 ファイル）
       README.md
-      <service>[-<N>].md          # 例: bigquery-1.md・dataform-2.md
+      <service>[-<N>].md          # 例: bigquery-1.md・bigquery-2.md / analyticshub.md / dataform-1.md・dataform-2.md
     googlesql-syntax/             # 機械変換: GoogleSQL 構文・データ型・演算子・DDL / DML / DCL・手続き型言語・システム変数ほか
       README.md
       <page>[-<N>].md
@@ -169,7 +169,7 @@ skills/gcp-bigquery/
 
 1. 概念・手順 → 下記マッピング表で手書きガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（ガイド直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）。README の説明列にページ内の見出しが並ぶ
 2. SQL の構文・文（SELECT / FROM / JOIN / DDL / DML / DCL / EXPORT DATA / LOAD DATA / 手続き型言語）→ `references/googlesql-syntax/README.md` から引く。長いページ（`query-syntax-1`〜`3`・`data-definition-language-1`〜`4`）は `-<N>` に分割されているので README の説明列で見出しを確認する
-3. SQL の関数 → `references/googlesql-functions/README.md` の索引表（関数名 → ページ#アンカー）から引く。または `references/googlesql-functions/` 配下を ``## `NAME` `` で grep する（例: ``## `JSON_VALUE` ``）。同名の関数（`EXTRACT` 等）は型ごとに別ページにあるので、README で複数行を確認する。BigQuery ML の関数（`ML.*`（後続 PR で投入） / `AI.*`（後続 PR で投入））は `references/bigqueryml-sql/README.md`、GQL は `references/graph-gql/README.md`
+3. SQL の関数 → `references/googlesql-functions/README.md` の索引表（関数名 → ページ#アンカー）から引く。または `references/googlesql-functions/` 配下を ``## `NAME` `` で grep する（例: ``## `JSON_VALUE` ``）。同名の関数（`EXTRACT` 等）は型ごとに別ページにあるので、README で複数行を確認する。BigQuery ML の関数（`ML.*` / `AI.*`）は `references/bigqueryml-sql/README.md`、GQL は `references/graph-gql/README.md`
 4. INFORMATION_SCHEMA のビュー → `references/information-schema/README.md`（概要・権限・リージョン修飾子は `overview-datasets/information-schema-intro.md`）
 5. `bq` のサブコマンド → `references/bq-cli/README.md`。コマンドは `bq-cli-reference-2.md`、共通・グローバルフラグは `bq-cli-reference-1.md`。サブコマンド名で grep する。gcloud の `bq` グループとは別
 6. gcloud コマンド → `references/gcloud/README.md` からグループ（`biglake` / `bq` / `data-catalog`）を選び、グループの README.md → コマンドページへ。GA は help の verbatim、alpha / beta は NAME と SYNOPSIS のみなので、フラグの詳細が要るときは `gcloud alpha|beta <command> --help` を使う。BigQuery 本体の操作は gcloud ではなく `bq` と SQL が中心

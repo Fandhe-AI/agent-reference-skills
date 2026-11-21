@@ -6,7 +6,7 @@ source: https://bigquerydatatransfer.googleapis.com/$discovery/rest?version=v1
 
 ## Signature / Usage
 
-Base URL: `https://bigquerydatatransfer.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL, parameters and request / response types shown for a method come from the first version on its `Versions` line; for another version, see the Discovery document of that version under Source in Notes.
+Base URL: `https://bigquerydatatransfer.googleapis.com`. Methods are listed by `id`; the `Versions` line shows which API versions define the method (preferred: v1). The URL and parameters shown for a method come from the first version on its `Versions` line; a request or response type marked with a version, such as `Type` (v1), applies to that version and links to the definition of that version, a type marked "same fields in ..." has one definition for those versions, but the types it references differ by version, and an unmarked type is the same in every listed version, including the types it references. For the URL and parameters of another version, see the Discovery document of that version under Source in Notes.
 
 ### `bigquerydatatransfer.projects.dataSources.checkValidCreds`
 
@@ -595,7 +595,7 @@ Authorization: Bearer ACCESS_TOKEN
 
 - Generated from the Discovery document(s) v1 of `bigquerydatatransfer` (retrieved 2026-11-14). Resources on this page: projects.
 - The Required column is `yes` for path variables and required parameters, and `conditional` when the description says "Required if ..." (mutually exclusive alternatives), when a `parent.child` parameter is required only inside an optional parent message or one branch of a oneof, or when the description says that some requests must specify it (for example, `options.requestedPolicyVersion` must be 3 to get a policy with conditional role bindings). Path variables are `yes` unless a note below names an alternative route without them.
-- Message schemas (the request and response types named above) are defined in the `schemas` section of the Discovery documents in Source.
+- Message schemas (the request and response types named above) are listed under `references/rest-schemas/bigquerydatatransfer/`; they are the `schemas` section of the Discovery documents in Source.
 - Deprecated methods (`deprecated: true` in Discovery): `bigquerydatatransfer.projects.locations.transferConfigs.scheduleRuns`, `bigquerydatatransfer.projects.transferConfigs.scheduleRuns`. Avoid them in new code.
 - Corrected from the Discovery document: the description of `name` in `bigquerydatatransfer.projects.locations.enrollDataSources` gives the resource name format `projects/{project_id}`, but the path pattern of `name` is `^projects/[^/]+/locations/[^/]+$`; a value must match the pattern to reach the route.
 - Corrected from the Discovery document: the description of `name` in `bigquerydatatransfer.projects.locations.unenrollDataSources` gives the resource name format `projects/{project_id}`, but the path pattern of `name` is `^projects/[^/]+/locations/[^/]+$`; a value must match the pattern to reach the route.
