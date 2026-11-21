@@ -47,12 +47,6 @@ Company external name (omit suffixes such as Inc or LLC):
 }
 ```
 
-Allow a Google Drive data store to search and index documents outside your organization:
-
-```text
-"includeCrossDomainDocuments": true
-```
-
 ### Example command and result
 
 Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs.
@@ -120,8 +114,8 @@ Click **Create**.
 - CMEK: to protect the app's data with customer-managed encryption keys you must register your CMEK key before creating the app. Apps created prior to key registration remain unprotected.
 - You can't connect website data stores to Gemini Enterprise search and assistant apps.
 - The app ID cannot be updated after you create the app.
-- Warning (source): enabling cross-domain documents (the console checkbox or `includeCrossDomainDocuments` in the REST payload) increases exposure to security risks, such as prompt injection from external documents and potential manipulation of search results.
-- `includeCrossDomainDocuments` does not appear in the `discoveryengine` Discovery documents (`v1`, `v1beta`, `v1alpha`) used for verification; the fragment is kept verbatim as the source writes it, and the field name and its placement in the Engine body are not confirmed against the API reference. Both optional fragments are tagged `text` because they are not complete JSON documents.
+- Warning (source): enabling cross-domain documents (the console checkbox **Include cross-domain documents**) increases exposure to security risks, such as prompt injection from external documents and potential manipulation of search results.
+- Adapted from the official docs: the source also shows a REST fragment `"includeCrossDomainDocuments": true` for a Google Drive data store. The field does not appear in the `discoveryengine` Discovery documents (`v1`, `v1beta`, `v1alpha`), so its name and placement in the Engine body are not confirmed and the fragment is left out; use the console option **Include cross-domain documents** under **Advanced options**. The `commonConfig` fragment is tagged `text` because it is not a complete JSON document.
 - Third-party data: you use the Google Cloud console, not the API, to create the app and ingest data (see apps-data-stores.md).
 - The source also shows next steps (connect an existing data store, StreamAssist preview, manage web app features).
 - Corrected from the official docs: the source writes free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"displayName": "APP_DISPLAY_NAME"`). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"` or `\` makes the JSON invalid, so the body is built with `jq -Rn` from the values, which the `printf` builtin writes to its standard input (not its arguments), and sent with `--data @-` (`man jq` 1.7.1: `--raw-input / -R` "each line of text is passed to the filter as a string"; `inputs` "Outputs all remaining inputs, one by one.").

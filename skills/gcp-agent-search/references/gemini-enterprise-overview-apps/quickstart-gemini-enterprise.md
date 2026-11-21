@@ -43,12 +43,14 @@ https://storage.googleapis.com/cloud-samples-data/gen-app-builder/search/cymbal-
 
 - Indexing and syncing the data store takes a few minutes, so the preview isn't available immediately. If an answer doesn't specifically reference Cymbal Bank, wait a few more minutes and try again.
 - Autocomplete: expect to wait a day or two before autocomplete suggestions appear.
-- Clean up: delete the project if you don't need it; if you used an existing project, delete the app and data store created for the tutorial (try deletions in a disposable project first), then turn off Gemini Enterprise.
+- Clean up: delete the project if you created it only for the tutorial. In an existing project, delete only the app and data store created for the tutorial (try deletions in a disposable project first) and leave Gemini Enterprise on; turn it off only in a project dedicated to the tutorial that you keep.
+- Adapted from the official docs: the source ends its cleanup with "Follow the steps in Turn off Gemini Enterprise" for every case; the security overview page says "To disable the Gemini Enterprise (Discovery Engine) API, see Turn off Gemini Enterprise", which in an existing project also affects its other apps.
 - Guide names in the user journey are relative to `https://docs.cloud.google.com/gemini/enterprise/docs/`; the assistant chat, Agent Gallery and app pages of this category are agents-overview.md, configure-assistant.md and create-app.md.
 - Gemini Enterprise skills (a `SKILL.md` file that teaches the Gemini Enterprise assistant) are a feature of this product; they are not Claude Code Agent Skills.
 - The quickstart source also shows an "Intro to Gemini Enterprise" notebook and a Guide me console tour; the Get started source also links an overview video and example use cases by role (finance, HR, legal, marketing, sales, support).
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/quickstart-gemini-enterprise (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/get-started (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/gemini/enterprise/docs/security-overview (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 
