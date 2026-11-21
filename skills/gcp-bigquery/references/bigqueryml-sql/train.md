@@ -117,7 +117,7 @@ The result is similar to the following:
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-train (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the syntax block has a trailing comma after the `MODEL` argument, which is the only argument. It is removed, as in the example on this page (`ML.TRAINING_INFO(MODEL `mydataset.linear_regression`)`).
 - Caution: the `iteration` column is described as incremented "for each additional training run", but the `training_run` column above it is the one incremented by retraining, and the example shows iterations `1` and `0` inside training run `0`. The official text is kept as published.

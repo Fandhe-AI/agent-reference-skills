@@ -220,7 +220,7 @@ SELECT * FROM
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-decode-image (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the decoded images tables in the examples that write `ML.DECODE_IMAGE` results to a table keep only `decoded_image`, but the inference queries select `uri`; the tables also keep `uri`. The resize example also lacks the comma after `ML.DECODE_IMAGE(data)` in `ML.RESIZE_IMAGE`, which is added.
 - Corrected from the official docs: the example that joins the object table with `my_dataset.image_description` qualifies the image column as `my_dataset.my_object_table.data` although the `FROM` clause reads `my_dataset.object_table`, and selects the unqualified `uri` that both joined tables have; the columns are qualified as `object_table.uri`, `object_table.data` and `image_description.description`.

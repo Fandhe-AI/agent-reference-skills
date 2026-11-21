@@ -518,7 +518,7 @@ FROM `mydataset.emotion_classification_train`;
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-remote-model-tuned (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the `prompt_column` and `label_column` alias examples are written `SELECT AS hint AS prompt, label ...` and `SELECT AS prompt, feature AS label ...`, which are not valid GoogleSQL; the extra `AS` after `SELECT` is removed.
 - Corrected from the official docs: the `SEQ` description under `DATA_SPLIT_METHOD` says the first n rows (sorted smallest to largest) are used as evaluation data, but the next sentence (rows smaller than the threshold are training data), the `DATA_SPLIT_COL` section and the other model pages say the last n rows; "first" is changed to "last". Here n is the number of rows that corresponds to the `DATA_SPLIT_EVAL_FRACTION` fraction.

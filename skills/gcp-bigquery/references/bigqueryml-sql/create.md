@@ -728,7 +728,7 @@ and request a quota increase.
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Conflicting official statements: the syntax writes `HPARAM_TUNING_OBJECTIVES` as a single string value, but the hyperparameter tuning examples on the model pages (for example `create-kmeans.md`, `create-glm.md` and `create-dnn-models.md`) pass a one-element array such as `HPARAM_TUNING_OBJECTIVES=['ROC_AUC']`; only one objective is supported. Use the one-element array form of the examples.
 - Corrected from the official docs: the syntax writes `[, NUM_TRIALS = int64_value, ]` with a trailing comma; it is written `[, NUM_TRIALS = int64_value ]` like the other options.

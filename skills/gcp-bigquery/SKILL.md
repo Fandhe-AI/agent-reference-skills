@@ -71,9 +71,11 @@ skills/gcp-bigquery/
     information-schema/           # 機械変換: INFORMATION_SCHEMA の各ビュー
       README.md
       <view>.md
-    legacy-sql/                   # 機械変換: legacy SQL、分割投入中（1 / 3 ページ。収録済みは README 掲載分のみ）
+    legacy-sql/                   # 機械変換: legacy SQL
       README.md
-      <page>.md
+      legacy-sql-1.md             # legacy SQL リファレンス（2 分割の 1）
+      legacy-sql-2.md             # legacy SQL リファレンス（2 分割の 2）
+      migrating-from-legacy-sql.md  # GoogleSQL への移行
     bq-cli/                       # 機械変換: bq コマンドラインツールのリファレンス（3 分割）
       README.md
       bq-cli-reference-1.md ... bq-cli-reference-3.md
@@ -177,8 +179,6 @@ skills/gcp-bigquery/
 
 `samples/` と `scripts/` は本スキルに無い。コードは各ガイドのコードブロックと、SQL・CLI リファレンスの例を引く。
 
-分割投入中のカテゴリ（`legacy-sql`: 1 / 3 ページ）は、その README に載っているページだけが収録済み。`legacy-sql` の載っていない構文・関数等は、そのカテゴリの出典の公式ページ（https://docs.cloud.google.com/bigquery/docs/reference/legacy-sql 、https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/migrating-from-legacy-sql ）を引く。
-
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
@@ -235,8 +235,6 @@ skills/gcp-bigquery/
 | REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
 | 各 API のメッセージ型 | rest-schemas/`<api>`（rest/ と同じ 9 API） | [references/rest-schemas/bigquery/README.md](references/rest-schemas/bigquery/README.md)、[references/rest-schemas/dataform/README.md](references/rest-schemas/dataform/README.md)、[references/rest-schemas/analyticshub/README.md](references/rest-schemas/analyticshub/README.md) ほか（`<api>` 名は `references/rest-schemas/README.md` の索引） |
 | ロール ID の権限一覧・事前定義ロールを調べたい（`roles/bigquery.*` / `roles/analyticshub.*` / `roles/biglake.*` / `roles/dataform.*` / `roles/datacatalog.*` 等） | iam | [references/iam/README.md](references/iam/README.md) |
-
-分割投入中。一部だけ収録済み: `legacy-sql`（1 / 3 ページ）。収録済みのページは各カテゴリの README.md の索引で確認する
 
 ## 他スキルとの使い分け
 

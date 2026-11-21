@@ -1238,7 +1238,7 @@ FROM
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-evaluate (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Conflicting official statements: for `ARIMA_PLUS` and `ARIMA_PLUS_XREG` models with `perform_aggregation` set to `FALSE`, `time_series_timestamp_col`, `time_series_data_col` and `forecasted_time_series_data_col` are described as `STRING` values while their name and type are inherited from the `CREATE MODEL` options; the `STRING` type is not confirmed (`ML.DETECT_ANOMALIES` gives `TIMESTAMP` and `FLOAT64` for the same columns).
 - Corrected from the official docs: the generative model syntax blocks pass `TOP_P AS top_k`, while the argument list describes `TOP_P` as the `FLOAT64` top-p value and the last syntax block writes `TOP_P AS top_p`; they are written `TOP_P AS top_p`.

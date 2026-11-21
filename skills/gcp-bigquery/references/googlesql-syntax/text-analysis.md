@@ -1051,7 +1051,7 @@ SELECT TEXT_ANALYZE(
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/text-analysis (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the ten `token_filters` syntax blocks (No normalization through Remove words) put a bare `"normalizer": {...}` or `"stop_words": ...` pair directly inside the JSON array. A JSON array holds values, and the Token filters syntax and every example on this page wrap each filter in `{ }`. The element is wrapped in braces.
 - Corrected from the official docs: the `LOG_ANALYZER` result is `['i like pie', 'you like', 'pie', 'they like 2 pies]' ]` with the closing bracket inside the last quoted element. The quote and bracket are put in the order every other result array uses.

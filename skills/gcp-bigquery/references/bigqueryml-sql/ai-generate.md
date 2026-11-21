@@ -523,7 +523,7 @@ For information about managing the cost of this function, see
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-ai-generate (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the output schema example writes `name NOT NULL STRING` and `''' AS output_schema`; the argument description gives the order name, data type, optional `NOT NULL`, and `AI.GENERATE` takes `output_schema => 'OUTPUT_SCHEMA'`, so the example uses `name STRING NOT NULL` and the named argument.
 - The Provisioned Throughput steps refer to "the remote model that you reference in the `AI.GENERATE` function", but `AI.GENERATE` takes no model argument: it sends the request to the Gemini model given by `endpoint` (or the default model) through `connection_id`. Select that Gemini model when purchasing; the source does not state which region to select for this function.

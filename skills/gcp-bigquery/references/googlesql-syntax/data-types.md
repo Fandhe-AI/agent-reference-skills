@@ -1567,7 +1567,7 @@ with a timezone that observes DST, the following rules apply:
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: The `Point` example `POINT(32 210)` has a latitude of 210, outside the range [-90, 90] that googlesql-functions/geography_functions-1.md states for latitudes. The official example is kept as is.
 - Caution: The `MultiPolygon` example has an inner ring `(2 2, 3 4, 2 4, 1 9)` that does not end at its first point, unlike the closed ring `(2 2, 3 4, 2 4, 2 2)` in the `Polygon` example on this page. The official example is kept as is.

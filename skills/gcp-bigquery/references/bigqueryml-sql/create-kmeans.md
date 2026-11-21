@@ -585,7 +585,7 @@ FROM
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create-kmeans (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: the syntax list ends `MODEL_TYPE = { 'KMEANS' }` with a comma although each following option begins with `[,`, which would expand to `,,`; the trailing comma is removed.
 - Corrected from the official docs: the "Train a k-means model" example says the default `distance_type` value is `euclidean_distance`; the `DISTANCE_TYPE` values are `'EUCLIDEAN'` and `'COSINE'`, and the default is `'EUCLIDEAN'`.

@@ -197,7 +197,7 @@ The result is similar to the following:
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-row-access-policies (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; indented code blocks are fenced; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Caution: the Required permissions section asks you to grant the following IAM roles, which reads as if all three were needed. Each of the three roles alone includes both `bigquery.rowAccessPolicies.get` and `bigquery.rowAccessPolicies.list` (see the BigQuery roles in iam/bigquery-1.md), so one of them is enough.
 - Corrected from the official docs: the example value for `REGION` is `` `region-us` ``, but the view name on this page already has the prefix (`region-REGION`), so that value would produce `region-region-us`. The example value is changed to `us`.

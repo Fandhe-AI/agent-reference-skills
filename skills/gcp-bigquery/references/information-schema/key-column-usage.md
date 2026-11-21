@@ -153,7 +153,7 @@ are similar to the following. Note that `CONSTRAINT_CATALOG`,
 ## Notes
 
 - Source: https://docs.cloud.google.com/bigquery/docs/information-schema-key-column-usage (Markdown twin and rendered page fetched 2026-11-19).
-- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The prose is otherwise unchanged.
+- Converted mechanically from the official Markdown twin: headings are one level lower than on the page; and the text of each code block is taken from the rendered page, because the twin shortens the dashes in result-table borders. The other changes to the text and the code examples, beyond this conversion, are listed in the Notes below.
 - Links to other pages of this reference point to the local files when the target heading exists here; all other links point to the official docs.
 - Corrected from the official docs: The foreign key DDL read `CREATE TABLE table composite_fk (...)`, which repeats the `table` keyword. It is now `CREATE TABLE composite_fk (...)`, like the primary key statement above it.
 - Corrected from the official docs: the single-table example compares `table_name` with the unquoted placeholder `TABLE`. `table_name` is a `STRING` column, and an unquoted table name such as `orders` is read as a column name, so the query fails. The placeholder is enclosed in quotes (`'TABLE'`).
