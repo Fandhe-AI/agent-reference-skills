@@ -15,7 +15,7 @@ Google Cloud (GCP) の検索・アンサー生成・社内エージェント基�
 - Gemini Enterprise: エディションとライセンス・app 作成・Assistant 設定・コネクタと data store（Cloud Storage・BigQuery・Knowledge Catalog・custom MCP server）・ADK / A2A agent の登録と共有・`streamAssist` による agent 呼び出し（登録した ADK / A2A agent は非対応）・Agent Registry からの取り込み・app 単位の IAM policy・identity provider（Workforce Identity Federation）
 - 機械生成: REST（Discovery）`discoveryengine` 1 API、メッセージスキーマ 1688 件、IAM（`roles/discoveryengine.*`）
 
-参照本文は英語（公式ドキュメントの原語）。**製品専用の gcloud グループはこれらのプロダクトに無い**ため本スキルは gcloud のカテゴリを持たず、手順の正は REST・クライアントライブラリ・コンソール。認証（ADC・サービスアカウント）・IAM・組織ポリシー・VPC Service Controls などの共通の gcloud コマンドは、使う手順のページに例として収録する（探索手順 2）。REST を `curl` で呼ぶ例は、`gcloud auth print-access-token` で得た bearer token を変数 `TOKEN` に入れ、`-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN")` で渡す（token を curl の引数に載せない。curl 7.55.0 以降と bash / zsh が必要）。
+参照本文は英語（公式ドキュメントの原語）。**製品専用の gcloud グループはこれらのプロダクトに無い**ため本スキルは gcloud のカテゴリを持たず、手順の正は REST・クライアントライブラリ・コンソール。認証（ADC・サービスアカウント）・IAM・組織ポリシー・VPC Service Controls などの共通の gcloud コマンドは、使う手順のページに例として収録する（探索手順 2）。REST を `curl` で呼ぶ例は、`gcloud auth print-access-token` で得た bearer token を変数 `TOKEN` に入れ、`-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN")` で渡す（token を curl の引数に載せない。`-H @file` は curl 7.55.0 以降、`--fail-with-body` を使う一部の例は 7.76.0 以降、`<(...)` は bash / zsh が必要）。
 
 名称の対応（出典 https://docs.cloud.google.com/gemini-enterprise-agent-platform/vertex-ai-name-changes 、取得 2026-11-21）: Vertex AI Search → Agent Search、Agentspace → Gemini Enterprise、Vertex AI → Gemini Enterprise Agent Platform（Agent Platform）。API 名・IAM ロールの接頭辞（`roles/discoveryengine.*`）は旧名のまま。
 

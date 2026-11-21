@@ -131,15 +131,18 @@ def get_operation_sample(operation_name: str) -> operations_pb2.Operation:
 
 Calls `operations.get` repeatedly with a backoff of 10 seconds between requests; stop the polling loop with `Ctrl+C` after the status shows `"done": true` (`Ctrl+Z` only suspends the job, which keeps sending requests if it is resumed). For example, `OPERATION_NAME` is `projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789`.
 
-Adapted (not in the official docs): The access token is read into `TOKEN` in the loop condition on each pass (the loop stops if `gcloud` fails or prints nothing, and a token that expires during a long poll is refreshed) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `curl --fail-with-body` with `|| { ...; break; }` stops the loop on an HTTP error such as 404 or 403.
+`--fail-with-body` needs curl 7.76.0 or later.
+
+Adapted (not in the official docs): The access token is read into `TOKEN` on each pass (a token that expires during a long poll is refreshed) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. A failed token fetch, or an HTTP error such as 404 or 403 (`curl --fail-with-body`), stops the loop with a message, and `[ "$rc" -eq 0 ]` returns non-zero.
 
 ```bash
-while TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ]; \
-    do curl --fail-with-body -X GET \
+rc=0; while true; \
+    do TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] || { rc=1; echo "token fetch failed" >&2; break; }; \
+    curl --fail-with-body -X GET \
     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
-    "https://discoveryengine.googleapis.com/v1/OPERATION_NAME" || { echo "request failed" >&2; break; }; \
+    "https://discoveryengine.googleapis.com/v1/OPERATION_NAME" || { rc=$?; echo "request failed" >&2; break; }; \
     sleep 10; \
-    done
+    done; [ "$rc" -eq 0 ]
 ```
 
 ### Poll an operation (Python)
@@ -250,7 +253,7 @@ def cancel_operation_sample(operation_name: str) -> None:
 - Corrected from the official docs: the list sample's `search_engine_id` (`# search_engine_id = "YOUR_SEARCH_ENGINE_ID"`) goes in the `dataStores/` segment, so it is renamed `data_store_id`. The other samples' `Example:` comments keep `{search_engine_id}`; pass the data store ID there, not the app ID.
 - The REST list call uses the data store resource (`.../dataStores/DATA_STORE_ID/operations`); the Python samples use `DocumentServiceClient` and Application Default Credentials.
 - Corrected from the official docs: the source writes `curl -X post` in the cancel example; changed to `curl -X POST` (the Discovery document `discoveryengine.v1` defines every `operations.cancel` method with `httpMethod` `POST`). The source tags the cancel response sample `bash`; it is tagged `json` here (the content is unchanged).
-- Corrected from the official docs: the source says "Stop the polling job (`Control+Z`) after the status shows `"done": true`." In a shell, `Control+Z` suspends the loop instead of ending it; the loop does not exit on its own when `"done": true` appears, so the page says to end it with `Ctrl+C`. Run it only against an operation you started yourself.
+- Corrected from the official docs: the source says "Stop the polling job (`Control+Z`) after the status shows `"done": true`." `Control+Z` only suspends the loop, which does not exit on its own at `"done": true`, so the page says to end it with `Ctrl+C`. Run it only against an operation you started yourself.
 - Cancelling an operation (for example an import) stops the job; do it in a disposable project first if unsure.
 - The cancel response sample in the source shows a `v1alpha` `ImportDocumentsMetadata` type although the request uses `v1`; kept as written.
 - Corrected from the official docs: the source's operations-list sample writes `"@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata",` with a trailing comma before the closing `}` of `metadata`; JSON does not allow trailing commas, so the comma is removed and the block is tagged `json`.
