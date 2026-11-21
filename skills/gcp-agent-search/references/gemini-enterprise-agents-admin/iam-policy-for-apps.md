@@ -55,7 +55,7 @@ curl -X POST \
 | Placeholder | Description |
 |---|---|
 | `PROJECT_ID` | The ID of your project. |
-| `ENDPOINT_LOCATION` | The multi-region for the API request: `us` (US multi-region), `eu` (EU multi-region) or `global` (Global location). |
+| `ENDPOINT_LOCATION` | The multi-region for the API request: `us` (US multi-region), `eu` (EU multi-region) or `global` (Global location). For the `global` host form, see Notes. |
 | `LOCATION` | The multi-region of your data store: `global`, `us` or `eu`. |
 | `APP_ID` | The ID of the app that you want to configure. |
 | `ETAG` | The `etag` value returned by `getIamPolicy`; it changes with each policy update, so fetch a new one before updating again. |
@@ -76,6 +76,7 @@ curl -X POST \
 - To delete an app that has an IAM policy, remove users from the policy first (see the best practices for deleting an app with an IAM policy on the delete-app page); try deletion in a disposable project first.
 - For granular, resource-level access controls across both apps and data stores, see https://docs.cloud.google.com/gemini/enterprise/docs/iam-policy-for-apps-and-data-stores.
 - This page covers Gemini Enterprise app-level IAM; general IAM concepts are in `gcp-foundation`.
+- Source inconsistency (global host): for `ENDPOINT_LOCATION` = `global`, the Gemini Enterprise pages on app IAM policies and ADK / A2A agent registration show example commands with `https://global-discoveryengine.googleapis.com/...`, while the streamAssist page says "If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The `discoveryengine` `v1` / `v1beta` / `v1alpha` Discovery documents give the `rootUrl` `https://discoveryengine.googleapis.com/`. Both forms are kept as written. `ENDPOINT_LOCATION` (or the `LOCATION` prefix of the host) sets only the hostname; the `locations/...` segment of the resource path is a separate value.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/iam-policy-for-apps (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

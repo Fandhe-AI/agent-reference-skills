@@ -39,6 +39,8 @@ The summary is taken from the extractive answers in the response, so you must al
 
 Set `useSemanticChunks` to generate the summary from the most relevant document chunks; this increases recall and retrieval compared with the default of using extractive answers. The response returns the summary and the content of each chunk it used (`references`).
 
+Adapted (not in the official docs): the trailing comma after `"includeCitations": CITATIONS_BOOLEAN` is removed, because JSON does not allow a comma before a closing brace.
+
 ```text
 "contentSearchSpec":
  {
@@ -46,7 +48,7 @@ Set `useSemanticChunks` to generate the summary from the most relevant document 
    {
      "useSemanticChunks": SEMANTIC_CHUNK_BOOLEAN,
      "summaryResultCount": SUMMARY_RESULT_COUNT,
-     "includeCitations": CITATIONS_BOOLEAN,
+     "includeCitations": CITATIONS_BOOLEAN
    }
  }
 ```
@@ -190,6 +192,8 @@ curl -X POST \
 - The JSON fragments are shown as `text` because they are partial request bodies. The source also shows full response examples (semantic chunks, citations), a console procedure, and a pointer to healthcare data search; these are omitted.
 - Former name: Agent Search was Vertex AI Search; the API is still Discovery Engine (`discoveryengine.googleapis.com`).
 - Deprecated: "Agent Search for healthcare is deprecated and won't be available after May 15, 2027." (https://docs.cloud.google.com/generative-ai-app-builder/docs/prepare-data, retrieved 2026-11-21).
+- Source inconsistency (search summaries): the feature table of the advanced-features page says "Search summarization without advanced generative answer features | Enterprise edition", while its "Generative responses" section says "You must turn on the Generative responses option to obtain search responses with these features:" and lists "Search summarization", and the get-search-summaries page says "For an unstructured search app: Turn on the generative responses option." (for a website search app: Enterprise edition features, Generative responses and advanced website indexing). The `discoveryengine` `v1` Discovery document also lists the summary skipped reason `LLM_ADDON_NOT_ENABLED` ("Google skips the summary if the LLM addon is not enabled."). All statements are kept as written; check the edition and add-on before relying on summaries.
+- Corrected from the official docs: the source's semantic-chunks fragment writes `"includeCitations": CITATIONS_BOOLEAN,` with a trailing comma before the closing `}` of `summarySpec`; JSON does not allow trailing commas, so the comma is removed.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/get-search-summaries (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

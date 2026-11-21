@@ -57,7 +57,7 @@ curl -X POST \
   - `DataStoreSpec` fields allowed: `dataStore`; `boostSpec` and `filter` (if specified in both `SearchRequest` and `dataStoreSpecs`, both are applied)
   - Serving config fields that can be added or updated: `boostControlIds`, `displayName`, `filterControlIds`, `genericConfig` (`contentSearchSpec`), `name`, `solutionType`, `synonymsControlIds`
   - Controls with CRUD support: `boostAction`, `synonymAction`, `filterAction`
-- After a data store is connected to an app, it can't be disconnected.
+- Source inconsistency (disconnecting data stores): the source says "After a data store is connected to an app, it can't be disconnected." Its "About blended search" section says "You can add or remove data stores from a blended search app, but the app can't have fewer than two data stores connected to it at any time." and "If you connect a single data store to a search app during app creation, then you can't add or remove that data store." Both are kept as written; the blended-search sentences give the case in which a data store can be removed (a blended search app that keeps at least two connected data stores).
 - A data store can contain only one type of data. Website data created with the API must be attached to an app with Enterprise features enabled in the Google Cloud console.
 - Document-level CRUD isn't supported for website data stores: change included / excluded URL patterns, maintain sitemaps, or refresh web pages instead.
 - Excluded URL patterns take priority over included ones. Media apps can only connect to media data stores (structured data stores with a Google-defined schema, or a custom schema with five media-related fields); media data stores also hold user events, which are required for media apps.

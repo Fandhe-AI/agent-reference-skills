@@ -43,7 +43,7 @@ curl -X POST \
 | Extractive segments for unstructured search | Enterprise edition |
 | Core generative answer features | Enterprise edition |
 | Advanced generative answer features | Advanced LLM features |
-| Search summarization without advanced generative answer features | Enterprise edition |
+| Search summarization without advanced generative answer features | Enterprise edition (see Notes) |
 | Search summarization with advanced generative answer features | Advanced LLM features |
 | Search tuning for unstructured data stores | Enterprise edition |
 
@@ -70,6 +70,7 @@ curl -X POST \
 - Enterprise edition: required for extractive answers, extractive segments, search tuning and core generative answer features, and for any app that uses website data (basic website search and advanced website indexing). It can't be turned off for apps attached to website data stores; turning it off elsewhere stops the features that need it. It incurs additional cost (see https://docs.cloud.google.com/generative-ai-app-builder/pricing).
 - Generative responses: you must turn on the Generative responses option to get search summarization and advanced generative answer features; for website search both also need advanced website indexing. It incurs additional costs. Turning it off stops functionality that needs advanced LLM features.
 - Advanced website indexing: generates an index for the websites you specify when you create the data store, requires domain verification, imposes a quota on the number of pages you can index (you can request an increase; see https://docs.cloud.google.com/generative-ai-app-builder/quotas), and incurs additional cost. You can turn it on when you create or upgrade a data store. You cannot turn it off for an existing data store; create a new data store without selecting **Advanced website indexing**.
+- Source inconsistency (search summaries): the feature table of the advanced-features page says "Search summarization without advanced generative answer features | Enterprise edition", while its "Generative responses" section says "You must turn on the Generative responses option to obtain search responses with these features:" and lists "Search summarization", and the get-search-summaries page says "For an unstructured search app: Turn on the generative responses option." (for a website search app: Enterprise edition features, Generative responses and advanced website indexing). The `discoveryengine` `v1` Discovery document also lists the summary skipped reason `LLM_ADDON_NOT_ENABLED` ("Google skips the summary if the LLM addon is not enabled."). All statements are kept as written; check the edition and add-on before relying on summaries.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/about-advanced-features (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

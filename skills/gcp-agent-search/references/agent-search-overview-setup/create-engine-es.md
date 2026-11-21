@@ -10,7 +10,7 @@ Create an Agent Search (formerly Vertex AI Search) search app, called an engine 
 
 ### REST
 
-Find your data store ID first (console **Data Stores** page, then the **Data** page of the data store). In Agent Search the term app can be used interchangeably with engine in the context of APIs. A data store can be attached to only one app and can't be removed from the app later.
+Find your data store ID first (console **Data Stores** page, then the **Data** page of the data store). In Agent Search the term app can be used interchangeably with engine in the context of APIs. A data store can be attached to only one app and can't be removed from the app later (see Notes for the blended-search case).
 
 ```bash
 curl -X POST \
@@ -138,7 +138,7 @@ def create_engine_sample(
   - `search_tier`: `SEARCH_TIER_STANDARD`, `SEARCH_TIER_ENTERPRISE`
   - `search_add_ons`: `SEARCH_ADD_ON_LLM`, `SEARCH_ADD_ON_UNSPECIFIED`
 - The industry vertical `GENERIC` is used to create custom search apps that contain structured, unstructured, website data stores, or multiple data stores (blended search).
-- Data store attachment: if you attach only one data store, you can't attach more later and can't remove it; attaching multiple data stores lets you update the attached data stores later, but the app always requires at least two data stores (see "About blended search" in the data stores guide). The REST step in the source says a data store "can be attached to only one app".
+- Data store attachment: if you attach only one data store, you can't attach more later and can't remove it; attaching multiple data stores lets you update the attached data stores later, but the app always requires at least two data stores (see "About blended search" in the data stores guide). Source inconsistency: the REST step of the source says "A data store can be attached to only one app and can't be removed from the app later.", while the console step says "If you attach only one data store, you cannot remove it or add other data stores to the app later. Attaching multiple data stores lets you update the attached data stores later, but the app always requires at least two data stores." Both are kept as written.
 - Terraform: use the `discovery_engine_search_engine` resource of the `hashicorp/google` provider (https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/discovery_engine_search_engine).
 - The Python sample waits for the long-running operation with `operation.result()`; the Python sample comment lists `global` as the location value.
 - The REST method is `engines.create` (Discovery Engine API `v1`).

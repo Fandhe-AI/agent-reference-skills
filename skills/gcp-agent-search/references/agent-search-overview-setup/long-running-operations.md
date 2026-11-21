@@ -65,15 +65,17 @@ def list_operations_sample(
 
 ### Get details about an operation (REST)
 
-The operation name comes from the response of the call that started the LRO (for example `documents.import`), or from listing operations. The start of that response looks like this (the twin's sample has a trailing comma, so it is tagged `text`):
+The operation name comes from the response of the call that started the LRO (for example `documents.import`), or from listing operations. The start of that response looks like this:
 
-```text
+Adapted (not in the official docs): the trailing comma after the `"@type"` value is removed, because JSON does not allow a comma before a closing brace.
+
+```json
 {
   "operations": [
     {
       "name": "projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789",
       "metadata": {
-        "@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata",
+        "@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata"
       }
     }
   ]
@@ -239,6 +241,7 @@ def cancel_operation_sample(operation_name: str) -> None:
 - The source says to stop the polling loop with `Control+Z`; the loop does not exit on its own when `"done": true` appears. Run it only against an operation you started yourself.
 - Cancelling an operation (for example an import) stops the job; do it in a disposable project first if unsure.
 - The cancel response sample in the source shows a `v1alpha` `ImportDocumentsMetadata` type although the request uses `v1`; kept as written.
+- Corrected from the official docs: the source's operations-list sample writes `"@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata",` with a trailing comma before the closing `}` of `metadata`; JSON does not allow trailing commas, so the comma is removed and the block is tagged `json`.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/long-running-operations (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -1,4 +1,4 @@
-# Agent Search overview and setup
+# agent-search-overview-setup
 
 | Name | Description | Path |
 |------|-------------|------|

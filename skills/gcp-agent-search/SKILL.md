@@ -37,13 +37,13 @@ skills/gcp-agent-search/
       <page>.md
 ```
 
-収録ページ数は機械生成 20（rest 4・rest-schemas 12・iam 4）と手書き 68 の計 88。`references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） の API は `discoveryengine`（Discovery Engine API）のみ。メソッドは 4 分割（billingAccounts・projects。`projects.locations.collections.dataStores` / `engines`・`userEvents`・`rankingConfigs`・`sampleQuerySets` 等）、IAM は 4 分割（`discoveryengine-1` はロール 6、`discoveryengine-2` はロール 11 と権限、`discoveryengine-3` / `discoveryengine-4` は権限の続き）。
+完成形の収録ページ数は機械生成 20（rest 4・rest-schemas 12・iam 4）と手書き 68 の計 88。`references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） の API は `discoveryengine`（Discovery Engine API）のみ。メソッドは 4 分割（billingAccounts・projects。`projects.locations.collections.dataStores` / `engines`・`userEvents`・`rankingConfigs`・`sampleQuerySets` 等）、IAM は 4 分割（`discoveryengine-1` はロール 6、`discoveryengine-2` はロール 11 と権限、`discoveryengine-3` / `discoveryengine-4` は権限の続き）。
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（各カテゴリ（サブディレクトリ）に README.md がある。ガイド直下に README.md は無い）。Agent Search（検索 app）は `agent-search-overview-setup` から、Gemini Enterprise（社内アシスタント・agent）は `gemini-enterprise-overview-apps`（後続 PR で投入） から入る
+1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（各カテゴリ（サブディレクトリ）に README.md がある。ガイド直下に README.md は無い）。Agent Search（検索 app）は `agent-search-overview-setup` から、Gemini Enterprise（社内アシスタント・agent）は、agent の登録・共有・呼び出しなら `gemini-enterprise-agents-admin`、app の作成・設定・アシスタントの機能なら `gemini-enterprise-overview-apps`（後続 PR で投入） から入る
 2. gcloud コマンド → このスキルには無い。REST かクライアントライブラリ、コンソールの手順を引く。REST を `curl` で呼ぶときの bearer token は `gcloud auth print-access-token` で得る
 3. 検索の挙動の調整（filter・boost・ranking・serving controls・relevance filter）は `search-query-results`（後続 PR で投入） と `ranking-serving-controls`（後続 PR で投入）、生成回答（`streamAnswer`・summary・grounding）は `answers-summaries`
 4. エージェントの登録・共有・呼び出しは `gemini-enterprise-agents-admin`。Agent Runtime 上に ADK agent を作る側は `gcp-agent-platform`（予定を含む他スキルは下記「他スキルとの使い分け」）

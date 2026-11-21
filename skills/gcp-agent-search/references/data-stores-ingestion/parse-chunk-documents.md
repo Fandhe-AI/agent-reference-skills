@@ -94,12 +94,14 @@ curl -X POST \
 
 ### Turn on document chunking (fragment of the creation request)
 
+Adapted (not in the official docs): the trailing comma after `"includeAncestorHeadings": HEADINGS_BOOLEAN` is removed, because JSON does not allow a comma before a closing brace.
+
 ```text
  "documentProcessingConfig": {
    "chunkingConfig": {
        "layoutBasedChunkingConfig": {
            "chunkSize": CHUNK_SIZE_LIMIT,
-           "includeAncestorHeadings": HEADINGS_BOOLEAN,
+           "includeAncestorHeadings": HEADINGS_BOOLEAN
        }
    },
    "defaultParsingConfig": {
@@ -232,7 +234,8 @@ curl -X POST \
 - `getProcessedDocument` and `Chunks.list` / `Chunks.get` are shown on `v1alpha`; `processed_document_type` also accepts `CHUNKED_DOCUMENT` (chunking must be enabled). The source also shows a `Chunks.get` curl (`.../documents/DOCUMENT_ID/chunks/CHUNK_ID`), a `CHUNKED_DOCUMENT` curl, a full layout payload example for parsed documents, a chunked payload example, the search response example, and the Console steps; these are omitted.
 - Source inconsistency: the text says the maximum for `numPreviousChunks` / `numNextChunks` is 5, while the `v1` Discovery document for `ChunkSpec` says "The maximum allowed value is 3". Confirm against the live API reference before relying on a value above 3.
 - Corrected from the official docs: both OCR examples pass `"useNativeText": "false"` (a JSON string); `useNativeText` is `boolean` in the `discoveryengine` Discovery documents (`v1`, `v1beta`, `v1alpha`), and the source itself says to set it "to true" and that the default is `false`, so the examples here use `false`.
-- The chunking fragment above is a request fragment with placeholders (and a trailing comma), so it is tagged `text`; replace the placeholders and remove the trailing comma in a real request.
+- The chunking fragment above is a request fragment with placeholders, so it is tagged `text`; replace the placeholders in a real request.
+- Corrected from the official docs: the source's chunking fragment writes `"includeAncestorHeadings": HEADINGS_BOOLEAN,` with a trailing comma before the closing `}` of `layoutBasedChunkingConfig`; JSON does not allow trailing commas, so the comma is removed.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/parse-chunk-documents (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the example "Specify parser overrides for file types" had a trailing comma after the `ocrParsingConfig` object inside `pdf` (the source reads `"useNativeText": "false"` then `},` then `},`); the comma after the inner brace was removed.
 
