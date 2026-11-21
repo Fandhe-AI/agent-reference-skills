@@ -10,6 +10,8 @@ Define a custom agent as a Python class that Agent Runtime deploys and manages: 
 
 ### Basic template
 
+Adapted (not in the official docs): `query` returns `dumpd(...)` of the LangGraph state, as the async and streaming examples below do, because the state holds LangChain message objects that are not JSON-serializable; `dumpd` (`langchain_core.load`, langchain-core 1.0.0 and 1.8.4) converts nested values too.
+
 ```python
 from typing import Callable, Sequence
 
@@ -37,7 +39,9 @@ class CLASS_NAME:
         self.graph = create_react_agent(model, tools=self.tools)
 
     def query(self, **kwargs):
-        return self.graph.invoke(**kwargs)
+        from langchain_core.load import dumpd
+
+        return dumpd(self.graph.invoke(**kwargs))
 ```
 
 The template imports `langchain_google_vertexai` (PyPI `langchain-google-vertexai`, which no Agent Platform SDK extra installs) and `langgraph.prebuilt` (from `langgraph`, pulled in by the `langchain` extra in [setup.md](./setup.md)); install them and list them in the deployment `requirements` as well.
@@ -136,19 +140,21 @@ Prerequisite (not in the official docs): `get_state` and `get_state_history` rea
 
 As written, these operations are for local or single-user use (not in the official docs): the caller supplies `thread_id`, and `get_state` / `get_state_history` return the state and history of whatever thread it names. Permission to call the deployed agent does not show who owns a thread. In a deployment that several users can call, check on the server side that the authenticated caller owns the `thread_id` before the agent reads or writes its state.
 
-Adapted (not in the official docs): `get_state` and `get_state_history` take `**kwargs`, because the source's bodies pass `**kwargs` that are not defined in those methods (`NameError`); the prebuilt LangGraph template in google-cloud-aiplatform 2.10.0 defines both methods with `**kwargs`.
+Adapted (not in the official docs): `get_state` and `get_state_history` take `**kwargs`, because the source's bodies pass `**kwargs` that are not defined in those methods (`NameError`); the prebuilt LangGraph template in google-cloud-aiplatform 2.10.0 defines both methods with `**kwargs`. Both also pass the `_asdict()` result through `dumpd`, because `_asdict()` converts only the top level and leaves the message objects in `values`.
 
 ```python
 from typing import Iterable
 
+from langchain_core.load import dumpd
+
 class CustomAgent(StreamingAgent):
 
     def get_state(self, **kwargs) -> dict: # new synchronous method
-        return self.graph.get_state(**kwargs)._asdict()
+        return dumpd(self.graph.get_state(**kwargs)._asdict())
 
     def get_state_history(self, **kwargs) -> Iterable: # new streaming operation
         for state_snapshot in self.graph.get_state_history(**kwargs):
-            yield state_snapshot._asdict()
+            yield dumpd(state_snapshot._asdict())
 
     def register_operations(self):
         return {
@@ -163,8 +169,12 @@ class CustomAgent(StreamingAgent):
 
 The `get_state` method below has the same checkpointer prerequisite as the custom operations above; `config` carries the `thread_id` in `configurable`.
 
+Adapted (not in the official docs): the `_asdict()` result is passed through `dumpd`, as in the custom operations above.
+
 ```python
 from typing import Any, Dict, TypedDict
+
+from langchain_core.load import dumpd
 
 # schemas.py
 class RunnableConfig(TypedDict, total=False):
@@ -175,7 +185,7 @@ class RunnableConfig(TypedDict, total=False):
 class AnnotatedAgent(CLASS_NAME):
 
     def get_state(self, config: RunnableConfig) -> dict:
-        return self.graph.get_state(config=config)._asdict()
+        return dumpd(self.graph.get_state(config=config)._asdict())
 
     def register_operations(self):
         return {"": ["query", "get_state"]}
@@ -258,6 +268,7 @@ print(json.dumps(error_result, indent=2))
 - Corrected from the official docs: the `async_query` and `stream_query` examples imported `from langchain.load.dump import dumpd`. The `langchain` 1.0.0 and 1.5.2 wheels (PyPI, checked 2026-11-21) contain no `langchain/load/` module (the 1.5.2 wheel's subpackages are `agents`, `chat_models`, `embeddings`, `mcp`, `messages`, `rate_limiters`, `tools`; 1.0.0 has the same without `mcp`), so the import raises `ModuleNotFoundError` with `langchain` 1.x. The `langchain-classic` package that the same SDK extra installs (1.0.8 checked) ships only `langchain_classic/`, not `langchain/`. `dumpd` is defined in `langchain_core/load/dump.py` and exported in `__all__` of `langchain_core/load/__init__.py` in both `langchain-core` 1.0.0 and 1.8.4. The `langchain` extra of google-cloud-aiplatform 2.10.0 (`google-cloud-aiplatform[agent_engines,langchain]`, see [setup.md](./setup.md)) requires `langchain<2.0.0,>=1.0.0` and `langchain-core<2.0.0,>=1.0.0`, and that SDK's own LangGraph template (`vertexai/agent_engines/templates/langgraph.py`) tries `from langchain_core.load import dumpd` first and falls back to `from langchain.load.dump import dumpd` only on `ImportError`.
 - Checkpointer prerequisite: the source's `CustomAgent` and `AnnotatedAgent` inherit the basic template's `set_up`, which builds the graph without a checkpointer. In langgraph 1.2.24 (`langgraph/pregel/main.py`), `get_state` and `get_state_history` call `_state_checkpointer`, which raises `ValueError("No checkpointer set")` when the graph has none, and `get_state` reads `thread_id` from the `configurable` part of the config. `create_react_agent` in langgraph-prebuilt 1.1.3 takes `checkpointer: Checkpointer | None = None`; `InMemorySaver` (alias `MemorySaver`) is in `langgraph/checkpoint/memory/__init__.py` of langgraph-checkpoint 4.3.2, whose docstring says "Only use `InMemorySaver` for debugging or testing purposes." The `langchain` extra of google-cloud-aiplatform 2.10.0 requires `langgraph<2.0.0,>=1.0.0`, and that SDK's prebuilt LangGraph template takes a `checkpointer_builder` for the same purpose (`vertexai/agent_engines/templates/langgraph.py`). For a deployed agent that serves state across instances, use a persistent checkpointer instead (not covered by the official page).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-a-custom-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: `query` returned `self.graph.invoke(**kwargs)` and the state methods returned `..._asdict()` unconverted. The prebuilt LangGraph template in google-cloud-aiplatform 2.10.0 (`vertexai/agent_engines/templates/langgraph.py`) wraps `query` / `stream_query` in `dumpd` but returns `get_state` / `get_state_history` as `_asdict()` only; langchain-core 1.8.4 `dumpd` recurses into dicts, lists and tuples.
 
 ## Related
 

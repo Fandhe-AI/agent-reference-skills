@@ -161,9 +161,11 @@ identity_type=AGENT_IDENTITY
 
 Specify only the service account email, not the full resource URI:
 
+Adapted (not in the official docs): the update takes the resource name from the created instance (`remote_agent.api_resource.name`; `Runtime.api_resource` in google-cloud-agentplatform 2.10.0) instead of a plain string with `{project_id}`-style placeholders, which Python does not fill in.
+
 ```text
 # Create a new instance
-client.runtimes.create(
+remote_agent = client.runtimes.create(
     agent=local_agent,
     config={
         "service_account": "my-custom-service-account@my-project.iam.gserviceaccount.com",
@@ -172,7 +174,7 @@ client.runtimes.create(
 )
 
 # Update an existing instance
-resource_name = "projects/{project_id}/locations/{location}/reasoningEngines/{reasoning_engine_id}"
+resource_name = remote_agent.api_resource.name
 client.runtimes.update(
     name=resource_name,
     agent=local_agent,
@@ -259,6 +261,7 @@ remote_agent = client.runtimes.create(
 - Corrected from the official docs: the Private Service Connect interface example called `client.runtimes.create(agent=local_agent, config={"psc_interface_config": {...}})` with no `staging_bucket`. In google-cloud-agentplatform 2.10.0, `_validate_staging_bucket_or_raise` (`agentplatform/_genai/_runtimes_utils.py`) raises `ValueError` with "Please provide a `staging_bucket` in `client.runtimes.create(...)`." when an agent object is deployed without one, and a value that does not start with `gs://` is rejected. The other agent-object examples on the page already mark their remaining fields with `# ... other configs` / `# ...` and are kept as written; see the first paragraph of Signature / Usage.
 - Source inconsistency: the keep-alive section says `http_get.path` is "always required for prebuilt container image deployments", while the same page's container image deployment examples (SDK `client.runtimes.create(config={"container_spec": {"image_uri": "CONTAINER_IMAGE_URI"}, ...})` and the REST `reasoningEngines.create` body with `spec.containerSpec.imageUri`) set no `keep_alive_probe`. Both are kept as written on this page; deploy-an-agent-containers.md adds the probe to its container image examples (Adapted), following the keep-alive section. If you deploy a prebuilt image with a keep-alive probe, give `keep_alive_probe.http_get.path` as in the example above; if a prebuilt image deployment without a probe is rejected, add one in that form.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the service account update example set `resource_name = "projects/{project_id}/locations/{location}/reasoningEngines/{reasoning_engine_id}"` (not an f-string).
 
 ## Related
 
