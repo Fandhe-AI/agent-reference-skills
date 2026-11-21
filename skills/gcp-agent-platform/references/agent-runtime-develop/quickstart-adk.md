@@ -20,12 +20,15 @@ pip install --upgrade --quiet "google-cloud-aiplatform[agent_engines,adk]>=1.112
 gcloud auth application-default login
 ```
 
+Adapted (not in the official docs): added `http_options=dict(api_version="v1beta1")`, which the deploy step's `types.IdentityType.AGENT_IDENTITY` needs (agent-identity.md in the agent-identity-registry category), so the version does not depend on `GOOGLE_GENAI_API_VERSION` (setup.md).
+
 ```python
 import vertexai
 
 client = vertexai.Client(
     project="PROJECT_ID",               # Your project ID.
     location="LOCATION",                # Your cloud region.
+    http_options=dict(api_version="v1beta1"),
 )
 ```
 
@@ -69,6 +72,8 @@ agent = Agent(
 app = agent_engines.AdkApp(agent=agent)
 ```
 
+Before the local test (not in the official docs), enable the API with `gcloud services enable aiplatform.googleapis.com --project=PROJECT_ID` and export `GOOGLE_CLOUD_PROJECT=PROJECT_ID` and `GOOGLE_CLOUD_LOCATION=LOCATION` before you start Python. The local `AdkApp` does not use `client`: in google-cloud-aiplatform 2.10.0 it takes the project from the global configuration (`GOOGLE_CLOUD_PROJECT`, else the ADC project), keeps an existing `GOOGLE_CLOUD_LOCATION` (else the default region `us-central1`), and its `set_up` sets `GOOGLE_GENAI_USE_VERTEXAI` and `GOOGLE_GENAI_USE_ENTERPRISE` to `1`, so model calls go to Agent Platform.
+
 Test locally (in-memory sessions):
 
 ```python
@@ -81,7 +86,7 @@ async for event in app.async_stream_query(
 
 ### Deploy
 
-Before you deploy, enable the Agent Platform API (`aiplatform.googleapis.com`) in the project, which needs the `serviceusage.services.enable` permission (Notes), and create the Cloud Storage bucket that you pass as `STAGING_BUCKET` (steps in [Create a staging bucket](setup.md#create-a-staging-bucket)). The source's Before you begin section shows only the note on the enable permission, not a command; with gcloud, the command shown on other pages of the source is `gcloud services enable aiplatform.googleapis.com`; run it as `gcloud services enable aiplatform.googleapis.com --project=PROJECT_ID` (not in the official docs), so the API is enabled in the `PROJECT_ID` that the SDK client uses.
+Before you deploy, make sure the Agent Platform API (`aiplatform.googleapis.com`) is enabled in the project (see the local test step), which needs the `serviceusage.services.enable` permission (Notes), and create the Cloud Storage bucket that you pass as `STAGING_BUCKET` (steps in [Create a staging bucket](setup.md#create-a-staging-bucket)). The source's Before you begin section shows only the note on the enable permission, not a command; with gcloud, the command shown on other pages of the source is `gcloud services enable aiplatform.googleapis.com`; run it as `gcloud services enable aiplatform.googleapis.com --project=PROJECT_ID` (not in the official docs), so the API is enabled in the `PROJECT_ID` that the SDK client uses.
 
 ```python
 from vertexai import types
@@ -134,6 +139,8 @@ remote_agent.delete(force=True)
 - Corrected from the official docs: `get_exchange_rate` called `requests.get(f"https://api.frankfurter.app/{currency_date}", params={"from": currency_from, "to": currency_to})` with no timeout and returned `response.json()` without checking the HTTP status.
 - Corrected from the official docs: `get_exchange_rate` put `currency_date` into the URL path (`f"https://api.frankfurter.app/{currency_date}"`) without checking it.
 - Corrected from the official docs: `get_exchange_rate` put the model-supplied `currency_date` in the URL as given; the example validates it with `strptime("%Y-%m-%d")`, which also accepts dates without zero padding such as `2023-1-5`, so it sends the normalized `date().isoformat()` value.
+- Corrected from the official docs: the client was `vertexai.Client(project="PROJECT_ID", location="LOCATION")` without `http_options`; `vertexai.Client` takes `http_options` in google-cloud-aiplatform 2.10.0 (`vertexai/_genai/client.py`).
+- Local `AdkApp` settings: google-cloud-aiplatform 2.10.0 `vertexai/agent_engines/templates/adk.py` reads `initializer.global_config.project` / `.location` in `__init__` and sets `os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "1"` and `os.environ["GOOGLE_GENAI_USE_ENTERPRISE"] = "1"` in `set_up`; `initializer.py` falls back to `GOOGLE_CLOUD_PROJECT` / `CLOUD_ML_PROJECT_ID` or `google.auth.default()` for the project and to `GOOGLE_CLOUD_REGION` / `CLOUD_ML_REGION` or `us-central1` for the location. google-genai 3.6.1 reads `GOOGLE_GENAI_USE_ENTERPRISE`, `GOOGLE_GENAI_USE_VERTEXAI`, `GOOGLE_CLOUD_PROJECT` and `GOOGLE_CLOUD_LOCATION` (`_api_client.py`).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/quickstart-adk (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
