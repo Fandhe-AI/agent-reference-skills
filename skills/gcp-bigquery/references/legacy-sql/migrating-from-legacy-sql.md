@@ -1303,7 +1303,10 @@ WHERE word NOT IN (
 
 This query returns 0 as the count. The difference is due to the semantics of
 `NOT IN` with GoogleSQL, which returns `NULL` if the value on the left matches no
-value on the right hand side and any value on the right hand side is `NULL`. To achieve the same results as with the legacy SQL query, use a
+value on the right hand side and any value on the right hand side is `NULL`. (By the `NOT IN` rules in
+[operators](../googlesql-syntax/operators.md#in-operator), it also returns `NULL` when the value on the left is
+`NULL` and the right side has at least one value, and it returns `TRUE` when the right side is
+empty; added; see Notes.) To achieve the same results as with the legacy SQL query, use a
 `WHERE` clause to exclude the `NULL` values:
 
 Adapted (not in the official docs): the first line `#GoogleSQL` is changed to `#standardSQL`, a documented query prefix (see Enabling GoogleSQL).
@@ -1858,6 +1861,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Added (not in the official docs): the `STRUCT` example for nested fields now says that the operator builds a struct with `NULL` fields, not a `NULL` struct, for a row whose `repository` is `NULL` (googlesql-syntax/data-types.md: "struct values can be `NULL`, or can have `NULL` field values"), and how to keep the `NULL`.
 - Added (not in the official docs): the `TOP(x, num), COUNT(*)` row now says that `num` of `APPROX_TOP_COUNT` must be an `INT64` literal or query parameter (googlesql-functions/approximate_aggregate_functions.md), that `TOP` and `APPROX_TOP_COUNT` both return approximate results, and that an exact translation uses `GROUP BY ... ORDER BY ... LIMIT`, which `TOP` simplifies (legacy-sql/legacy-sql-1.md).
 - Added (not in the official docs): the window form of `COUNT(DISTINCT x)` now says that the GoogleSQL examples count over a whole partition (`COUNT(DISTINCT x) OVER (PARTITION BY MOD(x, 3))` in aggregate_functions.md), that the official pages do not confirm `DISTINCT` together with `ORDER BY` or a window frame (window-function-calls.md says `DISTINCT` can't be used with `OVER`), and that only a window with `PARTITION BY` alone is a direct translation.
+- Added (not in the official docs): the explanation of the `NOT IN` result now also gives the cases from the `NOT IN` semantics in googlesql-syntax/operators.md ("Returns `TRUE` if `value_set` is empty"; "Returns `NULL` if the equality comparison between `search_value` and any value in `value_set` produces `NULL`"): a `NULL` value on the left returns `NULL` when the right side is not empty.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related

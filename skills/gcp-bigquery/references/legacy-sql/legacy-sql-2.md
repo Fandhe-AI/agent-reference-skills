@@ -366,7 +366,7 @@ The range of this example depends on the time when the query runs: it starts two
 it runs on 2014-03-25 (UTC); on another day it reads the tables of that day and the two days
 before it. (Added; see Notes.)
 
-Matches the following tables:
+When the query runs on 2014-03-25 (UTC), it matches the following tables (added; see Notes):
 
 - mydata.people20140323
 - mydata.people20140324
@@ -626,7 +626,8 @@ such as [rank()](https://docs.cloud.google.com/bigquery/docs/reference/legacy-sq
 require the clause.
 :   If you use `ORDER BY` without specifying `ROWS`
 or `RANGE`, `ORDER BY` implies that the window
-extends from the beginning of the partition to the current row. In the
+extends from the beginning of the partition to the current row (for the functions that compute
+over the window frame; see the window frame clause below; added; see Notes). In the
 absence of an `ORDER BY` clause, the window is the entire partition.
 
 `<window-frame-clause>`
@@ -642,6 +643,11 @@ a `window-frame-clause`, the default window frame
 is `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`. If you
 omit both `ORDER BY` and the `window-frame-clause`,
 the default window frame is the entire partition.
+The frame limits the rows of the functions that compute over it, such as `SUM()` in the
+cumulative-sum example and `LAST_VALUE()`. Not every window function reads only the frame: the
+`PERCENTILE_CONT()` and `PERCENTILE_DISC()` examples below use `ORDER BY` without a window frame
+clause, and every row gets `4`, the median of the whole partition, including `handkerchief`, whose
+`word_count` is 29. Check the description and example of each function. (Added; see Notes.)
 
 - `ROWS` - Defines a window in terms of row position, relative to the current row. For example, to add a column showing the sum of the preceding 5 rows of salary values, you would query `SUM(salary) OVER
   (ORDER BY record_seq ROWS BETWEEN 5 PRECEDING AND 1 PRECEDING)` (corrected; `record_seq` is an example column that has a unique, time-ordered value for each row; see Notes). The set of rows typically includes the current row, but that is not required.
@@ -1557,6 +1563,8 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Added (not in the official docs): the "two-day range up to now" example lists the tables `mydata.people20140323` to `mydata.people20140325` and uses `CURRENT_TIMESTAMP()`, so it reads those tables only when it runs on 2014-03-25; a sentence after the query says that the range is relative to the time when the query runs. The query is kept as in the official docs.
 - Added (not in the official docs): the `FARM_FINGERPRINT` description says that the output "matches the output of the `FARM_FINGERPRINT` function when using GoogleSQL" and that the function "Respects `IGNORE CASE` for strings, returning case invariant values". The GoogleSQL function hashes the bytes that it gets, and the official docs don't say how legacy SQL normalizes the case, so a sentence is added that the outputs match only for the same bytes, and that fingerprints from an `IGNORE CASE` query can't be assumed to match.
 - Added (not in the official docs): the result table of the `SUM()` window example (cumulative sum for each year) now says that it shows only five of the rows that the query returns, because the query has no `LIMIT` and does not restrict `corpus_date`.
+- Added (not in the official docs): the default window frame (`RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW` with `ORDER BY`) is now described as the frame of the functions that compute over it, such as `SUM()`; the `PERCENTILE_CONT()` and `PERCENTILE_DISC()` examples on this page use `ORDER BY` without a frame and return `4`, the median of the whole partition, for every row, including the first row (`word_count` 29).
+- Added (not in the official docs): the list of matched tables in the `TABLE_DATE_RANGE` example with `CURRENT_TIMESTAMP()` now says that it applies when the query runs on 2014-03-25 (UTC), as the sentence before it explains.
 
 ## Related
 
