@@ -37,12 +37,12 @@ skills/gcp-gemini-enterprise-cx/
     ccai-platform-virtual-agents/              # 7 ページ
       README.md
       <page>.md
-    ccai-platform-apis-sdks/                   # 10 ページ
+    ccai-platform-apis-sdks/                   # 9 ページ
       README.md
       <page>.md
 ```
 
-完成形では手書きのガイドは 8 カテゴリ・計 70 ページ。`references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） の API（3）: `ces`（Gemini Enterprise for Customer Experience API）/ `contactcenteraiplatform`（Contact Center AI Platform API）/ `contactcenterinsights`（Contact Center AI Insights API）。
+完成形では手書きのガイドは 8 カテゴリ・計 69 ページ。`references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） の API（3）: `ces`（Gemini Enterprise for Customer Experience API）/ `contactcenteraiplatform`（Contact Center AI Platform API）/ `contactcenterinsights`（Contact Center AI Insights API）。
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。

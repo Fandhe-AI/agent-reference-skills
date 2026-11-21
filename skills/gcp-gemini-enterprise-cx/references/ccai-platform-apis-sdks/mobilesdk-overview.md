@@ -73,7 +73,7 @@ npm install
 npm start
 ```
 
-Then run the app:
+Then run the app in a new terminal opened at the root of the extracted sample (the server keeps running in the first terminal after `npm start`, and that terminal is inside `server`, where `cd app` does not find the app directory; the paths below such as `app/src/native_modules/...` are relative to the extracted root):
 
 ```bash
 cd app
