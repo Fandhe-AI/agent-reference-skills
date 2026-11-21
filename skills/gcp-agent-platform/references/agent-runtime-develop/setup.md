@@ -88,16 +88,26 @@ gcloud storage buckets create gs://BUCKET_NAME --project=PROJECT_ID --default-st
 
 ### Bring your own container: grant Artifact Registry Reader
 
+Grant the role on the Artifact Registry repository that holds the container image (`REPOSITORY` in `LOCATION`), not on the whole project: a repository-level binding lets the service agent read images only from that repository, while a project-level binding lets it read every repository in the project.
+
+Adapted (not in the official docs): the project-level `gcloud projects add-iam-policy-binding PROJECT_NUMBER` is replaced with `gcloud artifacts repositories add-iam-policy-binding REPOSITORY --location=LOCATION --project=PROJECT_ID`, so the role is limited to the repository that holds the image; the member and the role are the source's.
+
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_NUMBER \
+gcloud artifacts repositories add-iam-policy-binding REPOSITORY \
+  --location=LOCATION \
+  --project=PROJECT_ID \
   --member="serviceAccount:service-PROJECT_NUMBER@gcp-sa-aiplatform-re.iam.gserviceaccount.com" \
   --role="roles/artifactregistry.reader"
 ```
 
-For a repository in a different project, grant the role to the Agent Platform Service Agent in the repository project:
+For a repository in a different project, grant the role to the Agent Platform Service Agent on the repository in the repository project (`AR_REPO_PROJECT_ID`):
+
+Adapted (not in the official docs): the project-level `gcloud projects add-iam-policy-binding AR_REPO_PROJECT_NUMBER` is replaced with `gcloud artifacts repositories add-iam-policy-binding REPOSITORY --location=LOCATION --project=AR_REPO_PROJECT_ID`, so the role is limited to that repository; the member and the role are the source's.
 
 ```bash
-gcloud projects add-iam-policy-binding AR_REPO_PROJECT_NUMBER \
+gcloud artifacts repositories add-iam-policy-binding REPOSITORY \
+  --location=LOCATION \
+  --project=AR_REPO_PROJECT_ID \
   --member="serviceAccount:service-PROJECT_NUMBER@gcp-sa-aiplatform.iam.gserviceaccount.com" \
   --role="roles/artifactregistry.reader"
 ```
@@ -139,6 +149,7 @@ gcloud projects add-iam-policy-binding AR_REPO_PROJECT_NUMBER \
 - The source also shows Console steps for creating a bucket. Console click paths are omitted.
 - Corrected from the official docs: the staging bucket example was `gcloud storage buckets create gs://BUCKET_NAME --default-storage-class STORAGE_CLASS --location LOCATION`, which uses the gcloud default project instead of the `PROJECT_ID` passed to the SDK client.
 - `google-cloud-agentplatform` 2.10.0 (wheel METADATA): `Name: google-cloud-agentplatform`, `Provides-Extra` `agent-engines`, `a2a`, `adk`, `langchain`, `ag2`, `llama-index`, `evaluation`, `bigquery`, `live`, `all`; it does not depend on `google-cloud-aiplatform`.
+- Corrected from the official docs: the two Artifact Registry Reader examples granted the role at project level (`gcloud projects add-iam-policy-binding PROJECT_NUMBER --member="serviceAccount:service-PROJECT_NUMBER@gcp-sa-aiplatform-re.iam.gserviceaccount.com" --role="roles/artifactregistry.reader"` and the same with `AR_REPO_PROJECT_NUMBER` and the `gcp-sa-aiplatform` service agent), which lets the service agent read every repository in the project. The examples use `gcloud artifacts repositories add-iam-policy-binding`, whose gcloud 593.0.0 help lists the positional `REPOSITORY`, `--location`, the required `--member` and `--role`, and `--project` under GCLOUD WIDE FLAGS.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/setup (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

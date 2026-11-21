@@ -145,7 +145,7 @@ curl -X DELETE \
 
 ## Options / Props
 
-### Emergency stop mechanisms and propagation times
+### Emergency stop mechanisms and propagation times (as the source writes them; a Principal Access Boundary policy only blocks access to resources outside the boundary, see Notes)
 
 | Mechanism | Effect on active traffic and sessions | Typical propagation time |
 |---|---|---|
@@ -156,7 +156,7 @@ curl -X DELETE \
 
 ## Notes
 
-- Scope of the Principal Access Boundary part of the last table row (the row is the source's, kept as written): the row lists it next to role revocation and deny policies, but binding a Principal Access Boundary policy blocks only access to resources outside the boundary; it does not block API calls to resources inside it. The effects differ. Revoking IAM roles or attaching an IAM deny policy removes or blocks the agent's permissions. A Principal Access Boundary policy only restricts which resources a principal is eligible to access (IAM policy types: https://docs.cloud.google.com/iam/docs/policy-types); the agent identity overview says it "limits the resources that an agent can access, regardless of other permissions that the agent has" and that agents subject to it "are only eligible to access the resources specified in those policies". It does not revoke access to resources that stay inside the boundary; those calls are still decided by allow and deny policies. For an emergency stop of Google Cloud API access, revoke the IAM roles or attach an IAM deny policy; use a Principal Access Boundary policy only to cut off resources outside the boundary, and confirm the block in Cloud Logging as in step (3).
+- Scope of the Principal Access Boundary part of the last table row (the row is the source's, kept as written): the row lists it next to role revocation and deny policies, but binding a Principal Access Boundary policy blocks only access to resources outside the boundary; it does not block API calls to resources inside it. The source groups the three mechanisms in one row, so the row is not split here. The effects differ. Revoking IAM roles or attaching an IAM deny policy removes or blocks the agent's permissions. A Principal Access Boundary policy only restricts which resources a principal is eligible to access (IAM policy types: https://docs.cloud.google.com/iam/docs/policy-types); the agent identity overview says it "limits the resources that an agent can access, regardless of other permissions that the agent has" and that agents subject to it "are only eligible to access the resources specified in those policies". It does not revoke access to resources that stay inside the boundary; those calls are still decided by allow and deny policies. For an emergency stop of Google Cloud API access, revoke the IAM roles or attach an IAM deny policy; use a Principal Access Boundary policy only to cut off resources outside the boundary, and confirm the block in Cloud Logging as in step (3).
 - Dashboard tabs (Console):
   - Overview: Agent latency, request count, error rate.
   - Models: Model calls, model error rate, model token usage.
