@@ -43,6 +43,8 @@ curl --fail-with-body -X POST \
 | `gemini-3-flash-preview/answer_gen/v1` | The `gemini-3-flash-preview` model. | 128K | N/A |
 | `gemini-3.5-flash/answer_gen/v1` | The `gemini-3.5-flash` model. | 128K | N/A |
 
+The example above uses `preview`, which this table does not list. The search summaries page (get-search-summaries, see Snippet taken from) says "You can specify `stable`, `preview`, or a specific model version by name." and "`preview` points to the latest Gemini model for question and answering."; use a model version from the table to pin a specific model.
+
 ## Notes
 
 - Agent Search uses two types of models: Gemini Enterprise Agent Platform LLM models tested on question answering tasks, and Agent Search models based on Agent Platform LLM models and further trained for question answering.
