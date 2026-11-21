@@ -126,7 +126,26 @@ curl -X PATCH \
 
 ### Delete a gateway (gcloud)
 
-First, as the source's step 1 says, "Ensure that no Gemini Enterprise apps or Agent Runtime agents reference the gateway" (see Disassociate an Agent Runtime agent above). Disassociation is the only documented step that takes traffic off the gateway (for an app, "Disassociating an Agent Gateway stops routing the app's outbound traffic through the gateway"); the source documents no way to reject new requests at the gateway itself or to drain in-flight requests (not confirmed in the official docs). Then, not in the official docs: confirm on the gateway's **Observability** tab that no requests arrive, and that no VPC configuration update operation is running (a deletion-failure condition, Notes). Delete the policies and extensions only right before the gateway: the gateway cannot be deleted while any `AuthzPolicy` targets it (Notes), so the policy cannot be removed afterwards, and a Client-to-Agent gateway without its `CONTENT_AUTHZ` policy passes requests without content checks (Notes).
+First, as the source's step 1 says, "Ensure that no Gemini Enterprise apps or Agent Runtime agents reference the gateway" (see Disassociate an Agent Runtime agent above). Disassociation is the only documented step that takes traffic off the gateway (for an app, "Disassociating an Agent Gateway stops routing the app's outbound traffic through the gateway"); the source documents no way to reject new requests at the gateway itself or to drain in-flight requests (not confirmed in the official docs). Then, not in the official docs: confirm on the gateway's **Observability** tab that no requests arrive, and that no VPC configuration update operation is running (a deletion-failure condition, Notes). Delete the policies and extensions only right before the gateway: the gateway cannot be deleted while any `AuthzPolicy` or `TelemetryPolicy` targets it (Notes), so the policy cannot be removed afterwards, and a Client-to-Agent gateway without its `CONTENT_AUTHZ` policy passes requests without content checks (Notes).
+
+Before the `AuthzPolicy` steps, check the `TelemetryPolicy` resources the same way (not in the official docs; the source gives no removal steps). A tracing policy lists its gateways in `telemetryTarget.resources` ("You can attach a policy to multiple gateways", Monitor Agent Gateway). Delete a policy only if it lists this gateway alone; otherwise save it with `gcloud beta network-services telemetry-policies export TELEMETRY_POLICY_NAME --location=LOCATION --project=PROJECT_ID --destination=TELEMETRY_POLICY_NAME.yaml`, remove only this gateway from `telemetryTarget.resources`, and apply the file with `gcloud beta network-services telemetry-policies import TELEMETRY_POLICY_NAME --location=LOCATION --project=PROJECT_ID --source=TELEMETRY_POLICY_NAME.yaml`.
+
+Adapted (not in the official docs): the gcloud help example `gcloud beta network-services telemetry-policies list --location=us-central1`, with `LOCATION`, `--project=PROJECT_ID` and a `--format` that shows each policy's targets.
+
+```bash
+gcloud beta network-services telemetry-policies list \
+  --location=LOCATION \
+  --project=PROJECT_ID \
+  --format="yaml(name,telemetryTarget.resources)"
+```
+
+Adapted (not in the official docs): the gcloud help example `gcloud beta network-services telemetry-policies delete my-telemetry-policy --location=global`, with placeholders and `--project=PROJECT_ID`.
+
+```bash
+gcloud beta network-services telemetry-policies delete TELEMETRY_POLICY_NAME \
+  --location=LOCATION \
+  --project=PROJECT_ID
+```
 
 Check the list output before deleting anything (not in the official docs). Delete a policy only if its `target.resources` lists this gateway alone. If it also targets other gateways, do not delete it: save it with `gcloud network-security authz-policies describe AUTHZ_POLICY_NAME --location=LOCATION --project=PROJECT_ID --format=yaml`, remove only this gateway from `target.resources`, and apply the file with `gcloud network-security authz-policies import` (its help: "The ID of the new or updated AuthzPolicy resource"). Delete an `AuthzExtension` only if no remaining policy in the list output references it.
 
@@ -195,6 +214,7 @@ gcloud network-services agent-connectivity-templates delete CONNECTIVITY_TEMPLAT
 - The immutable-settings table is the source table; its separator row, which the source places after the last row, is moved under the header so the table renders.
 - The source also shows Console steps for each task.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/manage-agent-gateways (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the source lists `TelemetryPolicy` as a deletion blocker but gives no steps; the `TelemetryPolicy` commands come from the gcloud 593.0.0 help of `gcloud beta network-services telemetry-policies` (`list`, `export`, `import`, `delete`; the group is beta and alpha only), and `telemetryTarget.resources` is `TelemetryTarget.resources` in the Network Services API `networkservices.v1beta1` Discovery document. Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/monitor-agent-gateway (retrieved 2026-11-21).
 
 ## Related
 
