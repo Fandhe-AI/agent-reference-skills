@@ -725,7 +725,12 @@ GROUP BY action, day;
 Another option is to delete views `V` and `W`, then recreate them using standard
 SQL under the same names. With this option, you would need to migrate all of
 your queries that reference `V` or `W` to use GoogleSQL at the same time,
-however.
+however. (If `V` or `W` is an authorized view, deleting it removes its authorization on the source
+dataset, and the deleted view can take up to 24 hours to leave the authorized list, so wait 24 hours
+before you reuse its name, and authorize the recreated view again; see
+[Authorized views](../access-control-iam/authorized-views.md). Otherwise, create the GoogleSQL views
+under new names, as above, authorize them on the source dataset, check that their users can query
+them, and then switch the queries. Added; see Notes.)
 
 ### Function comparison
 
@@ -1829,6 +1834,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Added (not in the official docs): the introduction of "Comma operator with tables" says that the legacy SQL comma operator means `UNION ALL BY NAME`; a sentence is added that `UNION ALL BY NAME` needs inputs with the same set of column names and that inputs with different columns use `FULL OUTER UNION ALL BY NAME`, as the text after the example says.
 - Added (not in the official docs): the `STRFTIME_UTC_USEC` row passes `fmt` unchanged to `FORMAT_TIMESTAMP`; legacy-sql/legacy-sql-1.md points to the strftime function in C++ for the format, and the GoogleSQL format elements (googlesql-syntax/format-elements.md) have `%I`, `%M`, `%S` and `%p` but no `%r`, so a remark is added that `fmt` is unchanged only when GoogleSQL has its elements, and that `%r` is written as `%I:%M:%S %p`.
 - Added (not in the official docs): the text says that legacy SQL `COUNT(DISTINCT x)` returns an approximate count above a threshold; legacy-sql/legacy-sql-2.md says that the `COUNT([DISTINCT] field)` window function "produces exact results when used as a window function", so a sentence is added that the threshold applies to the aggregate function only.
+- Added (not in the official docs): the option to delete views `V` and `W` and recreate them under the same names now says what it means for authorized views, from access-control-iam/authorized-views.md: deleting the view removes its authorization, a deleted authorized view takes up to 24 hours to leave the list ("wait 24 hours before reusing its name or use a unique name"), and the recreated view needs to be authorized on the source dataset again; views with new names can be authorized and checked before the switch.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
