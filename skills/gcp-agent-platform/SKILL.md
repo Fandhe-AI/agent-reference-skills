@@ -9,6 +9,8 @@ user-invocable: false
 
 Google Cloud (GCP) の Gemini Enterprise Agent Platform（以下 Agent Platform。旧 Vertex AI）のスキル。収録範囲は次のとおり。
 
+分割投入中: 以下の収録範囲と機械生成の層は完成形の内容。分割投入中のため、未投入のカテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-sdk` / `text-generation-structured-output` / `function-calling-thinking` / `grounding` / `context-cache-batch-inference` / `embeddings` / `live-api` / `model-garden-open-partner-models` / `tuning` / `evaluation` / `consumption-provisioned-throughput` / `safety-responsible-ai` / `security-iam-vpc-sc-cmek` / `ml-inference-registry-diagnostics` / `sessions-memory-bank` / `rag-engine` / `vector-search-agent-retrieval` / `gemini-cloud-assist-code-assist`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。未投入の機能は、投入までは公式ドキュメント（https://docs.cloud.google.com/ ）を引く。
+
 - 概要・セットアップ・認証・SDK（Google Gen AI SDK）・Gemini Developer API からの移行
 - Gemini モデルの利用（text generation・structured output・function calling・thinking・grounding・context caching・batch inference・embeddings・Live API）
 - Model Garden とオープン / パートナーモデル、tuning、Gen AI evaluation service
@@ -19,7 +21,7 @@ Google Cloud (GCP) の Gemini Enterprise Agent Platform（以下 Agent Platform�
 - RAG Engine、Vector Search 2.0（旧称は Vertex AI Vector Search 2.0、現称 Agent Retrieval。gcloud グループは `vector-search` のまま）
 - Gemini Cloud Assist と Gemini Code Assist（概要と終了告知のみ）
 
-機械生成の層として、gcloud 8 グループ（`ai` / `ai-platform` / `gemini` / `vector-search` / `agent-identity` / `agent-registry` / `developer-knowledge` / `mldiagnostics`）、REST 5 API（`aiplatform` / `agentregistry` / `deepreview` / `ml` / `datalabeling`）、メッセージスキーマ、IAM ロール・権限を収録する。分割投入中のため、未投入のカテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-sdk` / `text-generation-structured-output` / `function-calling-thinking` / `grounding` / `context-cache-batch-inference` / `embeddings` / `live-api` / `model-garden-open-partner-models` / `tuning` / `evaluation` / `consumption-provisioned-throughput` / `safety-responsible-ai` / `security-iam-vpc-sc-cmek` / `ml-inference-registry-diagnostics` / `sessions-memory-bank` / `rag-engine` / `vector-search-agent-retrieval` / `gemini-cloud-assist-code-assist`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。
+機械生成の層として、gcloud 8 グループ（`ai` / `ai-platform` / `gemini` / `vector-search` / `agent-identity` / `agent-registry` / `developer-knowledge` / `mldiagnostics`）、REST 5 API（`aiplatform` / `agentregistry` / `deepreview` / `ml` / `datalabeling`）、メッセージスキーマ、IAM ロール・権限を収録する。
 
 製品名の変更: Vertex AI → Agent Platform、Vertex AI Agent Engine → Agent Runtime、Vertex AI Vector Search 2.0 → Agent Retrieval、Vertex AI Search → Agent Search（別スキル `gcp-agent-search`（分割投入中で未配布。それまでは公式ドキュメント https://docs.cloud.google.com/ を引く））、Agentspace → Gemini Enterprise。API 名・gcloud グループ・IAM ロール接頭辞（`roles/aiplatform.*`）・SDK モジュール（`vertexai`）は旧名のまま。
 

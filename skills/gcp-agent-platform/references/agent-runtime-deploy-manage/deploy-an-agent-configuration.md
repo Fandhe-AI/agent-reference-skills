@@ -8,6 +8,8 @@ Optional `config` fields for `client.runtimes.create` / `client.runtimes.update`
 
 ## Signature / Usage
 
+The `client.runtimes.create` / `client.runtimes.update` examples on this page that pass `agent=local_agent` (an agent-object deployment) show only the fields of their topic. Their `config` also needs `"staging_bucket": "gs://BUCKET_NAME"`: google-cloud-agentplatform 2.10.0 raises `ValueError` ("Please provide a `staging_bucket` in `client.runtimes.create(...)`.") for an agent object without it, as described in [deploy-an-agent.md](./deploy-an-agent.md).
+
 ### Package requirements
 
 Pin versions for reproducible builds (track `google-cloud-aiplatform`, `cloudpickle`, `langchain`, `langchain-core`, `langchain-google-vertexai`, `pydantic`) and keep dependencies minimal. For deployments from source files use a `requirements.txt` in the package (`requirements_file`) instead of `requirements`.
@@ -185,10 +187,13 @@ client.runtimes.update(
 
 In this and the other `client.runtimes.create` / `client.runtimes.update` examples on this page, `client` is an `agentplatform.Client` (created as in [manage-deployed-agents.md](./manage-deployed-agents.md)) and `local_agent` is the agent object you built (see Create an agent, https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-agent); the official page does not define either.
 
+Adapted (not in the official docs): added `"staging_bucket": "gs://BUCKET_NAME",` to `config`, because this complete call deploys an agent object, which needs a staging bucket (see the first paragraph of this section).
+
 ```python
 remote_agent = client.runtimes.create(
     agent=local_agent,
     config={
+        "staging_bucket": "gs://BUCKET_NAME",
         "psc_interface_config": {
             "network_attachment": "NETWORK_ATTACHMENT",
             "dns_peering_configs": [
@@ -251,6 +256,7 @@ remote_agent = client.runtimes.create(
 - Corrected from the official docs: the CMEK key name appears in the source as `` kms_key_name = "projects/`PROJECT_ID`/locations/`LOCATION`/keyRings/`KEY_RING`/cryptoKeys/`KEY_NAME`" ``; the backticks were removed.
 - Console, Java, Go forms and the pip git-branch requirement example (placeholders wrapped in backticks) are omitted.
 - Corrected from the official docs: the keep-alive example commented `# or set "image_uri" when deploying a prebuilt container image` next to `"image_spec": {}`; the container deployment guide and the SDK put `image_uri` inside `container_spec`, so the comment is removed.
+- Corrected from the official docs: the Private Service Connect interface example called `client.runtimes.create(agent=local_agent, config={"psc_interface_config": {...}})` with no `staging_bucket`. In google-cloud-agentplatform 2.10.0, `_validate_staging_bucket_or_raise` (`agentplatform/_genai/_runtimes_utils.py`) raises `ValueError` with "Please provide a `staging_bucket` in `client.runtimes.create(...)`." when an agent object is deployed without one, and a value that does not start with `gs://` is rejected. The other agent-object examples on the page already mark their remaining fields with `# ... other configs` / `# ...` and are kept as written; see the first paragraph of Signature / Usage.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

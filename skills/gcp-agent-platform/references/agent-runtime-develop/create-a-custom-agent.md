@@ -130,6 +130,8 @@ Define a method such as `async_stream_query` that returns an asynchronous genera
 
 ### Register custom operations
 
+Prerequisite (not in the official docs): `get_state` and `get_state_history` read the graph's checkpoints, so the graph must be built with a checkpointer. The basic template's `set_up` calls `create_react_agent(model, tools=self.tools)` without one, and LangGraph then raises `ValueError("No checkpointer set")`. Pass `checkpointer=` to `create_react_agent` in `set_up` (for example `InMemorySaver()` from `langgraph.checkpoint.memory`, which keeps state only in the memory of one process), and call `query` / `stream_query` and the state methods with the same `config={"configurable": {"thread_id": "THREAD_ID"}}`.
+
 Adapted (not in the official docs): `get_state` and `get_state_history` take `**kwargs`, because the source's bodies pass `**kwargs` that are not defined in those methods (`NameError`); the prebuilt LangGraph template in google-cloud-aiplatform 2.10.0 defines both methods with `**kwargs`.
 
 ```python
@@ -154,6 +156,8 @@ class CustomAgent(StreamingAgent):
 ```
 
 ### Type annotations
+
+The `get_state` method below has the same checkpointer prerequisite as the custom operations above; `config` carries the `thread_id` in `configurable`.
 
 ```python
 from typing import Any, Dict, TypedDict
@@ -248,6 +252,7 @@ print(json.dumps(error_result, indent=2))
 - The source's printed error output (JSON with message "Invocation error in 'get_session': ...") is garbled in the twin and differs from the code's message format, so it is not reproduced.
 - The source also shows sample dictionary responses, the `async_query` test call and the streaming output samples.
 - Corrected from the official docs: the `async_query` and `stream_query` examples imported `from langchain.load.dump import dumpd`. The `langchain` 1.0.0 and 1.5.2 wheels (PyPI, checked 2026-11-21) contain no `langchain/load/` module (the 1.5.2 wheel's subpackages are `agents`, `chat_models`, `embeddings`, `mcp`, `messages`, `rate_limiters`, `tools`; 1.0.0 has the same without `mcp`), so the import raises `ModuleNotFoundError` with `langchain` 1.x. The `langchain-classic` package that the same SDK extra installs (1.0.8 checked) ships only `langchain_classic/`, not `langchain/`. `dumpd` is defined in `langchain_core/load/dump.py` and exported in `__all__` of `langchain_core/load/__init__.py` in both `langchain-core` 1.0.0 and 1.8.4. The `langchain` extra of google-cloud-aiplatform 2.10.0 (`google-cloud-aiplatform[agent_engines,langchain]`, see [setup.md](./setup.md)) requires `langchain<2.0.0,>=1.0.0` and `langchain-core<2.0.0,>=1.0.0`, and that SDK's own LangGraph template (`vertexai/agent_engines/templates/langgraph.py`) tries `from langchain_core.load import dumpd` first and falls back to `from langchain.load.dump import dumpd` only on `ImportError`.
+- Checkpointer prerequisite: the source's `CustomAgent` and `AnnotatedAgent` inherit the basic template's `set_up`, which builds the graph without a checkpointer. In langgraph 1.2.24 (`langgraph/pregel/main.py`), `get_state` and `get_state_history` call `_state_checkpointer`, which raises `ValueError("No checkpointer set")` when the graph has none, and `get_state` reads `thread_id` from the `configurable` part of the config. `create_react_agent` in langgraph-prebuilt 1.1.3 takes `checkpointer: Checkpointer | None = None`; `InMemorySaver` (alias `MemorySaver`) is in `langgraph/checkpoint/memory/__init__.py` of langgraph-checkpoint 4.3.2, whose docstring says "Only use `InMemorySaver` for debugging or testing purposes." The `langchain` extra of google-cloud-aiplatform 2.10.0 requires `langgraph<2.0.0,>=1.0.0`, and that SDK's prebuilt LangGraph template takes a `checkpointer_builder` for the same purpose (`vertexai/agent_engines/templates/langgraph.py`). For a deployed agent that serves state across instances, use a persistent checkpointer instead (not covered by the official page).
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-a-custom-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
