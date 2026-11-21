@@ -43,7 +43,7 @@ agent = Agent(
 )
 ```
 
-Adapted (not in the official docs): the staging bucket line was written as `f"gs://"BUCKET_NAME",` (a syntax error); it is now the string `"gs://BUCKET_NAME"`, where `BUCKET_NAME` is the name of your Cloud Storage bucket.
+Adapted (not in the official docs): the staging bucket line was written as `f"gs://"BUCKET_NAME",` (a syntax error); it is now the string `"gs://BUCKET_NAME"`, where `BUCKET_NAME` is the name of your Cloud Storage bucket. The requirement `google-cloud-agentplatform[adk,runtimes]` is now `google-cloud-agentplatform[adk,agent_engines]`, because 2.10.0 has no `runtimes` extra and `client.runtimes` needs the `agent-engines` extra.
 
 ```python
 import agentplatform
@@ -66,7 +66,7 @@ remote_app = client.runtimes.create(
   config={
     "display_name": "running-agent-with-identity",
     "identity_type": types.IdentityType.AGENT_IDENTITY,
-    "requirements": ["google-cloud-agentplatform[adk,runtimes]"],
+    "requirements": ["google-cloud-agentplatform[adk,agent_engines]"],
     "staging_bucket": "gs://BUCKET_NAME",
   },
 )
@@ -195,7 +195,7 @@ deniedPermissions:
 - Corrected from the official docs: the staging bucket value `f"gs://"BUCKET_NAME"` was changed to `"gs://BUCKET_NAME"`.
 - The twin writes the "Vertex AI Agent Engine" ID as `AGENT_ENGINE_ID` (the resource ID of the Agent Runtime instance).
 - SDK names checked against google-cloud-agentplatform 2.10.0 (module `agentplatform`): `agentplatform.Client(project=..., location=..., http_options=...)`, `client.runtimes.create(agent=..., config=...)` and `client.runtimes.update(...)`, `types.IdentityType.AGENT_IDENTITY` (enum value `AGENT_IDENTITY`; "The `service_account` field must not be set."), `agentplatform.frameworks.AdkApp`, the config fields `identity_type`, `requirements`, `staging_bucket` and `env_vars`, and `spec.effective_identity` on the returned resource all exist.
-- The requirement `google-cloud-agentplatform[adk,runtimes]` is copied from the source. The 2.10.0 package metadata declares the extras `a2a`, `adk`, `ag2`, `agent-engines`, `all`, `bigquery`, `evaluation`, `langchain`, `live` and `llama-index`, but no `runtimes` extra; pip warns about an unknown extra and installs the package without it.
+- Corrected from the official docs: the requirement `"google-cloud-agentplatform[adk,runtimes]"` names an extra that does not exist. The 2.10.0 package metadata declares the extras `a2a`, `adk`, `ag2`, `agent-engines`, `all`, `bigquery`, `evaluation`, `langchain`, `live` and `llama-index` (pip warns about an unknown extra and ignores it); `client.runtimes` raises "The 'runtimes' module requires 'additional packages'. Please install them using pip install google-cloud-aiplatform[agent_engines]" (`agentplatform/_genai/client.py`), and the `adk` extra itself requires `google-cloud-agentplatform[agent_engines]`, so the page uses `[adk,agent_engines]`.
 - The Agent Identity API REST reference is in `gcp-foundation`.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/agent-identity (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

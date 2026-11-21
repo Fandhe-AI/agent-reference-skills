@@ -1,7 +1,7 @@
 ---
 name: gcp-agent-platform
 description: >
-  Google Cloud (GCP) の Gemini Enterprise Agent Platform (旧 Vertex AI) の Gemini 推論 (function calling・grounding・context caching・embeddings・Live API)・Model Garden・tuning・evaluation・Provisioned Throughput・Agent Runtime (旧 Agent Engine)・Memory Bank・Agent Identity・Agent Registry・RAG Engine・Vector Search。gcloud ai。Gemini Developer API は google-gemini-api
+  Google Cloud (GCP) の Gemini Enterprise Agent Platform (旧 Vertex AI) の Gemini 推論 (function calling・grounding・context caching・embeddings・Live API)・Model Garden・tuning・evaluation・Provisioned Throughput・Agent Runtime (旧 Agent Engine)・Agent Gateway・Memory Bank・Agent Identity・Agent Registry・RAG Engine・Vector Search。gcloud ai。Gemini Developer API は google-gemini-api
 user-invocable: false
 ---
 
@@ -52,7 +52,7 @@ skills/gcp-agent-platform/
 1. 概念・手順 → 下記マッピング表でカテゴリを選び、その README.md から個別ページを特定して Read する
 2. 旧名で探されたとき → Vertex AI は Agent Platform、Agent Engine は Agent Runtime、Vector Search 2.0 は Agent Retrieval を引く
 
-未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-sdk` / `text-generation-structured-output` / `function-calling-thinking` / `grounding` / `context-cache-batch-inference` / `embeddings` / `live-api` / `model-garden-open-partner-models` / `tuning` / `evaluation` / `consumption-provisioned-throughput` / `safety-responsible-ai` / `security-iam-vpc-sc-cmek` / `ml-inference-registry-diagnostics` / `sessions-memory-bank` / `rag-engine` / `vector-search-agent-retrieval` / `gemini-cloud-assist-code-assist`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`gcloud` / `rest` / `rest-schemas` / `iam` / `overview-setup-sdk` / `text-generation-structured-output` / `function-calling-thinking` / `grounding` / `context-cache-batch-inference` / `embeddings` / `live-api` / `model-garden-open-partner-models` / `tuning` / `evaluation` / `consumption-provisioned-throughput` / `safety-responsible-ai` / `security-iam-vpc-sc-cmek` / `ml-inference-registry-diagnostics` / `sessions-memory-bank` / `rag-engine` / `vector-search-agent-retrieval` / `gemini-cloud-assist-code-assist`）の探索手順は投入時に追加する。それまで上の手順が未投入カテゴリを指すときは、該当する公式ガイド（https://docs.cloud.google.com/ 配下）を引く。gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
