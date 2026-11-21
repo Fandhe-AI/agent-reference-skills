@@ -4,7 +4,7 @@ source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/mobileSD
 
 # CCAI Platform mobile SDKs: Flutter and React Native integration
 
-The CCAI Platform mobile SDKs (Android SDK and iOS SDK) provide voice and chat support inside your iOS or Android app. Besides the native Android SDK guide and iOS SDK guide, you can integrate through Flutter or React Native; the initial steps below are the same for both platforms. Both bridges need a JWT signing API endpoint (see sdk-end-user-auth.md).
+The CCAI Platform mobile SDKs (Android SDK and iOS SDK) provide voice and chat support inside your iOS or Android app. Besides the native Android SDK guide and iOS SDK guide, you can integrate through Flutter or React Native; the initial steps below are the same for both platforms. Both bridges need a JWT signing API endpoint (see web-sdk-v3-authenticate.md).
 
 ## Signature / Usage
 
@@ -124,7 +124,7 @@ Continue with React Native for Android (https://docs.cloud.google.com/contact-ce
 
 - Known issues with Flutter: screenshots are not captured using the screenshot SmartActions (Google is working to fix this); the Co-browse screen is not projected from the agent side during a co-browse session (iOS only; Google recommends disabling the impeller engine).
 - The source states "For Android, your project's deployment target must be iOS 13.0 or later" and "For iOS, your project's `minSdkVersion` must be 21 or later"; the platform labels look swapped (an iOS deployment target and an Android `minSdkVersion`), recorded here as written.
-- The sample `getUserData` / `_getUserData` return hard-coded values; replace them with the signed-in end user's data, and keep the company secret on your server (JWT signing endpoint) rather than in the app.
+- The sample `getUserData` / `_getUserData` return hard-coded values; replace them with the signed-in end user's data, and keep the company secret on your server (JWT signing endpoint) rather than in the app. Your signing server should take the identifier from its own authenticated session rather than sign whatever identifier the app sends (not stated in the official docs; see web-sdk-v3-authenticate.md).
 - The source says "enter the following code in the terminal" before the Flutter `UJET.init` / `UJET.start` lines; they are Dart code, not shell commands.
 - Corrected from the official docs: the React Native server command block ends with `npm start` immediately followed by three stray backticks on the same line; the command is `npm start`. The block is tagged `text` because its line `Edit .env` is an instruction (edit the `.env` file), not a shell command.
 - Flutter and React Native are not required; use the Android SDK guide (https://docs.cloud.google.com/contact-center/ccai-platform/docs/android-sdk-guide) or iOS SDK guide (https://docs.cloud.google.com/contact-center/ccai-platform/docs/ios-sdk-guide) for native integration.
@@ -132,5 +132,5 @@ Continue with React Native for Android (https://docs.cloud.google.com/contact-ce
 
 ## Related
 
-- [sdk-end-user-auth.md](./sdk-end-user-auth.md)
+- [web-sdk-v3-authenticate.md](./web-sdk-v3-authenticate.md)
 - [ccaas-sdks.md](./ccaas-sdks.md)

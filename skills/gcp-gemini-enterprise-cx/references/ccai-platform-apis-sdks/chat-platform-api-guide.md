@@ -178,4 +178,4 @@ Photo message request body:
 
 - [webhooks.md](./webhooks.md)
 - [apps-and-manager-apis.md](./apps-and-manager-apis.md)
-- [sdk-end-user-auth.md](./sdk-end-user-auth.md)
+- [web-sdk-v3-authenticate.md](./web-sdk-v3-authenticate.md)

@@ -57,4 +57,4 @@ Voice and chat support inside iPhone, iPad and Android apps. Both SDKs share:
 - [web-sdk-v3-getting-started.md](./web-sdk-v3-getting-started.md)
 - [headless-web-guide.md](./headless-web-guide.md)
 - [mobilesdk-overview.md](./mobilesdk-overview.md)
-- [sdk-end-user-auth.md](./sdk-end-user-auth.md)
+- [web-sdk-v3-authenticate.md](./web-sdk-v3-authenticate.md)

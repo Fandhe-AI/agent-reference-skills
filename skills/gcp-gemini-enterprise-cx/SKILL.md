@@ -1,7 +1,7 @@
 ---
 name: gcp-gemini-enterprise-cx
 description: >
-  Google Cloud (GCP) の Gemini Enterprise for Customer Experience (CX Agent Studio, ces API) と Customer Experience Insights (旧 Contact Center AI Insights, Quality AI, BigQuery export) と CCAI Platform (contactcenteraiplatform, virtual agents, Web SDK v3)。agents / tools / A2A / MCP、evaluation、IAM・REST。gcloud なし。Gemini Developer API は google-gemini-api、Dialogflow は gcp-ai-apis（予定）。
+  Google Cloud (GCP) の Gemini Enterprise for Customer Experience (CX Agent Studio, ces API) と CCAI Platform (contactcenteraiplatform, virtual agents, Web SDK v3) と Customer Experience Insights (旧 Contact Center AI Insights, Quality AI, BigQuery export)。agents / tools / A2A / MCP、evaluation、IAM・REST。gcloud なし。Gemini Developer API は google-gemini-api、Dialogflow は gcp-ai-apis（予定）。
 user-invocable: false
 ---
 
@@ -42,7 +42,7 @@ skills/gcp-gemini-enterprise-cx/
       <page>.md
 ```
 
-手書きのガイドは 8 カテゴリ・計 70 ページ。`references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） の API（3）: `ces`（Gemini Enterprise for Customer Experience API）/ `contactcenteraiplatform`（Contact Center AI Platform API）/ `contactcenterinsights`（Contact Center AI Insights API）。
+完成形では手書きのガイドは 8 カテゴリ・計 70 ページ。`references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） の API（3）: `ces`（Gemini Enterprise for Customer Experience API）/ `contactcenteraiplatform`（Contact Center AI Platform API）/ `contactcenterinsights`（Contact Center AI Insights API）。
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
@@ -108,7 +108,7 @@ skills/gcp-gemini-enterprise-cx/
 
 - 取得日: 2026-11-21（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin。URL に版が無いため取得日で pin）、2026-11-14（IAM roles-permissions の機械生成分）
 - REST ページは `google-api-python-client` 同梱の Discovery document から機械生成（commit SHA は未取得）
-- 機械生成は `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/`（後続 PR で投入）。他の 8 カテゴリは公式ガイド由来の手書き
+- 機械生成は `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/`（後続 PR で投入）。他の 8 カテゴリ（完成形）は公式ガイド由来の手書き
 - gcloud のグループは無いため gcloud 593.0.0 の help は使っていない
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
 - 一部の公式の例は安全性・正しさのために修正した。該当箇所はコードブロック直前に `Adapted (not in the official docs)` の行を置き、`## Notes` に `Corrected from the official docs:` の行で理由を残す
