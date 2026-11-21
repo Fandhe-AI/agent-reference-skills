@@ -10,40 +10,40 @@ The check grounding API determines how grounded a piece of text (the answer cand
 
 ### Obtain a support score
 
-Call the `groundingConfigs.check` method. Run the command by itself and type each value on its own line at the prompts, in this order: `CANDIDATE`, then `TEXT_0`, `VALUE_A0`, `VALUE_B0`, `TEXT_1`, `VALUE_A1`, `VALUE_B1`, `TEXT_2`, `VALUE_A2`, `VALUE_B2`, then `CITATION_THRESHOLD`; `jq` (required) encodes each one as a JSON string, except `CITATION_THRESHOLD`, a decimal from `0` to `1` (for example `0.6`) sent as a JSON number, and nothing is sent if a value is missing or empty or `CITATION_THRESHOLD` is not such a number. A line that follows the command in the same paste or script is read as a value. `ATTRIBUTE_A` and `ATTRIBUTE_B` are attribute names and stay in the command.
+Call the `groundingConfigs.check` method. Run the command by itself and type each value on its own line at the prompts, in this order: `CANDIDATE`, `ATTRIBUTE_A`, `ATTRIBUTE_B` (attribute names), then `TEXT_0`, `VALUE_A0`, `VALUE_B0`, `TEXT_1`, `VALUE_A1`, `VALUE_B1`, `TEXT_2`, `VALUE_A2`, `VALUE_B2`, then `CITATION_THRESHOLD`; `jq` (required) encodes each one as a JSON string, except `CITATION_THRESHOLD`, a decimal from `0` to `1` (for example `0.6`) sent as a JSON number, and nothing is sent if a value is missing or empty or `CITATION_THRESHOLD` is not such a number. A line that follows the command in the same paste or script is read as a value.
 
-Adapted (not in the official docs): the request body is built with `printf '%s\n' ... | jq -Rn '[inputs] as [...] | {...}'` from the values read by one `IFS= read -r` per placeholder, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"CANDIDATE"`, `"TEXT_n"` and `"VALUE_An"` / `"VALUE_Bn"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field except `citationThreshold` is unchanged. `printf` is a shell builtin, so these values reach `jq` on standard input, not in its arguments (the process list). The body is built in its own step (`BODY=$(... | jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error stops the command before `curl` runs. `CITATION_THRESHOLD` is read the same way, checked with `grep -Eq` against `^(0(\.[0-9]+)?|1(\.0+)?)$` (a decimal from 0 to 1; the Discovery document says "The threshold (in [0,1])") and passed with `jq --argjson`, so the value is never read as part of the jq program and a value out of range or not a number sends nothing. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
+Adapted (not in the official docs): the request body is built with `printf '%s\n' ... | jq -Rn '[inputs] as [...] | {...}'` from the values read by one `IFS= read -r` per placeholder, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"CANDIDATE"`, `"TEXT_n"`, the attribute names and `"VALUE_An"` / `"VALUE_Bn"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field except `citationThreshold` is unchanged. `printf` is a shell builtin, so these values reach `jq` on standard input, not in its arguments (the process list). The body is built in its own step (`BODY=$(... | jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error stops the command before `curl` runs. `CITATION_THRESHOLD` is read the same way, checked with `grep -Eq` against `^(0(\.[0-9]+)?|1(\.0+)?)$` (a decimal from 0 to 1; the Discovery document says "The threshold (in [0,1])") and passed with `jq --argjson`, so the value is never read as part of the jq program and a value out of range or not a number sends nothing. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset TOKEN` at its start also drops an `export` of that variable in your shell, so the new value is not put in the environment of `curl` and the other commands it runs.
 
 ```bash
-( set +x; set +a; unset TOKEN; IFS= read -r CANDIDATE &&
+( set +x; set +a; unset TOKEN; IFS= read -r CANDIDATE && IFS= read -r ATTRIBUTE_A && IFS= read -r ATTRIBUTE_B &&
 IFS= read -r TEXT_0 && IFS= read -r VALUE_A0 && IFS= read -r VALUE_B0 &&
 IFS= read -r TEXT_1 && IFS= read -r VALUE_A1 && IFS= read -r VALUE_B1 &&
 IFS= read -r TEXT_2 && IFS= read -r VALUE_A2 && IFS= read -r VALUE_B2 &&
 IFS= read -r CITATION_THRESHOLD &&
-[ -n "$CANDIDATE" ] &&
+[ -n "$CANDIDATE" ] && [ -n "$ATTRIBUTE_A" ] && [ -n "$ATTRIBUTE_B" ] &&
 [ -n "$TEXT_0" ] && [ -n "$VALUE_A0" ] && [ -n "$VALUE_B0" ] &&
 [ -n "$TEXT_1" ] && [ -n "$VALUE_A1" ] && [ -n "$VALUE_B1" ] &&
 [ -n "$TEXT_2" ] && [ -n "$VALUE_A2" ] && [ -n "$VALUE_B2" ] &&
 printf '%s\n' "$CITATION_THRESHOLD" | grep -Eq '^(0(\.[0-9]+)?|1(\.0+)?)$' &&
-BODY=$(printf '%s\n' "$CANDIDATE" "$TEXT_0" "$VALUE_A0" \
+BODY=$(printf '%s\n' "$CANDIDATE" "$ATTRIBUTE_A" "$ATTRIBUTE_B" "$TEXT_0" "$VALUE_A0" \
   "$VALUE_B0" "$TEXT_1" "$VALUE_A1" \
   "$VALUE_B1" "$TEXT_2" "$VALUE_A2" \
   "$VALUE_B2" |
-jq -Rn --argjson citation_threshold "$CITATION_THRESHOLD" '[inputs] as [$candidate, $text_0, $value_a0, $value_b0, $text_1, $value_a1, $value_b1, $text_2, $value_a2, $value_b2] |
+jq -Rn --argjson citation_threshold "$CITATION_THRESHOLD" '[inputs] as [$candidate, $attribute_a, $attribute_b, $text_0, $value_a0, $value_b0, $text_1, $value_a1, $value_b1, $text_2, $value_a2, $value_b2] |
 {
   "answerCandidate": $candidate,
   "facts": [
   {
     "factText": $text_0,
-    "attributes": {"ATTRIBUTE_A": $value_a0,"ATTRIBUTE_B": $value_b0}
+    "attributes": {($attribute_a): $value_a0, ($attribute_b): $value_b0}
   },
   {
     "factText": $text_1,
-    "attributes": {"ATTRIBUTE_A": $value_a1,"ATTRIBUTE_B": $value_b1}
+    "attributes": {($attribute_a): $value_a1, ($attribute_b): $value_b1}
   },
   {
     "factText": $text_2,
-    "attributes": {"ATTRIBUTE_A": $value_a2,"ATTRIBUTE_B": $value_b2}
+    "attributes": {($attribute_a): $value_a2, ($attribute_b): $value_b2}
   }
   ],
   "groundingSpec": {
