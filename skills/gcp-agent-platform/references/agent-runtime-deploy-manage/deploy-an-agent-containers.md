@@ -46,7 +46,7 @@ Adapted (not in the official docs): a `.dockerignore` for the example file struc
 
 To call a container through the standard `query` / `streamQuery` requests, register its operations in `class_methods` (REST `spec.classMethods`), each with a `name` and an `api_mode` (runtime-contract.md). The three examples register `query` (`""`) and `stream_query` (`"async_stream"`), the methods of the example server in runtime-contract.md; list your own methods instead, and leave `class_methods` out for an ADK API server that you call through `/api/run`.
 
-Adapted (not in the official docs): the commented-out `# "class_methods": class_methods,` is replaced with a `class_methods` list (google-cloud-agentplatform 2.10.0 accepts it with `source_packages` and `image_spec`).
+Adapted (not in the official docs): the commented-out `# "class_methods": class_methods,` is replaced with a `class_methods` list (google-cloud-agentplatform 2.10.0 accepts it with `source_packages` and `image_spec`). Each method declares `message` as a required string in `parameters`, in the shape of the `class_methods` example in deploy-an-agent.md, because the runtime-contract.md server returns `400` unless `input` is `{"message": <string>}`.
 
 ```python
 # Example file structure:
@@ -72,8 +72,8 @@ remote_agent = client.runtimes.create(
         "image_spec": {},  # tells Agent Runtime to use the Dockerfile
         # Optional: declare class_methods if your container implements /api/reasoning_engine or /api/stream_reasoning_engine
         "class_methods": [
-            {"name": "query", "api_mode": ""},
-            {"name": "stream_query", "api_mode": "async_stream"},
+            {"name": "query", "api_mode": "", "parameters": {"type": "object", "properties": {"message": {"type": "string"}}, "required": ["message"]}},
+            {"name": "stream_query", "api_mode": "async_stream", "parameters": {"type": "object", "properties": {"message": {"type": "string"}}, "required": ["message"]}},
         ],
         # Other optional configs
         "display_name": "Dockerfile agent",
@@ -85,7 +85,7 @@ remote_agent = client.runtimes.create(
 
 The two container image examples set a keep-alive probe, which the source's keep-alive section says is required for prebuilt container image deployments (Notes). They assume that the image serves `GET /is_busy` on port `8080` as the runtime contract describes: a `2xx` response while background work is running, and a non-`2xx` response (such as `412`) when idle. A probe that always answers `2xx` keeps the instance, and its billed CPU and memory, running for up to `max_seconds` after the last request.
 
-Adapted (not in the official docs): added `"keep_alive_probe"` with the values of the keep-alive example in deploy-an-agent-configuration.md; in google-cloud-agentplatform 2.10.0, `container_spec` creates the runtime spec, and `keep_alive_probe` is sent as `spec.deployment_spec.keep_alive_probe`. Also, the commented-out `class_methods` line is replaced with a `class_methods` list, which the SDK sends as `spec.class_methods` for `container_spec`.
+Adapted (not in the official docs): added `"keep_alive_probe"` with the values of the keep-alive example in deploy-an-agent-configuration.md; in google-cloud-agentplatform 2.10.0, `container_spec` creates the runtime spec, and `keep_alive_probe` is sent as `spec.deployment_spec.keep_alive_probe`. Also, the commented-out `class_methods` line is replaced with a `class_methods` list, which the SDK sends as `spec.class_methods` for `container_spec`. Each method declares `message` as a required string in `parameters`, in the shape of the `class_methods` example in deploy-an-agent.md, because the runtime-contract.md server returns `400` unless `input` is `{"message": <string>}`.
 
 ```python
 remote_agent = client.runtimes.create(
@@ -102,8 +102,8 @@ remote_agent = client.runtimes.create(
         },
         # Optional: declare class_methods if your container implements /api/reasoning_engine or /api/stream_reasoning_engine
         "class_methods": [
-            {"name": "query", "api_mode": ""},
-            {"name": "stream_query", "api_mode": "async_stream"},
+            {"name": "query", "api_mode": "", "parameters": {"type": "object", "properties": {"message": {"type": "string"}}, "required": ["message"]}},
+            {"name": "stream_query", "api_mode": "async_stream", "parameters": {"type": "object", "properties": {"message": {"type": "string"}}, "required": ["message"]}},
         ],
         # Other optional configs
         "display_name": "Container image agent",
@@ -113,10 +113,10 @@ remote_agent = client.runtimes.create(
 
 ### Deploy from a container image: REST
 
-Adapted (not in the official docs): added `spec.deploymentSpec.keepAliveProbe` (`httpGet.path`, `httpGet.port`, `maxSeconds`, field names of the `aiplatform.v1` Discovery document) with the same values as the SDK example above, and `spec.classMethods` with the same two operations.
+Adapted (not in the official docs): added `spec.deploymentSpec.keepAliveProbe` (`httpGet.path`, `httpGet.port`, `maxSeconds`, field names of the `aiplatform.v1` Discovery document) with the same values as the SDK example above, and `spec.classMethods` with the same two operations. Each method declares `message` as a required string in `parameters`, in the shape of the `class_methods` example in deploy-an-agent.md, because the runtime-contract.md server returns `400` unless `input` is `{"message": <string>}`. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero.
 
 ```bash
-curl -X POST \
+curl --fail-with-body -X POST \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
   -H "Content-Type: application/json" \
   "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines" \
@@ -127,8 +127,8 @@ curl -X POST \
         "imageUri": "CONTAINER_IMAGE_URI"
       },
       "classMethods": [
-        {"name": "query", "api_mode": ""},
-        {"name": "stream_query", "api_mode": "async_stream"}
+        {"name": "query", "api_mode": "", "parameters": {"type": "object", "properties": {"message": {"type": "string"}}, "required": ["message"]}},
+        {"name": "stream_query", "api_mode": "async_stream", "parameters": {"type": "object", "properties": {"message": {"type": "string"}}, "required": ["message"]}}
       ],
       "deploymentSpec": {
         "keepAliveProbe": {
@@ -163,8 +163,9 @@ curl -X POST \
 - Adapted from the official docs: the container image examples were `client.runtimes.create(config={"container_spec": {"image_uri": "CONTAINER_IMAGE_URI"}, ...})` and a REST body with only `spec.containerSpec.imageUri`; they now add the probe. SDK: google-cloud-agentplatform 2.10.0 `agentplatform/_genai/runtimes.py` sets `runtime_spec = {}` for `container_spec`, so the check that rejects `keep_alive_probe` without code or a container spec does not apply, and `_generate_deployment_spec_or_raise` puts the probe in `deployment_spec["keep_alive_probe"]` (`KeepAliveProbe` fields `http_get` (`path`, `port`) and `max_seconds`). REST: Discovery `aiplatform.v1` `ReasoningEngineSpec.deploymentSpec` -> `ReasoningEngineSpecDeploymentSpec.keepAliveProbe` -> `KeepAliveProbe` (`httpGet`, `maxSeconds`, "Can be a maximum of 3600 seconds (1 hour)") -> `KeepAliveProbeHttpGet` (`path` "Required.", `port`).
 - Adapted from the official docs: the `.dockerignore` above is not in the source; its syntax follows the Docker build context documentation (https://docs.docker.com/build/concepts/context/).
 - Corrected from the official docs: the Dockerfile copied the whole build context with `COPY . .`. With the SDK `source_packages` deployment only the listed files are uploaded, but the same Dockerfile used in a local `docker build` would copy every file in the directory; list the files your server needs (or add a `.dockerignore`).
-- Adapted from the official docs: the three examples left `class_methods` commented out (SDK) or absent (REST), while the source says to declare the supported operations "in `class_methods` (or `spec.classMethods` in REST) so you can invoke the agent through standard `query` and `streamQuery` requests". google-cloud-agentplatform 2.10.0 `runtimes.py` converts each `class_methods` dict to a `google.protobuf.Struct` (`_to_proto`), so the keys `name` and `api_mode` are sent as written, for `source_packages` / `image_spec` and for `container_spec`; Discovery `aiplatform.v1` `ReasoningEngineSpec.classMethods` is an array of free-form objects ("Declarations for object class methods in OpenAPI specification format").
+- Adapted from the official docs: the three examples left `class_methods` commented out (SDK) or absent (REST), while the source says to declare the supported operations "in `class_methods` (or `spec.classMethods` in REST) so you can invoke the agent through standard `query` and `streamQuery` requests". google-cloud-agentplatform 2.10.0 `runtimes.py` converts each `class_methods` dict to a `google.protobuf.Struct` (`_to_proto`), so the keys `name` and `api_mode` are sent as written, for `source_packages` / `image_spec` and for `container_spec`; Discovery `aiplatform.v1` `ReasoningEngineSpec.classMethods` is an array of free-form objects ("Declarations for object class methods in OpenAPI specification format"). The declarations here also add `parameters` with a required string `message`.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/deploy-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the source's `curl` commands have no `--fail-with-body`.
 
 ## Related
 

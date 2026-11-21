@@ -37,16 +37,20 @@ gcloud agent-registry mcp-servers search \
 
 Send a `POST` request to `agents:search` or `mcpServers:search` with the `searchString` field.
 
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+
 ```bash
-curl -X POST \
+curl --fail-with-body -X POST \
     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
     -H "Content-Type: application/json" \
     -d '{"searchString": "flight OR booking"}' \
     "https://agentregistry.googleapis.com/v1/projects/PROJECT_ID/locations/REGION/agents:search"
 ```
 
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+
 ```bash
-curl -X POST \
+curl --fail-with-body -X POST \
     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
     -H "Content-Type: application/json" \
     -d '{"searchString": "database"}' \
@@ -71,8 +75,10 @@ gcloud agent-registry mcp-servers search \
     --search-string="displayName:Prod_Server_*"
 ```
 
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+
 ```bash
-curl -X POST \
+curl --fail-with-body -X POST \
     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
     -H "Content-Type: application/json" \
     -d '{"searchString": "displayName:Best_A2A_*"}' \
@@ -104,8 +110,10 @@ gcloud agent-registry agents search \
     --search-string='agentId:"urn:agent:projects-PROJECT_NUMBER:*"'
 ```
 
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+
 ```bash
-curl -X POST \
+curl --fail-with-body -X POST \
     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
     -H "Content-Type: application/json" \
     -d '{"searchString": "agentId:\"urn:agent:googleapis.com:*\""}' \
@@ -216,6 +224,7 @@ gcloud agent-registry skills search \
 - Agent Registry skills (`SKILL.md` packages and `skillId` URNs) are Google Cloud registry resources, not Claude Code Agent Skills.
 - The source also shows the Console search bar steps. REST requests go to https://agentregistry.googleapis.com/v1; searchable-field details are in https://docs.cloud.google.com/agent-registry/reference/rest.
 - Source: https://docs.cloud.google.com/agent-registry/search-agents-and-tools (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the source's `curl` commands have no `--fail-with-body`.
 
 ## Related
 

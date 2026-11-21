@@ -37,10 +37,10 @@ for agent in client.runtimes.list(
 
 REST (`reasoningEngines.list`):
 
-Adapted (not in the official docs): added the standard `fields` parameter ("Selector specifying which fields to include in a partial response", Discovery `aiplatform.v1`) so the list returns only names and display names, not each `spec`.
+Adapted (not in the official docs): added the standard `fields` parameter ("Selector specifying which fields to include in a partial response", Discovery `aiplatform.v1`) so the list returns only names and display names, not each `spec`. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero.
 
 ```bash
-curl -X GET \
+curl --fail-with-body -X GET \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines?fields=reasoningEngines(name,displayName),nextPageToken"
 ```
@@ -62,8 +62,10 @@ remote_agent = client.runtimes.get(
 
 REST (`reasoningEngines.get`):
 
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+
 ```bash
-curl -X GET \
+curl --fail-with-body -X GET \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID"
 ```
@@ -106,10 +108,10 @@ REST (`reasoningEngines.patch`) request body, saved as `request.json`:
 }
 ```
 
-Adapted (not in the official docs): the query parameter is `updateMask=displayName,description` (the name and the JSON field paths of the Discovery document `aiplatform.v1` `reasoningEngines.patch`) instead of the source's `update_mask="display_name,description"` with nested quotes.
+Adapted (not in the official docs): the query parameter is `updateMask=displayName,description` (the name and the JSON field paths of the Discovery document `aiplatform.v1` `reasoningEngines.patch`) instead of the source's `update_mask="display_name,description"` with nested quotes. Also added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero.
 
 ```bash
-curl -X PATCH \
+curl --fail-with-body -X PATCH \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      -H "Content-Type: application/json; charset=utf-8" \
      -d @request.json \
@@ -141,8 +143,10 @@ client.runtimes.delete(
 )
 ```
 
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+
 ```bash
-curl -X DELETE \
+curl --fail-with-body -X DELETE \
      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
      "https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID"
 ```
@@ -187,6 +191,7 @@ curl -X DELETE \
 - Corrected from the official docs: the emergency-stop table and step (2) give `iamEnforcementMode: "ENFORCE"`; the IAM policy guide (iam-overview-uap.md) says to enforce by removing `iamEnforcementMode` from the authorization extension metadata (the console writes `iamEnforcementMode: "ENFORCED"` when creating a gateway). `"ENFORCE"` is the value the governance guide gives for `sgpEnforcementMode`. The table cell about `agent_gateway_config` adds the archive side effect described in the Notes below.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/manage-deployed-agents (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: both list examples used `print(agent)` and the REST list returned full resources. In google-cloud-agentplatform 2.10.0, `client.runtimes.list()` yields `types.Runtime`, whose `api_resource` is a `ReasoningEngine` with `name`, `display_name` and `spec` (`agentplatform/_genai/types/common.py`).
+- Adapted from the official docs: the source's `curl` commands have no `--fail-with-body`.
 
 ## Related
 

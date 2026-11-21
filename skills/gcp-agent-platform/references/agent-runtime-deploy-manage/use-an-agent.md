@@ -14,8 +14,10 @@ For an ADK API server deployed from a Dockerfile or container image, invoke `/ap
 
 These calls are for single-user use (not in the official docs): the caller chooses `userId` in the session path and in the run request, and IAM permission to call the runtime does not prove that the caller is that user or owns the session. In an API that several users share, derive the user ID on the server side from the authenticated principal, and check that the session belongs to that user before you create, run or stream in it.
 
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+
 ```bash
-curl \
+curl --fail-with-body \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
 https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID/api/run -d '{
@@ -31,8 +33,10 @@ https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCA
 
 and `/api/run_sse` (streaming), which takes the same caller-chosen `userId` and `sessionId`; the same single-user limit and the same server-side checks apply:
 
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+
 ```bash
-curl \
+curl --fail-with-body \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
 https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/reasoningEngines/RESOURCE_ID/api/run_sse -d '{
@@ -82,6 +86,7 @@ https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCA
 - Playground (console): open Agent Platform Deployments, select the runtime, open the **Playground** tab, type a message, or click **New Session**. If OpenTelemetry traces are enabled you can view **Trace**, **Event** (graph of invoked APIs), **State** and **Sessions**.
 - The source also shows the console steps in detail.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/use-an-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Adapted from the official docs: the source's `curl` commands have no `--fail-with-body`.
 
 ## Related
 
