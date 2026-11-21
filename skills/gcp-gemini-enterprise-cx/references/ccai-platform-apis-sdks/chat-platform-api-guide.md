@@ -21,10 +21,10 @@ End-to-end flow for a backend service that connects a customer-owned chat experi
 
 HTTP basic authentication. Pass the API token in the **password** field (recommended). If your tenant uses the legacy authentication path, pass the company key as the username and the company secret as the password.
 
-Adapted (not in the official docs): the unquoted `{chat_id}` placeholder was replaced with `CHAT_ID` because curl treats an unquoted `{...}` in a URL as a glob set and would send the literal text `chat_id`. The `-u` value is only the user name `YOUR_SUBDOMAIN`; curl then prompts for the password (the API token), so the token is not stored in the shell history (the source passes `-u "YOUR_SUBDOMAIN:YOUR_API_TOKEN"`; `man curl`: "If you simply specify the user name, curl prompts for a password."). `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero.
+Adapted (not in the official docs): the unquoted `{chat_id}` placeholder was replaced with `CHAT_ID` because curl treats an unquoted `{...}` in a URL as a glob set and would send the literal text `chat_id`. The `-u` value is only the user name `YOUR_SUBDOMAIN`; curl then prompts for the password (the API token), so the token is not stored in the shell history (the source passes `-u "YOUR_SUBDOMAIN:YOUR_API_TOKEN"`; `man curl`: "If you simply specify the user name, curl prompts for a password."). `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `-q` (the first argument) makes curl skip `.curlrc`, so a `trace` or `trace-ascii` set there cannot record the credential headers.
 
 ```bash
-curl --fail-with-body -X GET \
+curl -q --fail-with-body -X GET \
   https://YOUR_SUBDOMAIN.YOUR_DOMAIN/apps/api/v1/chats/CHAT_ID \
   -u "YOUR_SUBDOMAIN" \
   -H "Accept: application/json"
@@ -173,7 +173,7 @@ Photo message request body:
 - The source also shows a Ruby webhook-verification handler (HMAC-SHA256, 5-minute timestamp window, constant-time comparison); it is reproduced on the webhooks page.
 - Adapted from the official docs: `{chat_id}` in the curl URL `https://YOUR_SUBDOMAIN.YOUR_DOMAIN/apps/api/v1/chats/{chat_id}` became `CHAT_ID`.
 - Source inconsistency: this guide's prerequisites say "Generate and store the webhook primary and secondary secrets.", while the webhooks page makes only the primary secret required ("Contact Center AI Platform begins delivering events after webhooks are enabled and a webhook URL and primary secret are set.") and the secondary secret optional ("Optional: In the **Secondary Secret** section, click **Generate**"). The page follows the webhooks page: primary required, secondary for rotation.
-- Corrected from the official docs: `-u "YOUR_SUBDOMAIN:YOUR_API_TOKEN"` puts the API token on the command line; the page passes the user name only and lets curl prompt for it. `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero.
+- Corrected from the official docs: `-u "YOUR_SUBDOMAIN:YOUR_API_TOKEN"` puts the API token on the command line; the page passes the user name only and lets curl prompt for it. `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero. `-q` is placed first (`man curl` 8.7.1, `-q, --disable`: "If used as the first parameter on the command line, the curlrc config file is not read or used."), because a `trace` / `trace-ascii` in `.curlrc` ("Enables a full trace dump of all incoming and outgoing data") would write the `Authorization` header to a file.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/webhooks (retrieved 2026-11-21; primary and secondary secret requirements)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/chat-platform-api-guide (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
