@@ -104,7 +104,7 @@ skills/gcp-gemini-enterprise-cx/
 - 取得日: 2026-11-21（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin。URL に版が無いため取得日で pin）、2026-11-14（IAM roles-permissions の機械生成分）
 - REST ページは `google-api-python-client` 同梱の Discovery document から機械生成（commit SHA は未取得）
 - 機械生成は `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/`（後続 PR で投入）。他の 8 カテゴリ（完成形）は公式ガイド由来の手書き
-- 製品専用の gcloud グループは無いため gcloud の機械生成ページは持たない。共通コマンドの例の一部は gcloud 593.0.0 の help から借り、そのページの Notes に `Snippet taken from` で出典を記す（`get-started.md`・`vpc-service-controls.md`）
+- 製品専用の gcloud グループは無いため gcloud の機械生成ページは持たない。共通コマンドの例の一部は他の公式ページから借りる。`get-started.md` は gcloud 593.0.0 の help から借り、Notes に `Snippet taken from` で出典を記す。`vpc-service-controls.md` はコマンドの形を CX Insights の export ガイドから借り（Notes の `Adapted from the official docs`）、`--condition=None` の根拠は gcloud 593.0.0 の help
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
 - 一部の公式の例は安全性・正しさのために修正した。該当箇所はコードブロック直前に `Adapted (not in the official docs)` の行を置き、`## Notes` に `Corrected from the official docs:` の行で理由を残す
 - 新しいメソッド・機能は公式 reference で確認する

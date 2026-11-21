@@ -34,6 +34,8 @@ For anything else, respond appropriately or state you cannot handle it.
 
 ### References sample
 
+Static variables such as `{{business_rules}}` are substituted verbatim into the instruction before the model call (see [variable.md](./variable.md)), so take `business_rules` only from configuration that administrators control; never fill it from conversation input or externally fetched data, and handle those separately from instructions.
+
 ```text
 If it's a greeting, call {@AGENT: Greeting Agent}
 If it's a farewell, call {@AGENT: Farewell Agent}
