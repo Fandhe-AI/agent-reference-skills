@@ -9,7 +9,7 @@ user-invocable: false
 
 Google Cloud (GCP) のカスタマーエクスペリエンス（コンタクトセンター）向け AI 系スキル。3 製品を扱う。
 
-分割投入中: 以下の収録範囲と機械生成の層は完成形の内容。分割投入中のため、未投入のカテゴリ（`rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。未投入の機能は、投入までは公式ドキュメント（https://docs.cloud.google.com/ ）を引く。
+分割投入中: 以下の収録範囲と機械生成の層は完成形の内容。分割投入中のため、未投入のカテゴリ（`rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access` / `ccai-platform-virtual-agents`）は後続 PR で追加する。現時点で収録済みのカテゴリは下記のツリーとマッピング表のもの。未投入の機能は、投入までは公式ドキュメント（https://docs.cloud.google.com/ ）を引く。
 
 - Gemini Enterprise for Customer Experience（CX Agent Studio、`ces` API）— agent と agent application・instruction・variable・callback・handoff・guardrail・tools（OpenAPI・MCP・Python・client function・data store・agent as a tool・A2A）・deploy・API access・version・evaluation・アクセス制御・VPC Service Controls・CMEK
 - Customer Experience Insights（旧 Contact Center AI Insights、`contactcenterinsights` API）— 会話データの ingest・analysis（analysis rule・summarization・topic modeling・queryMetrics）・Quality AI・BigQuery export・Pub/Sub 通知・fine-grained access control・CMEK・リージョン
@@ -36,9 +36,6 @@ skills/gcp-gemini-enterprise-cx/
     ccai-platform-overview-setup/              # 4 ページ
       README.md
       <page>.md
-    ccai-platform-virtual-agents/              # 7 ページ
-      README.md
-      <page>.md
     ccai-platform-apis-sdks/                   # 9 ページ
       README.md
       <page>.md
@@ -50,11 +47,11 @@ skills/gcp-gemini-enterprise-cx/
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
 1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（references 直下に README.md は無く、各カテゴリ（サブディレクトリ）に README.md がある）。製品の切り分けは `cx-agent-studio-*`（CX Agent Studio）・`insights-*`（後続 PR で投入）（Customer Experience Insights）・`ccai-platform-*`（CCAI Platform）
-2. gcloud コマンド → 製品専用のコマンドとカテゴリは無い（手順はコンソールと REST。REST を `curl` で呼ぶときの bearer token は `gcloud auth print-access-token` で得る）。共通コマンドの例は次のページにある: `gcloud services enable` は `ccai-platform-overview-setup/get-started.md`、`gcloud org-policies` は `ccai-platform-overview-setup/ccaip-custom-constraints.md`、`gcloud access-context-manager perimeters create` は `ccai-platform-overview-setup/vpc-service-controls.md`、`gcloud auth login` / `gcloud auth application-default login` は `cx-agent-studio-overview-build/quick-setup.md` と `insights-ingest-analysis/before-you-begin.md`（後続 PR で投入）、`gcloud run deploy` は `cx-agent-studio-tools/a2a-remote-agent-deployment.md`（後続 PR で投入）、`gcloud model-armor floorsettings update` は `cx-agent-studio-tools/mcp-server.md`（後続 PR で投入）。各コマンドの全フラグは `gcp-cli` と担当スキル（`gcp-foundation` 等）
+2. gcloud コマンド → 製品専用のコマンドとカテゴリは無い（手順はコンソールと REST。REST を `curl` で呼ぶときの bearer token は `gcloud auth print-access-token` で得て変数 `TOKEN` に入れ、`-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN")` で渡す。token を curl の引数に載せないため。`-H @file` は curl 7.55.0 以降、`<(...)` は bash / zsh が必要）。共通コマンドの例は次のページにある: `gcloud services enable` は `ccai-platform-overview-setup/get-started.md`、`gcloud org-policies` は `ccai-platform-overview-setup/ccaip-custom-constraints.md`、`gcloud access-context-manager perimeters create` は `ccai-platform-overview-setup/vpc-service-controls.md`、`gcloud auth login` / `gcloud auth application-default login` は `cx-agent-studio-overview-build/quick-setup.md` と `insights-ingest-analysis/before-you-begin.md`（後続 PR で投入）、`gcloud run deploy` は `cx-agent-studio-tools/a2a-remote-agent-deployment.md`（後続 PR で投入）、`gcloud model-armor floorsettings update` は `cx-agent-studio-tools/mcp-server.md`（後続 PR で投入）。各コマンドの全フラグは `gcp-cli` と担当スキル（`gcp-foundation` 等）
 3. CX Agent Studio のロール・条件付きバインディングは `cx-agent-studio-deploy-evaluate-access/access-control.md`、Insights の閲覧範囲の制御は `insights-quality-export-access/`（後続 PR で投入） の fine-grained access control の 2 ページ
 4. Dialogflow や Agent Assist は他スキル（下記「他スキルとの使い分け」）
 
-未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access`）の探索手順は投入時に追加する。それまで上の手順が未投入カテゴリを指すときは、該当する公式ガイド（https://docs.cloud.google.com/ 配下）を引く。gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access` / `ccai-platform-virtual-agents`）の探索手順は投入時に追加する。それまで上の手順が未投入カテゴリを指すときは、該当する公式ガイド（https://docs.cloud.google.com/ 配下）を引く。gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
@@ -67,12 +64,10 @@ skills/gcp-gemini-enterprise-cx/
 | evaluation（scenario / simulation / golden test case）・IAM ロール・VPC Service Controls・CMEK（CX Agent Studio） | cx-agent-studio-deploy-evaluate-access | [references/cx-agent-studio-deploy-evaluate-access/README.md](references/cx-agent-studio-deploy-evaluate-access/README.md) |
 | CCAI Platform の概要・instance 作成・サイズとクォータ・ポータルのロール | ccai-platform-overview-setup | [references/ccai-platform-overview-setup/README.md](references/ccai-platform-overview-setup/README.md) |
 | CCAI Platform の audit logging・VPC Service Controls と Private Service Connect・カスタム組織ポリシー制約 | ccai-platform-overview-setup | [references/ccai-platform-overview-setup/README.md](references/ccai-platform-overview-setup/README.md) |
-| virtual agent（Dialogflow または CX Agent Studio）の連携・queue への割り当て・人間 agent への transfer | ccai-platform-virtual-agents | [references/ccai-platform-virtual-agents/README.md](references/ccai-platform-virtual-agents/README.md) |
-| virtual agent へのデータ渡し・custom payload・Insights への送信 | ccai-platform-virtual-agents | [references/ccai-platform-virtual-agents/README.md](references/ccai-platform-virtual-agents/README.md) |
 | Apps API / Manager API・認証情報・reporting endpoint・チャットの server 側連携・webhooks | ccai-platform-apis-sdks | [references/ccai-platform-apis-sdks/README.md](references/ccai-platform-apis-sdks/README.md) |
 | Web SDK v3・headless web SDK・Flutter / React Native のモバイル SDK・SDK の end user 認証（JWT） | ccai-platform-apis-sdks | [references/ccai-platform-apis-sdks/README.md](references/ccai-platform-apis-sdks/README.md) |
 
-後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access`。収録済みのページは各カテゴリの README.md の索引で確認する
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `iam` / `cx-agent-studio-tools` / `insights-ingest-analysis` / `insights-quality-export-access` / `ccai-platform-virtual-agents`。収録済みのページは各カテゴリの README.md の索引で確認する
 
 ## 他スキルとの使い分け
 

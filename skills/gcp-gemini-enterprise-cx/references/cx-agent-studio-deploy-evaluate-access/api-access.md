@@ -55,9 +55,12 @@ Adapted (not in the official docs): removed `config.session`, which the `ces` RE
 }
 ```
 
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X POST \
-     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
      -H "Content-Type: application/json; charset=utf-8" \
      -d @request.json \
      "https://ces.googleapis.com/v1/projects/PROJECT_ID/locations/REGION_ID/apps/APPLICATION_ID/sessions/SESSION_ID:runSession"
@@ -84,12 +87,16 @@ The example logs only metadata (connection state, message sizes, turn completion
 
 `SESSION_ID` identifies one conversation: generate a new ID when a new conversation starts, and reuse that ID only for further messages of the same conversation; never share one ID across conversations or users. Each run of the example below starts one new conversation.
 
-Adapted (not in the official docs): the fixed `const sessionId = 'session-name';` is replaced with `const sessionId = randomUUID();` (with `import {randomUUID} from 'node:crypto';`), so each run starts its own session instead of every run sharing one, as the source's Java and Python `BidiRunSession` samples do with `UUID.randomUUID().toString()` and `str(uuid.uuid4())`; and the first `config` message also sets `deployment` to the API access channel's deployment (`${appResourceName}/deployments/DEPLOYMENT_ID`), as the source's Go `BidiRunSession` sample does, so the session uses the version and channel-specific settings of the deployment you created; and the location `us`, written twice in the source (in the app resource name and at the end of the WebSocket path), is defined once as `const location = 'us';` and used in both, so the WebSocket endpoint and the app, session and deployment always name the same location, as the source's Go `BidiRunSession` sample does with its `-location` flag (`"/ws/google.cloud.ces.v1.SessionService/BidiRunSession/locations/" + *location`); and instead of closing after a fixed 10 seconds, the client sends the second query after the first turn completes, exits normally after the second turn completes (`sessionOutput.turnCompleted`) and logs an error with a non-zero exit code on a credentials failure, a 60-second timeout, an early close, or an `endSession` (top level or in `sessionOutput`) before the second turn completes; and the query and received-message logs print only the query number, the message size and turn completion instead of the full text.
+Adapted (not in the official docs): the fixed `const sessionId = 'session-name';` is replaced with `const sessionId = randomUUID();` (with `import {randomUUID} from 'node:crypto';`), so each run starts its own session instead of every run sharing one, as the source's Java and Python `BidiRunSession` samples do with `UUID.randomUUID().toString()` and `str(uuid.uuid4())`; and the first `config` message also sets `deployment` to the API access channel's deployment (`${appResourceName}/deployments/DEPLOYMENT_ID`), as the source's Go `BidiRunSession` sample does, so the session uses the version and channel-specific settings of the deployment you created; and the location `us`, written twice in the source (in the app resource name and at the end of the WebSocket path), is defined once as `const location = 'us';` and used in both, so the WebSocket endpoint and the app, session and deployment always name the same location, as the source's Go `BidiRunSession` sample does with its `-location` flag (`"/ws/google.cloud.ces.v1.SessionService/BidiRunSession/locations/" + *location`); and instead of closing after a fixed 10 seconds, the client sends the second query after the first turn completes, exits normally after the second turn completes (`sessionOutput.turnCompleted`) and logs an error with a non-zero exit code on a credentials failure, a 60-second timeout, an early close, or an `endSession` (top level or in `sessionOutput`) before the second turn completes; and the query and received-message logs print only the query number, the message size and turn completion instead of the full text, and each `sessionOutput` (Discovery `SessionOutput`: `text`, `audio`, `payload`, `turnCompleted` and other fields) is passed to `onAgentOutput`, an empty placeholder for your own display code.
 
 ```javascript
 import {randomUUID} from 'node:crypto';
 import {GoogleAuth} from 'google-gax';
 import {WebSocket} from 'ws';
+
+// Your own display function (not part of any library): show the agent's
+// reply in your UI, for example output.text or output.payload.
+function onAgentOutput(output) {}
 
 async function main() {
   const sessionId = randomUUID();
@@ -171,6 +178,9 @@ async function main() {
       return;
     }
     const out = msg.sessionOutput || {};
+    if (msg.sessionOutput) {
+      onAgentOutput(msg.sessionOutput);
+    }
     if (out.turnCompleted) {
       turns += 1;
       console.log(`Turn ${turns} completed`);
@@ -242,6 +252,7 @@ If you use `ces.us.rep.googleapis.com` or `ces.eu.rep.googleapis.com`, you don't
 - Corrected from the official docs: the Node.js `BidiRunSession` sample hard-codes `const sessionId = 'session-name';`, so every run and every conversation would use the same session. The source's Java and Python `BidiRunSession` samples also start from a fixed value (`String sessionId = "session-name";`, `session_id = "session_name"`) but generate `UUID.randomUUID().toString()` / `str(uuid.uuid4())` when it is empty; the page uses `randomUUID()` from the Node.js `node:crypto` module. A UUID matches the `SESSION_ID` pattern `[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}`. It authenticates through Application Default Credentials (`GoogleAuth`).
 - Logging: the Node.js `BidiRunSession` sample prints the config, both queries (``console.log(`Sending query: ${queryJson}`)``) and every received message (``console.log(`Received message: ${message}`)``). The page logs metadata instead, because conversation text can contain personal data.
 - The sample `curl` command uses user credentials from `gcloud`; use a service account for production (see the CX Agent Studio authentication page).
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/deploy/api-access (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
