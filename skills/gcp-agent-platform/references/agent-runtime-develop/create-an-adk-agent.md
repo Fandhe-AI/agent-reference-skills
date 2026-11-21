@@ -62,8 +62,7 @@ async for event in app.async_stream_query(
 
 ### Define and use a tool
 
-Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data.
-
+Adapted (not in the official docs): added `timeout=10` to `requests.get` and `response.raise_for_status()` before `response.json()`, so a hung or failing exchange-rate service fails the tool call instead of blocking it or passing an error body to the model as rate data. Also, `currency_date` is checked to be `latest` or a `YYYY-MM-DD` date (`datetime.datetime.strptime(currency_date, "%Y-%m-%d")` raises `ValueError` otherwise) before it is put in the URL path, so a model-supplied value cannot point the request at another path or query.
 ```python
 def get_exchange_rate(
     currency_from: str = "USD",
@@ -89,7 +88,11 @@ def get_exchange_rate(
             Example: {"amount": 1.0, "base": "USD", "date": "2023-11-24",
                 "rates": {"EUR": 0.95534}}
     """
+    import datetime
     import requests
+
+    if currency_date != "latest":
+        datetime.datetime.strptime(currency_date, "%Y-%m-%d")
     response = requests.get(
         f"https://api.frankfurter.app/{currency_date}",
         params={"from": currency_from, "to": currency_to},
@@ -241,6 +244,7 @@ print(response)
 - The source also shows sample response dictionaries and the rest of the memory test walkthrough (the follow-up message and the new-session test), which are omitted.
 - Corrected from the official docs: `get_exchange_rate` called `requests.get(f"https://api.frankfurter.app/{currency_date}", params={"from": currency_from, "to": currency_to})` with no timeout and returned `response.json()` without checking the HTTP status.
 - Corrected from the official docs: the Memories example's instruction item 1 ended "You don't have the outcome of the actual tool execution, so provide a hypothetical tool execution outcome."
+- Corrected from the official docs: `get_exchange_rate` put `currency_date` into the URL path (`f"https://api.frankfurter.app/{currency_date}"`) without checking it.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/create-an-adk-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
