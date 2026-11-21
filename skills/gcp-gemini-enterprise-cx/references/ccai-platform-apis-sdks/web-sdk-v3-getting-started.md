@@ -1,0 +1,144 @@
+---
+source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/web-sdk-v3-getting-started
+---
+
+# CCAI Platform web SDK v3: mount, initialize and authenticate
+
+The web SDK builds on the headless web SDK, so all headless client methods are available in the web SDK widget. This page covers mounting, initializing and authenticating the widget, and hiding the start-new-conversation button and the transcript download commands. The basic example needs only `companyId`, `host` and `authenticate`.
+
+## Signature / Usage
+
+### Basic example
+
+Adapted (not in the official docs): `{your_ccaas_host}web-sdk/v3/widget.js` became `{your_ccaas_host}/web-sdk/v3/widget.js` because the host is written as `https://{your_ccaas_host}` and the same page's install section uses `https://{your_ccaas_host}/web-sdk/v3/headless.js`.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic demo</title>
+</head>
+<body>
+  <!-- An empty element to mount the CCAI Platform web SDK widget. -->
+  <div id="ccaas-widget"></div>
+
+  <!-- Include the CCAI Platform web SDK widget -->
+  <script src="https://{your_ccaas_host}/web-sdk/v3/widget.js"></script>
+  <script>
+    var ccaas = new UJET({
+      companyId: "$COMPANY_ID",
+      host: "$HOST",
+      authenticate: getAuthToken
+    });
+    ccaas.mount("#ccaas-widget");
+
+    function getAuthToken() {
+      // YOU SHOULD HAVE THIS KIND OF API ON YOUR SERVER
+      return fetch('/auth/token').then(function(resp) {
+        // { token: 'a JWT contains user identifier, name, and email' }
+        return resp.json();
+      });
+    }
+  </script>
+</body>
+</html>
+```
+
+### Get the company key
+
+Sign in to the CCAI Platform portal with an administrator account, go to **Settings > Developer Settings**, and copy the Company Key as `COMPANY_KEY`. The company secret is on the same page; it is used only in your backend to create the authentication token endpoint.
+
+### Authentication
+
+`getAuthToken` calls a JWT signing endpoint on your backend:
+
+```javascript
+async function getAuthToken() {
+  // YOU SHOULD HAVE THIS KIND OF API ON YOUR SERVER
+  const resp = await fetch('/auth/token')
+  const data = await resp.json()
+  return { token: data.token }
+}
+```
+
+### Configure the SDK
+
+Configure with `ccaas.config({...})`; for example, `customData` is set this way. Supported options:
+
+```typescript
+export interface ConfigOptions {
+  name?: string
+  accent?: 'default' | 'blue' | 'green' | 'purple' | 'orange' | 'yellow' | 'gold' | 'red'
+  logo?: string
+  menuKey?: string
+  ticketId?: string
+  preferredChannel?: string
+  disableAttachment?: boolean
+  customData?: Record<string, any>
+  signedCustomData?: string
+  messages?: Record<string, unknown>
+  disableLauncher?: boolean
+  launcherOpenIcon?: string
+  launcherCloseIcon?: string
+  launcherLoadingIcon?: string
+  optionsMenuIcon?: string
+  confirmationIcon?: string
+  enableMuteChat?: boolean
+  tooltipIcon?: string
+  hideNewConversation?: boolean
+  hideDownloadTranscriptOptions?: boolean
+  hideDownloadTranscriptPostChat?: boolean
+}
+```
+
+- `hideNewConversation`: hides the **Start a new conversation** button at the end of a session.
+- `hideDownloadTranscriptOptions`: hides the **Download transcript** command in the chat options menu during a session.
+- `hideDownloadTranscriptPostChat`: hides the **Download transcript** button at the end of a session.
+
+### Mount the widget
+
+```javascript
+ccaas.mount('#ccaas-widget')
+```
+
+### Install the headless client
+
+```bash
+npm install @ujet/websdk-headless --save
+```
+
+```javascript
+import { Client } from "@ujet/websdk-headless"
+
+async function authenticate() {
+  const resp = await fetch("/your-auth-endpoint")
+  const data = await resp.json()
+  return { token: data.token }
+}
+
+const client = new Client({
+  companyId: "COMPANY_KEY",
+  host: "https://{your_ccaas_host}",
+  authenticate: authenticate,
+})
+
+const company = await client.getCompany()
+```
+
+## Notes
+
+- Corrected from the official docs: the basic example loads `<script src="https://{your_ccaas_host}web-sdk/v3/widget.js"></script>` (no `/` between the host and the path); the same page writes the host as `https://{your_ccaas_host}` and loads the headless script from `https://{your_ccaas_host}/web-sdk/v3/headless.js`.
+- Keep `COMPANY_SECRET` on your server; only `COMPANY_KEY` goes into the widget options. The token endpoint is described in web-sdk-v3-authenticate.md.
+- If your production server has a content security policy, add `https://{your_ccaas_host}` to `script-src` and `frame-src`; for the headless install, add `https://{your_ccaas_host}/` to `frame-src`.
+- The headless client can alternatively be loaded from the script hosted on your CCAI Platform instance (`https://{your_ccaas_host}/web-sdk/v3/headless.js`).
+- The source also shows a custom-data full HTML example, an HTML mount snippet and a hosted-script snippet. Identifiers such as `UJET` and `@ujet/websdk-headless` appear as written in the source.
+- Implementation examples: https://github.com/GoogleCloudPlatform/ccaas-web-sdk-v3-examples.
+- Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/web-sdk-v3-getting-started (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+
+## Related
+
+- [web-sdk-v3-authenticate.md](./web-sdk-v3-authenticate.md)
+- [headless-web-guide.md](./headless-web-guide.md)
+- [ccaas-sdks.md](./ccaas-sdks.md)
