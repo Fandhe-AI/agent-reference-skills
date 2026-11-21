@@ -112,8 +112,10 @@ The console and gcloud do not support modifying Agent Runtime gateway bindings; 
 
 Before you run it: the request fails while a manual revision traffic split is active, so remove the split first; when it succeeds, it creates a new revision and irreversibly archives every previous revision of the agent, including any known-good revision you might roll back to.
 
+Adapted (not in the official docs): added `--fail-with-body`, so an HTTP error makes `curl` exit non-zero instead of looking like success.
+
 ```bash
-curl -X PATCH \
+curl --fail-with-body -X PATCH \
  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
  -H "Content-Type: application/json; charset=utf-8" \
  -d '{
@@ -125,6 +127,8 @@ curl -X PATCH \
  }' \
  "https://REGION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/REGION/reasoningEngines/RESOURCE_ID?updateMask=spec.deploymentSpec.agentGatewayConfig"
 ```
+
+The call returns a long-running operation (`reasoningEngines.patch` returns `GoogleLongrunningOperation` in the `aiplatform.v1` Discovery document). Poll `GET https://REGION-aiplatform.googleapis.com/v1/OPERATION_NAME` until the response contains `"done": true` and check that it has no `error`, then `GET` the reasoning engine and confirm that `spec.deploymentSpec.agentGatewayConfig` is empty. Only then go on to delete the gateway's policies (not in the official docs).
 
 ### Delete a gateway (gcloud)
 
@@ -221,6 +225,7 @@ gcloud network-services agent-connectivity-templates delete CONNECTIVITY_TEMPLAT
 - Adapted from the official docs: the source lists `TelemetryPolicy` as a deletion blocker but gives no steps; the `TelemetryPolicy` commands come from the gcloud 593.0.0 help of `gcloud beta network-services telemetry-policies` (`list`, `export`, `import`, `delete`; the group is beta and alpha only), and `telemetryTarget.resources` is `TelemetryTarget.resources` in the Network Services API `networkservices.v1beta1` Discovery document. Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern/gateways/monitor-agent-gateway (retrieved 2026-11-21).
 - CLI tracks (gcloud 593.0.0 help): `service-extensions authz-extensions` and `network-security authz-policies` (`list`, `describe`, `import`, `delete`) are GA (networkservices / networksecurity `v1`) as well as beta, so the GA commands from the source are kept; set-up-agent-gateway.md imports the extension with `gcloud beta` as its source does, and the `AuthzExtension` fields are the same in `networkservices` `v1` and `v1beta1` (Discovery). `network-services telemetry-policies` exists only in beta and alpha.
 - Adapted from the official docs: the update example wrote `- //agentregistry.googleapis.com/projects/PROJECT_NUMBER/locations/LOCATION` under `registries`, while the source explains `PROJECT_NUMBER` only for `agentConnectivityTemplate` ("requires the project number rather than the project ID"), the set-up examples use `PROJECT_ID` there, and the Discovery document (`networkservices.v1`, `AgentGateway.registries`) gives the format `//agentregistry.googleapis.com/projects/{project}/locations/{location}/`.
+- Adapted from the official docs: the disassociation `curl -X PATCH` had no `--fail-with-body` and the source does not show waiting for the returned operation.
 
 ## Related
 
