@@ -62,17 +62,15 @@ curl -q --fail-with-body -X GET \
 
 ### Call streamAssist (REST)
 
-Adapted (not in the official docs): the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table). Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--no-buffer` prints streamed chunks as they arrive. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs.
+Run the command by itself and type the question on one line at the prompt (`QUERY_TEXT`, for example `List all contact cards.`); `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the question.
+
+Adapted (not in the official docs): the request body is built with `printf '%s\n' ... | jq -Rn '[inputs] as [...] | {...}'` from the question read by `IFS= read -r QUERY_TEXT`, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of the source's `"text": "List all contact cards."` inside the single-quoted `-d '{...}'` argument, so an apostrophe, double quote or backslash in the question cannot break the shell quoting or the JSON; every other field is unchanged. `printf` is a shell builtin, so the question reaches `jq` on standard input, not in its arguments, and a `jq` error stops the command before `curl` runs. Also, the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table). Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--no-buffer` prints streamed chunks as they arrive. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs.
 
 ```bash
-( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
-curl -q --fail-with-body --no-buffer -X POST \
--H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
--H "Content-Type: application/json" \
-"https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant:streamAssist" \
-  -d '{
+( set +x; set +a; unset TOKEN QUERY_TEXT BODY; IFS= read -r QUERY_TEXT && [ -n "$QUERY_TEXT" ] && BODY=$(printf '%s\n' "$QUERY_TEXT" |
+jq -Rn '[inputs] as [$query_text] | {
     "query": {
-      "text": "List all contact cards."
+      "text": $query_text
     },
     "agentsSpec": {
       "agentSpecs": [
@@ -81,7 +79,14 @@ curl -q --fail-with-body --no-buffer -X POST \
         }
       ]
     }
-  }' )
+  }') &&
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+printf '%s' "$BODY" |
+curl -q --fail-with-body --no-buffer -X POST \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
+-H "Content-Type: application/json" \
+"https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant:streamAssist" \
+--data @- )
 ```
 
 ### Call streamAssist (Python)
@@ -146,18 +151,16 @@ if answer is not None and answer.state.name == "SKIPPED":
 
 Pass the `session` string from `sessionInfo` of the previous response.
 
-Adapted (not in the official docs): the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table). Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--no-buffer` prints streamed chunks as they arrive. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs.
+Run the command by itself and type the question on one line at the prompt (`QUERY_TEXT`, for example `Who is John Doe?`); `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the question.
+
+Adapted (not in the official docs): the request body is built with `printf '%s\n' ... | jq -Rn '[inputs] as [...] | {...}'` from the question read by `IFS= read -r QUERY_TEXT`, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of the source's `"text": "Who is John Doe?"` inside the single-quoted `-d '{...}'` argument, so an apostrophe, double quote or backslash in the question cannot break the shell quoting or the JSON; every other field is unchanged. `printf` is a shell builtin, so the question reaches `jq` on standard input, not in its arguments, and a `jq` error stops the command before `curl` runs. Also, the hostname is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` instead of the source's `LOCATION-discoveryengine.googleapis.com`, so that the resource path keeps `locations/LOCATION` (for example `locations/global`) while the host follows the source's rule for `global` apps (`discoveryengine.googleapis.com`; see the placeholder table). Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments. `--no-buffer` prints streamed chunks as they arrive. `--fail-with-body` makes an HTTP 4xx/5xx response exit non-zero. `set +a` turns off `set -a` (allexport) inherited from your shell, so values assigned in the subshell are not exported to `curl` and the other commands. `-q` comes first so that curl does not read `.curlrc`, whose `trace` option could write the request headers to a file. The whole command runs in a subshell that starts with `set +x`, so shell tracing (`set -x`) does not print the token, and `TOKEN` does not stay in your shell. `unset` at its start also drops an `export` of the variables it sets in your shell, so their new values are not put in the environment of `curl` and the other commands it runs.
 
 ```bash
-( set +x; set +a; unset TOKEN; TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
-curl -q --fail-with-body --no-buffer -X POST \
--H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
--H "Content-Type: application/json" \
-"https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant:streamAssist" \
-  -d '{
+( set +x; set +a; unset TOKEN QUERY_TEXT BODY; IFS= read -r QUERY_TEXT && [ -n "$QUERY_TEXT" ] && BODY=$(printf '%s\n' "$QUERY_TEXT" |
+jq -Rn '[inputs] as [$query_text] | {
     "session": "projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/sessions/SESSION_ID",
     "query": {
-      "text": "Who is John Doe?"
+      "text": $query_text
     },
     "agentsSpec": {
       "agentSpecs": [
@@ -166,7 +169,14 @@ curl -q --fail-with-body --no-buffer -X POST \
         }
       ]
     }
-  }' )
+  }') &&
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
+printf '%s' "$BODY" |
+curl -q --fail-with-body --no-buffer -X POST \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
+-H "Content-Type: application/json" \
+"https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant:streamAssist" \
+--data @- )
 ```
 
 ## Options / Props
