@@ -109,11 +109,15 @@ curl -X PATCH \
 
 ### Delete a deployed agent
 
+Without `force`, the delete request fails with `FAILED_PRECONDITION` while the agent still has child resources such as sessions and memory, which protects them. Passing `force=True` (`remote_agent.delete(force=True)` or `client.runtimes.delete(name=RESOURCE_NAME, force=True)`, as the source writes it) also deletes those child resources; this cannot be undone, so use it only for an agent whose sessions and memories you intend to delete.
+
+Adapted (not in the official docs): the argument `force=True, # Optional, if the agent has resources (e.g. sessions, memory)` is removed, so the example does not delete sessions and memories by default.
+
 ```python
-remote_agent.delete(
-    force=True, # Optional, if the agent has resources (e.g. sessions, memory)
-)
+remote_agent.delete()
 ```
+
+Adapted (not in the official docs): the line `force=True, # Optional, if the agent has resources (e.g. sessions, memory)` is removed from `client.runtimes.delete`, for the same reason.
 
 ```python
 import agentplatform
@@ -125,7 +129,6 @@ client = agentplatform.Client(  # For service interactions via client.runtimes
 
 client.runtimes.delete(
     name=RESOURCE_NAME,
-    force=True, # Optional, if the agent has resources (e.g. sessions, memory)
 )
 ```
 
@@ -161,6 +164,7 @@ curl -X DELETE \
   - Updating `spec.deployment_spec.agent_gateway_config` is a change of the agent's Agent Gateway binding, not a revision-archive operation. As a side effect, attaching, changing or detaching the binding creates a new revision and irreversibly archives every revision that existed before the change; it is rejected with `FAILED_PRECONDITION` while any manual traffic split is set. The emergency-stop table above and the source's "Traffic rollback without deleting the agent" step present it as a way to archive pre-existing revisions; use it for that only if changing the gateway association is intended.
 - Emergency stop steps, continued: (2) revoke downstream access with a `DENY` rule for the agent's `principal://` or `principalSet://` identifier in the UAP bound to the gateway (check that the IAP authorization extension is in enforcement mode: `iamEnforcementMode` removed from its metadata, not `"DRY_RUN"`), or revoke IAM roles / attach an IAM deny policy or Principal Access Boundary policy; (3) policy changes take 2 to 7 minutes (longer for `principalSet` updates), so pair policy revocation with runtime deletion or traffic rerouting, then confirm in Cloud Logging by querying `is_agentic=true` and `networkservices.googleapis.com/gateway_requests` denials.
 - Deleting an agent invalidates its agent identity; any UAP that grants permissions to that principal keeps the defunct principal in its rules and the policy binding stays active. Update the UAP to remove the principal, and delete the binding if no active principals remain.
+- Corrected from the official docs: both Python delete examples passed `force=True, # Optional, if the agent has resources (e.g. sessions, memory)`, which deletes the agent's sessions and memories along with it; the examples omit it and the forced variant is described in the sentence before them.
 - Irreversible: deleting a deployed agent terminates its instances and invalidates its identity. `force=True` deletes child resources (for example sessions and memory); without it the request fails with `FAILED_PRECONDITION` when child resources exist (Discovery document `aiplatform.v1`, `reasoningEngines.delete` query parameter `force`; the source's `curl -X DELETE` example has no `force` parameter). Try deletes in a disposable project first.
 - Telemetry (Console): after enabling traces during development, use the **Telemetry configuration** column to toggle OpenTelemetry traces and logs, logging of prompt inputs and response outputs, container scaling / resources / concurrency (recommended `2 * CPU + 1`, default `9`), and Memory Bank Generation / Retrieval / Retention settings (editing requires `aiplatform.reasoningEngines.update`). If telemetry collection is disabled, redeploy and update the Vertex AI SDK to `>= 1.126.1` to see the Observability options.
 - `updateMask` (`update_mask` in the source) is a comma-separated list of fields to update. Successful list / get / patch / delete calls return a 2xx status.

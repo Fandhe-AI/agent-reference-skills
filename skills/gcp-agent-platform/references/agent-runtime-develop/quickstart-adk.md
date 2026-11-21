@@ -104,6 +104,8 @@ async for event in remote_agent.async_stream_query(
 
 ### Clean up
 
+This deletes the Agent Runtime instance created by the quickstart. It passes `force=True`, which also deletes the child resources (sessions and memories) of the instance; this cannot be undone.
+
 ```python
 remote_agent.delete(force=True)
 ```

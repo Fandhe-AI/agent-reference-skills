@@ -16,7 +16,7 @@ Adapted (not in the official docs): the requirement is quoted because an unquote
 pip install "google-cloud-aiplatform[agent_engines,adk,langchain,ag2,llama_index]>=1.112.0"
 ```
 
-The client-based examples on the deploy and manage pages (`client = agentplatform.Client(...)`, `client.runtimes.*`) use a different package: the standalone `google-cloud-agentplatform` package (module `agentplatform`), into which version 2.0.1 of the Agent Platform SDK moved the `agent_engines` module as `runtimes`, `sessions`, `sandboxes` and `memory_banks` (Agent Runtime overview, "Migration to the client-based SDK"). The command above installs `google-cloud-aiplatform` (module `vertexai`) and does not provide `import agentplatform`, so install `google-cloud-agentplatform` with pip as well before you run those examples (2.10.0 on PyPI as of 2026-11-18; its extras include `agent-engines`, `adk`, `a2a`, `langchain`, `ag2` and `llama-index`).
+The client-based examples on the deploy and manage pages (`client = agentplatform.Client(...)`, `client.runtimes.*`) use a different package: the standalone `google-cloud-agentplatform` package (module `agentplatform`), into which version 2.0.1 of the Agent Platform SDK moved the `agent_engines` module as `runtimes`, `sessions`, `sandboxes` and `memory_banks` (Agent Runtime overview, "Migration to the client-based SDK"). The command above installs `google-cloud-aiplatform` (module `vertexai`) and does not provide `import agentplatform`, so install `google-cloud-agentplatform[agent-engines]` with pip as well before you run those examples (2.10.0 on PyPI as of 2026-11-18; its extras include `agent-engines`, `adk`, `a2a`, `langchain`, `ag2` and `llama-index`). The `agent-engines` extra adds the packages that deploying an agent object and the runtime tooling use (`cloudpickle`, `google-cloud-storage`, `opentelemetry-sdk` and the OpenTelemetry exporters, per the 2.10.0 package metadata), and when the `runtimes` module cannot be imported, `client.runtimes` raises "The 'runtimes' module requires 'additional packages'. Please install them using pip install google-cloud-aiplatform[agent_engines]" (`agentplatform/_genai/client.py`). Add the framework extra you use, for example `google-cloud-agentplatform[adk,agent-engines]`.
 
 To use Agent2Agent (A2A) on Agent Platform, also install the a2a-sdk package:
 
@@ -55,6 +55,8 @@ client = vertexai.Client(  # For service interactions via client.agent_engines
 ```
 
 ### Create an agent identity before deploying code
+
+The agent identity page creates its client with `http_options=dict(api_version="v1beta1")` for this call. The `client` above has no `http_options`, but in google-genai 3.6.1 (`google/genai/_api_client.py`, which `vertexai.Client` uses), a client created with a project and location defaults to `api_version` `'v1beta1'` unless the environment variable `GOOGLE_GENAI_API_VERSION` sets another version. To make the version explicit, pass `http_options=dict(api_version="v1beta1")` to `vertexai.Client(...)` as well (`vertexai.Client` takes `http_options` in google-cloud-aiplatform 2.10.0).
 
 Adapted (not in the official docs): added `from vertexai import types`, because the source uses `types.IdentityType` without importing `types` (the quickstart imports it this way, and `vertexai.types.IdentityType.AGENT_IDENTITY` exists in google-cloud-aiplatform 2.10.0).
 
