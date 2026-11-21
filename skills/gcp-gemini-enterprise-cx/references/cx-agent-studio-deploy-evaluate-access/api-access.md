@@ -82,12 +82,17 @@ Response shape (the `diagnosticInfo` content is elided in the source):
 
 The `console.log` calls that print the sent queries and the received messages are for local debugging with test data only; a deployed client that passes real user input should log only metadata such as the session ID and the connection state, not conversation content.
 
+`SESSION_ID` identifies one conversation: generate a new ID when a new conversation starts, and reuse that ID only for further messages of the same conversation; never share one ID across conversations or users. Each run of the example below starts one new conversation.
+
+Adapted (not in the official docs): the fixed `const sessionId = 'session-name';` is replaced with `const sessionId = randomUUID();` (with `import {randomUUID} from 'node:crypto';`), so each run starts its own session instead of every run sharing one, as the source's Java and Python `BidiRunSession` samples do with `UUID.randomUUID().toString()` and `str(uuid.uuid4())`.
+
 ```javascript
+import {randomUUID} from 'node:crypto';
 import {GoogleAuth} from 'google-gax';
 import {WebSocket} from 'ws';
 
 async function main() {
-  const sessionId = 'session-name';
+  const sessionId = randomUUID();
   const appResourceName =
       'projects/project-name/locations/us/apps/app-name';
   const sessionName = `${appResourceName}/sessions/${sessionId}`;
@@ -195,7 +200,8 @@ If you use `ces.us.rep.googleapis.com` or `ces.eu.rep.googleapis.com`, you don't
 - The source's client-library samples set the session on the config (Python `config = ces_v1.SessionConfig(session=session_name)`, Node.js `const config = {session: sessionName};`), and so does the Node.js `BidiRunSession` sample below (`config: {session: sessionName}`, its first WebSocket message), which is kept as written. The `config.session` removal applies only to the REST JSON body, whose schema is the Discovery document's `RunSessionRequest`.
 - The gRPC `x-goog-request-params` snippet is a fragment and is tagged `text`: it does not import `SessionServiceClient` and assigns `stream` without declaring it. The source's full Node.js `runSession` sample imports the client with `import {AgentServiceClient, SessionServiceClient} from '../src/v1';` (a path inside the client library repository).
 - The source also shows a PowerShell form of the request, `runSession` samples in Java, Python and Node.js, and `BidiRunSession` samples in Go, Java and Python. They were omitted; the Python `runSession` sample also updates the app's root agent before running a session.
-- The Node.js `BidiRunSession` sample is shown with the `locations/us` endpoint path and sends a hard-coded session name; replace the app resource name with your own. It authenticates through Application Default Credentials (`GoogleAuth`).
+- The Node.js `BidiRunSession` sample is shown with the `locations/us` endpoint path; replace the app resource name with your own. Its session ID is generated per run (see the next line); to continue an existing conversation, pass that conversation's stored ID instead of generating a new one.
+- Corrected from the official docs: the Node.js `BidiRunSession` sample hard-codes `const sessionId = 'session-name';`, so every run and every conversation would use the same session. The source's Java and Python `BidiRunSession` samples also start from a fixed value (`String sessionId = "session-name";`, `session_id = "session_name"`) but generate `UUID.randomUUID().toString()` / `str(uuid.uuid4())` when it is empty; the page uses `randomUUID()` from the Node.js `node:crypto` module. A UUID matches the `SESSION_ID` pattern `[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}`. It authenticates through Application Default Credentials (`GoogleAuth`).
 - Logging: the Node.js `BidiRunSession` sample prints the config, both queries (``console.log(`Sending query: ${queryJson}`)``) and every received message (``console.log(`Received message: ${message}`)``). Use these prints only for local debugging with test data; in a deployed client that handles real user conversations, log metadata (session ID, connection open / close, error codes) and not the conversation text, which can contain personal data.
 - The sample `curl` command uses user credentials from `gcloud`; use a service account for production (see the CX Agent Studio authentication page).
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/deploy/api-access (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
