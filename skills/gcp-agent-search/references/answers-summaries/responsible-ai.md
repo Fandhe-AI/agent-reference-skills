@@ -14,7 +14,7 @@ Customers can enable and disable safety filters using the API. The source's requ
 
 Run the command by itself and type the query text on one line at the prompt; `jq` (required) encodes `FREE_TEXT` as a JSON string, and nothing is sent if the input ends first or the line is empty. A line that follows the command in the same paste or script is read as the query.
 
-Adapted (not in the official docs): used camelCase boolean `safeSearch: true`, replaced the body `serving_config` placeholder with the full serving config resource name that the field requires, and removed the trailing comma. Also, the request body is built with `jq -n --arg free_text "$FREE_TEXT" '{...}'` from the text read by `IFS= read -r FREE_TEXT`, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"FREE_TEXT"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in the query cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs.
+Adapted (not in the official docs): used camelCase boolean `safeSearch: true`, replaced the body `serving_config` placeholder with the full serving config resource name that the field requires, and removed the trailing comma. Also, the request body is built with `jq -n --arg free_text "$FREE_TEXT" '{...}'` from the text read by `IFS= read -r FREE_TEXT`, rejected with `[ -n ... ]` when empty, and sent on standard input with `--data @-`, instead of putting `"FREE_TEXT"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in the query cannot break the shell quoting or the JSON; every other field is unchanged. The body is built in its own step (`BODY=$(jq ...) &&`) and piped to `curl` with the `printf` builtin, so a `jq` error (for example an unreplaced number or boolean placeholder) stops the command before `curl` runs. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
 
 ```bash
 IFS= read -r FREE_TEXT && [ -n "$FREE_TEXT" ] && BODY=$(jq -n --arg free_text "$FREE_TEXT" '{
@@ -22,9 +22,10 @@ IFS= read -r FREE_TEXT && [ -n "$FREE_TEXT" ] && BODY=$(jq -n --arg free_text "$
   "servingConfig": "projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/servingConfigs/SERVING_CONFIG_ID",
   "safeSearch": true
 }') &&
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 printf '%s' "$BODY" |
 curl -X POST \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 "https://discoveryengine.googleapis.com/v1beta/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/conversations/CONVERSATION_ID:converse" \
 --data @-
@@ -40,6 +41,7 @@ curl -X POST \
 - Corrected from the official docs (`:converse`): the source wrote `"serving_config": "SERVING_CONFIG_ID",` and `"safe_search": "true",` (a string, with a trailing comma). The `discoveryengine.v1beta` Discovery document defines `ConverseConversationRequest.safeSearch` as a boolean and `servingConfig` as "The resource name of the Serving Config to use. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{data_store_id}/servingConfigs/{serving_config_id}`". The example still uses a `v1beta` path as in the source.
 - Former name: Agent Search was Vertex AI Search; the API is still Discovery Engine (`discoveryengine.googleapis.com`).
 - Corrected from the official docs: the source writes the query placeholder inside the single-quoted `curl -d '{...}'` body (`"input": "FREE_TEXT"`). Replacing it with a query that contains an apostrophe ends the shell quoting, and a query with `"`, `\` or a line break makes the JSON invalid, so the body is built with `jq --arg` from standard input and sent with `--data @-`.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/responsible-ai (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

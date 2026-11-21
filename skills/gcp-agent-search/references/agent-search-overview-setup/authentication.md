@@ -26,9 +26,12 @@ gcloud auth application-default login
 
 Use gcloud CLI credentials with `gcloud auth print-access-token`. The source's example lists service accounts for a project (the same pattern applies to any REST request); replace `PROJECT_ID`:
 
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X GET \
-     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+     -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
      "https://iam.googleapis.com/v1/projects/PROJECT_ID/serviceAccounts"
 ```
 
@@ -87,6 +90,7 @@ gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERV
 - Client-library code in this skill uses ADC, as the source does. Gemini Developer API keys (Google AI Studio) are a different product and are covered by the `google-gemini-api` skill.
 - Corrected from the official docs: the instance example was `gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERVICE_ACCOUNT_EMAIL`, which leaves the default access scopes; the Discovery Engine API needs the `cloud-platform` scope, and the service account's IAM roles still limit what it can do.
 - Instance creation permission (not stated in this page of the official docs): the IAM roles and permissions reference for Compute Engine (https://docs.cloud.google.com/iam/docs/roles-permissions/compute, retrieved 2026-11-14 as recorded in the gcp-compute skill) lists `compute.instances.create` in `roles/compute.instanceAdmin.v1`, `roles/compute.instanceAdmin`, `roles/compute.admin` and other roles. The roles above (`roles/iam.serviceAccountCreator`, `roles/resourcemanager.projectIamAdmin`, `roles/iam.serviceAccountUser`) do not include it.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/authentication (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

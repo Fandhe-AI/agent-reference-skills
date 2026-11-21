@@ -12,9 +12,12 @@ List, get, poll and cancel long-running operations (LRO) in Agent Search (former
 
 Call `operations.list`. `DATA_STORE_ID` is the ID of the data store created with your engine. Get it from the data store itself: in the console go to **AI Applications** > **Data Stores**, click the name of your data store and read the data store ID on its **Data** page, or take the last segment of the data store resource name (`.../dataStores/DATA_STORE_ID`). The segment after `engines/` in a console URL is the app (engine) ID, not the data store ID.
 
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X GET \
-    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
     "https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/operations"
 ```
 
@@ -79,9 +82,12 @@ Adapted (not in the official docs): the trailing comma after the `"@type"` value
 
 Call `operations.get` on the resource that created the operation. `OPERATION_NAME` is the operation name without quotes:
 
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X GET \
-    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
     "https://discoveryengine.googleapis.com/v1/OPERATION_NAME"
 ```
 
@@ -125,10 +131,12 @@ def get_operation_sample(operation_name: str) -> operations_pb2.Operation:
 
 Calls `operations.get` repeatedly with a backoff of 10 seconds between requests; stop the polling loop with `Ctrl+C` after the status shows `"done": true` (`Ctrl+Z` only suspends the job, which keeps sending requests if it is resumed). For example, `OPERATION_NAME` is `projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789`.
 
+Adapted (not in the official docs): The access token is read into `TOKEN` in the loop condition on each pass (the loop stops if `gcloud` fails or prints nothing, and a token that expires during a long poll is refreshed) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+
 ```bash
-while true; \
+while TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ]; \
     do curl -X GET \
-    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
     "https://discoveryengine.googleapis.com/v1/OPERATION_NAME"; \
     sleep 10; \
     done
@@ -180,11 +188,12 @@ def poll_operation_sample(
 
 Call `operations.cancel`. `OPERATION_NAME` is the name of the operation to cancel, for example `projects/12345/locations/global/collections/default_collection/dataStores/my-datastore_4321/branches/0/operations/import-documents-56789`.
 
-Adapted (not in the official docs): the HTTP method `post` is written in upper case `POST`, because HTTP methods are case-sensitive and `cancel` is a POST method.
+Adapted (not in the official docs): the HTTP method `post` is written in upper case `POST`, because HTTP methods are case-sensitive and `cancel` is a POST method. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
 
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X POST \
-   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+   -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
    "https://discoveryengine.googleapis.com/v1/OPERATION_NAME":cancel
 ```
 
@@ -246,6 +255,7 @@ def cancel_operation_sample(operation_name: str) -> None:
 - The cancel response sample in the source shows a `v1alpha` `ImportDocumentsMetadata` type although the request uses `v1`; kept as written.
 - Corrected from the official docs: the source's operations-list sample writes `"@type": "type.googleapis.com/google.cloud.discoveryengine.v1.ImportDocumentsMetadata",` with a trailing comma before the closing `}` of `metadata`; JSON does not allow trailing commas, so the comma is removed and the block is tagged `json`.
 - Corrected from the official docs: `poll_operation_sample(operation_name, limit=10)` ran `for _ in range(limit):` and then `return operation` without checking `limit`; `limit` must be a positive integer.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/long-running-operations (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

@@ -15,7 +15,7 @@ Google Cloud (GCP) の検索・アンサー生成・社内エージェント基�
 - Gemini Enterprise: エディションとライセンス・app 作成・Assistant 設定・コネクタと data store（Cloud Storage・BigQuery・Knowledge Catalog・custom MCP server）・ADK / A2A agent の登録と共有・`streamAssist` による agent 呼び出し（登録した ADK / A2A agent は非対応）・Agent Registry からの取り込み・app 単位の IAM policy・identity provider（Workforce Identity Federation）
 - 機械生成: REST（Discovery）`discoveryengine` 1 API、メッセージスキーマ 1688 件、IAM（`roles/discoveryengine.*`）
 
-参照本文は英語（公式ドキュメントの原語）。**gcloud のグループはこれらのプロダクトに無い**ため本スキルは gcloud のカテゴリを持たず、手順の正は REST・クライアントライブラリ・コンソール（`gcloud auth print-access-token` は REST 呼び出しの bearer token を得るためだけに使う）。
+参照本文は英語（公式ドキュメントの原語）。**製品専用の gcloud グループはこれらのプロダクトに無い**ため本スキルは gcloud のカテゴリを持たず、手順の正は REST・クライアントライブラリ・コンソール。認証（ADC・サービスアカウント）・IAM・組織ポリシー・VPC Service Controls などの共通の gcloud コマンドは、使う手順のページに例として収録する（探索手順 2）。REST を `curl` で呼ぶ例は、`gcloud auth print-access-token` で得た bearer token を変数 `TOKEN` に入れ、`-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN")` で渡す（token を curl の引数に載せない。curl 7.55.0 以降と bash / zsh が必要）。
 
 名称の対応（出典 https://docs.cloud.google.com/gemini-enterprise-agent-platform/vertex-ai-name-changes 、取得 2026-11-21）: Vertex AI Search → Agent Search、Agentspace → Gemini Enterprise、Vertex AI → Gemini Enterprise Agent Platform（Agent Platform）。API 名・IAM ロールの接頭辞（`roles/discoveryengine.*`）は旧名のまま。
 
@@ -46,7 +46,7 @@ skills/gcp-agent-search/
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
 1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（各カテゴリ（サブディレクトリ）に README.md がある。ガイド直下に README.md は無い）。Agent Search（検索 app）は `agent-search-overview-setup` から、Gemini Enterprise（社内アシスタント・agent）は、agent の登録・共有・呼び出しなら `gemini-enterprise-agents-admin`、app の作成・設定・アシスタントの機能なら `gemini-enterprise-overview-apps`（後続 PR で投入） から入る
-2. gcloud コマンド → このスキルには無い。REST かクライアントライブラリ、コンソールの手順を引く。REST を `curl` で呼ぶときの bearer token は `gcloud auth print-access-token` で得る
+2. gcloud コマンド → 製品専用のコマンドグループとカテゴリは無い（手順は REST・クライアントライブラリ・コンソール）。認証・セットアップ用の共通コマンドの例は次のページにある: ADC・サービスアカウント・IAM（`gcloud auth application-default login`・`gcloud iam service-accounts`・`gcloud projects add-iam-policy-binding`）は `references/agent-search-overview-setup/authentication.md`、`gcloud init` は `references/agent-search-overview-setup/before-you-begin.md`、`gcloud org-policies` は `references/security-identity-access/org-policy-custom-constraints.md`（後続 PR で投入）、`gcloud access-context-manager` は `references/security-identity-access/use-vpc-service-controls.md`（後続 PR で投入）、A2A agent の `gcloud run services add-iam-policy-binding` は `references/gemini-enterprise-agents-admin/register-and-manage-an-a2a-agent.md`。REST を `curl` で呼ぶときの bearer token は `gcloud auth print-access-token` で得て `TOKEN` 経由のヘッダーファイルで渡す。gcloud 全般は `gcp-cli`
 3. 検索の挙動の調整（filter・boost・ranking・serving controls・relevance filter）は `search-query-results`（後続 PR で投入） と `ranking-serving-controls`（後続 PR で投入）、生成回答（`streamAnswer`・summary・grounding）は `answers-summaries`
 4. エージェントの登録・共有・呼び出しは `gemini-enterprise-agents-admin`。Agent Runtime 上に ADK agent を作る側は `gcp-agent-platform`（予定を含む他スキルは下記「他スキルとの使い分け」）
 
@@ -99,7 +99,7 @@ skills/gcp-agent-search/
 ## 鮮度・ライセンス・既知の制約
 
 - 取得日: 2026-11-21（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin。URL に版が無いため取得日で pin）、2026-11-14（IAM。roles-permissions reference）
-- REST・スキーマは `google-api-python-client` 同梱の Discovery document（commit は未取得）。gcloud は本スキルに無い（gcloud 593.0.0 の help も未使用）
+- REST・スキーマは `google-api-python-client` 同梱の Discovery document（commit は未取得）。製品専用の gcloud グループは無いため gcloud の機械生成ページは持たない。共通コマンドの例の一部は gcloud 593.0.0 の help から借り、そのページの Notes に `Snippet taken from` で出典を記す
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
 - `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/`（後続 PR で投入） は機械生成。他の 10 カテゴリは公式ガイド由来の手書き
 - 一部の公式の例は安全性・正しさのために修正した。該当箇所はコードブロック直前に `Adapted (not in the official docs)` の行を置き、`## Notes` に `Corrected from the official docs:` 等で理由を残す

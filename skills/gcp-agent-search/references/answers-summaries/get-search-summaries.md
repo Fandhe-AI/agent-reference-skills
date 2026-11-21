@@ -132,11 +132,12 @@ Provide natural-language instructions in `modelPromptSpec.preamble` (API) or ena
 
 ### Specify the summarization model
 
-Adapted (not in the official docs): added `"summaryResultCount": 3` to `summarySpec` and `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}` to `contentSearchSpec`, the values of the source's own summary example, because the source's summary procedure says a summary request "specifies values for `summaryResultCount` and `maxExtractiveAnswerCount`"; the model version and every other field are unchanged.
+Adapted (not in the official docs): added `"summaryResultCount": 3` to `summarySpec` and `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}` to `contentSearchSpec`, the values of the source's own summary example, because the source's summary procedure says a summary request "specifies values for `summaryResultCount` and `maxExtractiveAnswerCount`"; the model version and every other field are unchanged. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
 
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X POST \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 "https://discoveryengine.googleapis.com/v1/projects/exampleproject/locations/global/collections/default_collection/dataStores/exampledatastore/servingConfigs/default_search:search" \
 -d '{
@@ -200,6 +201,7 @@ curl -X POST \
 - Source inconsistency (search summaries): the feature table of the advanced-features page says "Search summarization without advanced generative answer features | Enterprise edition", while its "Generative responses" section says "You must turn on the Generative responses option to obtain search responses with these features:" and lists "Search summarization", and the get-search-summaries page says "For an unstructured search app: Turn on the generative responses option." (for a website search app: Enterprise edition features, Generative responses and advanced website indexing). The `discoveryengine` `v1` Discovery document also lists the summary skipped reason `LLM_ADDON_NOT_ENABLED` ("Google skips the summary if the LLM addon is not enabled."). All statements are kept as written; check the edition and add-on before relying on summaries.
 - Corrected from the official docs: the source's semantic-chunks fragment writes `"includeCitations": CITATIONS_BOOLEAN,` with a trailing comma before the closing `}` of `summarySpec`; JSON does not allow trailing commas, so the comma is removed.
 - Corrected from the official docs: the source's model-version example sends only `"summarySpec": {"modelSpec": {"version": "preview"}}`, while the same page says "to get a summary, you must also get extractive answers with your search results" and "To get a search summary, follow these steps: 1. Submit a search request that includes `contentSearchSpec.summarySpec` and specifies values for `summaryResultCount` and `maxExtractiveAnswerCount`." Its own summary example uses `"summaryResultCount": 3` and `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}`, so the example adds those two values. The `discoveryengine.v1` Discovery document describes `summaryResultCount` only as "The number of top results to generate the summary from." and does not say what happens when it is unset.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/get-search-summaries (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

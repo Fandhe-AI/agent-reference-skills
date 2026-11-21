@@ -10,11 +10,12 @@ How to configure parsing and chunking for unstructured data stores in Agent Sear
 
 ### Default parser: OCR (data store creation)
 
-Adapted (not in the official docs): `"useNativeText": "false"` is written as the JSON boolean `false`, because `useNativeText` is a boolean field in the Discovery document.
+Adapted (not in the official docs): `"useNativeText": "false"` is written as the JSON boolean `false`, because `useNativeText` is a boolean field in the Discovery document. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
 
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X POST \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 -H "X-Goog-User-Project: exampleproject" \
 "https://discoveryengine.googleapis.com/v1/projects/exampleproject/locations/global/collections/default_collection/dataStores?dataStoreId=datastore123" \
@@ -37,11 +38,12 @@ curl -X POST \
 
 `parsingConfigOverrides` keys are `pdf`, `html`, `docx`, `pptx`, `xlsm`, `xlsx`; each value is `ocrParsingConfig`, `layoutParsingConfig` (`{}`) or `digitalParsingConfig` (`{}`). Files of other types use the default parser (digital if none is set).
 
-Adapted (not in the official docs): the trailing comma after the closing brace of `ocrParsingConfig` inside the `pdf` object is removed, because it makes the JSON request body invalid, and `"useNativeText": "false"` is written as the JSON boolean `false` (a boolean field in the Discovery document).
+Adapted (not in the official docs): the trailing comma after the closing brace of `ocrParsingConfig` inside the `pdf` object is removed, because it makes the JSON request body invalid, and `"useNativeText": "false"` is written as the JSON boolean `false` (a boolean field in the Discovery document). Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
 
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X POST \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 -H "X-Goog-User-Project: exampleproject" \
 "https://discoveryengine.googleapis.com/v1/projects/exampleproject/locations/global/collections/default_collection/dataStores?dataStoreId=datastore123" \
@@ -67,9 +69,12 @@ curl -X POST \
 
 ### Layout parser: exclude HTML content, with layout-based chunking
 
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X POST \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 -H "X-Goog-User-Project: exampleproject" \
 "https://discoveryengine.googleapis.com/v1/projects/exampleproject/locations/global/collections/default_collection/dataStores?dataStoreId=datastore123&createAdvancedSiteSearch=true" \
@@ -112,9 +117,12 @@ Adapted (not in the official docs): the trailing comma after `"includeAncestorHe
 
 ### Get a parsed document as JSON (v1alpha)
 
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X GET \
-    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
     "https://discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/branches/0/documents/DOCUMENT_ID:getProcessedDocument?processed_document_type=PARSED_DOCUMENT"
 ```
 
@@ -151,17 +159,23 @@ Adapted (not in the official docs): the source shows this row as a multi-line ob
 
 ### List a document's chunks (v1alpha)
 
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X GET \
-    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
     "https://discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores/DATA_STORE_ID/branches/0/documents/DOCUMENT_ID/chunks"
 ```
 
 ### Return chunks in a search request
 
+Adapted (not in the official docs): The access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
+
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X POST \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 -H "X-Goog-User-Project: exampleproject" \
 "https://discoveryengine.googleapis.com/v1/projects/exampleproject/locations/global/collections/default_collection/dataStores/datastore123/servingConfigs/default_search:search" \
@@ -231,6 +245,7 @@ curl -X POST \
 - The chunking fragment above is a request fragment with placeholders, so it is tagged `text`; replace the placeholders in a real request.
 - Corrected from the official docs: the source's chunking fragment writes `"includeAncestorHeadings": HEADINGS_BOOLEAN,` with a trailing comma before the closing `}` of `layoutBasedChunkingConfig`; JSON does not allow trailing commas, so the comma is removed.
 - Corrected from the official docs: the pre-parsed document metadata row was shown as a multi-line object (`{` / `"id": "DOCUMENT_ID",` / `"structData": {...}` / `"content": {...}` / `}` on separate lines); JSON Lines requires one complete object per line, so the row is written on one line with the same keys and values.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/parse-chunk-documents (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the example "Specify parser overrides for file types" had a trailing comma after the `ocrParsingConfig` object inside `pdf` (the source reads `"useNativeText": "false"` then `},` then `},`); the comma after the inner brace was removed.
 

@@ -12,11 +12,12 @@ A Gemini Enterprise (formerly Agentspace) admin can use the API to manage fine-g
 
 Fetch the existing policy first to avoid overwriting current permissions, and copy the `etag` value from the response.
 
-Adapted (not in the official docs): the request adds the query parameter `options.requestedPolicyVersion=3` (`engines.getIamPolicy` in the `discoveryengine` `v1` Discovery document: "Requests for policies with any conditional role bindings must specify version 3."), so that bindings with a `condition` are returned in a form that can be written back.
+Adapted (not in the official docs): the request adds the query parameter `options.requestedPolicyVersion=3` (`engines.getIamPolicy` in the `discoveryengine` `v1` Discovery document: "Requests for policies with any conditional role bindings must specify version 3."), so that bindings with a `condition` are returned in a form that can be written back. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
 
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X GET \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID:getIamPolicy?options.requestedPolicyVersion=3"
 ```
@@ -41,11 +42,12 @@ Adapted (not in the official docs): the binding is shown as a fragment to merge 
 
 Save the edited policy as `{"policy": EDITED_POLICY}` in `policy.json` and send it:
 
-Adapted (not in the official docs): the request body is read from `policy.json` (the full edited policy) instead of an inline body that contains only the new binding.
+Adapted (not in the official docs): the request body is read from `policy.json` (the full edited policy) instead of an inline body that contains only the new binding. Also, the access token is read into `TOKEN` first (nothing is sent if `gcloud` fails or prints nothing) and passed with `-H @<(printf ...)`, so it is not in curl's arguments.
 
 ```bash
+TOKEN=$(gcloud auth print-access-token) && [ -n "$TOKEN" ] &&
 curl -X POST \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H @<(printf 'Authorization: Bearer %s\n' "$TOKEN") \
 -H "Content-Type: application/json" \
 -d @policy.json \
 "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID:setIamPolicy"
@@ -53,9 +55,10 @@ curl -X POST \
 
 ### Transition a user from project-level to app-level access
 
-1. In the Google Cloud console, on the **IAM** page, remove the Gemini Enterprise User (`roles/discoveryengine.agentspaceUser`) role from the user's project-level permissions.
-2. If not already done, grant the user the Gemini Enterprise Restricted User (`roles/discoveryengine.agentspaceRestrictedUser`) role at the project level.
-3. Use `setIamPolicy` to grant the user the Gemini Enterprise User role (`roles/discoveryengine.agentspaceUser`) on each app they need.
+1. If not already done, in the Google Cloud console, on the **IAM** page, grant the user the Gemini Enterprise Restricted User (`roles/discoveryengine.agentspaceRestrictedUser`) role at the project level.
+2. Use `setIamPolicy` to grant the user the Gemini Enterprise User role (`roles/discoveryengine.agentspaceUser`) on each app they need.
+3. Confirm the grants: on the **IAM** page, check that the user has the Restricted User role at the project level, and for each app run the `getIamPolicy` request above and check that the user is in the `members` of the `roles/discoveryengine.agentspaceUser` binding.
+4. Then, on the **IAM** page, remove the Gemini Enterprise User (`roles/discoveryengine.agentspaceUser`) role from the user's project-level permissions.
 
 ## Options / Props
 
@@ -75,7 +78,7 @@ curl -X POST \
 ## Notes
 
 - Before you begin: confirm that you have the Gemini Enterprise Admin (`roles/discoveryengine.agentspaceAdmin`) role, and that all Gemini Enterprise users have a valid license and are granted the Gemini Enterprise Restricted User (`roles/discoveryengine.agentspaceRestrictedUser`) role at the project level. That role doesn't grant access to any app on its own; you then grant Gemini Enterprise User (`roles/discoveryengine.agentspaceUser`) on individual apps with `setIamPolicy`. A custom project-level role used instead must include `discoveryengine.locations.buildAuthorizationUrl`, `discoveryengine.dataStores.get`, `discoveryengine.collections.get`, and `discoveryengine.devToolsConfigs.get`; omitting `discoveryengine.devToolsConfigs.get` causes a `403 PERMISSION_DENIED` error in Cloud Audit Logs when the web app checks `devToolsConfig`.
-- Project-level IAM permissions take precedence over app-level policies: a user with the Gemini Enterprise User role at the project level can access all apps in that project regardless of app-level permissions. To restrict a user to specific apps, replace the project-level Gemini Enterprise User role with the Restricted User role and grant Gemini Enterprise User on each app.
+- Project-level IAM permissions take precedence over app-level policies: a user with the Gemini Enterprise User role at the project level can access all apps in that project regardless of app-level permissions. To restrict a user to specific apps, replace the project-level Gemini Enterprise User role with the Restricted User role and grant Gemini Enterprise User on each app (in the order of the steps under "Transition a user from project-level to app-level access": grant and confirm first, remove the project-level role last).
 - Users with app-level IAM permissions can access and use only that specific app; these are user-level permissions and do not include admin capabilities. Before you begin, all Gemini Enterprise users must have a valid license and the Restricted User role at the project level.
 - The app-level grant is done through the API; the Google Cloud console does not support it (the project-level changes use the console).
 - Key term: in Gemini Enterprise, app and engine are used interchangeably in APIs; a Gemini Enterprise engine is a generic search engine whose `app_type` field is `APP_TYPE_INTRANET`.
@@ -88,6 +91,8 @@ curl -X POST \
 - For granular, resource-level access controls across both apps and data stores, see https://docs.cloud.google.com/gemini/enterprise/docs/iam-policy-for-apps-and-data-stores.
 - This page covers Gemini Enterprise app-level IAM; general IAM concepts are in `gcp-foundation`.
 - Source inconsistency (global host): for `ENDPOINT_LOCATION` = `global`, the Gemini Enterprise pages on app IAM policies and ADK / A2A agent registration show example commands with `https://global-discoveryengine.googleapis.com/...`, while the streamAssist page says "If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The `discoveryengine` `v1` / `v1beta` / `v1alpha` Discovery documents give the `rootUrl` `https://discoveryengine.googleapis.com/`. Both forms are kept as written. `ENDPOINT_LOCATION` (or the `LOCATION` prefix of the host) sets only the hostname; the `locations/...` segment of the resource path is a separate value.
+- Adapted from the official docs: the source's transition steps remove the project-level role first ("Find the user and remove the Gemini Enterprise User (`roles/discoveryengine.agentspaceUser`) role from their project-level permissions."), then grant the Restricted User role and the app-level role. The steps here grant the Restricted User role and the app-level roles first, confirm them by reading the project IAM page and each app's policy, and remove the project-level role last, so a failed `setIamPolicy` call does not leave the user without access to the apps they need. Until the last step the project-level role still gives the user access to every app in the project (project-level permissions take precedence). Reading a policy confirms what is stored, not that the change has propagated; IAM changes can take several minutes to take effect.
+- Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh).
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/iam-policy-for-apps (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
