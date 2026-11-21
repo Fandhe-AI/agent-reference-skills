@@ -24,7 +24,7 @@ service-PROJECT_NUMBER@gcp-sa-discoveryengine.iam.gserviceaccount.com
 
 ### Optional: set up a custom AI-mode app
 
-By default agentic retrieval uses the predefined Google answer agent, which classifies queries into `DEFAULT_ANSWER_SEEKING` and `DO_NOT_ANSWER`. To add intents (frames) and tools, create the engine through the `engines.create` REST method with an `engine_config.answer_agent` block.
+By default agentic retrieval uses the predefined Google answer agent, which classifies queries into `DEFAULT_ANSWER_SEEKING` and `DO_NOT_ANSWER`. To add intents (frames) and tools, create the engine through the `engines.create` REST method with an `engine_config.answer_agent` block. The source gives only the structure of that configuration, in protobuf text format with snake_case field names ("The configuration is structured as follows:"); it is not a REST request body. In the `engines.create` REST request the engine ID is passed as the `engineId` query parameter (`.../collections/default_collection/engines?engineId=ENGINE_ID`) and the body is an `Engine` JSON object with camelCase field names (for example `displayName`), but the JSON form of the `engine_config.answer_agent` fields is not documented in the source or in the Discovery documents (see Notes). For help designing or registering a custom AI-mode app, the source says to contact support.
 
 ```text
 engine {
@@ -131,6 +131,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 - This page is about Google's Agent Search, ADK and Agent Runtime, not Claude Code, the Claude Agent SDK or OpenAI Agents.
 - Former names: Agent Search was Vertex AI Search (API still Discovery Engine); Agent Runtime was Vertex AI Agent Engine.
 - The source also shows a long example response in protobuf text format, which is omitted.
+- The custom AI-mode configuration above is copied as the source writes it (a `protobuf` block in the source, `engine { ... }` followed by `engine_id: "SAMPLE_MULTI_SEARCH_RETRIEVAL"`). The `discoveryengine` `v1`, `v1beta` and `v1alpha` Discovery documents have no `engineConfig`, `answerAgent` or frame fields on `Engine` (its configuration fields there are `chatEngineConfig`, `searchEngineConfig`, `mediaRecommendationEngineConfig` and others), so no JSON request body for this configuration can be verified and none is shown. The `engines.create` method of the `v1` Discovery document takes `engineId` as a required query parameter ("Required. The ID to use for the Engine, which will become the final component of the Engine's resource name.") and marks `displayName` and `solutionType` as required `Engine` fields; the source's structure does not set `solutionType`.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/agentic-retrieval-stream-answer (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/connectors/custom-mcp-server/set-up-custom-mcp-server (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

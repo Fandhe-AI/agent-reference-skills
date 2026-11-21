@@ -24,12 +24,12 @@ https://accounts.google.com/o/oauth2/v2/auth?client_id=OAUTH_CLIENT_ID&redirect_
 
 ### Add an authorization resource (optional)
 
-Needed only if the agent must access Google Cloud resources on behalf of a user. The example reads the OAuth client secret without echo, builds the JSON body with `jq` from standard input and sends it to `curl` on standard input, so the secret does not appear in the shell history or in any process argument (requires `jq`). Run the `read` line on its own first and type the secret, then run the rest of the block.
+Needed only if the agent must access Google Cloud resources on behalf of a user. The example reads the OAuth client secret without echo, builds the JSON body with `jq` from standard input and sends it to `curl` on standard input, so the secret does not appear in the shell history or in any process argument (requires `jq`). The block is a single `if` command: run it and type the secret at the silent prompt. The request is built and sent only if `read` succeeds and the secret is not empty; otherwise the block prints a message and sends nothing. Run the block by itself: if more lines follow it in the same paste or script, `read` takes the next line as the secret.
 
-Adapted (not in the official docs): instead of writing `"clientSecret": "OAUTH_CLIENT_SECRET"` in the `curl -d` argument, the secret is read with `read -rs`, piped by the `printf` builtin into `jq -Rs` (which places it as `"clientSecret": .`) and the body is sent with `curl ... --data @-`; `unset` clears the variable afterwards. The URL, headers and every other body field are unchanged.
+Adapted (not in the official docs): instead of writing `"clientSecret": "OAUTH_CLIENT_SECRET"` in the `curl -d` argument, the secret is read with `read -rs`, piped by the `printf` builtin into `jq -Rs` (which places it as `"clientSecret": .`) and the body is sent with `curl ... --data @-`; the build-and-send runs inside `if read -rs OAUTH_CLIENT_SECRET && [ -n "$OAUTH_CLIENT_SECRET" ]; then ... else ... fi`, so a cancelled or empty input sends nothing, and `unset` on the `fi` line clears the variable afterwards. The URL, headers and every other body field are unchanged.
 
 ```bash
-read -rs OAUTH_CLIENT_SECRET
+if read -rs OAUTH_CLIENT_SECRET && [ -n "$OAUTH_CLIENT_SECRET" ]; then
 printf '%s' "$OAUTH_CLIENT_SECRET" | jq -Rs '{
       "name": "projects/PROJECT_NUMBER/locations/LOCATION/authorizations/AUTH_ID",
       "serverSideOauth2": {
@@ -44,7 +44,9 @@ printf '%s' "$OAUTH_CLIENT_SECRET" | jq -Rs '{
    -H "X-Goog-User-Project: PROJECT_ID" \
    "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1alpha/projects/PROJECT_NUMBER/locations/LOCATION/authorizations?authorizationId=AUTH_ID" \
    --data @-
-unset OAUTH_CLIENT_SECRET
+else
+  echo "No client secret entered; authorization request not sent." >&2
+fi; unset OAUTH_CLIENT_SECRET
 ```
 
 ### Register an ADK agent
@@ -187,7 +189,7 @@ curl -X DELETE \
 - Update: "You can update all fields during the agent registration. However, the following fields must be updated:" `displayName`, `description` and `reasoningEngine` (as the source writes it). `DISPLAY_NAME` and `DESCRIPTION` are marked required in the placeholder list.
 - Corrected from the official docs: the source's register example writes `.../locations/global/collections/default_collection/engines/APP_ID/assistants/default_assistant/agents` and `"projects/PROJECT_NUMBER/locations/global/authorizations/AUTH_ID"` while its host is `ENDPOINT_LOCATION-discoveryengine.googleapis.com` with `us` / `eu` / `global`. The same source creates the authorization resource as `"name": "projects/PROJECT_NUMBER/locations/LOCATION/authorizations/AUTH_ID"` and lists, views and deletes agents of the same app at `.../locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant/agents`; the A2A registration page registers at the same path with `locations/LOCATION` and references `"agentAuthorization": "projects/PROJECT_ID/locations/LOCATION/authorizations/AUTH_ID"`. The example above therefore uses `locations/LOCATION` in both places.
 - Corrected from the official docs: the register and update examples write `"reasoningEngine": "projects/PROJECT_ID/locations/RESOURCE_LOCATION/reasoningEngines/RESOURCE_ID"` and define `PROJECT_ID` as "the ID of your Google Cloud project", the same placeholder as the app's project in the register URL and the `X-Goog-User-Project` header. The same source says "You can connect ADK agents hosted in a different Google Cloud" project and "If your ADK agent is hosted in a different Google Cloud project than your Gemini Enterprise app, you must grant necessary permissions." The examples therefore use `RUNTIME_PROJECT_ID` for the Agent Runtime project; the source does not name a separate placeholder.
-- Adapted from the official docs: the source's authorization request writes `"clientSecret": "OAUTH_CLIENT_SECRET"` inside the `curl -d '{...}'` argument, so the real secret would land in the shell history and in the process arguments of `curl`. The example reads it with `read -rs`, builds the body with `jq -Rs` from standard input and sends it with `--data @-` (tested with `jq` 1.7.1: the resulting body equals the source's body with the secret substituted, including quotes, backslashes and `$` in the secret).
+- Adapted from the official docs: the source's authorization request writes `"clientSecret": "OAUTH_CLIENT_SECRET"` inside the `curl -d '{...}'` argument, so the real secret would land in the shell history and in the process arguments of `curl`. The example reads it with `read -rs`, builds the body with `jq -Rs` from standard input and sends it with `--data @-` only when `read` succeeds and the value is non-empty (otherwise it prints `No client secret entered; authorization request not sent.` to standard error and sends nothing), then unsets the variable (tested with `jq` 1.7.1: the resulting body equals the source's body with the secret substituted, including quotes, backslashes and `$` in the secret).
 - Calling the agent: the streamAssist page states "A2A or ADK agents registered to a Gemini Enterprise app are not supported through `streamAssist`." (https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-streamassist); a registered ADK agent is used from the Gemini Enterprise web app.
 - Delete removes the agent registration from the app; try it in a disposable project first. The source's example result is a long-running-style response `{"name": ".../operations/delete-agent-12345678901234567890", "done": true}`.
 - Corrected from the official docs: the source's PATCH example splits the string `"projects/PROJECT_ID/locations/RESOURCE_LOCATION/reasoningEngine` / `s/RESOURCE_ID"` across two lines (a raw line break inside a JSON string is invalid) and leaves a trailing comma (`},` before the closing brace). The `discoveryengine.v1alpha` Discovery document gives the format `projects/{project}/locations/{location}/reasoningEngines/{reasoning_engine}`; the body above joins the string to that form and removes the comma, keeping the source's other lines and indentation.

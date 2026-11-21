@@ -118,6 +118,7 @@ The steps shown are for unstructured data; similar steps apply to website data. 
 - The source links extractive answers from search summaries as "(Preview)". It also shows an example comparing the three kinds of output; it and the extractive segment response example are omitted.
 - The JSON fragments are shown as `text` because they are partial request bodies.
 - Former name: Agent Search was Vertex AI Search; the API is still Discovery Engine (`discoveryengine.googleapis.com`).
+- Rendering safely (not in the official docs): snippets come from the indexed documents and carry hit highlighting as bold HTML tags (the source says they are for "rendering previews"), so treat them as untrusted HTML: escape them, or sanitize them with an allowlist-based HTML sanitizer that keeps only the highlighting tags, before inserting them into the DOM.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/snippets (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

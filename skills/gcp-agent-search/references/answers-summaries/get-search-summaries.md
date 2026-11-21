@@ -184,7 +184,8 @@ curl -X POST \
 
 ## Notes
 
-- By default search summaries don't include citations. Summaries can contain Markdown and simple HTML tags, so use a Markdown parser to render them.
+- By default search summaries don't include citations. The source says: "Search summaries can include Markdown-formatted text and simple HTML tags commonly understood by Markdown parsers. For this reason, consider using a Markdown parser in your application to render Markdown text."
+- Rendering safely (not in the official docs): the summary is generated from the indexed documents, so its HTML is untrusted content. When you render it with a Markdown parser, disable raw HTML in the parser, or sanitize the rendered HTML with an allowlist-based HTML sanitizer, before inserting it into the DOM.
 - Customization best practices: request only one customization at a time (do not combine, such as an HTML table in French) and limit what end users can request, for example with a selector of predefined customizations. Adherence to natural-language instructions can't be guaranteed.
 - Some statements may lack citations (statements that need no grounding, or no valid reference found); in rare cases citations are attributed incorrectly. Complex documents may be parsed incorrectly, and complex reasoning queries can yield hallucinations.
 - The `maxExtractiveAnswerCount` maximum is stated as 1 here and as 5 on the snippets page ([snippets.md](./snippets.md)); the `discoveryengine.v1` Discovery document says at most five answers are returned per result. Both statements are kept as written.

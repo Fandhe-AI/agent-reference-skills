@@ -53,7 +53,7 @@ gcloud run services add-iam-policy-binding SERVICE_NAME \
 
 ### Register an A2A agent (REST)
 
-Uses the `agents.create` method (`v1alpha`) with the required fields only.
+Uses the `agents.create` method (`v1alpha`) with the required fields only. `jsonAgentCard` is a string that holds the Agent Card JSON, so every quote inside it is escaped (`\"`). Build the Agent Card as its own JSON object (as in the agent card JSON above), serialize it to a string with a JSON serializer, and put that string in `jsonAgentCard`; do not paste unescaped JSON for `CAPABILITIES` or `SKILLS` into the string.
 
 ```bash
 curl -X POST \
@@ -99,6 +99,8 @@ Add the agent metadata extension to `capabilities.extensions` of the agent card 
 
 An ADK A2A agent that uses `GcpAuthProviderScheme` with `McpToolset` to authenticate to an MCP server on behalf of the user:
 
+Adapted (not in the official docs): the source wraps the placeholders inside the Python string literals in backticks (the auth provider `name` and `scopes`, the MCP server `url`, the commented-out `AgentRegistry` lines, and the `name` / `description` / `instruction` / `agent_name` / `id` values of `LlmAgent`, `create_agent_card` and `AgentSkill`); the backticks would become part of the values (a URL or resource name cannot start with a backtick), so they are removed and the placeholders are plain upper-case strings.
+
 ```python
 from a2a.types import AgentInterface, AgentSkill
 from a2a.utils.constants import PROTOCOL_VERSION_0_3, PROTOCOL_VERSION_1_0, TransportProtocol
@@ -118,14 +120,14 @@ from vertexai.agent_engines.templates.a2a import A2aAgent, create_agent_card
 CONTINUE_URI = "https://vertexaisearch.cloud.google.com/validateUserId"
 
 auth_scheme = GcpAuthProviderScheme(
-    name="projects/`PROJECT_ID`/locations/`LOCATION`/authProviders/`AUTH_PROVIDER_NAME`",
-    scopes=["`OAUTH_SCOPE`"],
+    name="projects/PROJECT_ID/locations/LOCATION/authProviders/AUTH_PROVIDER_NAME",
+    scopes=["OAUTH_SCOPE"],
     continue_uri=CONTINUE_URI,
 )
 
 mcp_tools = McpToolset(
     connection_params=StreamableHTTPConnectionParams(
-        url="`https://YOUR_MCP_SERVER_URL`"
+        url="https://YOUR_MCP_SERVER_URL"
     ),
     auth_scheme=auth_scheme,
 )
@@ -133,17 +135,17 @@ mcp_tools = McpToolset(
 # Alternatively, if your MCP server is registered in Agent Registry
 # with an outbound auth provider binding, use AgentRegistry.get_mcp_toolset:
 # from google.adk.integrations.agent_registry import AgentRegistry
-# registry = AgentRegistry(project_id="`PROJECT_ID`", location="`LOCATION`")
+# registry = AgentRegistry(project_id="PROJECT_ID", location="LOCATION")
 # mcp_tools = registry.get_mcp_toolset(
-#     mcp_server_name="projects/`PROJECT_ID`/locations/`LOCATION`/mcpServers/`MCP_SERVER_ID`",
+#     mcp_server_name="projects/PROJECT_ID/locations/LOCATION/mcpServers/MCP_SERVER_ID",
 #     continue_uri=CONTINUE_URI,
 # )
 
 adk_agent = LlmAgent(
     model="gemini-2.5-flash",
-    name="`AGENT_NAME`",
-    description="`AGENT_DESCRIPTION`",
-    instruction="`AGENT_INSTRUCTIONS`",
+    name="AGENT_NAME",
+    description="AGENT_DESCRIPTION",
+    instruction="AGENT_INSTRUCTIONS",
     tools=[mcp_tools],
 )
 
@@ -159,13 +161,13 @@ def build_runner() -> Runner:
     )
 
 agent_card = create_agent_card(
-    agent_name="`AGENT_DISPLAY_NAME`",
-    description="`AGENT_DESCRIPTION`",
+    agent_name="AGENT_DISPLAY_NAME",
+    description="AGENT_DESCRIPTION",
     skills=[
         AgentSkill(
-            id="`SKILL_ID`",
-            name="`SKILL_NAME`",
-            description="`SKILL_DESCRIPTION`",
+            id="SKILL_ID",
+            name="SKILL_NAME",
+            description="SKILL_DESCRIPTION",
             tags=[],
         )
     ],
@@ -267,7 +269,7 @@ gcloud agent-identity auth-providers add-iam-policy-binding AUTH_PROVIDER_NAME \
 | `AGENT_URL` | The endpoint URL of the agent. |
 | `INPUT_MODE` / `OUTPUT_MODE` | Default input / output media type, for example `text/plain`, `application/json` or `image/png`. |
 | `CAPABILITIES` | A JSON object of supported A2A features, for example `\"streaming\": true` or `\"pushNotifications\": false`. |
-| `SKILLS` | A list of `AgentSkill` objects the agent offers. The example already has the array brackets (`"skills":[SKILLS]`), so replace `SKILLS` with the comma-separated objects only, not with a JSON array. |
+| `SKILLS` | A list of `AgentSkill` objects the agent offers. The example already has the array brackets (`"skills":[SKILLS]`), so replace `SKILLS` with the comma-separated objects only, not with a JSON array. Because they sit inside the `jsonAgentCard` string, their quotes must be escaped, as in the source's example command (`\"skills\":[{\"description\":\"Chat with the Gemini agent.\",...}]`); building the card as JSON and serializing it to a string does this for you. |
 | `AUTH_ID` | The authorization resource ID created earlier (`authorizationConfig.agentAuthorization`). |
 
 ## Notes
@@ -280,6 +282,8 @@ gcloud agent-identity auth-providers add-iam-policy-binding AUTH_PROVIDER_NAME \
 - Corrected from the official docs: the source writes `gcloud projects add-iam-policy-binding <var>PROJECT_ID</var> \` with `--member="serviceAccount:service-<var>PROJECT_NUMBER</var>@gcp-sa-discoveryengine.iam.gserviceaccount.com"` and `--role="roles/run.invoker"`. A project-level binding is inherited by every Cloud Run service in the project, so the command is changed to `gcloud run services add-iam-policy-binding SERVICE_NAME --project="PROJECT_ID" --region="REGION"` with the same member and role (synopsis from the gcloud 593.0.0 help: `gcloud run services add-iam-policy-binding SERVICE --member=PRINCIPAL --role=ROLE [--region=REGION]`).
 - `roles/agentidentity.user` (Agent Identity User) is written as in the source; it is not listed in the IAM roles reference pages generated for this skill set, and the gcloud 593.0.0 help for `gcloud agent-identity auth-providers add-iam-policy-binding` uses the same role ID in its example.
 - Corrected from the official docs: the source writes placeholders inside the two `gcloud` commands and the Python client example as `<var>PROJECT_ID</var>` (and similar) HTML tags. In the `bash` commands an unquoted `<var>` is parsed as an input redirection, so the tags break the command; in the Python example they are only string content, and they are removed there because the source's own placeholder lists name the same placeholders bare (`PROJECT_ID`, `LOCATION`, `AGENT_DISPLAY_NAME`).
+- Corrected from the official docs: the source's ADK A2A sample writes the placeholders inside string literals with backticks, for example `` name="projects/`PROJECT_ID`/locations/`LOCATION`/authProviders/`AUTH_PROVIDER_NAME`", ``, `` scopes=["`OAUTH_SCOPE`"], ``, `` url="`https://YOUR_MCP_SERVER_URL`" ``, `` # registry = AgentRegistry(project_id="`PROJECT_ID`", location="`LOCATION`") `` and `` id="`SKILL_ID`", `` (lines of the `GcpAuthProviderScheme`, `StreamableHTTPConnectionParams`, commented-out `AgentRegistry`, `LlmAgent`, `create_agent_card` and `AgentSkill` calls). Inside a code block the backticks are literal characters, so a value substituted for the placeholder would keep them; they are removed.
+- `jsonAgentCard`: the `discoveryengine.v1alpha` Discovery document types it as `string` ("Optional. The agent card is a JSON string."), and the source's example command passes the whole card, including `skills`, with escaped quotes. The `CAPABILITIES` and `SKILLS` placeholders of the register request therefore take escaped JSON; the source does not show a serializer step.
 - Securing the endpoint: Gemini Enterprise does not use the `securitySchemes` and `security` fields of the agent card to authenticate, does not support the `apiKey` security scheme, and cannot add static API keys or custom header values to requests. With an Apigee API proxy the proxy receives the end-user `Authorization` token but not `X-Serverless-Authorization`: configure OAuth 2.0 for the agent (required), set the agent card `url` to the proxy URL, and validate the token in the proxy (VerifyJWT policy for signed JWT access tokens from third-party providers; for Google OAuth 2.0 `ya29...` opaque tokens use a ServiceCallout policy to call `https://oauth2.googleapis.com/tokeninfo` and verify `aud` and `scope`).
 - 3LO flow: when the agent returns an `adk_request_credential` interrupt (`TASK_STATE_AUTH_REQUIRED`), the web app prompts the user, the auth provider redirects to `https://vertexaisearch.cloud.google.com/validateUserId`, and Gemini Enterprise resumes the conversation. Auth provider settings: add the callback redirect URI `https://agentidentitycredentials.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/authProviders/AUTH_PROVIDER_NAME/oauthcallback` to the OAuth client (plus `https://vertexaisearch.cloud.google.com/oauth-redirect` if the client is reused for the agent authorization resource) and set the continue URI to `https://vertexaisearch.cloud.google.com/validateUserId`.
 - 3LO agent code requirements: include `a2a-sdk[http-server]>=1.0.0`, `google-cloud-aiplatform[agent_engines,adk]>=1.156.0` and `google-adk[a2a,agent-identity,mcp]>2.7.1`; set `continue_uri` to the validation endpoint; call `CredentialManager.register_auth_provider(GcpAuthProvider())` inside the runner builder function; use the built-in `A2aAgentExecutor` (not a custom executor that only checks `event.is_final_response()`); append an `AgentInterface` with `protocol_version=PROTOCOL_VERSION_0_3` and `protocol_binding=TransportProtocol.HTTP_JSON` to `agent_card.supported_interfaces`. After deployment, register the agent via **Custom agent via A2A** or via Agent Registry import with an OAuth 2.0 authorization resource using the `cloud-platform` scope.
