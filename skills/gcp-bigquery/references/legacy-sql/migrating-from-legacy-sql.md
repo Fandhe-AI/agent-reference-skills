@@ -785,7 +785,13 @@ up to a threshold: 1,000 distinct values by default, or the value of the
 optional second parameter `n`. This applies to `COUNT(DISTINCT x)` as an aggregate function: as a
 window function with an `OVER` clause, legacy SQL `COUNT(DISTINCT x)` returns an exact count, like
 `EXACT_COUNT_DISTINCT()` (legacy-sql/legacy-sql-2.md, Window functions), so keep an exact count
-there too (added; see Notes). In standard SQL, it returns an exact count, so
+there too (added; see Notes). The GoogleSQL examples of `COUNT(DISTINCT x)` with `OVER` count over a
+whole partition, such as `COUNT(DISTINCT x) OVER (PARTITION BY MOD(x, 3))` (googlesql-functions/aggregate_functions.md,
+`COUNT`), and the official pages don't confirm that `DISTINCT` can be combined with `ORDER BY` or a
+window frame in the `OVER` clause (googlesql-functions/window-function-calls.md says that the
+`DISTINCT` clause can't be used with `OVER`). So translate a legacy SQL window with only
+`PARTITION BY` directly, and treat a window with `ORDER BY`, such as a running count of distinct
+values, as a query to rewrite and test rather than a direct translation (added; see Notes). In standard SQL, it returns an exact count, so
 use `COUNT(DISTINCT x)` to keep exact results when you migrate. For an approximate count of distinct values
 that runs faster and requires fewer resources, use
 [`APPROX_COUNT_DISTINCT`](../googlesql-functions/approximate_aggregate_functions.md#approx_count_distinct).
@@ -1851,6 +1857,7 @@ The permissions required to access the partition metadata differ between legacy 
 - Added (not in the official docs): the `UNION ALL` alternative to the wildcard table now says to list only the daily tables that exist when translating `TABLE_DATE_RANGE`, which skips missing dates, because a reference to a missing table fails with the `Not Found: Table` error that legacy-sql/legacy-sql-2.md describes for `TABLE_DATE_RANGE_STRICT`; listing every date matches `TABLE_DATE_RANGE_STRICT`.
 - Added (not in the official docs): the `STRUCT` example for nested fields now says that the operator builds a struct with `NULL` fields, not a `NULL` struct, for a row whose `repository` is `NULL` (googlesql-syntax/data-types.md: "struct values can be `NULL`, or can have `NULL` field values"), and how to keep the `NULL`.
 - Added (not in the official docs): the `TOP(x, num), COUNT(*)` row now says that `num` of `APPROX_TOP_COUNT` must be an `INT64` literal or query parameter (googlesql-functions/approximate_aggregate_functions.md), that `TOP` and `APPROX_TOP_COUNT` both return approximate results, and that an exact translation uses `GROUP BY ... ORDER BY ... LIMIT`, which `TOP` simplifies (legacy-sql/legacy-sql-1.md).
+- Added (not in the official docs): the window form of `COUNT(DISTINCT x)` now says that the GoogleSQL examples count over a whole partition (`COUNT(DISTINCT x) OVER (PARTITION BY MOD(x, 3))` in aggregate_functions.md), that the official pages do not confirm `DISTINCT` together with `ORDER BY` or a window frame (window-function-calls.md says `DISTINCT` can't be used with `OVER`), and that only a window with `PARTITION BY` alone is a direct translation.
 - `MD037` is disabled for this file because a verbatim string in the official text is a false positive for that rule.
 
 ## Related
