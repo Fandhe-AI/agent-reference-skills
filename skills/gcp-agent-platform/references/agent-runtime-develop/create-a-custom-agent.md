@@ -227,6 +227,7 @@ print(json.dumps(error_result, indent=2))
 
 - Class methods (all optional):
   - `__init__()`: if absent, the default Python constructor is used. Agent configuration parameters only (model parameters, safety attributes, project ID, region, credentials, API keys). The constructed object must be "pickle-able"; initialize service clients and database connections in `set_up`.
+  - Secrets: an agent-object deployment pickles the object and uploads it to Cloud Storage (see deploy-an-agent.md), so anything stored on `self` in `__init__` is part of that file. Pass only non-secret configuration to `__init__` (for example the project ID and a Secret Manager secret name) and read secret values and runtime credentials in `set_up`, as the Secret Manager example in [custom-agent-integrations.md](./custom-agent-integrations.md) does.
   - `set_up()`: if absent, Agent Runtime assumes no set-up is needed. Initialization logic: connect to databases or services, import dependent packages, precompute data.
   - `query()`: returns the complete response as a single result.
   - `stream_query()`: returns the response in chunks; must return an iterable (for example a generator).

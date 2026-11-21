@@ -10,7 +10,7 @@ Agent Runtime is independent of the application framework. A custom container or
 
 ### Example API server (Python, FastAPI)
 
-Requires `fastapi`, `uvicorn` and `pydantic`. It wraps an example `SimpleAgent`; replace it with your own agent, and list in `UNARY_METHODS` / `STREAM_METHODS` only the methods you register for each mode.
+Requires `fastapi`, `uvicorn` and `pydantic`. It wraps an example `SimpleAgent`; replace it with your own agent, and list in `UNARY_METHODS` / `STREAM_METHODS` only the methods you register for each mode. The streaming endpoint iterates the result with `async for`, so this server works only with an asynchronous generator `stream_query` (as in `SimpleAgent`); a synchronous generator, such as the `stream_query` in create-a-custom-agent.md, is not handled.
 
 Adapted (not in the official docs): added the `UNARY_METHODS` / `STREAM_METHODS` allowlists and a `400` response for any `class_method` not in the allowlist of the endpoint, checked before `getattr`, because the source passes the request's `class_method` straight to `getattr(agent, ...)`, so a request could call any attribute of the agent object (for example `__init__` or an internal helper); also added `_is_message_input` and a `400` response, checked before the method is invoked, for an `input` that is not `{"message": <string>}`, because both allowed methods take one string `message` and any other `input` raises `TypeError` (for streaming, after the response has started).
 
