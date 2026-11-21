@@ -116,6 +116,8 @@ With `ignoreNonSummarySeekingQuery` set to `true`, no summary is returned for na
 
 Provide natural-language instructions in `modelPromptSpec.preamble` (API) or enable summary customization for the search widget in the console (search type must be **Search with an answer** or **Search with follow-ups**).
 
+Adapted (not in the official docs): added `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}` next to `summarySpec`, written as in the other summary examples of this page, because the summary is taken from the extractive answers (see Notes).
+
 ```text
 "contentSearchSpec":
   {
@@ -126,7 +128,8 @@ Provide natural-language instructions in `modelPromptSpec.preamble` (API) or ena
       {
         "preamble": "explain like you would to a ten year old"
       }
-    }
+    },
+    "extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}
   }
 ```
 
@@ -200,6 +203,7 @@ curl --fail-with-body -X POST \
 - Deprecated: "Agent Search for healthcare is deprecated and won't be available after May 15, 2027." (https://docs.cloud.google.com/generative-ai-app-builder/docs/prepare-data, retrieved 2026-11-21).
 - Source inconsistency (search summaries): the feature table of the advanced-features page says "Search summarization without advanced generative answer features | Enterprise edition", while its "Generative responses" section says "You must turn on the Generative responses option to obtain search responses with these features:" and lists "Search summarization", and the get-search-summaries page says "For an unstructured search app: Turn on the generative responses option." (for a website search app: Enterprise edition features, Generative responses and advanced website indexing). The `discoveryengine` `v1` Discovery document also lists the summary skipped reason `LLM_ADDON_NOT_ENABLED` ("Google skips the summary if the LLM addon is not enabled."). All statements are kept as written; check the edition and add-on before relying on summaries.
 - Corrected from the official docs: the source's semantic-chunks fragment writes `"includeCitations": CITATIONS_BOOLEAN,` with a trailing comma before the closing `}` of `summarySpec`; JSON does not allow trailing commas, so the comma is removed.
+- Corrected from the official docs: the source's customized-summary fragment has `summarySpec` only, while the same page says "The summary itself is taken from the extractive answers returned in the response. Therefore, to get a summary, you must also get extractive answers with your search results." and gives `maxExtractiveAnswerCount` "The default value is 0 and the maximum is 1."; the fragment adds `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}` as the page's other summary fragments write it. The semantic-chunks fragment is left without it, because that page section describes semantic chunks as an alternative to "the default behavior of using extractive answers".
 - Corrected from the official docs: the source's model-version example sends only `"summarySpec": {"modelSpec": {"version": "preview"}}`, while the same page says "to get a summary, you must also get extractive answers with your search results" and "To get a search summary, follow these steps: 1. Submit a search request that includes `contentSearchSpec.summarySpec` and specifies values for `summaryResultCount` and `maxExtractiveAnswerCount`." Its own summary example uses `"summaryResultCount": 3` and `"extractiveContentSpec": { "maxExtractiveAnswerCount" : 1}`, so the example adds those two values. The `discoveryengine.v1` Discovery document describes `summaryResultCount` only as "The number of top results to generate the summary from." and does not say what happens when it is unset.
 - Corrected from the official docs: the source's `-H "Authorization: Bearer $(gcloud auth print-access-token)"` puts the token in curl's process arguments; the examples read it into `TOKEN` and pass it as a header file (`man curl` 8.7.1, `-H`: "This option can take an argument in @filename style" ... "Added in 7.55.0."; `printf` is a shell builtin, `<(...)` needs bash or zsh). `--fail-with-body` (curl 7.76.0 or later) is added so that an HTTP 4xx/5xx response exits non-zero. The command runs in a subshell that starts with `set +x`, so `set -x` tracing does not print the token, and `TOKEN` does not stay in the calling shell. `unset TOKEN` at its start also drops an `export` of that variable in the calling shell, so the value is not put in the environment of `curl` and the other commands.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/get-search-summaries (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
