@@ -46,6 +46,8 @@ Cloud Shell needs no action.
 
 ### Import and initialize the SDK
 
+Adapted (not in the official docs): added `http_options=dict(api_version="v1beta1")`, as the agent identity page does, because creating an agent identity below needs `v1beta1`. In google-genai 3.6.1 (`google/genai/_api_client.py`, which `vertexai.Client` uses), a client with a project and location defaults to `v1beta1` unless `GOOGLE_GENAI_API_VERSION` sets another version, and an explicit `http_options` is applied after that default (`patch_http_options`); `vertexai.Client` takes `http_options` in google-cloud-aiplatform 2.10.0 (`vertexai/_genai/client.py`).
+
 ```python
 import vertexai
 from vertexai import agent_engines # For the prebuilt templates
@@ -53,12 +55,11 @@ from vertexai import agent_engines # For the prebuilt templates
 client = vertexai.Client(  # For service interactions via client.agent_engines
     project="PROJECT_ID",
     location="LOCATION",
+    http_options=dict(api_version="v1beta1"),
 )
 ```
 
 ### Create an agent identity before deploying code
-
-The agent identity page creates its client with `http_options=dict(api_version="v1beta1")` for this call. The `client` above has no `http_options`, but in google-genai 3.6.1 (`google/genai/_api_client.py`, which `vertexai.Client` uses), a client created with a project and location defaults to `api_version` `'v1beta1'` unless the environment variable `GOOGLE_GENAI_API_VERSION` sets another version. To make the version explicit, pass `http_options=dict(api_version="v1beta1")` to `vertexai.Client(...)` as well (`vertexai.Client` takes `http_options` in google-cloud-aiplatform 2.10.0).
 
 Adapted (not in the official docs): added `from vertexai import types`, because the source uses `types.IdentityType` without importing `types` (the quickstart imports it this way, and `vertexai.types.IdentityType.AGENT_IDENTITY` exists in google-cloud-aiplatform 2.10.0).
 
@@ -154,6 +155,7 @@ gcloud artifacts repositories add-iam-policy-binding REPOSITORY \
 - Corrected from the official docs: the two Artifact Registry Reader examples granted the role at project level (`gcloud projects add-iam-policy-binding PROJECT_NUMBER --member="serviceAccount:service-PROJECT_NUMBER@gcp-sa-aiplatform-re.iam.gserviceaccount.com" --role="roles/artifactregistry.reader"` and the same with `AR_REPO_PROJECT_NUMBER` and the `gcp-sa-aiplatform` service agent), which lets the service agent read every repository in the project. The examples use `gcloud artifacts repositories add-iam-policy-binding`, whose gcloud 593.0.0 help lists the positional `REPOSITORY`, `--location`, the required `--member` and `--role`, and `--project` under GCLOUD WIDE FLAGS.
 - Source: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/setup (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Adapted from the official docs: the source writes `pip install google-adk[a2a]` unquoted.
+- Adapted from the official docs: the setup client was `vertexai.Client(project="PROJECT_ID", location="LOCATION")` without `http_options`.
 
 ## Related
 
