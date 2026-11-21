@@ -48,7 +48,7 @@ gcloud auth application-default login --impersonate-service-account=SERVICE_ACCT
 
 ### On Google Cloud: attach a service account
 
-For code running on a Google Cloud compute resource, use the service account attached to it (the preferred method). For most services you must attach the service account when you create the resource; Compute Engine lets you attach one at any time. You need `roles/iam.serviceAccountCreator` and `roles/resourcemanager.projectIamAdmin`.
+For code running on a Google Cloud compute resource, use the service account attached to it (the preferred method). For most services you must attach the service account when you create the resource; Compute Engine lets you attach one at any time. To create the service account and grant it roles, the source says: "Ensure that you have the Create Service Accounts IAM role (`roles/iam.serviceAccountCreator`) and the Project IAM Admin role (`roles/resourcemanager.projectIamAdmin`)." To attach it, the source grants "the required role to the principal that will attach the service account to other resources": Service Account User (`roles/iam.serviceAccountUser`) on the service account (command below). Creating the Compute Engine instance itself also needs the `compute.instances.create` permission, for example through Compute Instance Admin (v1) (`roles/compute.instanceAdmin.v1`); this is not stated in this page of the official docs (see Notes).
 
 ```bash
 gcloud iam service-accounts create SERVICE_ACCOUNT_NAME
@@ -86,6 +86,7 @@ gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERV
 - The twin also shows a PowerShell variant of the REST request, omitted here.
 - Client-library code in this skill uses ADC, as the source does. Gemini Developer API keys (Google AI Studio) are a different product and are covered by the `google-gemini-api` skill.
 - Corrected from the official docs: the instance example was `gcloud compute instances create INSTANCE_NAME --zone=ZONE --service-account=SERVICE_ACCOUNT_EMAIL`, which leaves the default access scopes; the Discovery Engine API needs the `cloud-platform` scope, and the service account's IAM roles still limit what it can do.
+- Instance creation permission (not stated in this page of the official docs): the IAM roles and permissions reference for Compute Engine (https://docs.cloud.google.com/iam/docs/roles-permissions/compute, retrieved 2026-11-14 as recorded in the gcp-compute skill) lists `compute.instances.create` in `roles/compute.instanceAdmin.v1`, `roles/compute.instanceAdmin`, `roles/compute.admin` and other roles. The roles above (`roles/iam.serviceAccountCreator`, `roles/resourcemanager.projectIamAdmin`, `roles/iam.serviceAccountUser`) do not include it.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/authentication (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

@@ -53,17 +53,15 @@ fi; unset OAUTH_CLIENT_SECRET
 
 The `authorizationConfig` object is needed only when you created an authorization resource (see above) so that the agent can access Google Cloud resources on behalf of the user; if the agent doesn't need OAuth, omit `authorizationConfig` (and its `toolAuthorizations` entry) from the body.
 
-Adapted (not in the official docs): the two `locations/global` segments (the engine path in the URL and the `toolAuthorizations` entry) are replaced with `locations/LOCATION`, so the request names the app and the authorization resource in the location where they were created; with `LOCATION` = `global` the request is the same as the source's. The project in the `reasoningEngine` value is the separate placeholder `RUNTIME_PROJECT_ID` (the source writes `PROJECT_ID`, the same placeholder as the app's project in the URL), because the Agent Runtime agent can be hosted in a different project.
+Run the command by itself and type each value on its own line at the prompts, in this order: `DISPLAY_NAME`, `DESCRIPTION`; `jq` (required) encodes each one as a JSON string, and nothing is sent if a value is missing. A line that follows the command in the same paste or script is read as a value.
+
+Adapted (not in the official docs): the two `locations/global` segments (the engine path in the URL and the `toolAuthorizations` entry) are replaced with `locations/LOCATION`, so the request names the app and the authorization resource in the location where they were created; with `LOCATION` = `global` the request is the same as the source's. The project in the `reasoningEngine` value is the separate placeholder `RUNTIME_PROJECT_ID` (the source writes `PROJECT_ID`, the same placeholder as the app's project in the URL), because the Agent Runtime agent can be hosted in a different project. Also, the request body is built with `jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DISPLAY_NAME`, `DESCRIPTION`) and sent on standard input with `--data @-`, instead of putting `"DISPLAY_NAME"`, `"DESCRIPTION"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged.
 
 ```bash
-   curl -X POST \
-      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-      -H "Content-Type: application/json" \
-      -H "X-Goog-User-Project: PROJECT_ID" \
-      "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant/agents" \
-      -d '{
-         "displayName": "DISPLAY_NAME",
-         "description": "DESCRIPTION",
+IFS= read -r DISPLAY_NAME && IFS= read -r DESCRIPTION &&
+jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{
+         "displayName": $display_name,
+         "description": $description,
          "icon": {
             "uri": "ICON_URI"
          },
@@ -77,7 +75,13 @@ Adapted (not in the official docs): the two `locations/global` segments (the eng
                "projects/PROJECT_NUMBER/locations/LOCATION/authorizations/AUTH_ID"
             ]
          }
-      }'
+      }' |
+   curl -X POST \
+      -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+      -H "Content-Type: application/json" \
+      -H "X-Goog-User-Project: PROJECT_ID" \
+      "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant/agents" \
+      --data @-
 ```
 
 ### List agents connected to an app
@@ -107,24 +111,28 @@ curl -X GET \
 
 ### Update an ADK agent
 
-Adapted (not in the official docs): the `reasoningEngine` string, which the source breaks across lines inside the quotes (`.../reasoningEngine` / `s/RESOURCE_ID"`), is joined into one line, and the trailing comma after the `provisionedReasoningEngine` object is removed, so the body is valid JSON. The project in the `reasoningEngine` value is the separate placeholder `RUNTIME_PROJECT_ID` (the source writes `PROJECT_ID`, the same placeholder as the `X-Goog-User-Project` header), because the Agent Runtime agent can be hosted in a different project.
+Run the command by itself and type each value on its own line at the prompts, in this order: `DISPLAY_NAME`, `DESCRIPTION`; `jq` (required) encodes each one as a JSON string, and nothing is sent if a value is missing. A line that follows the command in the same paste or script is read as a value.
+
+Adapted (not in the official docs): the `reasoningEngine` string, which the source breaks across lines inside the quotes (`.../reasoningEngine` / `s/RESOURCE_ID"`), is joined into one line, and the trailing comma after the `provisionedReasoningEngine` object is removed, so the body is valid JSON. The project in the `reasoningEngine` value is the separate placeholder `RUNTIME_PROJECT_ID` (the source writes `PROJECT_ID`, the same placeholder as the `X-Goog-User-Project` header), because the Agent Runtime agent can be hosted in a different project. Also, the request body is built with `jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DISPLAY_NAME`, `DESCRIPTION`) and sent on standard input with `--data @-`, instead of putting `"DISPLAY_NAME"`, `"DESCRIPTION"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged.
 
 ```bash
-curl -X PATCH \
-   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-   -H "Content-Type: application/json" \
-   -H "X-Goog-User-Project: PROJECT_ID" \
-   "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1alpha/AGENT_RESOURCE_NAME" \
-   -d '{
-         "displayName": "DISPLAY_NAME",
-         "description": "DESCRIPTION",
+IFS= read -r DISPLAY_NAME && IFS= read -r DESCRIPTION &&
+jq -n --arg display_name "$DISPLAY_NAME" --arg description "$DESCRIPTION" '{
+         "displayName": $display_name,
+         "description": $description,
          "adkAgentDefinition": {
          "provisionedReasoningEngine": {
             "reasoningEngine":
             "projects/RUNTIME_PROJECT_ID/locations/RESOURCE_LOCATION/reasoningEngines/RESOURCE_ID"
          }
       }
-   }'
+   }' |
+curl -X PATCH \
+   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+   -H "Content-Type: application/json" \
+   -H "X-Goog-User-Project: PROJECT_ID" \
+   "https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1alpha/AGENT_RESOURCE_NAME" \
+   --data @-
 ```
 
 ### Delete an ADK agent
@@ -201,6 +209,7 @@ curl -X DELETE \
 - Agents are Google ADK / Agent Runtime agents, not Claude Code or Agent SDK agents.
 - The source also shows Console steps for registering, updating and the authorization form, and a sample `fun_facts` agent in the `adk-samples` repository.
 - Source inconsistency (global host): for `ENDPOINT_LOCATION` = `global`, the Gemini Enterprise pages on app IAM policies and ADK / A2A agent registration show example commands with `https://global-discoveryengine.googleapis.com/...`, while the streamAssist page says "If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The `discoveryengine` `v1` / `v1beta` / `v1alpha` Discovery documents give the `rootUrl` `https://discoveryengine.googleapis.com/`. Both forms are kept as written. `ENDPOINT_LOCATION` (or the `LOCATION` prefix of the host) sets only the hostname; the `locations/...` segment of the resource path is a separate value.
+- Corrected from the official docs: the source writes free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"displayName": "DISPLAY_NAME"`, `"description": "DESCRIPTION"`). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"` or `\` makes the JSON invalid, so the body is built with `jq --arg` from standard input and sent with `--data @-`.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/register-and-manage-an-adk-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

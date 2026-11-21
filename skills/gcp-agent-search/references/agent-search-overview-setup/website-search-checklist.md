@@ -12,14 +12,14 @@ Checklist of the steps to create a website search app (a type of custom search a
 
 Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (the twin for this page has no code block). The source says to turn on Enterprise edition when creating the app (`SEARCH_TIER_ENTERPRISE`):
 
+Run the command by itself and type `APP_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first. A line that follows the command in the same paste or script is read as the value.
+
+Adapted (not in the official docs): the request body is built with `jq -n --arg app_display_name "$APP_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`APP_DISPLAY_NAME`) and sent on standard input with `--data @-`, instead of putting `"APP_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged.
+
 ```bash
-curl -X POST \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
--H "Content-Type: application/json" \
--H "X-Goog-User-Project: PROJECT_ID" \
-"https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/engines?engineId=APP_ID" \
--d '{
-  "displayName": "APP_DISPLAY_NAME",
+IFS= read -r APP_DISPLAY_NAME &&
+jq -n --arg app_display_name "$APP_DISPLAY_NAME" '{
+  "displayName": $app_display_name,
   "dataStoreIds": ["DATA_STORE_ID"],
   "solutionType": "SOLUTION_TYPE_SEARCH",
   "industryVertical": "GENERIC",
@@ -27,7 +27,13 @@ curl -X POST \
      "searchTier": "SEARCH_TIER",
      "searchAddOns": ["SEARCH_ADD_ON"]
    }
-}'
+}' |
+curl -X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+-H "X-Goog-User-Project: PROJECT_ID" \
+"https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/engines?engineId=APP_ID" \
+--data @-
 ```
 
 ### Steps
@@ -55,6 +61,7 @@ curl -X POST \
 - Advanced website indexing: see about-advanced-features.md for the features, domain verification requirement and page-index quota. The source's two checklists are shown behind Basic website search / Advanced website indexing buttons; the steps above follow the basic checklist, with the final step upgrading to advanced indexing.
 - Enterprise edition features are required for any app that uses website data.
 - The REST snippet is borrowed from the create-a-search-app page.
+- Corrected from the official docs: the source writes free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"displayName": "APP_DISPLAY_NAME"`). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"` or `\` makes the JSON invalid, so the body is built with `jq --arg` from standard input and sent with `--data @-`.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/website-search-checklist (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Snippet taken from https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 

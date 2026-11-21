@@ -53,31 +53,39 @@ gcloud run services add-iam-policy-binding SERVICE_NAME \
 
 ### Register an A2A agent (REST)
 
-Uses the `agents.create` method (`v1alpha`) with the required fields only. `authorizationConfig` is needed only when you added an authorization resource (see Notes); if the agent doesn't need OAuth, omit `authorizationConfig` from the body, as the source's example command does. `jsonAgentCard` is a string that holds the Agent Card JSON, so every quote inside it is escaped (`\"`). Build the Agent Card as its own JSON object (as in the agent card JSON above), serialize it to a string with a JSON serializer, and put that string in `jsonAgentCard`; do not paste unescaped JSON for `CAPABILITIES` or `SKILLS` into the string.
+Uses the `agents.create` method (`v1alpha`) with the required fields only. If you added an authorization resource (see Notes), add `"authorizationConfig": {"agentAuthorization": "projects/PROJECT_ID/locations/LOCATION/authorizations/AUTH_ID"}` to the body next to `a2aAgentDefinition`; without OAuth, leave it out.
+
+Run the command by itself and type each value on its own line at the prompts, in this order: `AGENT_NAME`, `AGENT_DISPLAY_NAME`, `AGENT_DESCRIPTION`, then `CAPABILITIES` as one line of JSON object (for example `{"streaming": true}`) and `SKILLS` as one line of JSON array of `AgentSkill` objects. `jq` (required) builds the Agent Card, serializes it to the `jsonAgentCard` string and encodes the other values as JSON strings; nothing is sent if a value is missing or `CAPABILITIES` / `SKILLS` is not valid JSON. A line that follows the command in the same paste or script is read as a value.
+
+Adapted (not in the official docs): the source writes the request body inside the single-quoted `-d '...'` argument, with `"AGENT_NAME"`, `"AGENT_DISPLAY_NAME"` and `"AGENT_DESCRIPTION"` as placeholders and the Agent Card as a hand-escaped string in `jsonAgentCard`. Here the card is built with `jq -cn` (same field names and order, same `PROTOCOLVERSION`, `AGENT_URL`, `AGENT_VERSION`, `INPUT_MODE` and `OUTPUT_MODE` placeholders; `CAPABILITIES` and `SKILLS` now take a whole JSON object and array through `--argjson`) and passed as a string with `--arg card`, the outer body is built with `jq -n --arg ...` from values read by one `IFS= read -r` each and sent with `--data @-`, so apostrophes, double quotes and backslashes cannot break the shell quoting, the JSON or the card string. The `authorizationConfig` object is removed from this required-fields example (see the sentence above for when to add it).
 
 ```bash
+IFS= read -r AGENT_NAME && IFS= read -r AGENT_DISPLAY_NAME && IFS= read -r AGENT_DESCRIPTION &&
+IFS= read -r CAPABILITIES && IFS= read -r SKILLS &&
+CARD=$(jq -cn --arg agent_name "$AGENT_NAME" --arg agent_description "$AGENT_DESCRIPTION" \
+  --argjson capabilities "$CAPABILITIES" --argjson skills "$SKILLS" \
+  '{"protocolVersion":"PROTOCOLVERSION","name":$agent_name,"description":$agent_description,"url":"AGENT_URL","version":"AGENT_VERSION","defaultInputModes":["INPUT_MODE"],"defaultOutputModes":["OUTPUT_MODE"],"capabilities":$capabilities,"skills":$skills}') &&
+jq -n --arg agent_name "$AGENT_NAME" --arg agent_display_name "$AGENT_DISPLAY_NAME" \
+  --arg agent_description "$AGENT_DESCRIPTION" --arg card "$CARD" '
+{
+  "name": $agent_name,
+  "displayName": $agent_display_name,
+  "description": $agent_description,
+  "a2aAgentDefinition": {
+    "jsonAgentCard": $card
+  }
+}
+' |
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
 https://ENDPOINT_LOCATION-discoveryengine.googleapis.com/v1alpha/projects/PROJECT_ID/locations/LOCATION/collections/default_collection/engines/APP_ID/assistants/default_assistant/agents \
--d '
-{
-  "name": "AGENT_NAME",
-  "displayName": "AGENT_DISPLAY_NAME",
-  "description": "AGENT_DESCRIPTION",
-  "a2aAgentDefinition": {
-    "jsonAgentCard": "{\"protocolVersion\":\"PROTOCOLVERSION\",\"name\":\"AGENT_NAME\",\"description\":\"AGENT_DESCRIPTION\",\"url\":\"AGENT_URL\",\"version\":\"AGENT_VERSION\",\"defaultInputModes\":[\"INPUT_MODE\"],\"defaultOutputModes\":[\"OUTPUT_MODE\"],\"capabilities\":{ CAPABILITIES },\"skills\":[SKILLS]}"
-  },
-  "authorizationConfig": {
-    "agentAuthorization": "projects/PROJECT_ID/locations/LOCATION/authorizations/AUTH_ID"
-  }
-}
-'
+--data @-
 ```
 
 ### Show author and contact information (optional)
 
-Add the agent metadata extension to `capabilities.extensions` of the agent card JSON (inside the escaped `jsonAgentCard` string in REST).
+Add the agent metadata extension to `capabilities.extensions` of the agent card JSON (in the REST example, pass it as part of the `CAPABILITIES` object, which `jq` serializes into the `jsonAgentCard` string).
 
 ```json
 {
@@ -268,9 +276,9 @@ gcloud agent-identity auth-providers add-iam-policy-binding AUTH_PROVIDER_NAME \
 | `PROTOCOLVERSION` | The A2A protocol version the agent supports. |
 | `AGENT_URL` | The endpoint URL of the agent. |
 | `INPUT_MODE` / `OUTPUT_MODE` | Default input / output media type, for example `text/plain`, `application/json` or `image/png`. |
-| `CAPABILITIES` | A JSON object of supported A2A features, for example `\"streaming\": true` or `\"pushNotifications\": false`. |
-| `SKILLS` | A list of `AgentSkill` objects the agent offers. The example already has the array brackets (`"skills":[SKILLS]`), so replace `SKILLS` with the comma-separated objects only, not with a JSON array. Because they sit inside the `jsonAgentCard` string, their quotes must be escaped, as in the source's example command (`\"skills\":[{\"description\":\"Chat with the Gemini agent.\",...}]`); building the card as JSON and serializing it to a string does this for you. |
-| `AUTH_ID` | The authorization resource ID created earlier (`authorizationConfig.agentAuthorization`). |
+| `CAPABILITIES` | A JSON object of supported A2A features, for example `"streaming": true` or `"pushNotifications": false`. In the example above, type it as one whole JSON object, for example `{"streaming": true}`. |
+| `SKILLS` | A list of `AgentSkill` objects the agent offers. In the example above, type it as one JSON array, for example `[{"id":"chat","name":"Chat Skill","description":"Chat with the Gemini agent.","tags":["chat"]}]`; `jq` escapes it inside the `jsonAgentCard` string. |
+| `AUTH_ID` | The authorization resource ID created earlier; used only in the optional `authorizationConfig.agentAuthorization` field. |
 
 ## Notes
 
@@ -284,7 +292,7 @@ gcloud agent-identity auth-providers add-iam-policy-binding AUTH_PROVIDER_NAME \
 - Corrected from the official docs: the source writes placeholders inside the two `gcloud` commands and the Python client example as `<var>PROJECT_ID</var>` (and similar) HTML tags. In the `bash` commands an unquoted `<var>` is parsed as an input redirection, so the tags break the command; in the Python example they are only string content, and they are removed there because the source's own placeholder lists name the same placeholders bare (`PROJECT_ID`, `LOCATION`, `AGENT_DISPLAY_NAME`).
 - Corrected from the official docs: the source's ADK A2A sample writes the placeholders inside string literals with backticks, for example `` name="projects/`PROJECT_ID`/locations/`LOCATION`/authProviders/`AUTH_PROVIDER_NAME`", ``, `` scopes=["`OAUTH_SCOPE`"], ``, `` url="`https://YOUR_MCP_SERVER_URL`" ``, `` # registry = AgentRegistry(project_id="`PROJECT_ID`", location="`LOCATION`") `` and `` id="`SKILL_ID`", `` (lines of the `GcpAuthProviderScheme`, `StreamableHTTPConnectionParams`, commented-out `AgentRegistry`, `LlmAgent`, `create_agent_card` and `AgentSkill` calls). Inside a code block the backticks are literal characters, so a value substituted for the placeholder would keep them; they are removed.
 - `authorizationConfig`: the source says "If you obtained the authorization details and want the agent to access Google Cloud resources on behalf of the user, add the `authorization_config` field to your JSON resource.", and its example command and result have no `authorizationConfig`. The `discoveryengine.v1alpha` Discovery document describes `Agent.authorizationConfig` as "Optional. The authorizations that are required by the agent."
-- `jsonAgentCard`: the `discoveryengine.v1alpha` Discovery document types it as `string` ("Optional. The agent card is a JSON string."), and the source's example command passes the whole card, including `skills`, with escaped quotes. The `CAPABILITIES` and `SKILLS` placeholders of the register request therefore take escaped JSON; the source does not show a serializer step.
+- `jsonAgentCard`: the `discoveryengine.v1alpha` Discovery document types it as `string` ("Optional. The agent card is a JSON string."), and the source's example command passes the whole card, including `skills`, as a string with escaped quotes. The example above builds the card with `jq -cn` and lets `jq` produce that escaped string.
 - Securing the endpoint: Gemini Enterprise does not use the `securitySchemes` and `security` fields of the agent card to authenticate, does not support the `apiKey` security scheme, and cannot add static API keys or custom header values to requests. With an Apigee API proxy the proxy receives the end-user `Authorization` token but not `X-Serverless-Authorization`: configure OAuth 2.0 for the agent (required), set the agent card `url` to the proxy URL, and validate the token in the proxy (VerifyJWT policy for signed JWT access tokens from third-party providers; for Google OAuth 2.0 `ya29...` opaque tokens use a ServiceCallout policy to call `https://oauth2.googleapis.com/tokeninfo` and verify `aud` and `scope`).
 - 3LO flow: when the agent returns an `adk_request_credential` interrupt (`TASK_STATE_AUTH_REQUIRED`), the web app prompts the user, the auth provider redirects to `https://vertexaisearch.cloud.google.com/validateUserId`, and Gemini Enterprise resumes the conversation. Auth provider settings: add the callback redirect URI `https://agentidentitycredentials.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/authProviders/AUTH_PROVIDER_NAME/oauthcallback` to the OAuth client (plus `https://vertexaisearch.cloud.google.com/oauth-redirect` if the client is reused for the agent authorization resource) and set the continue URI to `https://vertexaisearch.cloud.google.com/validateUserId`.
 - 3LO agent code requirements: include `a2a-sdk[http-server]>=1.0.0`, `google-cloud-aiplatform[agent_engines,adk]>=1.156.0` and `google-adk[a2a,agent-identity,mcp]>2.7.1`; set `continue_uri` to the validation endpoint; call `CredentialManager.register_auth_provider(GcpAuthProvider())` inside the runner builder function; use the built-in `A2aAgentExecutor` (not a custom executor that only checks `event.is_final_response()`); append an `AgentInterface` with `protocol_version=PROTOCOL_VERSION_0_3` and `protocol_binding=TransportProtocol.HTTP_JSON` to `agent_card.supported_interfaces`. After deployment, register the agent via **Custom agent via A2A** or via Agent Registry import with an OAuth 2.0 authorization resource using the `cloud-platform` scope.
@@ -295,6 +303,7 @@ gcloud agent-identity auth-providers add-iam-policy-binding AUTH_PROVIDER_NAME \
 - Distance: this is Google's A2A / Agent Runtime integration, not Claude Code or OpenAI Agents.
 - Calling the agent: the streamAssist page states "A2A or ADK agents registered to a Gemini Enterprise app are not supported through `streamAssist`." To call an A2A agent directly, use its registry A2A endpoint: https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-a2a (https://docs.cloud.google.com/gemini/enterprise/docs/invoke-agent-streamassist).
 - Source inconsistency (global host): for `ENDPOINT_LOCATION` = `global`, the Gemini Enterprise pages on app IAM policies and ADK / A2A agent registration show example commands with `https://global-discoveryengine.googleapis.com/...`, while the streamAssist page says "If your app resides in the `global` location, omit the location prefix from the hostname (`discoveryengine.googleapis.com`)." The `discoveryengine` `v1` / `v1beta` / `v1alpha` Discovery documents give the `rootUrl` `https://discoveryengine.googleapis.com/`. Both forms are kept as written. `ENDPOINT_LOCATION` (or the `LOCATION` prefix of the host) sets only the hostname; the `locations/...` segment of the resource path is a separate value.
+- Corrected from the official docs: the source's register command is `-d '` followed by a body with `"name": "AGENT_NAME"`, `"displayName": "AGENT_DISPLAY_NAME"`, `"description": "AGENT_DESCRIPTION"`, `"jsonAgentCard": "{\"protocolVersion\":\"PROTOCOLVERSION\",...,\"capabilities\":{ CAPABILITIES },\"skills\":[SKILLS]}"` and `"authorizationConfig": {"agentAuthorization": "projects/PROJECT_ID/locations/LOCATION/authorizations/AUTH_ID"}`. Free text with an apostrophe ends the shell quoting, `"` or `\` breaks the JSON, and `SKILLS` objects pasted into the card string must be escaped by hand, so the card and the body are built with `jq` and sent with `--data @-`. The source introduces the command with "The following command uses only the required fields." while it includes `authorizationConfig`, which the Discovery document marks "Optional. The authorizations that are required by the agent." and which the source's own example command leaves out, so it is removed from the example and described as an optional addition.
 - Source: https://docs.cloud.google.com/gemini/enterprise/docs/register-and-manage-an-a2a-agent (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

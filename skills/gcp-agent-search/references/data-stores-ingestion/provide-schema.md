@@ -75,16 +75,22 @@ How Agent Search (formerly Vertex AI Search) determines the schema of a structur
 
 Step 1: prepare the schema object. Step 2: create a data store (empty schema).
 
+Run the command by itself and type `DATA_STORE_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first. A line that follows the command in the same paste or script is read as the value.
+
+Adapted (not in the official docs): the request body is built with `jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`DATA_STORE_DISPLAY_NAME`) and sent on standard input with `--data @-`, instead of putting `"DATA_STORE_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged.
+
 ```bash
+IFS= read -r DATA_STORE_DISPLAY_NAME &&
+jq -n --arg data_store_display_name "$DATA_STORE_DISPLAY_NAME" '{
+  "displayName": $data_store_display_name,
+  "industryVertical": "INDUSTRY_VERTICAL"
+}' |
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 -H "Content-Type: application/json" \
 -H "X-Goog-User-Project: PROJECT_ID" \
 "https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/dataStores?dataStoreId=DATA_STORE_ID" \
--d '{
-  "displayName": "DATA_STORE_DISPLAY_NAME",
-  "industryVertical": "INDUSTRY_VERTICAL"
-}'
+--data @-
 ```
 
 `INDUSTRY_VERTICAL` is `GENERIC` or `MEDIA`. `DATA_STORE_ID` can contain only lowercase letters, digits, underscores, and hyphens.
@@ -162,6 +168,7 @@ Step 4 (optional): review the schema with "View a schema definition".
 - API versions: the data store is created with `v1` and the schema patched with `v1beta` in the source's steps; the Discovery document for `v1` also has `schemas.patch`, and `structSchema` is a free-form object in both. The source's sample result shows the same PATCH on `v1`.
 - Source inconsistencies kept as written: the text names `keyPropertyValues` where the schema field is `keyPropertyMapping`, and `datatime_detection` for `datetime_detection`. The source's separate field-list snippet for `recommendationsFilterable` contains `...` and is omitted.
 - The source also includes a sample command with its result and Colab notebook links, which are omitted.
+- Corrected from the official docs: the source writes free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"displayName": "DATA_STORE_DISPLAY_NAME"`). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"` or `\` makes the JSON invalid, so the body is built with `jq --arg` from standard input and sent with `--data @-`.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/provide-schema (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

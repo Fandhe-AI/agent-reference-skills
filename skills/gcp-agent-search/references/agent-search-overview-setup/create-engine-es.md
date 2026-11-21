@@ -12,14 +12,14 @@ Create an Agent Search (formerly Vertex AI Search) search app, called an engine 
 
 Find your data store ID first (console **Data Stores** page, then the **Data** page of the data store). In Agent Search the term app can be used interchangeably with engine in the context of APIs. Attaching data stores: for an app created with a single data store, the source says "If you attach only one data store, you cannot remove it or add other data stores to the app later." Sharing data stores between apps: the data stores guide says "Custom search apps have a many-to-many relationship with data stores." The REST step of this source also says "A data store can be attached to only one app"; see Notes for this inconsistency.
 
+Run the command by itself and type `APP_DISPLAY_NAME` on one line at the prompt; `jq` (required) encodes it as a JSON string, and nothing is sent if the input ends first. A line that follows the command in the same paste or script is read as the value.
+
+Adapted (not in the official docs): the request body is built with `jq -n --arg app_display_name "$APP_DISPLAY_NAME" '{...}'` from the values read by one `IFS= read -r` per placeholder (`APP_DISPLAY_NAME`) and sent on standard input with `--data @-`, instead of putting `"APP_DISPLAY_NAME"` inside the single-quoted `-d '{...}'` argument, so apostrophes, double quotes and backslashes in these values cannot break the shell quoting or the JSON; every other field is unchanged.
+
 ```bash
-curl -X POST \
--H "Authorization: Bearer $(gcloud auth print-access-token)" \
--H "Content-Type: application/json" \
--H "X-Goog-User-Project: PROJECT_ID" \
-"https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/engines?engineId=APP_ID" \
--d '{
-  "displayName": "APP_DISPLAY_NAME",
+IFS= read -r APP_DISPLAY_NAME &&
+jq -n --arg app_display_name "$APP_DISPLAY_NAME" '{
+  "displayName": $app_display_name,
   "dataStoreIds": ["DATA_STORE_ID"],
   "solutionType": "SOLUTION_TYPE_SEARCH",
   "industryVertical": "GENERIC",
@@ -27,7 +27,13 @@ curl -X POST \
      "searchTier": "SEARCH_TIER",
      "searchAddOns": ["SEARCH_ADD_ON"]
    }
-}'
+}' |
+curl -X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+-H "X-Goog-User-Project: PROJECT_ID" \
+"https://discoveryengine.googleapis.com/v1/projects/PROJECT_ID/locations/global/collections/default_collection/engines?engineId=APP_ID" \
+--data @-
 ```
 
 ### Python
@@ -144,6 +150,7 @@ def create_engine_sample(
 - Terraform: use the `discovery_engine_search_engine` resource of the `hashicorp/google` provider (https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/discovery_engine_search_engine).
 - The Python sample waits for the long-running operation with `operation.result()`; the Python sample comment lists `global` as the location value.
 - The REST method is `engines.create` (Discovery Engine API `v1`).
+- Corrected from the official docs: the source writes free-text placeholders inside the single-quoted `curl -d '{...}'` body (`"displayName": "APP_DISPLAY_NAME"`). Replacing them with text that contains an apostrophe ends the shell quoting, and text with `"` or `\` makes the JSON invalid, so the body is built with `jq --arg` from standard input and sent with `--data @-`.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-engine-es (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/create-datastore-ingest (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
