@@ -99,6 +99,8 @@ Store at least the chat ID, event type, event timestamp, message sender / type /
 
 `POST /apps/api/v1/chats/{chat_id}/message`. Your webhook endpoint also receives a message event for messages your own application sent.
 
+For this step, ending the chat and updating the end-user identity, your backend first checks that the authenticated user owns `chat_id`, and derives `from_user_id` (and `ended_by_user_id`) from the authenticated session and the end-user ID it stored for that user, never from a value the browser sends; otherwise one user could act on another user's chat. These checks are not stated in the official docs; for server-side end-user authentication, see [web-sdk-v3-authenticate.md](./web-sdk-v3-authenticate.md).
+
 ```json
 {
   "from_user_id": 456,
