@@ -114,7 +114,7 @@ def after_model_callback(
 | Return | Dict\[str,Any\] : If set, tool execution is skipped and this output is provided to the model. |
 | ADK callback | [before tool callback](https://google.github.io/adk-docs/callbacks/types-of-callbacks/#before-tool-callback) |
 
-Adapted (not in the official docs): the source modifies the tool arguments and then always returns `{"result": "ok"}`, so the tool is never called and the modified arguments are never used; the example is split into two branches of the same function: for the tool named `TOOL_TO_MOCK` (a placeholder; `tool.name` is read as in the source's `after_tool_callback` sample) it returns the mocked result and the tool is skipped, and for any other tool it modifies the arguments in place and returns `None`, so the tool runs. The docstring is reworded to match.
+Adapted (not in the official docs): the source modifies the tool arguments and then always returns `{"result": "ok"}`, so the tool is never called and the modified arguments are never used; the example is split into branches of the same function: for the tool named `TOOL_TO_MOCK` it returns the mocked result and the tool is skipped, for the tool named `TOOL_TO_MODIFY` it modifies the arguments in place and returns `None`, so that tool runs with them, and any other tool runs with its arguments unchanged (`TOOL_TO_MOCK` and `TOOL_TO_MODIFY` are placeholders; `tool.name` is read as in the source's `after_tool_callback` sample). The docstring is reworded to match.
 
 ```python
 def before_tool_callback(
@@ -125,14 +125,15 @@ def before_tool_callback(
   """
   This callback executes *before* a specific tool is called by the agent.
 
-  For the tool checked below, we return a dictionary. By returning a
+  For the tool to mock, we return a dictionary. By returning a
   dictionary instead of `None`, we are overriding the default behavior. The
   actual tool function will *not* be executed. Instead, the dictionary we
   return will be treated as the llm.tool's result and passed back to the LLM
   for the next step.
 
-  For any other tool, we modify the input arguments intended for the tool
-  and return `None`, so the tool is executed with them.
+  For the tool to modify, we change the input arguments intended for the
+  tool and return `None`, so the tool is executed with them. Any other tool
+  is executed with its arguments unchanged.
 
   This is ideal for validating tool inputs, applying policies, or returning
   mocked/cached data for testing.
@@ -144,11 +145,13 @@ def before_tool_callback(
     # Override the tool call and return a mocked result.
     return {"result": "ok"}
 
-  # Modify the arguments for the tool call in-place.
-  input['input_arg'] = 'updated_val1'
-  input['additional_arg'] = 'updated_val2'
+  elif tool.name == "TOOL_TO_MODIFY":
+    # Modify the arguments for the tool call in-place.
+    input['input_arg'] = 'updated_val1'
+    input['additional_arg'] = 'updated_val2'
 
-  # Return None so that the tool is executed with the modified arguments.
+  # Return None so that the tool is executed (with the modified arguments
+  # for TOOL_TO_MODIFY, unchanged for any other tool).
   return None
 ```
 
@@ -198,7 +201,7 @@ def after_model_callback(callback_context: CallbackContext, llm_response: LlmRes
 - Custom payloads: supplementary non-textual structured data (typically JSON) in an agent's response, for example agent escalation/handoff routing instructions (such as a queue), or rich content and client-side actions (image URLs, quick-reply chips). They can be returned alone deterministically, with an LLM-generated text response, or with a static text response. The payload value is not visible to the LLM. Payloads are generated and set only in callbacks (`before_model_callback` or `after_model_callback`), as a Blob with `mime_type` `application/json`, created with `Part.from_json(data=payload_string)`.
 - At runtime the payload is populated as a Struct in the `payload` field of both `RunSession` and `BidiRunSession` of the `ces` v1 SessionService (https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/reference/rpc/google.cloud.ces.v1#google.cloud.ces.v1.SessionService.RunSession).
 - Corrected from the official docs: the custom payload sample reads `if (llm_response.content.parts[0].text is not None):` without checking that `content` and `parts` exist, so it raises `IndexError` on a response with an empty parts list (and fails if `content` or `parts` is unset; in ADK, `LlmResponse.content` is `types.Content | None` in `google-adk` 2.15.0 `llm_response.py`, which is an analogy not confirmed for the CX Agent Studio runtime), and rebuilds the response as `new_parts.append(Part(text=llm_response.content.parts[0].text))` plus the payload in `LlmResponse(content=Content(parts=new_parts))`, which drops every other part (later text parts, function calls) and the content's `role`. The page returns `None` when there are no parts (the `after_model_callback` sample above says returning `None` keeps the response as-is), copies all parts in order with `new_parts.extend(llm_response.content.parts)`, and passes `role=llm_response.content.role`. The source's docstring says the callback "Adds a custom payload to every model response which is a text", but its condition checks only `parts[0].text`, so a response with a non-text first part followed by a text part gets no payload; the page checks every part with `any(part.text is not None for part in llm_response.content.parts)`, keeping the source's `is not None` test (in `google-genai` 3.6.1 `types.py`, `Part.text` is `Optional[str]` and `Content.parts` is `Optional[list[Part]]`; an analogy, not confirmed for the CX Agent Studio runtime).
-- Corrected from the official docs: the source's `before_tool_callback` sample modifies `input['input_arg']` and `input['additional_arg']` ("Modify the arguments for the tool call in-place.") and then unconditionally returns `{"result": "ok"}` ("Override the tool call and return a mocked result."); by the page's own contract for the return value ("If set, tool execution is skipped and this output is provided to the model."), the tool is then never called, so the argument changes have no effect. The page keeps both behaviors but separates them: returning the mocked dictionary skips the tool, and modifying the arguments is followed by `return None`, so the tool runs. That in-place changes to `input` reach the tool when `None` is returned rests on the source's comment and the table's Purpose ("inspection and modification of tool arguments"); the CX Agent Studio runtime's handling is not otherwise stated in the official docs. `TOOL_TO_MOCK` is a placeholder for your tool's name; `tool.name` is used the same way in the source's `after_tool_callback` sample (`if tool.name == "get_user_info":`).
+- Corrected from the official docs: the source's `before_tool_callback` sample modifies `input['input_arg']` and `input['additional_arg']` ("Modify the arguments for the tool call in-place.") and then unconditionally returns `{"result": "ok"}` ("Override the tool call and return a mocked result."); by the page's own contract for the return value ("If set, tool execution is skipped and this output is provided to the model."), the tool is then never called, so the argument changes have no effect. The page keeps both behaviors but separates them by tool name: returning the mocked dictionary skips the tool, modifying the arguments is followed by `return None`, so the tool runs, and the arguments of any other tool are left unchanged, because `input_arg` / `additional_arg` are example argument names that another tool may not accept. That in-place changes to `input` reach the tool when `None` is returned rests on the source's comment and the table's Purpose ("inspection and modification of tool arguments"); the CX Agent Studio runtime's handling is not otherwise stated in the official docs. `TOOL_TO_MOCK` and `TOOL_TO_MODIFY` are placeholders for your tools' names; `tool.name` is used the same way in the source's `after_tool_callback` sample (`if tool.name == "get_user_info":`).
 - The source's `before_model_callback` sample skips the LLM call and forces a function call.
 - The source also has code samples for `before_agent_callback` (set a default `username` variable), `after_agent_callback` (increment a per-agent counter), `after_tool_callback` (override a `get_user_info` response) and a `before_model_callback` custom payload when an `escalate` tool is called; they are omitted here.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/callback (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

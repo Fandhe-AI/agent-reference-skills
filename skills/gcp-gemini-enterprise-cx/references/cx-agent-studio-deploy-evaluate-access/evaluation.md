@@ -51,6 +51,8 @@ evals:
       - static_utterance: "I want to check my balance."
 ```
 
+Before running a test case like this one, keep its tools from causing real side effects such as a refund: turn on **Tool fake** in the evaluation settings ("Use mocked data instead of real production API calls."), or run the evaluation in an app whose tools use non-production endpoints and test data. The evaluation settings list **Tool fake** for goldens and scenarios only; whether it applies to simulation test cases is not stated in the official docs (see Notes).
+
 The mapping of YAML keys to console fields is in the table below. YAML validation rules: the document must contain an `evals` list and only the first entry is read; each entry needs a `name` and at least one step; every step needs at least one of `goal`, `static_utterance`, or `event`; every key in `session_parameters` must be a variable declared in the agent application; every string in `expectations` must be the prompt text of an existing expectation (case and surrounding whitespace ignored); unrecognized keys in an `evals` entry are rejected.
 
 ### Golden
@@ -61,6 +63,7 @@ Create from the simulator (**Save as golden**), from conversation history (searc
 
 - Goldens: pass/fail criteria at turn level (semantic similarity threshold, tool correctness threshold, hallucinations on or off) and expectation level (tool correctness threshold), golden run method (naive or stable replay), tool fake (mocked data instead of real production API calls).
 - Scenarios: pass/fail criteria, conversation initiator (user or model), tool fake. Also audio evaluation recordings.
+- Before a run, turn on **Tool fake** or use an app with non-production tool endpoints and test data for any tool with side effects (see the simulation example above).
 - Run by the run button on a row or by selecting several test cases; pick a saved version or auto-save the draft as a new version for the run. Detailed results show failed turns and a paginated list of turns with actual and expected responses.
 - Export test cases or runs as YAML or JSON in a zip file; on import, the receiving agent must contain all resources (tools, variables, sub-agents) in the exported data.
 - Personas (simulated user personas for scenario and simulation test cases, text and audio): **Persona management**, **+ Add persona** with **Name**, **User personality**, **User context**. Without a persona, a random one is chosen per scenario result.
@@ -104,6 +107,7 @@ Preview, subject to the "Pre-GA Offerings Terms". Only agent applications with a
 - When using a coding agent to iterate on the agent, have it reconcile conflicting suggestions, flag tricky conflicts for human review, produce side-by-side diffs, and validate results against real transcripts.
 - The source also shows Console click-paths for each step, not repeated here.
 - The evaluation page requires `session_parameters` keys to be declared variables but gives no steps to declare one; the steps before the simulation YAML are quoted from the CX Agent Studio quickstart, which creates a **Text** variable named `username`. Which variable type `product_id` needs is not stated in the official docs.
+- Added (not in the official docs): the advice to fake side-effecting tools or use non-production endpoints before a run. The official page describes **Tool fake** only as "Use mocked data instead of real production API calls." under the **Goldens** and **Scenarios** settings; it does not list it for simulations (it says simulations "are executed by the same simulated-user pipeline as scenarios" in the metrics section only), and it does not say what mocked data is returned or how to define it per tool. A setting that stops tool calls during a simulation run is not stated in the official docs.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/evaluation (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/quick/create-agent (steps to create a variable; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
