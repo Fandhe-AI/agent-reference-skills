@@ -10,6 +10,8 @@ In a multi-agent system the whole agent tree is the agent application. It is mad
 
 ### Inline tag example (Composite V2 response)
 
+The official example uses three tags, more than the "one or two tags per turn" that the same page recommends; `<positive>` starts the second sentence.
+
 ```text
 <calm><empathetic> I'm so sorry your flight was canceled. <positive> The good news is that I've already rebooked you on the next flight out.
 ```
