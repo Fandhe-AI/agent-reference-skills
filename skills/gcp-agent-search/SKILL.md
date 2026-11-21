@@ -13,7 +13,7 @@ Google Cloud (GCP) の検索・アンサー生成・社内エージェント基�
 - Gemini Enterprise: エディションとライセンス・app 作成・Assistant 設定・コネクタと data store（Cloud Storage・BigQuery・Knowledge Catalog・custom MCP server）・ADK / A2A agent の登録と共有・`streamAssist` による agent 呼び出し・Agent Registry からの取り込み・app 単位の IAM policy・identity provider（Workforce Identity Federation）
 - 機械生成: REST（Discovery）`discoveryengine` 1 API、メッセージスキーマ 1688 件、IAM（`roles/discoveryengine.*`）
 
-参照本文は英語（公式ドキュメントの原語）。**gcloud のグループはこれらのプロダクトに無い**ため `references/gcloud/` は無く、手順の正は REST・クライアントライブラリ・コンソール（`gcloud auth print-access-token` は REST 呼び出しの bearer token を得るためだけに使う）。
+参照本文は英語（公式ドキュメントの原語）。**gcloud のグループはこれらのプロダクトに無い**ため `references/gcloud/`（後続 PR で投入） は無く、手順の正は REST・クライアントライブラリ・コンソール（`gcloud auth print-access-token` は REST 呼び出しの bearer token を得るためだけに使う）。
 
 名称の対応（出典 https://docs.cloud.google.com/gemini-enterprise-agent-platform/vertex-ai-name-changes 、取得 2026-11-21）: Vertex AI Search → Agent Search、Agentspace → Gemini Enterprise、Vertex AI → Gemini Enterprise Agent Platform（Agent Platform）。API 名・IAM ロールの接頭辞（`roles/discoveryengine.*`）は旧名のまま。
 
@@ -23,44 +23,13 @@ Google Cloud (GCP) の検索・アンサー生成・社内エージェント基�
 skills/gcp-agent-search/
   SKILL.md
   references/
-    rest/                                # 機械生成: Discovery 由来のメソッド表
-      README.md
-      discoveryengine/
-        README.md
-        discoveryengine-1.md ... discoveryengine-4.md   # 4 ページ
-    rest-schemas/                        # 機械生成: メッセージスキーマ
-      README.md
-      discoveryengine/
-        README.md
-        discoveryengine-1.md ... discoveryengine-12.md  # 12 ページ
-    iam/                                 # 機械生成: IAM roles-permissions reference
-      README.md
-      discoveryengine-1.md ... discoveryengine-4.md     # 4 ページ
     agent-search-overview-setup/         # 14 ページ: 概要・セットアップ・認証・IAM・app 作成・LRO
       README.md
       <page>.md
     data-stores-ingestion/               # 6 ページ: データ準備・スキーマ・parse / chunk・website indexing
       README.md
       <page>.md
-    search-query-results/                # 3 ページ: search・filter・boost
-      README.md
-      <page>.md
     answers-summaries/                   # 7 ページ: streamAnswer・grounding・summary・snippets・モデル
-      README.md
-      <page>.md
-    user-events-autocomplete/            # 5 ページ: user events・autocomplete
-      README.md
-      <page>.md
-    ranking-serving-controls/            # 5 ページ: ranking・serving controls・relevance filter
-      README.md
-      <page>.md
-    security-identity-access/            # 8 ページ: CMEK・ACL・VPC-SC・identity・Organization Policy
-      README.md
-      <page>.md
-    gemini-enterprise-overview-apps/     # 7 ページ: クイックスタート・エディション・app・ライセンス・agents 概要
-      README.md
-      <page>.md
-    gemini-enterprise-connectors-data-stores/  # 7 ページ: コネクタ・data store・custom MCP server
       README.md
       <page>.md
     gemini-enterprise-agents-admin/      # 6 ページ: ADK / A2A agent の登録・共有・呼び出し・IAM
@@ -68,49 +37,34 @@ skills/gcp-agent-search/
       <page>.md
 ```
 
-収録ページ数は機械生成 20（rest 4・rest-schemas 12・iam 4）と手書き 68 の計 88。`references/rest/` `references/rest-schemas/` の API は `discoveryengine`（Discovery Engine API）のみ。メソッドは 4 分割（billingAccounts・projects。`projects.locations.collections.dataStores` / `engines`・`userEvents`・`rankingConfigs`・`sampleQuerySets` 等）、IAM は 4 分割（`discoveryengine-1` はロール 6、`discoveryengine-2` はロール 11 と権限、`discoveryengine-3` / `discoveryengine-4` は権限の続き）。
+収録ページ数は機械生成 20（rest 4・rest-schemas 12・iam 4）と手書き 68 の計 88。`references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） の API は `discoveryengine`（Discovery Engine API）のみ。メソッドは 4 分割（billingAccounts・projects。`projects.locations.collections.dataStores` / `engines`・`userEvents`・`rankingConfigs`・`sampleQuerySets` 等）、IAM は 4 分割（`discoveryengine-1` はロール 6、`discoveryengine-2` はロール 11 と権限、`discoveryengine-3` / `discoveryengine-4` は権限の続き）。
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
-1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（各カテゴリ（サブディレクトリ）に README.md がある。ガイド直下に README.md は無い）。Agent Search（検索 app）は `agent-search-overview-setup` から、Gemini Enterprise（社内アシスタント・agent）は `gemini-enterprise-overview-apps` から入る
+1. 概念・手順 → 下記マッピング表でガイドのカテゴリを選び、その README.md から個別ページを特定して Read する（各カテゴリ（サブディレクトリ）に README.md がある。ガイド直下に README.md は無い）。Agent Search（検索 app）は `agent-search-overview-setup` から、Gemini Enterprise（社内アシスタント・agent）は `gemini-enterprise-overview-apps`（後続 PR で投入） から入る
 2. gcloud コマンド → このスキルには無い。REST かクライアントライブラリ、コンソールの手順を引く。REST を `curl` で呼ぶときの bearer token は `gcloud auth print-access-token` で得る
-3. REST（メソッド・パス・パラメータ）→ `references/rest/discoveryengine/README.md`、メッセージ型 → `references/rest-schemas/discoveryengine/README.md`。メソッドのパスは `projects.locations.collections.dataStores...` / `engines...` / `dataStores...`（collection 無し）と複数の系統があるため、メソッド ID で grep する
-4. IAM ロール・権限 → `references/iam/README.md` の索引から引く。ロール ID（例: `roles/discoveryengine.admin`・`roles/discoveryengine.editor`・`roles/discoveryengine.user`・`roles/discoveryengine.viewer`）や権限（例: `discoveryengine.servingConfigs.search`）で `references/iam/` 配下を grep する。ファイルは 4 分割のため全体を grep する
-5. 検索の挙動の調整（filter・boost・ranking・serving controls・relevance filter）は `search-query-results` と `ranking-serving-controls`、生成回答（`streamAnswer`・summary・grounding）は `answers-summaries`
-6. エージェントの登録・共有・呼び出しは `gemini-enterprise-agents-admin`。Agent Runtime 上に ADK agent を作る側は `gcp-agent-platform`（予定を含む他スキルは下記「他スキルとの使い分け」）
+3. 検索の挙動の調整（filter・boost・ranking・serving controls・relevance filter）は `search-query-results`（後続 PR で投入） と `ranking-serving-controls`（後続 PR で投入）、生成回答（`streamAnswer`・summary・grounding）は `answers-summaries`
+4. エージェントの登録・共有・呼び出しは `gemini-enterprise-agents-admin`。Agent Runtime 上に ADK agent を作る側は `gcp-agent-platform`（予定を含む他スキルは下記「他スキルとの使い分け」）
 
-`samples/` と `scripts/` は本スキルに無い。コードは各ガイドのコードブロックを引く。
+未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access` / `gemini-enterprise-overview-apps` / `gemini-enterprise-connectors-data-stores`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
-| ロール ID の権限一覧・事前定義ロールを調べたい（`roles/discoveryengine.*`） | iam | [references/iam/README.md](references/iam/README.md) |
-| REST のメソッド・パスを調べたい | rest | [references/rest/README.md](references/rest/README.md) |
-| Discovery Engine API（`discoveryengine`）のメソッド（dataStores・engines・documents・userEvents・servingConfigs 等） | rest/discoveryengine | [references/rest/discoveryengine/README.md](references/rest/discoveryengine/README.md) |
-| REST のリクエスト・レスポンスのメッセージ型を調べたい | rest-schemas | [references/rest-schemas/README.md](references/rest-schemas/README.md) |
-| Discovery Engine API の各メッセージ型（1688 件） | rest-schemas/discoveryengine | [references/rest-schemas/discoveryengine/README.md](references/rest-schemas/discoveryengine/README.md) |
 | Agent Search の始め方（プロジェクト・課金・API の有効化）・カスタム検索のチェックリスト・Enterprise edition | agent-search-overview-setup | [references/agent-search-overview-setup/README.md](references/agent-search-overview-setup/README.md) |
 | 認証（ADC・API キー・impersonation）・IAM ロール・検索 app（engine）の作成・対応言語 | agent-search-overview-setup | [references/agent-search-overview-setup/README.md](references/agent-search-overview-setup/README.md) |
 | long-running operation の確認・Programmable Search Engine からの移行 | agent-search-overview-setup | [references/agent-search-overview-setup/README.md](references/agent-search-overview-setup/README.md) |
 | データの準備（website・非構造化・構造化・FHIR）・data store の作成と取り込み | data-stores-ingestion | [references/data-stores-ingestion/README.md](references/data-stores-ingestion/README.md) |
 | スキーマの指定・ドキュメントの parse と chunk（RAG 向け）・advanced website indexing・ドメイン検証 | data-stores-ingestion | [references/data-stores-ingestion/README.md](references/data-stores-ingestion/README.md) |
-| 検索結果の取得とプレビュー（`search` / `searchLite`）・メタデータ filter・boost（`boostSpec`） | search-query-results | [references/search-query-results/README.md](references/search-query-results/README.md) |
 | `streamAnswer` による生成回答・check grounding・検索の要約（`summarySpec`）・snippets・extractive content | answers-summaries | [references/answers-summaries/README.md](references/answers-summaries/README.md) |
 | agentic retrieval のストリーミング・回答生成モデルのバージョン・safety settings と fallback | answers-summaries | [references/answers-summaries/README.md](references/answers-summaries/README.md) |
-| user events の種類と必須項目・記録（JavaScript pixel・`userEvents.write`）・過去分の import・purge | user-events-autocomplete | [references/user-events-autocomplete/README.md](references/user-events-autocomplete/README.md) |
-| autocomplete（`completeQuery`）の設定・denylist・言語 boost | user-events-autocomplete | [references/user-events-autocomplete/README.md](references/user-events-autocomplete/README.md) |
-| retrieval と ranking の仕組み・Ranking API（`rankingConfigs.rank`）・custom ranking | ranking-serving-controls | [references/ranking-serving-controls/README.md](references/ranking-serving-controls/README.md) |
-| serving controls（boost・filter・synonyms・redirect・promote）・relevance filter（`relevanceFilterSpec`） | ranking-serving-controls | [references/ranking-serving-controls/README.md](references/ranking-serving-controls/README.md) |
-| CMEK・データソースの ACL・VPC Service Controls・Organization Policy の custom constraints | security-identity-access | [references/security-identity-access/README.md](references/security-identity-access/README.md) |
-| コンプライアンス・データ ガバナンス・Gemini Enterprise のセキュリティ概要・identity provider の設定 | security-identity-access | [references/security-identity-access/README.md](references/security-identity-access/README.md) |
-| Gemini Enterprise のクイックスタート・エディション・app 作成・ライセンスの配布と割り当て | gemini-enterprise-overview-apps | [references/gemini-enterprise-overview-apps/README.md](references/gemini-enterprise-overview-apps/README.md) |
-| agent の種類・Agent Gallery・Assistant の設定とチャット | gemini-enterprise-overview-apps | [references/gemini-enterprise-overview-apps/README.md](references/gemini-enterprise-overview-apps/README.md) |
-| コネクタと data store の概念・同期の種類とスケジュール・Cloud Storage / BigQuery / Knowledge Catalog の接続・custom MCP server | gemini-enterprise-connectors-data-stores | [references/gemini-enterprise-connectors-data-stores/README.md](references/gemini-enterprise-connectors-data-stores/README.md) |
 | ADK agent・A2A agent の登録と管理・Agent Registry からの取り込み・agent の共有と所有権の移転 | gemini-enterprise-agents-admin | [references/gemini-enterprise-agents-admin/README.md](references/gemini-enterprise-agents-admin/README.md) |
 | `streamAssist` での agent 呼び出し・app 単位の IAM policy（`getIamPolicy` / `setIamPolicy`） | gemini-enterprise-agents-admin | [references/gemini-enterprise-agents-admin/README.md](references/gemini-enterprise-agents-admin/README.md) |
+
+後続 PR で投入するカテゴリ（分割投入中。投入後にツリーと上の表へ追加する）: `rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access` / `gemini-enterprise-overview-apps` / `gemini-enterprise-connectors-data-stores`。収録済みのページは各カテゴリの README.md の索引で確認する
 
 ## 他スキルとの使い分け
 
@@ -135,7 +89,7 @@ skills/gcp-agent-search/
 
 次は収録していない。必要なときは公式ドキュメントを確認する（https://docs.cloud.google.com/ 配下）。
 
-- Gemini Enterprise のコネクタ別ページ 331 件（主要コネクタの概要は `gemini-enterprise-connectors-data-stores/introduction-to-connectors-and-data-stores.md` のみ収録）
+- Gemini Enterprise のコネクタ別ページ 331 件（主要コネクタの概要は `gemini-enterprise-connectors-data-stores/introduction-to-connectors-and-data-stores.md`（後続 PR で投入） のみ収録）
 - Retail API / AI Commerce Search（`gcp-ai-apis`（予定）の担当）
 - 料金（取得していない。公式の料金ページを確認する）
 - Console の操作手順の細部（各ページの Notes に省略した形式を記載）
@@ -145,7 +99,7 @@ skills/gcp-agent-search/
 - 取得日: 2026-11-21（ガイド。`docs.cloud.google.com/<path>.md.txt` の Markdown twin。URL に版が無いため取得日で pin）、2026-11-14（IAM。roles-permissions reference）
 - REST・スキーマは `google-api-python-client` 同梱の Discovery document（commit は未取得）。gcloud は本スキルに無い（gcloud 593.0.0 の help も未使用）
 - ライセンス: docs 本文は CC BY 4.0、コードサンプルは Apache 2.0（https://developers.google.com/site-policies）
-- `references/rest/` `references/rest-schemas/` `references/iam/` は機械生成。他の 10 カテゴリは公式ガイド由来の手書き
+- `references/rest/`（後続 PR で投入） `references/rest-schemas/`（後続 PR で投入） `references/iam/`（後続 PR で投入） は機械生成。他の 10 カテゴリは公式ガイド由来の手書き
 - 一部の公式の例は安全性・正しさのために修正した。該当箇所はコードブロック直前に `Adapted (not in the official docs)` の行を置き、`## Notes` に `Corrected from the official docs:` 等で理由を残す
 - 終了・非推奨（references で確認したもの）:
   - Agent Search for healthcare は非推奨で 2027-05-15 以降は利用できない（`data-stores-ingestion/prepare-data.md` の出典 https://docs.cloud.google.com/generative-ai-app-builder/docs/prepare-data ）
