@@ -113,6 +113,8 @@ Ability to manage environments and deploy specific App Versions to them. Base ro
 - Source: https://docs.cloud.google.com/iam/docs/roles-permissions/ces (role IDs and permission IDs per role; retrieved 2026-11-14)
 - The source also shows Console click-paths for adding, changing and removing principals.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/access-control (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://ces.googleapis.com/$discovery/rest?version=v1 (Discovery document `ces.v1`, revision 20261016)
+- Source: https://ces.googleapis.com/$discovery/rest?version=v1beta (Discovery document `ces.v1beta`, revision 20261016)
 
 ## Related
 

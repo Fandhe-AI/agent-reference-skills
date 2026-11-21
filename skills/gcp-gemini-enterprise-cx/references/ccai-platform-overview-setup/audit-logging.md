@@ -51,6 +51,7 @@ The log filter for a method is `protoPayload.methodName="<fully qualified method
 - The source shows the Console and Logs Explorer only.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/audit-logging (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/logging/docs/audit/configure-data-access (retrieved 2026-11-18; CC BY 4.0, code samples Apache 2.0)
+- Source: https://contactcenteraiplatform.googleapis.com/$discovery/rest?version=v1alpha1 (Discovery document `contactcenteraiplatform.v1alpha1`, revision 20260423)
 
 ## Related
 

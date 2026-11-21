@@ -103,6 +103,7 @@ With the `AGENT` example condition enforced on `CREATE`, creating an instance co
 - Discovery (`contactcenteraiplatform.v1alpha1`): `ContactCenter.privateAccess` is a `PrivateAccess` object with `ingressSettings` and `egressSettings` (lists of `Component` with `name` and `serviceAttachmentNames`) and `pscSetting`.
 - Corrected from the official docs: the Supported resources and operations table writes the `startsWith` example as `resource.name.startsWith("projects/my-project")` and the `endsWith` example as `resource.name.endsWith("myContactCenter")`. That prefix also matches other projects whose ID begins with `my-project` (for example `projects/my-project2`), and that suffix also matches contact centers whose ID ends with `myContactCenter` (for example `.../contactCenters/xmyContactCenter`); the table ends the prefix with `/` and starts the suffix at `/contactCenters/` so each matches one project or one contact center ID. The `contains` example `resource.name.contains("us-central1/contactCenters/myContactCenter")` is kept as written; it also matches longer IDs such as `myContactCenter2`.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/ccaip-custom-constraints (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://contactcenteraiplatform.googleapis.com/$discovery/rest?version=v1alpha1 (Discovery document `contactcenteraiplatform.v1alpha1`, revision 20260423)
 
 ## Related
 

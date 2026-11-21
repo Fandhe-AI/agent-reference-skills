@@ -66,6 +66,8 @@ With Private Service Connect you can set up private ingress into your instance, 
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/vpc-service-controls (restricted services; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/set-up-psc (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/audit-logging (service name `contactcenteraiplatform.googleapis.com`; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://storage.googleapis.com/$discovery/rest?version=v1 (Discovery document `storage.v1`, revision 20261009)
+- Source: https://dialogflow.googleapis.com/$discovery/rest?version=v3 (Discovery document `dialogflow.v3`, revision 20261106)
 
 ## Related
 

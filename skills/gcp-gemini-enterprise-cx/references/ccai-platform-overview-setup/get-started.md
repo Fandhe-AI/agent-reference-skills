@@ -126,6 +126,7 @@ Users of the CCAI Platform portal are allocated roles that determine their permi
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/user-roles-permissions (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/ccaip-custom-constraints (role IDs; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/audit-logging (service name `contactcenteraiplatform.googleapis.com`; retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://contactcenteraiplatform.googleapis.com/$discovery/rest?version=v1alpha1 (Discovery document `contactcenteraiplatform.v1alpha1`, revision 20260423)
 
 ## Related
 
