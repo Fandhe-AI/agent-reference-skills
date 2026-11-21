@@ -40,6 +40,8 @@ curl -q --fail-with-body -X POST \
 }' )
 ```
 
+After the create operation is done ([long-running-operations.md](../agent-search-overview-setup/long-running-operations.md)), add the URL patterns with `siteSearchEngine.targetSites.create` (`discoveryengine.v1`: `POST .../v1/{+parent}/targetSites`, parent `.../dataStores/DATA_STORE_ID/siteSearchEngine`; returns an operation), then verify the domains; the source says advanced website indexing "is activated only after the domain verification".
+
 ### Verify domains in the Console
 
 1. Go to the **AI Applications** page, then **Data Stores**, then the data store; select **Data**.

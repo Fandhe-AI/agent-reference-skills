@@ -34,6 +34,8 @@ curl -q --fail-with-body -X POST \
 --data @- )
 ```
 
+To import documents, the source links "Import from BigQuery" (https://docs.cloud.google.com/generative-ai-app-builder/docs/create-data-store-es#bigquery) and "Import from Cloud Storage" (https://docs.cloud.google.com/generative-ai-app-builder/docs/create-data-store-es#cloud-storage). With the API, poll the operation that `documents.import` returns (step 3 of [generic-search-checklist.md](../agent-search-overview-setup/generic-search-checklist.md)).
+
 ## Notes
 
 - App to data store relationship:
