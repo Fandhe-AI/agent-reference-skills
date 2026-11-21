@@ -794,6 +794,9 @@ ORDER BY
 
 **Returns:**
 
+The query has no `LIMIT` and returns a row for every row whose `word` is `love`; the table shows
+only five of those rows (added; see Notes).
+
 | corpus_date | corpus | word_count | annual_total |
 |---|---|---|---|
 | 0 | various | 37 | 37 |
@@ -1553,6 +1556,7 @@ To convert a base64-encoded string to BYTES, use [FROM_BASE64()](https://docs.cl
 - Added (not in the official docs): the `CUME_DIST` formula `<number of rows preceding or tied with the current row> / <total rows>` does not say whether the current row is counted; the shown result (`handkerchief` `0.2`, the tied `displeasure` and `instruments` `0.8`, of 5 rows) counts the current row, the rows before it and the rows tied with it once each. A sentence that says so is added after the formula.
 - Added (not in the official docs): the "two-day range up to now" example lists the tables `mydata.people20140323` to `mydata.people20140325` and uses `CURRENT_TIMESTAMP()`, so it reads those tables only when it runs on 2014-03-25; a sentence after the query says that the range is relative to the time when the query runs. The query is kept as in the official docs.
 - Added (not in the official docs): the `FARM_FINGERPRINT` description says that the output "matches the output of the `FARM_FINGERPRINT` function when using GoogleSQL" and that the function "Respects `IGNORE CASE` for strings, returning case invariant values". The GoogleSQL function hashes the bytes that it gets, and the official docs don't say how legacy SQL normalizes the case, so a sentence is added that the outputs match only for the same bytes, and that fingerprints from an `IGNORE CASE` query can't be assumed to match.
+- Added (not in the official docs): the result table of the `SUM()` window example (cumulative sum for each year) now says that it shows only five of the rows that the query returns, because the query has no `LIMIT` and does not restrict `corpus_date`.
 
 ## Related
 
