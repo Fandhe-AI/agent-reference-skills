@@ -35,7 +35,7 @@ gcloud access-context-manager perimeters create PERIMETER \
 - Optional, if you restricted Identity Platform, Cloud Storage or Firestore: add a condition that allows the users of the agent adapter to access those services, with an access level attribute of those users.
 - If your use case requires it, Private Google Access can allow access to restricted resources within a perimeter instead of an access level.
 
-A new access level takes effect only once it is attached to the perimeter (the source does not show this step). Attach it to the perimeter created above (`ACCESS_LEVEL` is the access level ID). To allow it for specific services only, use an ingress policy file with `--set-ingress-policies=YAML_FILE` instead (the format is in the Access Context Manager API reference).
+A new access level takes effect only once it is attached to the perimeter (the source does not show this step). Attach it to the perimeter created above (`ACCESS_LEVEL` is the access level ID). To allow it for specific services only, use an ingress policy file with `--set-ingress-policies=YAML_FILE` instead (the format is in the Access Context Manager API reference). The help does not say whether that file is merged with the perimeter's existing ingress policies, so first read them with `gcloud access-context-manager perimeters describe PERIMETER --policy=9876543` and put them in the file together with the new rule (not stated in the official docs).
 
 Adapted (not in the official docs): the help example `gcloud access-context-manager perimeters update my-perimeter --add-resources=... --add-access-levels="accessPolicies/123/accessLevels/a_level" ...` is reduced to `--add-access-levels`, with `--policy` and the policy ID of the create example above.
 

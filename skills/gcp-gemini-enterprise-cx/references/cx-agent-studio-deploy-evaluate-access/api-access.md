@@ -84,7 +84,7 @@ The `console.log` calls that print the sent queries and the received messages ar
 
 `SESSION_ID` identifies one conversation: generate a new ID when a new conversation starts, and reuse that ID only for further messages of the same conversation; never share one ID across conversations or users. Each run of the example below starts one new conversation.
 
-Adapted (not in the official docs): the fixed `const sessionId = 'session-name';` is replaced with `const sessionId = randomUUID();` (with `import {randomUUID} from 'node:crypto';`), so each run starts its own session instead of every run sharing one, as the source's Java and Python `BidiRunSession` samples do with `UUID.randomUUID().toString()` and `str(uuid.uuid4())`; and the first `config` message also sets `deployment` to the API access channel's deployment (`${appResourceName}/deployments/DEPLOYMENT_ID`), as the source's Go `BidiRunSession` sample does, so the session uses the version and channel-specific settings of the deployment you created; and the location `us`, written twice in the source (in the app resource name and at the end of the WebSocket path), is defined once as `const location = 'us';` and used in both, so the WebSocket endpoint and the app, session and deployment always name the same location, as the source's Go `BidiRunSession` sample does with its `-location` flag (`"/ws/google.cloud.ces.v1.SessionService/BidiRunSession/locations/" + *location`); and instead of closing after a fixed 10 seconds, the client sends the second query after the first turn completes, exits normally after the second turn completes (`sessionOutput.turnCompleted`) or on `endSession` (top level or in `sessionOutput`, without sending further queries), and logs an error with a non-zero exit code on a credentials failure, a 60-second timeout or an early close.
+Adapted (not in the official docs): the fixed `const sessionId = 'session-name';` is replaced with `const sessionId = randomUUID();` (with `import {randomUUID} from 'node:crypto';`), so each run starts its own session instead of every run sharing one, as the source's Java and Python `BidiRunSession` samples do with `UUID.randomUUID().toString()` and `str(uuid.uuid4())`; and the first `config` message also sets `deployment` to the API access channel's deployment (`${appResourceName}/deployments/DEPLOYMENT_ID`), as the source's Go `BidiRunSession` sample does, so the session uses the version and channel-specific settings of the deployment you created; and the location `us`, written twice in the source (in the app resource name and at the end of the WebSocket path), is defined once as `const location = 'us';` and used in both, so the WebSocket endpoint and the app, session and deployment always name the same location, as the source's Go `BidiRunSession` sample does with its `-location` flag (`"/ws/google.cloud.ces.v1.SessionService/BidiRunSession/locations/" + *location`); and instead of closing after a fixed 10 seconds, the client sends the second query after the first turn completes, exits normally after the second turn completes (`sessionOutput.turnCompleted`) and logs an error with a non-zero exit code on a credentials failure, a 60-second timeout, an early close, or an `endSession` (top level or in `sessionOutput`) before the second turn completes.
 
 ```javascript
 import {randomUUID} from 'node:crypto';
@@ -171,21 +171,24 @@ async function main() {
     } catch (e) {
       return;
     }
-    if (msg.endSession || (msg.sessionOutput && msg.sessionOutput.endSession)) {
-      finish(true);
-    } else if (msg.sessionOutput && msg.sessionOutput.turnCompleted) {
+    const out = msg.sessionOutput || {};
+    if (out.turnCompleted) {
       turns += 1;
-      if (turns === 1) {
-        // 3. Send query message 2 after the first turn completed
-        const queryMessage2 = {
-          realtimeInput: {text: query2},
-        };
-        const queryJson2 = JSON.stringify(queryMessage2);
-        console.log(`Sending query 2: ${queryJson2}`);
-        ws.send(queryJson2);
-      } else {
+    }
+    if (msg.endSession || out.endSession || turns === 2) {
+      if (turns === 2) {
         finish(true);
+      } else {
+        finish(false, 'Session ended before the last turn completed');
       }
+    } else if (out.turnCompleted) {
+      // 3. Send query message 2 after the first turn completed
+      const queryMessage2 = {
+        realtimeInput: {text: query2},
+      };
+      const queryJson2 = JSON.stringify(queryMessage2);
+      console.log(`Sending query 2: ${queryJson2}`);
+      ws.send(queryJson2);
     }
   });
 
