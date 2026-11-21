@@ -40,7 +40,7 @@ token = jwt_encode(header, payload, COMPANY_SECRET)
 
 Express (Node.js):
 
-Adapted (not in the official docs): `COMPANY_SECRET` is read from the `COMPANY_SECRET` environment variable and the server fails at start-up if it is missing (the source assigns the literal `'__read_from_config__'`), and the handler rejects requests without `req.user`, or whose `req.user.id` is not a non-empty string, with `401` (the source issues a token without the required `identifier` for them).
+Adapted (not in the official docs): `COMPANY_SECRET` is read from the `COMPANY_SECRET` environment variable and the server fails at start-up if it is missing (the source assigns the literal `'__read_from_config__'`), and the handler rejects requests without `req.user`, or whose `req.user.id` is not a non-empty string, with `401` (the source issues a token without the required `identifier` for them), and the handler sets `Cache-Control: no-store` (with Express `res.set`) on every response, including the `401`, so a per-user token is not stored by a browser or shared cache and reused after the user changes.
 
 ```javascript
 const express = require('express')
@@ -57,6 +57,7 @@ app.use(express.json())
 app.use(your_session_middleware)
 
 app.get('/auth/token', function (req, res) {
+  res.set('Cache-Control', 'no-store')
   if (!req.user || typeof req.user.id !== 'string' || req.user.id === '') {
     return res.status(401).json({ error: 'unauthenticated' })
   }
@@ -81,6 +82,7 @@ app.get('/auth/token', function (req, res) {
 - The source also shows a Flask (Python) example using `joserfc`; it is left out because it mixes JavaScript syntax into Python (`if (request.user) {`, `payload.identifier = request.user.id,` on a `dict`, a closing `}`), so it does not parse, and it reads `request.user`, which the example does not define. Use the Express example as the pattern. In the Express example, `your_session_middleware` and `req.user` stand for your own session handling.
 - Adapted from the official docs: the source writes `const COMPANY_SECRET = '__read_from_config__'` and passes that literal to `jwt.sign`, so a copied server signs tokens with a public placeholder string that does not match the company secret registered in CCAI Platform. The page reads the secret from server configuration (the `COMPANY_SECRET` environment variable, which you can populate from a secret store) and throws at start-up if it is not set.
 - Adapted from the official docs: the source states that "Even if the user is an anonymous user and has not yet authenticated, the identifier is required in order for the SDK to work as expected", yet its handler adds `identifier`, `name` and `email` only inside `if (req.user) { ... }` and signs the token either way, so an unauthenticated request gets a token without `identifier`. The page rejects requests without `req.user`, and requests whose session user has no identifier (`typeof req.user.id !== 'string' || req.user.id === ''`, which would otherwise sign a token with a missing or empty `identifier`), with `401`; the `if (req.user)` block is kept as written. To serve anonymous users instead, the server must put an identifier it issues itself (for example one per guest session; the source does not say how to generate it) into `identifier` before signing.
+- Corrected from the official docs: the source handler answers with `res.json({ token })` and sets no cache directive, although the `GET /auth/token` response carries a JWT with the session user's `identifier`, `name` and `email`; a cached response could hand one user's token to the next user of the browser or of a shared cache. The page adds `res.set('Cache-Control', 'no-store')` as the first line of the handler, so it applies to the token response and to the `401` response.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/web-sdk-v3-authenticate (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

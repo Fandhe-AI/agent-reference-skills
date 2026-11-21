@@ -77,6 +77,8 @@ Say exactly: "Welcome to support".
 
 ### Few-shot examples
 
+Adapted (not in the official docs): the tool call `get_weather(location="London")` became `get_weather(city="London")`, the parameter name of the `get_weather(city: str)` tool that the Weather Agent quickstart defines.
+
 ````xml
 <examples>
   EXAMPLE 1:
@@ -85,7 +87,7 @@ Say exactly: "Welcome to support".
   What's the weather in London?
   [model]
   ```tool_code
-  get_weather(location="London")
+  get_weather(city="London")
   ```
   ```tool_outputs
   {"temperature": "15 C", "condition": "Cloudy"}
@@ -166,6 +168,7 @@ Say exactly: "Welcome to support".
 - Few-shot examples go inline in the instructions. Use them to resolve consistent quality issues, complex formatting and nuanced logic. Use sparingly (too many cause overfitting), keep them descriptive rather than exhaustive, and try clear instructions first.
 - Response formatting best practices: chunk text into 1-2 sentence blocks with line breaks between ideas; bold key data points (product names, prices, dates, order numbers, deadlines); convert more than two items or steps into bulleted (`-`) or numbered (`1.`) lists.
 - Global instructions are set in the advanced agent application settings, inherited by every agent and sent to the model every turn on top of agent-specific instructions; suited to brand tone, general DOs and DON'Ts, globally shared variables and customer profiles.
+- Corrected from the official docs: source inconsistency between two pages. The few-shot example on https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/instruction writes `get_weather(location="London")`, while the weather tool created in the quickstart https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/quick/create-agent is `def get_weather(city: str) -> dict:`, so `location` is not a parameter of that tool; the page uses `city="London"`. The example's simulated `tool_outputs` are kept as written.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/instruction (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

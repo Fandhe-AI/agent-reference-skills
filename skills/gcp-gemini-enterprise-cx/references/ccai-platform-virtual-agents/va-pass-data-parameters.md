@@ -131,7 +131,7 @@ Second part of the same source block, shown directly after the request body:
 }
 ```
 
-Unsecured data:
+Unsecured data, as the source shows it. Verification status should not come from unsigned data: your server decides whether the end user is verified from its own authenticated session and passes `reserved_verified_customer` only in signed data (this rule is not stated in the official docs, whose unsigned example also sets `reserved_verified_customer`):
 
 ```json
 {
@@ -175,6 +175,7 @@ Unsecured data:
 - Data parameters that contain metadata can only be passed to virtual agents, not to outbound SIP headers.
 - The web SDK block is tagged `text` because it contains a `[...]` elision.
 - The signed-data request body and the claims object are two consecutive parts of one source block; the source does not label them further.
+- Unsigned data is sent with only the Apps API key, and the custom data is merged with the chat's existing data and passed to the virtual agent, so an unsigned `reserved_verified_customer` value is a claim from the caller, not a verification result. The source shows it in both the signed and the unsigned example and does not say which keys must be signed; do not let a virtual agent treat an unsigned `reserved_verified_customer` as proof of identity (this restriction is not stated in the official docs).
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/va-pass-data-parameters (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
