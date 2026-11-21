@@ -129,12 +129,10 @@ async for event in remote_agent.async_stream_query(
 
 ### Clean up
 
-This deletes the Agent Runtime instance created by the quickstart. If the instance has child resources (sessions, memories), the call fails with `FAILED_PRECONDITION`; the query above leaves one, because `async_stream_query` without `session_id` calls `async_create_session`, and on Agent Runtime the default session service is `VertexAiSessionService` (google-cloud-aiplatform 2.10.0, `vertexai/agent_engines/templates/adk.py`). `remote_agent.delete(force=True)` also deletes those child resources and cannot be undone; use it only when you mean to delete them.
-
-Adapted (not in the official docs): the source's `remote_agent.delete(force=True)` is written without `force`.
+This deletes the Agent Runtime instance created by the quickstart. `force=True` also deletes its child resources (sessions and memories), such as the session the query above created; without it the call fails with `FAILED_PRECONDITION` while any remain (google-cloud-aiplatform 2.10.0, `vertexai/_genai/types/common.py`). This runtime was created by this quickstart, so `force=True` deletes only its own sessions and memories; do not use `force=True` on a runtime that others use. This cannot be undone.
 
 ```python
-remote_agent.delete()
+remote_agent.delete(force=True)
 ```
 
 ## Notes
@@ -163,7 +161,6 @@ remote_agent.delete()
 - Adapted from the official docs: the `AdkApp` example started at `from google.adk.agents import Agent` and did not call `vertexai.init`.
 - Adapted from the official docs: the source writes `"staging_bucket": "STAGING_BUCKET"` (defined as "Cloud Storage bucket prefixed by `gs://`"). In google-cloud-aiplatform 2.10.0, `client.agent_engines.create` calls `_validate_staging_bucket_or_raise` (`vertexai/_genai/_agent_engines_utils.py`), which raises `ValueError` unless the value starts with `gs://`.
 - Corrected from the official docs: `get_exchange_rate` passed the model-supplied `currency_from` and `currency_to` to the request unchecked, although the create-an-adk-agent docstring describes each as "(3-letter currency code)"; the example normalizes them with `.strip().upper()` and raises `ValueError` unless each is three ASCII letters.
-- Adapted from the official docs: the cleanup omits the source's `force=True`. google-cloud-aiplatform 2.10.0 (`vertexai/_genai/types/common.py`) documents `force` as "If set to True, child resources will also be deleted. Otherwise, the request will fail with FAILED_PRECONDITION error when the Agent Engine has undeleted child resources. Defaults to False."
 
 ## Related
 
