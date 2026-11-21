@@ -13,7 +13,7 @@ Google Cloud (GCP) の検索・アンサー生成・社内エージェント基�
 - Gemini Enterprise: エディションとライセンス・app 作成・Assistant 設定・コネクタと data store（Cloud Storage・BigQuery・Knowledge Catalog・custom MCP server）・ADK / A2A agent の登録と共有・`streamAssist` による agent 呼び出し・Agent Registry からの取り込み・app 単位の IAM policy・identity provider（Workforce Identity Federation）
 - 機械生成: REST（Discovery）`discoveryengine` 1 API、メッセージスキーマ 1688 件、IAM（`roles/discoveryengine.*`）
 
-参照本文は英語（公式ドキュメントの原語）。**gcloud のグループはこれらのプロダクトに無い**ため `references/gcloud/`（後続 PR で投入） は無く、手順の正は REST・クライアントライブラリ・コンソール（`gcloud auth print-access-token` は REST 呼び出しの bearer token を得るためだけに使う）。
+参照本文は英語（公式ドキュメントの原語）。**gcloud のグループはこれらのプロダクトに無い**ため本スキルは gcloud のカテゴリを持たず、手順の正は REST・クライアントライブラリ・コンソール（`gcloud auth print-access-token` は REST 呼び出しの bearer token を得るためだけに使う）。
 
 名称の対応（出典 https://docs.cloud.google.com/gemini-enterprise-agent-platform/vertex-ai-name-changes 、取得 2026-11-21）: Vertex AI Search → Agent Search、Agentspace → Gemini Enterprise、Vertex AI → Gemini Enterprise Agent Platform（Agent Platform）。API 名・IAM ロールの接頭辞（`roles/discoveryengine.*`）は旧名のまま。
 
@@ -48,7 +48,7 @@ skills/gcp-agent-search/
 3. 検索の挙動の調整（filter・boost・ranking・serving controls・relevance filter）は `search-query-results`（後続 PR で投入） と `ranking-serving-controls`（後続 PR で投入）、生成回答（`streamAnswer`・summary・grounding）は `answers-summaries`
 4. エージェントの登録・共有・呼び出しは `gemini-enterprise-agents-admin`。Agent Runtime 上に ADK agent を作る側は `gcp-agent-platform`（予定を含む他スキルは下記「他スキルとの使い分け」）
 
-未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access` / `gemini-enterprise-overview-apps` / `gemini-enterprise-connectors-data-stores`）の探索手順は投入時に追加する。それまで gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
+未投入カテゴリ（`rest` / `rest-schemas` / `iam` / `search-query-results` / `user-events-autocomplete` / `ranking-serving-controls` / `security-identity-access` / `gemini-enterprise-overview-apps` / `gemini-enterprise-connectors-data-stores`）の探索手順は投入時に追加する。それまで上の手順が未投入カテゴリを指すときは、該当する公式ガイド（https://docs.cloud.google.com/ 配下）を引く。gcloud コマンド・REST・IAM ロールは公式リファレンス（https://docs.cloud.google.com/sdk/gcloud/reference 、https://docs.cloud.google.com/iam/docs/roles-permissions ）を引く。
 
 ## タスク → カテゴリ マッピング
 

@@ -16,7 +16,7 @@ To persist conversation context across turns, create an Agent Runtime instance (
 projects/PROJECT_NUMBER/locations/LOCATION_ID/reasoningEngines/REASONING_ENGINE_ID
 ```
 
-Grant `roles/aiplatform.reasoningEngineServiceAgent` to the Discovery Engine service account so the streaming answer backend can create, read and append events to sessions on your behalf (`PROJECT_NUMBER` is the project that hosts the reasoning engine):
+Grant `roles/aiplatform.reasoningEngineServiceAgent` to the Discovery Engine service account so the streaming answer backend can create, read and append events to sessions on your behalf (the source defines `PROJECT_NUMBER` as the number of the project that hosts the reasoning engine; see Notes when the app is in another project):
 
 ```text
 service-PROJECT_NUMBER@gcp-sa-discoveryengine.iam.gserviceaccount.com
@@ -123,6 +123,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 ## Notes
 
 - Availability: "GA with allowlist". Access to agentic retrieval with the stream answers method is available to select Google Cloud customers; contact your Google Cloud sales representative. The allowlisted feature needs a preview Discovery Engine SDK obtained through support, different from the generally available client libraries; the source shows a Python sample against `discoveryengine_v1alpha` (`stream_answer_query`), which is omitted here.
+- Project of the service agent: this source uses one `PROJECT_NUMBER` both in the Discovery Engine service agent address (`service-PROJECT_NUMBER@gcp-sa-discoveryengine.iam.gserviceaccount.com`) and in the reasoning engine name, and defines it as "the number of the project that hosts the reasoning engine"; its Python sample builds the app, serving config and reasoning engine names from the same `PROJECT_ID`, so it assumes the Agent Search app and the reasoning engine are in the same project. The custom MCP server page identifies the acting service agent by the app's project instead: "Replace `PROJECT_NUMBER` with the project number of the Google Cloud project that hosts your Gemini Enterprise app." (custom MCP server page, see Source). When the app and the reasoning engine are in different projects, use the number of the app's project in the service agent address and grant the role on the project that hosts the reasoning engine; this page itself does not cover that case.
 - Suspected inconsistency left as in the source: the Python sample sets `LOCATION = "global"` and reuses it in the reasoning engine path, while the REST text says the reasoning engine location is for example `us-central1`. Verify the location before use.
 - Because of the allowlist, the `streamAnswer` REST reference doesn't show `enableAgentInvocation` or `reasoningEngine`; the `discoveryengine.v1` Discovery document does not list them as request fields either.
 - Without agentic retrieval, multi-turn search works only with single data store apps. Sessions backed by Agent Runtime consume Agent Platform API quotas (see the Agent Engine quotas page).
@@ -131,6 +132,7 @@ curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
 - Former names: Agent Search was Vertex AI Search (API still Discovery Engine); Agent Runtime was Vertex AI Agent Engine.
 - The source also shows a long example response in protobuf text format, which is omitted.
 - Source: https://docs.cloud.google.com/generative-ai-app-builder/docs/agentic-retrieval-stream-answer (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
+- Source: https://docs.cloud.google.com/gemini/enterprise/docs/connectors/custom-mcp-server/set-up-custom-mcp-server (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
 

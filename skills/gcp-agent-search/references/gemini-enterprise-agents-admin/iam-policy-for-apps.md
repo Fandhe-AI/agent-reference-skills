@@ -21,6 +21,8 @@ curl -X GET \
 
 ### Update the app IAM policy
 
+Before you send this request, build the `policy` body from the full policy that `getIamPolicy` returned: keep every existing entry in `bindings` (with its `members` and any `condition`) and the returned `etag`, and add the new members to the `roles/discoveryengine.agentspaceUser` binding (or add that binding if it is missing). The example below shows only the binding being added; the source says "The `setIamPolicy` method replaces the existing policy. To avoid removing existing permissions, your request must include all the policy bindings you want to retain, in addition to any new or modified bindings."
+
 ```bash
 curl -X POST \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -72,6 +74,7 @@ curl -X POST \
 - The app-level grant is done through the API; the Google Cloud console does not support it (the project-level changes use the console).
 - Key term: in Gemini Enterprise, app and engine are used interchangeably in APIs; a Gemini Enterprise engine is a generic search engine whose `app_type` field is `APP_TYPE_INTRANET`.
 - `setIamPolicy` replaces the existing policy: the request must include all bindings you want to retain, in addition to new or modified ones. To revoke access, remove principals from the `members` array. Changes are subject to IAM propagation delay (it can take several minutes).
+- Warning: sending the update example as written (only the `roles/discoveryengine.agentspaceUser` binding plus `etag`) removes every other binding on the app, so every other principal loses the access those bindings gave. Send the full policy from `getIamPolicy` with your members added; the `etag` only detects concurrent changes and does not preserve bindings.
 - Member forms: the source's `principal` / `principalSet` members use `workloadIdentityPools` (Workload Identity Federation), whereas the share-agents page uses `workforcePools` for Workforce Identity Federation principals. The source's example result for `setIamPolicy` uses `roles/discoveryengine.user` rather than `roles/discoveryengine.agentspaceUser`; the example output blocks are omitted here.
 - To delete an app that has an IAM policy, remove users from the policy first (see the best practices for deleting an app with an IAM policy on the delete-app page); try deletion in a disposable project first.
 - For granular, resource-level access controls across both apps and data stores, see https://docs.cloud.google.com/gemini/enterprise/docs/iam-policy-for-apps-and-data-stores.
