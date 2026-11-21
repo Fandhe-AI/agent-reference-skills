@@ -12,13 +12,14 @@ Organization Policy custom constraints for CCAI Platform give fine-grained contr
 
 Conditions are written in Common Expression Language (CEL) against the `ContactCenter` resource. Write the YAML file and use its path as `CONSTRAINT_PATH` below.
 
+Adapted (not in the official docs): `methodTypes` lists `CREATE` only; the source's block also lists `UPDATE`, but the same page's Console and gcloud instructions say the constraint can only be enforced on `CREATE`.
+
 ```yaml
 name: organizations/ORGANIZATION_ID/customConstraints/CONSTRAINT_NAME
 resourceTypes:
 - contactcenteraiplatform.googleapis.com/ContactCenter
 methodTypes:
 - CREATE
-- UPDATE
 condition: "CONDITION"
 actionType: ACTION_TYPE
 displayName: "DISPLAY_NAME"
@@ -62,7 +63,7 @@ gcloud org-policies set-policy POLICY_PATH
 
 ### Test the constraint
 
-The source describes these test results with the `AGENT` example condition enforced (whether `UPDATE` is enforced is inconsistent in the source; see Notes): creating or updating an instance with a component of type `AGENT` succeeds (create the instance configured for private access, then update it, for example change the deployment schedule); creating an instance without private access and an `AGENT` component fails. For an existing instance without an `AGENT` component, updates fail after enforcement, unless the update configures private access and adds an `AGENT` component (you then need a Private Service Connect connection to access it).
+With the `AGENT` example condition enforced, the source's create tests give these results: creating an instance configured for private access (with a component of type `AGENT`) succeeds, and you then need a Private Service Connect connection to access it; attempting to create an instance without configuring private access fails. The source also describes results for updating instances, but it does not settle whether the constraint is checked on updates (see Notes), so this page does not rely on updates of existing instances being blocked.
 
 ## Options / Props
 
@@ -83,8 +84,8 @@ The source describes these test results with the `AGENT` example condition enfor
 |---|---|---|---|---|
 | ContactCenter | Create or update an instance. For more information, see [Create a CCAI Platform instance](https://docs.cloud.google.com/contact-center/ccai-platform/docs/get-started#create-ccaip-instance). | name | contains | `resource.name.contains("us-central1/contactCenters/myContactCenter")` |
 | ContactCenter | Create or update an instance. For more information, see [Create a CCAI Platform instance](https://docs.cloud.google.com/contact-center/ccai-platform/docs/get-started#create-ccaip-instance). | name | matches | `resource.name.matches("projects/my-project/locations/us-central1/contactCenters/myContactCenter")` |
-| ContactCenter | Create or update an instance. For more information, see [Create a CCAI Platform instance](https://docs.cloud.google.com/contact-center/ccai-platform/docs/get-started#create-ccaip-instance). | name | startsWith | `resource.name.startsWith("projects/my-project")` |
-| ContactCenter | Create or update an instance. For more information, see [Create a CCAI Platform instance](https://docs.cloud.google.com/contact-center/ccai-platform/docs/get-started#create-ccaip-instance). | name | endsWith | `resource.name.endsWith("myContactCenter")` |
+| ContactCenter | Create or update an instance. For more information, see [Create a CCAI Platform instance](https://docs.cloud.google.com/contact-center/ccai-platform/docs/get-started#create-ccaip-instance). | name | startsWith | `resource.name.startsWith("projects/my-project/")` |
+| ContactCenter | Create or update an instance. For more information, see [Create a CCAI Platform instance](https://docs.cloud.google.com/contact-center/ccai-platform/docs/get-started#create-ccaip-instance). | name | endsWith | `resource.name.endsWith("/contactCenters/myContactCenter")` |
 | ContactCenter | Create or update an instance. For more information, see [Create a CCAI Platform instance](https://docs.cloud.google.com/contact-center/ccai-platform/docs/get-started#create-ccaip-instance). | privateAccess | exists | `resource.privateAccess.ingressSettings.exists(private_component, private_component.name == 'AGENT')` Checks that the `AGENT` component is enabled. |
 
 ## Notes
@@ -93,12 +94,13 @@ The source describes these test results with the `AGENT` example condition enfor
 - Organization Policy Service, including predefined and custom organization policies, is offered at no charge. Policies are inherited by descendants of the resource on which they are enforced.
 - Limitations: CCAI Platform is not integrated with Cloud Asset Inventory, so the Policy Simulator feature of Policy Intelligence is not available for CCAI Platform Organization Policy. Most resource types support up to 20 custom constraints; creating more fails.
 - The `ALLOW` action means the create or update operation is permitted only if the condition evaluates to true; every other case not explicitly listed in the condition is blocked.
-- Source inconsistency: the first YAML lists `methodTypes` `- CREATE` and `- UPDATE`, and the test section says "Creating or updating an instance without a component of type `AGENT`fails" and that for an existing instance "updates to the instance fail"; the Console instructions say "This constraint can only be enforced on the REST `CREATE` method." and the gcloud instructions say `methodTypes` "Can only be `CREATE`." The first block is kept as the source writes it; the source does not settle whether `UPDATE` is enforced. The source's gcloud-specific YAML block writes `resourceTypes: RESOURCE_NAME` as a scalar and is omitted; use the list form shown above.
+- Source inconsistency: the source's first YAML block lists `methodTypes` `- CREATE` and `- UPDATE`, and its test section says "Creating or updating an instance without a component of type `AGENT`fails", that for an instance that existed before enforcement "updates to the instance fail (unless the updates include adding a component of type `AGENT`" and that changing the deployment schedule of a private instance "The update succeeds."; its Console instructions say "This constraint can only be enforced on the REST `CREATE` method." and its gcloud instructions say `methodTypes` "Can only be `CREATE`." The source does not settle whether `UPDATE` is accepted or enforced, so the page applies the constraint to `CREATE` only and does not state that updates of existing instances are checked. The source's gcloud-specific YAML block writes `resourceTypes: RESOURCE_NAME` as a scalar and is omitted; use the list form shown above.
+- Corrected from the official docs: the first YAML block writes `methodTypes:` with `- CREATE` and `- UPDATE`; the page keeps `- CREATE` only, the value the same page's Console and gcloud instructions allow.
 - In the supported resources table, the retrieved page has six more rows after the `privateAccess` / `exists` row, all truncated: one row has only the Resource, Action and Attribute cells (`ContactCenter`, the same Action text, `privateAccess`) and five rows have only the Resource and Action cells (`ContactCenter`, the same Action text). They carry no operator or example condition and are left out (they would also break the five-column table). The "Example custom organization policies" table holds its YAML only as collapsed single-line cell text and is not reproduced. The second example in the source also has an unbalanced parenthesis in its condition.
 - The source shows the Console and gcloud only; the Console steps for creating a constraint and the `gcloud init` block are omitted.
 - Creating private access instances is covered on the get-started page; Private Service Connect is covered on the VPC Service Controls page.
 - Discovery (`contactcenteraiplatform.v1alpha1`): `ContactCenter.privateAccess` is a `PrivateAccess` object with `ingressSettings` and `egressSettings` (lists of `Component` with `name` and `serviceAttachmentNames`) and `pscSetting`.
-- The `startsWith` example condition `resource.name.startsWith("projects/my-project")` in the Supported resources and operations table is copied as written; that prefix also matches other projects whose ID begins with `my-project` (for example `projects/my-project2`). To match one project only, end the prefix with `/` (`"projects/my-project/"`).
+- Corrected from the official docs: the Supported resources and operations table writes the `startsWith` example as `resource.name.startsWith("projects/my-project")` and the `endsWith` example as `resource.name.endsWith("myContactCenter")`. That prefix also matches other projects whose ID begins with `my-project` (for example `projects/my-project2`), and that suffix also matches contact centers whose ID ends with `myContactCenter` (for example `.../contactCenters/xmyContactCenter`); the table ends the prefix with `/` and starts the suffix at `/contactCenters/` so each matches one project or one contact center ID. The `contains` example `resource.name.contains("us-central1/contactCenters/myContactCenter")` is kept as written; it also matches longer IDs such as `myContactCenter2`.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/ccaip-custom-constraints (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

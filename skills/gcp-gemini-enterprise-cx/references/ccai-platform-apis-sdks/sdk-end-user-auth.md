@@ -39,9 +39,11 @@ Sign the payload on your server so `company_secret` stays hidden from the client
 
 ### Web SDK signing
 
-The authentication handler posts the payload to your server and passes the signed token back through the callback:
+The authentication handler posts the payload to your server and passes the signed token back through the callback. Your server decides the identifier from the authenticated session, and the same value goes into the signed JWT and into the `user.identifier` that the handler passes to the SDK:
 
-Adapted (not in the official docs): replaced the fixed host `https://company.com` with the placeholder `YOUR_SIGNING_ENDPOINT` for your own signing server, so user identifiers are not posted to a host you do not control, and added `contentType: 'application/json'` so the `JSON.stringify` body is sent as JSON rather than with jQuery's default form-urlencoded content type.
+The `$.ajax` call below has no `error` handler and does not check `result.token` before calling `callback`; the source does not say how the `authentication(callback)` handler reports a failure, so check for a non-empty `token` and handle a failed request in your app.
+
+Adapted (not in the official docs): replaced the fixed host `https://company.com` with the placeholder `YOUR_SIGNING_ENDPOINT` for your own signing server, so user identifiers are not posted to a host you do not control, and added `contentType: 'application/json'` so the `JSON.stringify` body is sent as JSON rather than with jQuery's default form-urlencoded content type, and wrote the payload identifier `UNIQUE-Identifier` as `UNIQUE-IDENTIFIER`, the placeholder the source uses for the SDK user identifier, so the JWT and the SDK user data carry one identifier.
 
 ```javascript
 $(function() {
@@ -55,7 +57,7 @@ $(function() {
           contentType: 'application/json',
           data: JSON.stringify({
             payload: {
-              identifier: 'UNIQUE-Identifier',
+              identifier: 'UNIQUE-IDENTIFIER',
               name: 'Test user'
             }
           }),
@@ -90,6 +92,8 @@ When a user starts as a guest and verifies identity mid-session (for example thr
 5. If a virtual assistant was used, it should now escalate the consumer to the final destination queue.
 
 Web SDK reinitialization (call after successful authentication and the Apps API update):
+
+The `$.ajax` call below has no `error` handler and does not check `result.token` before calling `callback`; the source does not say how the `authentication(callback)` handler reports a failure, so check for a non-empty `token` and handle a failed request in your app.
 
 Adapted (not in the official docs): replaced the fixed host `https://your.company.com` with the placeholder `YOUR_SIGNING_ENDPOINT` for your own signing server, so user identifiers are not posted to a host you do not control, and added `contentType: 'application/json'` so the `JSON.stringify` body is sent as JSON rather than with jQuery's default form-urlencoded content type.
 
@@ -146,6 +150,8 @@ UJET.initialize({
 - The source's Ruby on Rails signing example (`routes.rb` with `post 'ujet/sign' => "ujet#sign"` and a `UjetController#sign` that calls `JWT.encode(payload, ujet_secret)`) is left out: it reads `payload = body["payload"]`, and `body` is not defined anywhere in the example, so it does not run as written and the correct accessor is not given by the source. It also sets the identifier, name and email to constants and keeps the secret in a string literal (`ujet_secret = "COMPANY_SECRET"`, with the comment "In production, securely store and call your secret (e.g., via environment variables)").
 - Adapted from the official docs: the source web SDK examples post the payload to `https://company.com/api/ujet/sign` (initialization) and `https://your.company.com/api/ujet/sign` (reinitialization); both hosts were replaced with `https://YOUR_SIGNING_ENDPOINT/api/ujet/sign`. `YOUR_SIGNING_ENDPOINT` must be your own server that signs the JWT (the source's server example serves `/api/ujet/sign`), never a host you do not operate, because the request carries the end user's identifier and name.
 - Corrected from the official docs: both web SDK `$.ajax` calls send `data: JSON.stringify({ payload: ... })` without `contentType`, so jQuery sends them with its default `Content-Type: application/x-www-form-urlencoded; charset=UTF-8` and a server that parses JSON bodies does not find `payload`; the page adds `contentType: 'application/json'` to both calls.
+- Corrected from the official docs: the initialization example signs `identifier: 'UNIQUE-Identifier'` in the payload but passes `identifier: 'UNIQUE-IDENTIFIER'` in the SDK `user` object, two different strings for one end user; the page uses `UNIQUE-IDENTIFIER` in both places (the reinitialization example already uses `AUTHENTICATED-USER-UUID` in both).
+- Both `$.ajax` calls have no `error` handler, and their `success` handlers pass `result.token` on without checking it. The source does not say how the `authentication(callback)` handler reports a failure, so the examples are not changed for this; in your app, check that the response carries a non-empty `token` before calling `callback`, and handle a failed request yourself.
 - The web SDK examples send the `identifier` from the browser to the signing endpoint. Derive the identifier from your authenticated session on the server (the web SDK v3 Express example in web-sdk-v3-authenticate.md uses `req.user`, although its `GET /auth/token` route is a different contract from this page's `POST /api/ujet/sign`) rather than signing whatever the client sends, and load the company secret from environment variables or a secret store.
 - The source also shows iOS (Objective-C) and Android (Java, Retrofit) signing callbacks. Identifiers such as `UJET` appear as written in the source.
 - Source: https://docs.cloud.google.com/contact-center/ccai-platform/docs/sdk-end-user-auth (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)

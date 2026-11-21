@@ -15,16 +15,6 @@ You are a helpful shopping assistant.
 Please follow these business rules: {{business_rules}}.
 ```
 
-### Dynamic variable reference
-
-The instruction below is the official example, kept as written. Because variables "store and retrieve data across conversational turns", `{current_account_balance}` keeps its last value when a later lookup fails or does not run; in a real agent, have the instruction disclose account data only after the lookup tool has verified the caller and succeeded in the current turn.
-
-```text
-If the user asks for their balance, call the {@TOOL: LookupBalance}.
-The tool will update the {current_account_balance} variable.
-Always share the {current_account_balance} with the user.
-```
-
 ### Update a variable from Python tool code
 
 The official page says "A global variable called `context` is available to use in your Python tool code"; `value` stands for the new value you assign (the official example does not define it).
@@ -43,7 +33,7 @@ context.state["variable_name"] = value
 - The agent itself cannot update a variable; tools and callbacks can. Variables use ADK context state, and a global `context` variable is available in Python tool code.
 - Warning from the source: instruction templates are rendered after the `before_agent` callback and before the `before_model` callback. Updates in `before_agent` take effect on the current turn; updates in `before_model` are not reflected in the rendered instructions until subsequent turns. Use `before_agent_callback` to update variables that control the current turn's instructions.
 - The built-in `$context.*` variables are available to OpenAPI and MCP tools in HTTP headers or request parameters; they cannot be referenced in instructions and cannot be manually overwritten.
-- Warning on the dynamic variable example: the source's instruction "Always share the {current_account_balance} with the user." is kept as written. The source says variables "store and retrieve data across conversational turns", so a balance set in an earlier turn stays in the variable if a later `LookupBalance` call fails or does not update it. Disclose account data only after the lookup tool in the current turn has verified the caller's identity and access to the account and has succeeded, and have the tool clear or overwrite the variable on failure; the source does not show this.
+- The source's instruction example for dynamic variables was left out: it has the agent call a balance lookup tool that updates a `current_account_balance` variable, and then tells the agent to always disclose that variable's value to the user, a value kept across turns. Because variables "store and retrieve data across conversational turns", `{current_account_balance}` keeps an earlier value when a later `LookupBalance` call fails or does not run, so that instruction could disclose stale or unverified account data. Reference a dynamic variable as `{variable_name}` in instructions, and disclose account data only after the lookup tool has verified the caller and succeeded in the current turn, clearing the variable when the lookup fails.
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/variable (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

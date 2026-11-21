@@ -27,12 +27,20 @@ Or use the script hosted by UJET:
 
 ### Create a client
 
+Adapted (not in the official docs): the function throws when the response is not `ok` or has no non-empty `token`, so the returned promise rejects instead of resolving with an error body or `{ token: undefined }`.
+
 ```javascript
 import { Client } from "@ujet/websdk-headless"
 
 async function authenticate() {
   const resp = await fetch("/your-auth-endpoint")
+  if (!resp.ok) {
+    throw new Error(`token request failed: ${resp.status}`)
+  }
   const data = await resp.json()
+  if (!data || typeof data.token !== 'string' || data.token === '') {
+    throw new Error('token response has no token')
+  }
   return { token: data.token }
 }
 
@@ -172,6 +180,7 @@ client.destroy()
 
 ## Notes
 
+- Corrected from the official docs: the `authenticate` example reads `const data = await resp.json()` and returns `{ token: data.token }` without checking `resp.ok` or the token; `fetch` resolves on HTTP errors such as `401`, so on an error response the client receives `{ token: undefined }`. The `ClientOption` type declares `authenticate: () => Promise<TokenResponse>`, so the page throws (a rejected promise) on a non-`ok` response or a missing token.
 - "Google only supports the latest three minor versions of the headless web SDK. To receive support, your website must be using one of these versions of the headless web SDK."
 - Installing the headless web SDK needs the support of your organization's web development team.
 - Logging: the source introduces `Logger.addHandler(consoleLoggerHandler)` for gathering "additional information in the console log" "During implementation and testing" and does not list what is logged. Use it only for local debugging with test data; in production, log metadata (connection state, error codes) and not conversation content.

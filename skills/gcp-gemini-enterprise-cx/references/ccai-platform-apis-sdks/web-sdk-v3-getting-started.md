@@ -10,7 +10,7 @@ The web SDK builds on the headless web SDK, so all headless client methods are a
 
 ### Basic example
 
-Adapted (not in the official docs): `{your_ccaas_host}web-sdk/v3/widget.js` became `{your_ccaas_host}/web-sdk/v3/widget.js` because the host is written as `https://{your_ccaas_host}` and the same page's install section uses `https://{your_ccaas_host}/web-sdk/v3/headless.js`.
+Adapted (not in the official docs): `{your_ccaas_host}web-sdk/v3/widget.js` became `{your_ccaas_host}/web-sdk/v3/widget.js` because the host is written as `https://{your_ccaas_host}` and the same page's install section uses `https://{your_ccaas_host}/web-sdk/v3/headless.js`; `getAuthToken` throws when the response is not `ok` or has no non-empty `token`, so the promise passed to the SDK rejects instead of resolving with an error body.
 
 ```html
 <!DOCTYPE html>
@@ -38,7 +38,15 @@ Adapted (not in the official docs): `{your_ccaas_host}web-sdk/v3/widget.js` beca
       // YOU SHOULD HAVE THIS KIND OF API ON YOUR SERVER
       return fetch('/auth/token').then(function(resp) {
         // { token: 'a JWT contains user identifier, name, and email' }
+        if (!resp.ok) {
+          throw new Error('token request failed: ' + resp.status);
+        }
         return resp.json();
+      }).then(function(data) {
+        if (!data || typeof data.token !== 'string' || data.token === '') {
+          throw new Error('token response has no token');
+        }
+        return data;
       });
     }
   </script>
@@ -54,11 +62,19 @@ Sign in to the CCAI Platform portal with an administrator account, go to **Setti
 
 `getAuthToken` calls a JWT signing endpoint on your backend:
 
+Adapted (not in the official docs): the function throws when the response is not `ok` or has no non-empty `token`, so the returned promise rejects instead of resolving with an error body or `{ token: undefined }`.
+
 ```javascript
 async function getAuthToken() {
   // YOU SHOULD HAVE THIS KIND OF API ON YOUR SERVER
   const resp = await fetch('/auth/token')
+  if (!resp.ok) {
+    throw new Error(`token request failed: ${resp.status}`)
+  }
   const data = await resp.json()
+  if (!data || typeof data.token !== 'string' || data.token === '') {
+    throw new Error('token response has no token')
+  }
   return { token: data.token }
 }
 ```
@@ -109,12 +125,20 @@ ccaas.mount('#ccaas-widget')
 npm install @ujet/websdk-headless --save
 ```
 
+Adapted (not in the official docs): the function throws when the response is not `ok` or has no non-empty `token`, so the returned promise rejects instead of resolving with an error body or `{ token: undefined }`.
+
 ```javascript
 import { Client } from "@ujet/websdk-headless"
 
 async function authenticate() {
   const resp = await fetch("/your-auth-endpoint")
+  if (!resp.ok) {
+    throw new Error(`token request failed: ${resp.status}`)
+  }
   const data = await resp.json()
+  if (!data || typeof data.token !== 'string' || data.token === '') {
+    throw new Error('token response has no token')
+  }
   return { token: data.token }
 }
 
@@ -130,6 +154,7 @@ const company = await client.getCompany()
 ## Notes
 
 - Corrected from the official docs: the basic example loads `<script src="https://{your_ccaas_host}web-sdk/v3/widget.js"></script>` (no `/` between the host and the path); the same page writes the host as `https://{your_ccaas_host}` and loads the headless script from `https://{your_ccaas_host}/web-sdk/v3/headless.js`.
+- Corrected from the official docs: the three token callbacks (`return fetch('/auth/token').then(function(resp) { ... return resp.json(); });` in the basic example, and `const data = await resp.json()` followed by `return { token: data.token }` in the authentication and headless install examples) never check `resp.ok` or the token. `fetch` resolves on HTTP errors such as `401`, so the SDK receives the error JSON or `{ token: undefined }` as the authentication result. The headless guide types the callback as `authenticate: () => Promise<TokenResponse>`, so the page throws (a rejected promise) on a non-`ok` response or a missing token.
 - Keep `COMPANY_SECRET` on your server; only `COMPANY_KEY` goes into the widget options. The token endpoint is described in web-sdk-v3-authenticate.md.
 - If your production server has a content security policy, add `https://{your_ccaas_host}` to `script-src` and `frame-src`; for the headless install, add `https://{your_ccaas_host}/` to `frame-src`.
 - The headless client can alternatively be loaded from the script hosted on your CCAI Platform instance (`https://{your_ccaas_host}/web-sdk/v3/headless.js`).

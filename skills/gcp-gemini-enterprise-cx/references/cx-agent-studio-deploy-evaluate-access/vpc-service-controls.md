@@ -19,10 +19,12 @@ CX Agent Studio integrates with Service Directory private network access, so it 
 To set up a tool targeting a private network:
 
 1. Follow the Service Directory private network configuration to configure your VPC network and Service Directory endpoint.
-2. The **Customer Engagement Suite Service Agent** service account with the following address must exist for your agent project:
+2. The **Customer Engagement Suite Service Agent** service account with the following address must exist for your agent project (replace only `PROJECT_NUMBER` with the agent project's number; keep the `service-` prefix and the `@gcp-sa-ces.iam.gserviceaccount.com` domain):
+
+Adapted (not in the official docs): the placeholder `service-agent-project-number` is written as `service-PROJECT_NUMBER`, the form the OpenAPI, MCP and A2A tool pages give for the same service agent, so that replacing the placeholder keeps the `service-` prefix.
 
 ```text
-service-agent-project-number@gcp-sa-ces.iam.gserviceaccount.com
+service-PROJECT_NUMBER@gcp-sa-ces.iam.gserviceaccount.com
 ```
 
 3. Grant `servicedirectory.viewer` and `servicedirectory.pscAuthorizedService` (IAM role IDs `roles/servicedirectory.viewer` and `roles/servicedirectory.pscAuthorizedService`) to that service account in the project where your Service Directory is located. If your Service Directory is in a different project than your agent application, also grant `servicedirectory.viewer` to it in the project that hosts your agent application.
@@ -47,7 +49,7 @@ To troubleshoot, set up a private uptime check to verify the Service Directory c
 ### Other
 
 - Source inconsistency: the source names "Tools and callbacks" in the limitation and answers it with "You have to configure Service Directory for private network access", while the Callbacks page says callbacks cannot reach private IP addresses or private DNS domains "even if Service Directory is configured". Both are kept as written; the Service Directory steps on this page apply to tools.
-- The service account address in the fenced block is copied as written in the source (`service-agent-project-number` stands for the agent project's number).
+- Corrected from the official docs: the source writes the address as `service-agent-project-number@gcp-sa-ces.iam.gserviceaccount.com`, which reads as if the whole `service-agent-project-number` part were the project number. The OpenAPI and MCP tool pages give the service agent as `service-{PROJECT_NUMBER}@gcp-sa-ces.iam.gserviceaccount.com` and the A2A tool page as `service-PROJECT_NUMBER@gcp-sa-ces.iam.gserviceaccount.com` (https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/tool/open-api, https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/tool/a2a-protocol, retrieved 2026-11-21); only `PROJECT_NUMBER` is replaced. The OpenAPI tool page links the service agent to the IAM service agents reference (https://docs.cloud.google.com/iam/docs/service-agents#customer-engagement-suite-service-account).
 - Source: https://docs.cloud.google.com/gemini-enterprise-cx/cx-agent-studio/vpc-service-controls (retrieved 2026-11-21; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
